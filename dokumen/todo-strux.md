@@ -21,7 +21,7 @@ error: update_ref failed for ref 'refs/remotes/origin/ilham/master': cannot lock
 
 [x] app/Traits/ApiResponse.php: Standardisasi format JSON untuk API.
 
-[] app/Repositories/BaseRepository.php: Wrapper untuk query database (CRUD dasar).
+[x] app/Repositories/BaseRepository.php: Wrapper untuk query database (CRUD dasar).
 
 [x] app/Services/BaseService.php: Tempat logika bisnis dan manajemen caching.
 
@@ -47,7 +47,7 @@ error: update_ref failed for ref 'refs/remotes/origin/ilham/master': cannot lock
 
 3. Otomatisasi (Custom Command)
 
-[ ] app/Console/Commands/MakeArchitectureCommand.php: Command php artisan make:arch untuk generate DTO, Service, dan Repo sekaligus.
+[x] app/Console/Commands/MakeArchitectureCommand.php: Command php artisan make:arch untuk generate DTO, Service, dan Repo sekaligus.
 
 [ ] Uji Coba: Jalankan php artisan make:arch Test dan verifikasi file yang dihasilkan.
 
