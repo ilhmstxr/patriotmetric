@@ -1,0 +1,16 @@
+buat sop untuk front-end, back-end, database
+
+1. mengapa ini ada eror 
+$ git push origin ilham/master
+Total 0 (delta 0), reused 0 (delta 0)
+remote: 
+remote: Create a pull request for 'ilham/master' on GitHub by visiting:
+remote:      https://github.com/ilhmstxr/patriotmetric/pull/new/ilham/master
+remote:
+To https://github.com/ilhmstxr/patriotmetric.git
+ * [new branch]      ilham/master -> ilham/master
+error: update_ref failed for ref 'refs/remotes/origin/ilham/master': cannot lock ref 'refs/remotes/origin/ilham/master': 'refs/remotes/origin/ilham' exists; cannot create 'refs/remotes/origin/ilham/master'
+
+2. bagaimana cara membuat stubs, baserepo, baseservice, basecontroller, apakah ada commandna atau harus buat folder / file sendiri
+3. jika tidak ada folder app/traits/apiresponse.php maka bagaimana
+4. 
