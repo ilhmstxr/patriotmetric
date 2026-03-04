@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\pengaturan_cms;
+use App\Models\PengaturanCms;
 use Illuminate\Http\Request;
 
 class PengaturanCmsController extends Controller
@@ -34,7 +34,7 @@ class PengaturanCmsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(pengaturan_cms $pengaturan_cms)
+    public function show(PengaturanCms $PengaturanCms)
     {
         //
     }
@@ -42,7 +42,7 @@ class PengaturanCmsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(pengaturan_cms $pengaturan_cms)
+    public function edit(PengaturanCms $PengaturanCms)
     {
         //
     }
@@ -50,7 +50,7 @@ class PengaturanCmsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, pengaturan_cms $pengaturan_cms)
+    public function update(Request $request, PengaturanCms $PengaturanCms)
     {
         //
     }
@@ -58,7 +58,7 @@ class PengaturanCmsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(pengaturan_cms $pengaturan_cms)
+    public function destroy(PengaturanCms $PengaturanCms)
     {
         //
     }

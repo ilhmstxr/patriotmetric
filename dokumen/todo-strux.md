@@ -68,8 +68,8 @@ stubs ini ditaruh di folder apa
 
 👨‍💻 PROGRAMMER 2 (Branch: feature/users-submissions-cms)
 
-[ ] CMS Compro: Buat CmsResource dengan RichEditor.
-[ ] Manajemen User: Buat UserResource (Role: Admin, Reviewer, Submitter).
-[ ] Manajemen Submisi: - [ ] SubmissionResource (Status, Total Skor, Reviewer).
-[ ] Custom Action "Tugaskan Reviewer" (Integrasi dengan SubmissionService).
-[ ] Infolist: Halaman view jawaban kuesioner & link Google Drive.
+[x] CMS Compro: Buat CmsResource dengan RichEditor.
+[x] Manajemen User: Buat UserResource (Role: Admin, Reviewer, Submitter).
+[x] Manajemen Submisi: - [x] SubmissionResource (Status, Total Skor, Reviewer).
+[x] Custom Action "Tugaskan Reviewer" (Integrasi dengan SubmissionService).
+[x] Infolist: Halaman view jawaban kuesioner & link Google Drive.
