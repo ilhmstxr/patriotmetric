@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\{{name}};
+
+class {{name}}Repository extends BaseRepository
+{
+    /**
+     * {{name}}Repository constructor.
+     * Mengikat Model terkait ke BaseRepository.
+     */
+    public function __construct({{name}} $model)
+    {
+        parent::__construct($model);
+    }
+
+    // Tambahkan query spesifik (misal: scope atau complex join) untuk {{name}} di sini
+}
