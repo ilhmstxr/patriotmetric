@@ -15,6 +15,19 @@ error: update_ref failed for ref 'refs/remotes/origin/ilham/master': cannot lock
 3. jika tidak ada folder app/traits/apiresponse.php maka bagaimana
 
 
+stubs ini ditaruh di folder apa
+
+[x] Automation Layer (make:arch Command): Alat untuk men-generate file DTO, Service, dan Repository secara instan agar struktur folder tetap rapi.
+
+[x] Logic Layer (Base Service & Repository): Kerangka utama yang berisi fungsi CRUD dasar (Create, Read, Update, Delete) sehingga tim tidak perlu menulis query manual terus-menerus.
+
+[x] Consistency Layer (ApiResponse Trait): Standarisasi format data JSON agar sisi Front-end selalu mendapatkan struktur data yang sama.
+
+[x] Global Safety Layer (Exception Handler): Penanganan error otomatis (seperti error validasi atau 404) agar aplikasi tidak pernah mengirimkan halaman HTML error yang berantakan ke API.
+
+[x] Standardization Layer (Force JSON Middleware): Memastikan semua komunikasi antar sistem dilakukan dalam format JSON secara otomatis.
+
+
 1. Persiapan Folder & File Base (Manual)
 
 [x] Folder Creation: Buat folder app/DTOs, app/Services, app/Repositories, dan app/Traits.
