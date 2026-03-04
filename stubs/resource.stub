@@ -1,11 +1,11 @@
 <?php
 
-namespace {{ namespace }};
+namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class {{ class }} extends JsonResource
+class {{name}}Resource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,6 +14,10 @@ class {{ class }} extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            // Tambahkan transformasi kolom database di sini
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+        ];
     }
 }

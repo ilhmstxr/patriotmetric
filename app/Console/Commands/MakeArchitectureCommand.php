@@ -16,49 +16,54 @@ class MakeArchitectureCommand extends Command
     {
         $name = $this->argument('name');
 
-        $this->generateFile($name, 'DTO', 'app/DTOs');
-        $this->generateFile($name, 'Service', 'app/Services');
-        $this->generateFile($name, 'Repository', 'app/Repositories');
+        // Daftar file yang akan di-generate beserta lokasinya
+        $files = [
+            'DTO' => 'app/DTOs',
+            'Service' => 'app/Services',
+            'Repository' => 'app/Repositories',
+            'Resource' => 'app/Http/Resources',
+        ];
 
+        foreach ($files as $suffix => $path) {
+            $this->generateFromStub($name, $suffix, $path);
+        }
         $this->info("🚀 Arsitektur untuk {$name} berhasil dibuat!");
     }
-
-    protected function generateFile($name, $suffix, $path)
+    /**
+     * Fungsi untuk membaca stub, mengganti placeholder, dan menyimpan file.
+     */
+    protected function generateFromStub($name, $suffix, $path)
     {
         $className = "{$name}{$suffix}";
         $directory = base_path($path);
+        $stubName = strtolower($suffix) . ".stub"; // Contoh: dto.stub
+        $stubPath = base_path("stubs/{$stubName}");
 
+        // 1. Pastikan folder tujuan ada
         if (!File::exists($directory)) {
             File::makeDirectory($directory, 0755, true);
         }
 
-        $filePath = "{$directory}/{$className}.php";
-
-        if (File::exists($filePath)) {
-            $this->error("❌ {$className} sudah ada!");
+        // 2. Pastikan file stub ada di folder stubs
+        if (!File::exists($stubPath)) {
+            $this->error("❌ File stub tidak ditemukan: stubs/{$stubName}");
             return;
         }
 
-        // Logika pengisian konten bisa menggunakan stub sederhana
-        $content = $this->getStubContent($name, $suffix);
-        File::put($filePath, $content);
-        $this->line("✅ Created: {$path}/{$className}.php");
-    }
+        $targetPath = "{$directory}/{$className}.php";
 
-    protected function getStubContent($name, $suffix)
-    {
-        if ($suffix === 'Repository') {
-            return "<?php\n\nnamespace App\Repositories;\n\nuse App\Models\\{$name};\n\nclass {$name}Repository extends BaseRepository\n{\n    public function __construct({$name} \$model)\n    {\n        parent::__construct(\$model);\n    }\n}\n";
+        // 3. Cek apakah file sudah pernah dibuat sebelumnya
+        if (File::exists($targetPath)) {
+            $this->warn("⚠️  File {$className}.php sudah ada, melewati...");
+            return;
         }
 
-        if ($suffix === 'Service') {
-            return "<?php\n\nnamespace App\Services;\n\nuse App\Repositories\\{$name}Repository;\n\nclass {$name}Service extends BaseService\n{\n    public function __construct({$name}Repository \$repository)\n    {\n        parent::__construct(\$repository);\n    }\n}\n";
-        }
-        
-        $namespace = "App\\" . Str::plural($suffix);
-        if ($suffix === 'DTO')
-            $namespace = "App\\DTOs";
+        // 4. Baca isi stub dan ganti placeholder {{name}}
+        $content = File::get($stubPath);
+        $content = str_replace('{{name}}', $name, $content);
 
-        return "<?php\n\nnamespace {$namespace};\n\nclass {$name}{$suffix}\n{\n    // Logic untuk {$name}{$suffix}\n}\n";
+        // 5. Simpan file baru
+        File::put($targetPath, $content);
+        $this->line("✅ Berhasil dibuat: {$path}/{$className}.php");
     }
 }
