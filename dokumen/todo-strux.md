@@ -15,39 +15,44 @@ error: update_ref failed for ref 'refs/remotes/origin/ilham/master': cannot lock
 3. jika tidak ada folder app/traits/apiresponse.php maka bagaimana
 
 
+stubs ini ditaruh di folder apa
+
+[x] Automation Layer (make:arch Command): Alat untuk men-generate file DTO, Service, dan Repository secara instan agar struktur folder tetap rapi.
+
+[x] Logic Layer (Base Service & Repository): Kerangka utama yang berisi fungsi CRUD dasar (Create, Read, Update, Delete) sehingga tim tidak perlu menulis query manual terus-menerus.
+
+[x] Consistency Layer (ApiResponse Trait): Standarisasi format data JSON agar sisi Front-end selalu mendapatkan struktur data yang sama.
+
+[x] Global Safety Layer (Exception Handler): Penanganan error otomatis (seperti error validasi atau 404) agar aplikasi tidak pernah mengirimkan halaman HTML error yang berantakan ke API.
+
+[x] Standardization Layer (Force JSON Middleware): Memastikan semua komunikasi antar sistem dilakukan dalam format JSON secara otomatis.
+
+
 1. Persiapan Folder & File Base (Manual)
 
 [x] Folder Creation: Buat folder app/DTOs, app/Services, app/Repositories, dan app/Traits.
-
 [x] app/Traits/ApiResponse.php: Standardisasi format JSON untuk API.
 
-[] app/Repositories/BaseRepository.php: Wrapper untuk query database (CRUD dasar).
+[x] app/Repositories/BaseRepository.php: Wrapper untuk query database (CRUD dasar).
 
 [x] app/Services/BaseService.php: Tempat logika bisnis dan manajemen caching.
 
 2. Konfigurasi Sistem Global
 
 [ ] app/Http/Middleware/ForceJsonResponse.php: Memaksa setiap request API merespons JSON.
-
 [x] bootstrap/app.php:
-
 [ ] Registrasi Middleware ForceJsonResponse. 
-
 [ ] Setup Exception Handler global (Tangkap error 404, 422, dan 500).
 
 [ ] Stubs Custom:
-
 [ ] Jalankan php artisan stub:publish.
-
 [ ] Buat stubs/dto.stub.
-
 [ ] Buat stubs/service.stub.
-
 [ ] Buat stubs/repository.stub.
 
 3. Otomatisasi (Custom Command)
 
-[ ] app/Console/Commands/MakeArchitectureCommand.php: Command php artisan make:arch untuk generate DTO, Service, dan Repo sekaligus.
+[x] app/Console/Commands/MakeArchitectureCommand.php: Command php artisan make:arch untuk generate DTO, Service, dan Repo sekaligus.
 
 [ ] Uji Coba: Jalankan php artisan make:arch Test dan verifikasi file yang dihasilkan.
 
@@ -56,25 +61,24 @@ error: update_ref failed for ref 'refs/remotes/origin/ilham/master': cannot lock
 👨‍💻 PROGRAMMER A (Branch: feature/kuesioner-dashboard)
 
 [ ] Setup Awal: Install Laravel 12 & Filament v3.
-
 [ ] Database: Migrasi tabel users, categories, questions, submissions, submission_answers.
-
 [ ] Dashboard Widget: Buat StatsOverviewWidget.
-
 [ ] Master Kuesioner: - [ ] CategoryResource (Nama, Deskripsi, Bobot).
-
 [ ] QuestionResource (Relasi Kategori, Teks Soal, Tipe).
-
 [ ] Input Repeater untuk pilihan ganda & bobot nilai.
 
 👨‍💻 PROGRAMMER 2 (Branch: feature/users-submissions-cms)
 
-[ ] CMS Compro: Buat CmsResource dengan RichEditor.
+[x] CMS Compro: Buat CmsResource dengan RichEditor.
+[x] Manajemen User: Buat UserResource (Role: Admin, Reviewer, Submitter).
+[x] Manajemen Submisi: - [x] SubmissionResource (Status, Total Skor, Reviewer).
+[x] Custom Action "Tugaskan Reviewer" (Integrasi dengan SubmissionService).
+[x] Infolist: Halaman view jawaban kuesioner & link Google Drive.
 
-[ ] Manajemen User: Buat UserResource (Role: Admin, Reviewer, Submitter).
 
-[ ] Manajemen Submisi: - [ ] SubmissionResource (Status, Total Skor, Reviewer).
 
-[ ] Custom Action "Tugaskan Reviewer" (Integrasi dengan SubmissionService).
-
-[ ] Infolist: Halaman view jawaban kuesioner & link Google Drive.
+- TODO: edit pengumpulan & pengumpulan -> user => submitter, view reviewer ga muncul
+- TODO: tugaskan reviewer masih belum konek
+- TODO: fw ketika successful create
+- TODO: password di pengaturan cms kosong
+- TODO: delete pengumpulan
