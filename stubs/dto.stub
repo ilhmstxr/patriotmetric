@@ -12,7 +12,7 @@ readonly class {{name}}DTO
         public array $data,
     ) {}
 
-    public static function fromRequest($request): self
+    public static function formRequest($request): self
     {
         return new self($request->validated());
     }
