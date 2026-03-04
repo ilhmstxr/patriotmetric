@@ -1,0 +1,19 @@
+<?php
+
+namespace App\DTOs;
+
+readonly class {{name}}DTO
+{
+    /**
+     * Data Transfer Object untuk {{name}}.
+     * Menggunakan Constructor Property Promotion (Laravel 12/PHP 8.2+).
+     */
+    public function __construct(
+        public array $data,
+    ) {}
+
+    public static function fromRequest($request): self
+    {
+        return new self($request->validated());
+    }
+}
