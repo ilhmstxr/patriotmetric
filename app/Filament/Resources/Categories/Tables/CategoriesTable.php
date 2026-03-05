@@ -14,25 +14,24 @@ class CategoriesTable
         return $table
             ->columns([
                 \Filament\Tables\Columns\TextColumn::make('nama_kategori')
+                    ->label('Nama Kategori')
                     ->searchable()
                     ->sortable(),
                 \Filament\Tables\Columns\TextColumn::make('deskripsi')
+                    ->label('Deskripsi')
                     ->limit(50)
                     ->searchable(),
-                \Filament\Tables\Columns\TextColumn::make('bobot_presentase')
-                    ->suffix('%')
-                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()->label('Ubah'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+                    DeleteBulkAction::make()->label('Hapus Terpilih'),
+                ])->label('Aksi Massal'),
             ]);
     }
 }

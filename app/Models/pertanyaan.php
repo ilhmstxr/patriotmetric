@@ -10,7 +10,7 @@ class pertanyaan extends Model
     /** @use HasFactory<\Database\Factories\PertanyaanFactory> */
     use HasFactory;
 
-    protected $fillable = ['category_id', 'teks_pertanyaan', 'tipe', 'opsi_jawaban'];
+    protected $fillable = ['category_id', 'kode_pertanyaan', 'teks_pertanyaan', 'deskripsi', 'kebutuhan_bukti', 'tipe', 'opsi_jawaban', 'skor_maksimal'];
 
     protected $casts = [
         'opsi_jawaban' => 'array',

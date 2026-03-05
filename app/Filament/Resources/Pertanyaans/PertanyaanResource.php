@@ -18,7 +18,11 @@ class PertanyaanResource extends Resource
 {
     protected static ?string $model = pertanyaan::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel = 'Pertanyaan';
+
+    protected static ?string $pluralLabel = 'Pertanyaan';
+
+    protected static ?string $singularLabel = 'Pertanyaan';
 
     protected static ?string $recordTitleAttribute = 'teks_pertanyaan';
 

@@ -11,14 +11,13 @@ class CategoryForm
         return $schema
             ->components([
                 \Filament\Forms\Components\TextInput::make('nama_kategori')
+                    ->label('Nama Kategori')
                     ->required()
                     ->maxLength(255),
                 \Filament\Forms\Components\Textarea::make('deskripsi')
+                    ->label('Deskripsi')
                     ->nullable()
                     ->columnSpanFull(),
-                \Filament\Forms\Components\TextInput::make('bobot_presentase')
-                    ->numeric()
-                    ->default(0),
             ]);
     }
 }
