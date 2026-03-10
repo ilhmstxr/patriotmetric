@@ -3,12 +3,15 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\PengaturanCms;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\pengaturan_cms>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PengaturanCms>
  */
 class PengaturanCmsFactory extends Factory
 {
+    protected $model = PengaturanCms::class;
+
     /**
      * Define the model's default state.
      *
@@ -17,7 +20,8 @@ class PengaturanCmsFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'key' => $this->faker->unique()->word(),
+            'value' => $this->faker->sentence(),
         ];
     }
 }
