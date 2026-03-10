@@ -1,6 +1,18 @@
 Instrumen Penilaian Patriot Metric University Ranking 2025
 Dokumen ini berisi daftar pertanyaan, pilihan jawaban, dan ketentuan bukti pendukung untuk pengisian Variabel A, B, dan C.
-A. VARIABEL PATRIOTISME KEBIJAKAN
+
+KETENTUAN:
+tabel kategori
+nama_kategori => kategori index
+default 0
+
+tabel pertanyaan
+category_id => disesuaikan, jika masuk kategori index 0 maka akan mengikut index 0 hingga indexnya berubah
+teks_Pertanyaan => per nomor mulai dari nomor 16
+tipe => jika terdapat pilihan jawaban, tipe = pilihan_ganda. jika terdapat link drive, tipe = link_drive. jika terdapat angka, tipe = angka. 
+
+
+A. VARIABEL PATRIOTISME KEBIJAKAN => kategori index 0 
 16. A.1. Kebijakan Implementasi Nilai-Nilai Bela Negara dalam Kegiatan Tridharma Pilihan Jawaban:
 [0] Tidak ada
 [1] Ada kebijakan tertulis tetapi belum diimplementasikan
@@ -45,7 +57,7 @@ A. VARIABEL PATRIOTISME KEBIJAKAN
 25. Bukti A.5: Surat Edaran, SK, dokumentasi terpublikasi di website (Link Drive).
 
 
-B. VARIABEL PATRIOTISME KELEMBAGAAN
+B. VARIABEL PATRIOTISME KELEMBAGAAN => kategori index 1
 26. B.1. Unit Kerja yang Berfokus pada Pengembangan Karakter Bela Negara Pilihan Jawaban:
 [0] Tidak ada
 [1] Ada unit kerja
@@ -178,7 +190,9 @@ Pilihan Jawaban:
 [4] 76-99%
 [5] 100% 
 65. Bukti B.20: Laporan, data identitas agama mahasiswa, dokumentasi kegiatan (Link Drive).
-C. VARIABEL PATRIOTISME MAHASISWA
+
+
+C. VARIABEL PATRIOTISME MAHASISWA => kategori index 2
 66. C.1. Mahasiswa Aktif Anggota Komponen Cadangan (Komcad)
 Input: (Masukkan Angka) Jumlah mahasiswa aktif anggota Komcad. 
 67. Bukti C.1: SK/ST, kartu anggota Komcad, KTM (Link Drive).
