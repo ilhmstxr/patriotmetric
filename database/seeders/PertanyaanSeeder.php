@@ -3,51 +3,607 @@
 namespace Database\Seeders;
 
 use App\Models\pertanyaan;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class PertanyaanSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // pertanyaan::factory(20)->create();
+        pertanyaan::truncate(); // optional, but let's just create
         $pertanyaan = [
             [
                 'category_id' => 1,
-                'teks_pertanyaan' => 'A.1. Kebijakan Implementasi Nilai-Nilai Bela Negara dalam Kegiatan Tridharma Pilihan Jawaban',
+                'teks_pertanyaan' => 'A.1. Kebijakan Implementasi Nilai-Nilai Bela Negara dalam Kegiatan Tridharma',
                 'tipe' => 'pilihan_ganda',
-                'opsi_jawaban' => '[
-                "{
-                    "urutan" => 0,
-                    "teks_jawaban" => "Tidak ada",
-                }", 
-                "{
-                    "urutan" => 1,
-                    "teks_jawaban" => "Ada kebijakan tertulis tetapi belum diimplementasikan",
-                }", 
-                "{
-                    "urutan" => 2,
-                    "teks_jawaban" => "Ada kebijakan dan diimplementasikan dalam satu kegiatan dari Tridharma",
-                }", 
-                "{
-                    "urutan" => 3,
-                    "teks_jawaban" => "Ada kebijakan dan diimplementasikan dalam dua kegiatan dari Tridharma",
-                }", 
-                "{
-                    "urutan" => 4,
-                    "teks_jawaban" => "Ada kebijakan dan diimplementasikan dalam seluruh kegiatan dari Tridharma",
-                }", 
-                "{
-                    "urutan" => 5,
-                    "teks_jawaban" => "Ada kebijakan dan diimplementasikan dalam seluruh kegiatan Tridharma serta kegiatan penunjang",
-                }", 
-                ]',
+                'opsi_jawaban' => [
+                    ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
+                    ['urutan' => 1, 'teks_jawaban' => 'Ada kebijakan tertulis tetapi belum diimplementasikan'],
+                    ['urutan' => 2, 'teks_jawaban' => 'Ada kebijakan dan diimplementasikan dalam satu kegiatan dari Tridharma'],
+                    ['urutan' => 3, 'teks_jawaban' => 'Ada kebijakan dan diimplementasikan dalam dua kegiatan dari Tridharma'],
+                    ['urutan' => 4, 'teks_jawaban' => 'Ada kebijakan dan diimplementasikan dalam seluruh kegiatan Tridharma'],
+                    ['urutan' => 5, 'teks_jawaban' => 'Ada kebijakan dan diimplementasikan dalam seluruh kegiatan Tridharma serta kegiatan penunjang'],
+                ],
+            ],
+            [
+                'category_id' => 1,
+                'teks_pertanyaan' => 'Bukti A.1: SK Rektor, ST, laporan kegiatan, dokumentasi (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 1,
+                'teks_pertanyaan' => 'A.2. Kebijakan Pencegahan dan Penanganan Kekerasan',
+                'tipe' => 'pilihan_ganda',
+                'opsi_jawaban' => [
+                    ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
+                    ['urutan' => 1, 'teks_jawaban' => 'Ada kebijakan, pedoman pencegahan dan penanganan kekerasan tetapi belum diimplementasikan'],
+                    ['urutan' => 3, 'teks_jawaban' => 'Ada kebijakan, pedoman, sosialisasi/pelatihan, Satgas PPK'],
+                    ['urutan' => 4, 'teks_jawaban' => 'Ada kebijakan, pedoman, sosialisasi/pelatihan, Satgas PPK, kanal pelaporan/bilik aduan'],
+                    ['urutan' => 5, 'teks_jawaban' => 'Ada kebijakan, pedoman, sosialisasi/pelatihan, Satgas PPK, kanal pelaporan, tindak lanjut laporan (pendampingan, perlindungan, pemulihan)'],
+                ],
+            ],
+            [
+                'category_id' => 1,
+                'teks_pertanyaan' => 'Bukti A.2: SK/ST, laporan kegiatan, dokumentasi terpublikasi di website (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 1,
+                'teks_pertanyaan' => 'A.3. Kebijakan Pencegahan dan Pemberantasan Penyalahgunaan dan Peredaran Gelap Narkotika (P4GN)',
+                'tipe' => 'pilihan_ganda',
+                'opsi_jawaban' => [
+                    ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
+                    ['urutan' => 1, 'teks_jawaban' => 'Ada tes urine, 1x dilaksanakan'],
+                    ['urutan' => 2, 'teks_jawaban' => 'Ada tes urine, 2x dilaksanakan'],
+                    ['urutan' => 3, 'teks_jawaban' => 'Ada tes urine, 3x dilaksanakan'],
+                    ['urutan' => 4, 'teks_jawaban' => 'Ada tes urine, dilaksanakan lebih dari 3x'],
+                ],
+            ],
+            [
+                'category_id' => 1,
+                'teks_pertanyaan' => 'Bukti A.3: ST, laporan kegiatan, dokumentasi terpublikasi di website (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 1,
+                'teks_pertanyaan' => 'A.4. Kebijakan Mitigasi Bencana serta Satgas yang Aktif',
+                'tipe' => 'pilihan_ganda',
+                'opsi_jawaban' => [
+                    ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
+                    ['urutan' => 1, 'teks_jawaban' => 'Hanya ada SOP'],
+                    ['urutan' => 2, 'teks_jawaban' => 'Ada SOP, struktur satgas'],
+                    ['urutan' => 3, 'teks_jawaban' => 'Ada SOP, struktur satgas terlatih'],
+                    ['urutan' => 4, 'teks_jawaban' => 'Ada SOP, struktur satgas terlatih, kelengkapan alat dan infrastruktur (APAR, jalur evakuasi, dll)'],
+                    ['urutan' => 5, 'teks_jawaban' => 'Ada SOP, struktur satgas aktif, kelengkapan alat, dan training berkala'],
+                ],
+            ],
+            [
+                'category_id' => 1,
+                'teks_pertanyaan' => 'Bukti A.4: SOP, SK/ST, laporan kegiatan, dokumentasi foto/video (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 1,
+                'teks_pertanyaan' => 'A.5. Kebijakan Bangga Menggunakan Produk Lokal (Batik/Pakaian Adat)',
+                'tipe' => 'pilihan_ganda',
+                'opsi_jawaban' => [
+                    ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
+                    ['urutan' => 1, 'teks_jawaban' => 'Kebijakan ada tetapi tidak diterapkan'],
+                    ['urutan' => 2, 'teks_jawaban' => 'Kebijakan ada tetapi penerapan tidak konsisten/tidak diawasi'],
+                    ['urutan' => 3, 'teks_jawaban' => 'Kebijakan ada dan diterapkan terbatas pada kegiatan tertentu'],
+                    ['urutan' => 4, 'teks_jawaban' => 'Kebijakan penggunaan batik diterapkan baik, tapi belum didukung penuh seluruh sivitas'],
+                    ['urutan' => 5, 'teks_jawaban' => 'Kebijakan diterapkan secara konsisten dan mendapat dukungan penuh seluruh sivitas'],
+                ],
+            ],
+            [
+                'category_id' => 1,
+                'teks_pertanyaan' => 'Bukti A.5: Surat Edaran, SK, dokumentasi terpublikasi di website (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.1. Unit Kerja yang Berfokus pada Pengembangan Karakter Bela Negara',
+                'tipe' => 'pilihan_ganda',
+                'opsi_jawaban' => [
+                    ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
+                    ['urutan' => 1, 'teks_jawaban' => 'Ada unit kerja'],
+                    ['urutan' => 2, 'teks_jawaban' => 'Ada unit kerja, program kerja'],
+                    ['urutan' => 3, 'teks_jawaban' => 'Ada unit kerja, program kerja, kegiatan implementasi program kerja'],
+                    ['urutan' => 4, 'teks_jawaban' => 'Ada unit kerja, program kerja, kegiatan implementasi program kerja, evaluasi program'],
+                    ['urutan' => 5, 'teks_jawaban' => 'Ada unit kerja, program kerja, kegiatan implementasi program kerja, evaluasi program, perencanaan tahun berikutnya'],
+                ],
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.1: SK, ST, laporan kegiatan, sertifikat (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.2. Implementasi Penyelenggaraan MKWK (Pancasila, Agama, Bahasa Indonesia, Kewarganegaraan)',
+                'tipe' => 'pilihan_ganda',
+                'opsi_jawaban' => [
+                    ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
+                    ['urutan' => 1, 'teks_jawaban' => '1 mata kuliah atau 2 SKS'],
+                    ['urutan' => 2, 'teks_jawaban' => '2 mata kuliah atau 4 SKS (1 mata kuliah 3 SKS)'],
+                    ['urutan' => 3, 'teks_jawaban' => '3 mata kuliah atau 6 SKS (2 mata kuliah 4 SKS)'],
+                    ['urutan' => 4, 'teks_jawaban' => '4 mata kuliah atau 8 SKS (3 mata kuliah 6 SKS)'],
+                    ['urutan' => 5, 'teks_jawaban' => '4 mata kuliah atau >8 SKS (4 mata kuliah sama dengan lebih 8 SKS)'],
+                ],
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.2: RPS, Portofolio mata kuliah (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.3. Jumlah Mata Kuliah Wajib Institusi Berkarakter Bela Negara',
+                'tipe' => 'pilihan_ganda',
+                'opsi_jawaban' => [
+                    ['urutan' => 0, 'teks_jawaban' => 'Tidak Ada'],
+                    ['urutan' => 1, 'teks_jawaban' => '1 mata kuliah'],
+                    ['urutan' => 2, 'teks_jawaban' => '2 mata kuliah'],
+                    ['urutan' => 3, 'teks_jawaban' => '3 mata kuliah'],
+                    ['urutan' => 4, 'teks_jawaban' => '4 mata kuliah'],
+                    ['urutan' => 5, 'teks_jawaban' => '>4 mata kuliah'],
+                ],
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.3: RPS, portofolio mata kuliah (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.4. Jumlah Kelompok Riset Berkarakter Bela Negara',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.4: SK, proposal/laporan penelitian, publikasi ilmiah, MoU/MoA, alokasi anggaran riset (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.5. Skema Kuliah Kerja Nyata (KKN)',
+                'tipe' => 'pilihan_ganda',
+                'opsi_jawaban' => [
+                    ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
+                    ['urutan' => 1, 'teks_jawaban' => 'Ada 1 skema KKN, namun hanya menjadi mata kuliah pilihan (tidak diwajibkan)'],
+                    ['urutan' => 2, 'teks_jawaban' => 'Ada 1 skema KKN sebagai mata kuliah wajib'],
+                    ['urutan' => 3, 'teks_jawaban' => 'Ada 2 skema KKN'],
+                    ['urutan' => 4, 'teks_jawaban' => 'Ada 3 skema KKN'],
+                    ['urutan' => 5, 'teks_jawaban' => '>3 skema KKN'],
+                ],
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.5: Laporan kegiatan dan dokumentasi (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.6. Jumlah Luaran Pengabdian Masyarakat Berupa Karya Inovatif',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.6: ST pengabdian, laporan kegiatan, daftar karya/produk inovasi, dokumentasi (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.7. Jumlah Kolaborasi dengan UMKM atau Pelaku Usaha Lokal',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.7: MoU/PKS/IA, laporan kegiatan, publikasi kegiatan di media (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.8. Jumlah Dosen yang Mendapatkan Pelatihan Bela Negara',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.8: Laporan kegiatan, sertifikat pelatihan peserta (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.9. Pusat Konseling bagi Sivitas Akademik',
+                'tipe' => 'pilihan_ganda',
+                'opsi_jawaban' => [
+                    ['urutan' => 0, 'teks_jawaban' => 'Tidak ada pusat konseling.'],
+                    ['urutan' => 1, 'teks_jawaban' => 'Ada pusat konseling, tetapi tidak aktif atau hanya nama tanpa layanan nyata.'],
+                    ['urutan' => 2, 'teks_jawaban' => 'Ada pusat konseling dengan layanan terbatas (sukarela/beberapa kali setahun).'],
+                    ['urutan' => 3, 'teks_jawaban' => 'Pusat konseling tersedia dan berjalan secara reguler.'],
+                    ['urutan' => 4, 'teks_jawaban' => 'Pusat konseling reguler, tenaga profesional, layanan offline/online belum optimal.'],
+                    ['urutan' => 5, 'teks_jawaban' => 'Pusat konseling aktif, tenaga profesional tetap, layanan prima (offline/online), rujukan jelas.'],
+                ],
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.9: Dokumen administrasi dan dokumentasi kegiatan (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.10. Jumlah Pegawai Institusi Sebagai Anggota Komponen Cadangan (Komcad)',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.10: SK/ST/Sertifikat, kartu anggota Komcad, dokumen identitas (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.11. Penyelenggaraan Upacara Hari Besar Nasional',
+                'tipe' => 'pilihan_ganda',
+                'opsi_jawaban' => [
+                    ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
+                    ['urutan' => 1, 'teks_jawaban' => 'Hanya upacara 17 Agustus'],
+                    ['urutan' => 2, 'teks_jawaban' => 'Hanya Upacara 17 Agustus dan Hari Pendidikan Nasional'],
+                    ['urutan' => 3, 'teks_jawaban' => 'Upacara 17 Agustus, Hardiknas + 1 Hari Besar Nasional lainnya'],
+                    ['urutan' => 4, 'teks_jawaban' => 'Upacara 17 Agustus, Hardiknas + 2 Hari Besar Nasional lainnya'],
+                    ['urutan' => 5, 'teks_jawaban' => 'Upacara 17 Agustus, Hardiknas + 2 Hari Besar Nasional lainnya + Upacara bendera bulanan'],
+                ],
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.11: Surat edaran, dokumentasi kegiatan (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.12. Jumlah Sosialisasi/Seminar/Workshop Kebersihan, Keamanan, & Anti-Radikalisme',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.12: Laporan atau publikasi di web/media sosial terkait pelaksanaan (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.13. Penyelenggaraan Kompetisi / Lomba Bertema Nilai-Nilai Bela Negara',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.13: Laporan kegiatan, publikasi media, website, atau dokumentasi (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.14. Jumlah Penghargaan atau Insentif atas Prestasi Sivitas Akademika',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.14: SK, sertifikat, dokumentasi kegiatan (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.15. Fasilitas Akomodasi yang Layak untuk Peserta Didik Penyandang Disabilitas',
+                'tipe' => 'pilihan_ganda',
+                'opsi_jawaban' => [
+                    ['urutan' => 0, 'teks_jawaban' => 'Tidak ada fasilitas apapun'],
+                    ['urutan' => 1, 'teks_jawaban' => 'Memiliki 1 dari 5 fasilitas (Unit layanan, akses gedung, media belajar, pusat sumber, sarpras)'],
+                    ['urutan' => 2, 'teks_jawaban' => 'Memiliki 2 dari 5 fasilitas'],
+                    ['urutan' => 3, 'teks_jawaban' => 'Memiliki 3 dari 5 fasilitas'],
+                    ['urutan' => 4, 'teks_jawaban' => 'Memiliki 4 dari 5 fasilitas'],
+                    ['urutan' => 5, 'teks_jawaban' => 'Memiliki seluruh fasilitas'],
+                ],
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.15: SK/ST/PERTOR, foto/video, laporan kegiatan (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.16. Kampanye Nilai-Nilai Cinta Tanah Air (Media)',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.16: Foto, video, tangkapan layar/screenshot (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.17. Fasilitas Pendukung Kesenian, Kreativitas, dan Kegiatan Kebudayaan',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.17: Denah ruang, video lokasi, daftar inventaris (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.18. Ruang Khusus (Sekretariat) untuk Organisasi Mahasiswa',
+                'tipe' => 'pilihan_ganda',
+                'opsi_jawaban' => [
+                    ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
+                    ['urutan' => 1, 'teks_jawaban' => 'Ada, hanya untuk ORMAWA tingkat universitas'],
+                    ['urutan' => 2, 'teks_jawaban' => 'Ada, untuk ORMAWA universitas dan fakultas'],
+                    ['urutan' => 3, 'teks_jawaban' => 'Ada, untuk ORMAWA universitas, fakultas, dan prodi'],
+                    ['urutan' => 4, 'teks_jawaban' => 'Ada untuk ORMAWA universitas, fakultas, prodi, dan UKM'],
+                ],
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.18: SK Penetapan Ruang, dokumentasi (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.19. Monumen Tentang Pahlawan Nasional di Area Universitas',
+                'tipe' => 'pilihan_ganda',
+                'opsi_jawaban' => [
+                    ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
+                    ['urutan' => 1, 'teks_jawaban' => 'Ada, rusak parah/berbahaya/tidak dapat dikenali'],
+                    ['urutan' => 2, 'teks_jawaban' => 'Ada, kurang terawat (kotor, berlumut, berkarat, coretan)'],
+                    ['urutan' => 3, 'teks_jawaban' => 'Ada, terawat dasar, penempatan kurang strategis/tidak menonjol'],
+                    ['urutan' => 4, 'teks_jawaban' => 'Ada, terawat baik, lokasi strategis, mudah dilihat'],
+                    ['urutan' => 5, 'teks_jawaban' => 'Ada, kondisi sangat baik, lokasi sangat strategis (pusat kegiatan), desain profesional, info lengkap'],
+                ],
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.19: SK, dokumentasi foto/video, dokumen pembangunan (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'B.20. Persentase Jumlah Unit Kegiatan Mahasiswa (UKM) Keagamaan',
+                'tipe' => 'pilihan_ganda',
+                'opsi_jawaban' => [
+                    ['urutan' => 0, 'teks_jawaban' => '0%'],
+                    ['urutan' => 1, 'teks_jawaban' => '1-25%'],
+                    ['urutan' => 2, 'teks_jawaban' => '26-50%'],
+                    ['urutan' => 3, 'teks_jawaban' => '51-75%'],
+                    ['urutan' => 4, 'teks_jawaban' => '76-99%'],
+                    ['urutan' => 5, 'teks_jawaban' => '100%'],
+                ],
+            ],
+            [
+                'category_id' => 2,
+                'teks_pertanyaan' => 'Bukti B.20: Laporan, data identitas agama mahasiswa, dokumentasi kegiatan (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'C.1. Mahasiswa Aktif Anggota Komponen Cadangan (Komcad)',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'Bukti C.1: SK/ST, kartu anggota Komcad, KTM (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'C.2. Keterlibatan Mahasiswa dalam Pencegahan Kekerasan di Perguruan Tinggi',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'Bukti C.2: SK/ST, laporan kegiatan (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'C.3. Keterlibatan Mahasiswa pada Upaya Mitigasi, Penanggulangan, dan Kesiapsiagaan Bencana',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'Bukti C.3: SK/ST, laporan kegiatan, dokumentasi foto/video (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'C.4. Mahasiswa yang Terlibat pada Kuliah Kerja Nyata (KKN) di Daerah 3T/Bencana/Konflik',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'Bukti C.4: Laporan kegiatan dan dokumentasi (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'C.5. Jumlah Kegiatan Pengabdian Masyarakat di Luar KKN oleh Mahasiswa',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'Bukti C.5: Daftar pengabdian, laporan kegiatan, berita/publikasi online (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'C.6. Jumlah Unit Kegiatan Mahasiswa (UKM) Aktif',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'Bukti C.6: SK Rektor, LPJ terbaru, Pertor, atau Surat Tugas (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'C.7. Persentase Mahasiswa yang Mengikuti UKM Terhadap Jumlah Mahasiswa Aktif',
+                'tipe' => 'text',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'Bukti C.7: Daftar nama peserta UKM disahkan pimpinan (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'C.8. Jumlah Mahasiswa yang Mengikuti UKM Resimen Mahasiswa (MENWA)',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'Bukti C.8: SK/ST, laporan kegiatan, dokumentasi foto/video (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'C.9. Mahasiswa yang Mengikuti Organisasi (Sesuai Bidang Keilmuan) di Luar Kampus',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'Bukti C.9: Kartu Anggota yang masih aktif (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'C.10. Jumlah Prestasi Mahasiswa (Kompetisi/Perlombaan)',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'Bukti C.10: SK, sertifikat, dokumentasi kegiatan (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'C.11. Jumlah Mahasiswa yang Mendirikan Start-up',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'Bukti C.11: SK Rektor atau LPJ Kegiatan (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'C.12. Kegiatan Mahasiswa yang Berkaitan dengan Seni Budaya',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'Bukti C.12: Daftar kegiatan dan link dokumentasi media massa (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'C.13. Jumlah Karya Mahasiswa Tentang Nilai Kebangsaan & Toleransi di Media Massa',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'Bukti C.13: Publikasi karya di media massa (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'C.14. Jumlah Kegiatan Mahasiswa dalam Menjaga Lingkungan Kampus Terprogram',
+                'tipe' => 'angka',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'Bukti C.14: SK, Laporan, dan dokumentasi kegiatan (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'C.15. Keterlibatan Mahasiswa dalam Upacara Hari Besar Nasional',
+                'tipe' => 'pilihan_ganda',
+                'opsi_jawaban' => [
+                    ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
+                    ['urutan' => 1, 'teks_jawaban' => 'Hanya upacara 17 Agustus'],
+                    ['urutan' => 2, 'teks_jawaban' => 'Hanya Upacara 17 Agustus dan Hari Pendidikan Nasional'],
+                    ['urutan' => 3, 'teks_jawaban' => 'Upacara 17 Agustus, Hardiknas + 1 Hari Besar Nasional lainnya'],
+                    ['urutan' => 4, 'teks_jawaban' => 'Upacara 17 Agustus, Hardiknas + 2 Hari Besar Nasional lainnya'],
+                    ['urutan' => 5, 'teks_jawaban' => 'Upacara 17 Agustus, Hardiknas + 2 Hari Besar Nasional lainnya + Upacara Bendera Bulanan'],
+                ],
+            ],
+            [
+                'category_id' => 3,
+                'teks_pertanyaan' => 'Bukti C.15: Bukti Dokumentasi (Link Drive).',
+                'tipe' => 'link_drive',
+                'opsi_jawaban' => null,
             ],
         ];
 
-        pertanyaan::create($pertanyaan);
+        foreach ($pertanyaan as $p) {
+            pertanyaan::create($p);
+        }
     }
 }
