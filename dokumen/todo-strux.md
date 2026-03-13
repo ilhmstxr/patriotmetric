@@ -73,3 +73,14 @@ stubs ini ditaruh di folder apa
 [x] Manajemen Submisi: - [x] SubmissionResource (Status, Total Skor, Reviewer).
 [x] Custom Action "Tugaskan Reviewer" (Integrasi dengan SubmissionService).
 [x] Infolist: Halaman view jawaban kuesioner & link Google Drive.
+
+
+Tabel,Kolom Baru / Revisi,Penjelasan
+institutions,"id, nama_institusi, jenis_institusi, alamat, status_verifikasi"
+identitas_institusi,"institution_id, jml_mahasiswa, jml_dosen, jml_prodi, baseline_json"
+pertanyaans,"formula_config (JSON), benchmark_value"
+pengumpulans,"periode_tahun, is_published"
+pengumpulan_jawabans,"verified_details (JSON), skor_normalisasi"
+
+
+untuk rubrik

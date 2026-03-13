@@ -9,7 +9,9 @@ class PertanyaanSeeder extends Seeder
 {
     public function run(): void
     {
+        \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
         pertanyaan::truncate(); // optional, but let's just create
+        \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
         $pertanyaan = [
             [
                 'category_id' => 1,

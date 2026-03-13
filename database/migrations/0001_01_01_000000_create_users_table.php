@@ -12,14 +12,16 @@ return new class extends Migration {
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('role')->default('user');
-            $table->string('nama_institusi')->nullable();
-            $table->text('alamat')->nullable();
-            $table->string('telepon')->nullable();
+            $table->enum('role', ["ADMIN", "REVIEWER", "SUBMITTER"])->default("SUBMITTER");
+            // $table->string('last_session_id')->nullable(); // Untuk Single Session logic
+            // $table->string('name');
+            // $table->string('nama_institusi')->nullable();
+            // $table->text('alamat')->nullable();
+            // $table->string('telepon')->nullable();
+            $table->enum('status', ["PENDING_REGISTRATION", "REGISTERED", "BASELINE_SUBMITTED", "ACTIVE"]);
             $table->rememberToken();
             $table->timestamps();
         });

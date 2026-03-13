@@ -22,20 +22,37 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        user::create([
-            'name' => 'Admin',
+        User::create([
             'email' => "admin@admin.com",
             'password' => bcrypt('admin'),
-            'role' => 'admin',
+            'role' => 'ADMIN',
+            'status' => 'ACTIVE',
+        ]);
+
+        User::create([
+            'email' => "user@admin.com",
+            'password' => bcrypt('user'),
+            'role' => 'SUBMITTER',
+            'status' => 'REGISTERED',
+        ]);
+
+        User::create([
+            'email' => "reviewer@admin.com",
+            'password' => bcrypt('reviewer'),
+            'role' => 'REVIEWER',
+            'status' => 'ACTIVE',
         ]);
 
         $this->call([
+            InstitusiSeeder::class,
+            AssessmentSeeder::class,
+            IdentitasSeeder::class,
+
             KategoriSeeder::class,
             PertanyaanSeeder::class,
             PengumpulanSeeder::class,
             PengumpulanJawabanSeeder::class,
             PengaturanCmsSeeder::class,
-
         ]);
     }
 }

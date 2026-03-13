@@ -26,6 +26,6 @@ class KategoriSeeder extends Seeder
             ],
         ];
 
-        kategori::create($kategori);
+        kategori::insert($kategori);
     }
 }
