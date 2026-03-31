@@ -20,13 +20,10 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
         'role',
-        'nama_institusi',
-        'alamat',
-        'telepon',
+        'status',
     ];
 
     /**
@@ -65,5 +62,10 @@ class User extends Authenticatable
     public function reviews()
     {
         return $this->hasMany(pengumpulan::class, 'reviewer_id');
+    }
+
+    public function assessments()
+    {
+        return $this->hasMany(Assessment::class, 'user_id');
     }
 }

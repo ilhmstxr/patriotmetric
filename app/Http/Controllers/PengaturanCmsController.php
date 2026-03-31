@@ -12,7 +12,7 @@ class PengaturanCmsController extends Controller
      */
     public function index()
     {
-        //d
+        //
     }
 
     /**

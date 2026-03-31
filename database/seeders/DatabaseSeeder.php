@@ -17,9 +17,42 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
+
+        User::create([
+            'email' => "admin@admin.com",
+            'password' => bcrypt('admin'),
+            'role' => 'ADMIN',
+            'status' => 'ACTIVE',
+        ]);
+
+        User::create([
+            'email' => "user@admin.com",
+            'password' => bcrypt('user'),
+            'role' => 'SUBMITTER',
+            'status' => 'REGISTERED',
+        ]);
+
+        User::create([
+            'email' => "reviewer@admin.com",
+            'password' => bcrypt('reviewer'),
+            'role' => 'REVIEWER',
+            'status' => 'ACTIVE',
+        ]);
+
+        $this->call([
+            InstitusiSeeder::class,
+            AssessmentSeeder::class,
+            IdentitasSeeder::class,
+
+            KategoriSeeder::class,
+            PertanyaanSeeder::class,
+            PengumpulanSeeder::class,
+            PengumpulanJawabanSeeder::class,
+            PengaturanCmsSeeder::class,
         ]);
 
         user::create([

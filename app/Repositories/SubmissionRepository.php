@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\Submission;
+use App\Models\pengumpulan;
 
 class SubmissionRepository extends BaseRepository
 {
@@ -10,7 +10,7 @@ class SubmissionRepository extends BaseRepository
      * SubmissionRepository constructor.
      * Mengikat Model terkait ke BaseRepository.
      */
-    public function __construct(Submission $model)
+    public function __construct(pengumpulan $model)
     {
         parent::__construct($model);
     }

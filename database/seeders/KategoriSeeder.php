@@ -13,6 +13,19 @@ class KategoriSeeder extends Seeder
      */
     public function run(): void
     {
-        kategori::factory(10)->create();
+        // kategori::factory(10)->create();
+        $kategori = [
+            [
+                'nama_kategori' => 'A. VARIABEL PATRIOTISME KEBIJAKAN',
+            ],
+            [
+                'nama_kategori' => 'B. VARIABEL PATRIOTISME KELEMBAGAAN',
+            ],
+            [
+                'nama_kategori' => 'C. VARIABEL PATRIOTISME MAHASISWA',
+            ],
+        ];
+
+        kategori::insert($kategori);
     }
 }

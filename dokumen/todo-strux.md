@@ -39,22 +39,22 @@ stubs ini ditaruh di folder apa
 
 2. Konfigurasi Sistem Global
 
-[ ] app/Http/Middleware/ForceJsonResponse.php: Memaksa setiap request API merespons JSON.
+[x] app/Http/Middleware/ForceJsonResponse.php: Memaksa setiap request API merespons JSON.
 [x] bootstrap/app.php:
-[ ] Registrasi Middleware ForceJsonResponse. 
-[ ] Setup Exception Handler global (Tangkap error 404, 422, dan 500).
+[x] Registrasi Middleware ForceJsonResponse. 
+[x] Setup Exception Handler global (Tangkap error 404, 422, dan 500).
 
-[ ] Stubs Custom:
-[ ] Jalankan php artisan stub:publish.
-[ ] Buat stubs/dto.stub.
-[ ] Buat stubs/service.stub.
-[ ] Buat stubs/repository.stub.
+[x] Stubs Custom:
+[x] Jalankan php artisan stub:publish.
+[x] Buat stubs/dto.stub.
+[x] Buat stubs/service.stub.
+[x] Buat stubs/repository.stub.
 
 3. Otomatisasi (Custom Command)
 
 [x] app/Console/Commands/MakeArchitectureCommand.php: Command php artisan make:arch untuk generate DTO, Service, dan Repo sekaligus.
 
-[ ] Uji Coba: Jalankan php artisan make:arch Test dan verifikasi file yang dihasilkan.
+[x] Uji Coba: Jalankan php artisan make:arch Test dan verifikasi file yang dihasilkan.
 
 🚀 FASE 2: Fitur Utama (Berdasarkan Task Board)
 
@@ -77,8 +77,22 @@ stubs ini ditaruh di folder apa
 
 
 
+
+
 - TODO: edit pengumpulan & pengumpulan -> user => submitter, view reviewer ga muncul
 - TODO: tugaskan reviewer masih belum konek
 - TODO: fw ketika successful create
 - TODO: password di pengaturan cms kosong
 - TODO: delete pengumpulan
+
+
+
+Tabel,Kolom Baru / Revisi,Penjelasan
+institutions,"id, nama_institusi, jenis_institusi, alamat, status_verifikasi"
+identitas_institusi,"institution_id, jml_mahasiswa, jml_dosen, jml_prodi, baseline_json"
+pertanyaans,"formula_config (JSON), benchmark_value"
+pengumpulans,"periode_tahun, is_published"
+pengumpulan_jawabans,"verified_details (JSON), skor_normalisasi"
+
+
+untuk rubrik

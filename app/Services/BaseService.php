@@ -30,6 +30,6 @@ abstract class BaseService
     public function store(object $dto): Model
     {
         // $dto di sini adalah objek dari class DTO kamu
-        return $this->repository->create((array) $dto);
+        return $this->repository->create($dto->toArray());
     }
 }
