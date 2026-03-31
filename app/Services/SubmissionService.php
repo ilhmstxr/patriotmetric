@@ -15,10 +15,9 @@ class SubmissionService extends BaseService
         parent::__construct($repository);
     }
 
-    // Tambahkan logika bisnis spesifik untuk Submission di sini
     public function calculateTotalScore(array $data): array
     {
-        // Bobot berdasarkan header klasifikasi di gambar
+        // Bobot berdasarkan header klasifikasi
         $weights = [
             'kebijakan' => 5,
             'kelembagaan' => 20,
@@ -32,7 +31,7 @@ class SubmissionService extends BaseService
         ];
 
         // Rumus Akhir: (Total Skor Per Kategori / Skor Maksimal Kategori) * Bobot Kategori
-        // Diasumsikan skor maksimal per indikator adalah 5
+        // Skor maksimal per indikator adalah 5. Jumlah indikator: Kebijakan=5, Kelembagaan=20, Patriotisme=15.
         $finalScore = ($scores['kebijakan'] / (5 * 5) * $weights['kebijakan']) +
             ($scores['kelembagaan'] / (20 * 5) * $weights['kelembagaan']) +
             ($scores['patriotisme'] / (15 * 5) * $weights['patriotisme']);
@@ -45,10 +44,13 @@ class SubmissionService extends BaseService
 
     private function calculateKebijakanScore(array $items): float
     {
-        // Indikator 1-5 (Linear 0-5)
-        return array_sum($items);
+        $total = 0;
+        foreach ($items as $key => $value) {
+            $val = is_array($value) ? ($value['skor'] ?? 0) : $value;
+            $total += $val;
+        }
+        return $total;
     }
-
 
     private function calculateKelembagaanScore(array $items): float
     {
@@ -56,52 +58,55 @@ class SubmissionService extends BaseService
         foreach ($items as $key => $value) {
             // Indikator 13 & 14: Skor = (Jumlah) x (Skala)
             if (in_array($key, [13, 14])) {
-                $score = $value['jumlah'] * $value['skala'];
-                $total += min($score, 5); // Biasanya dicap maksimal 5 sesuai kolom
+                $jumlah = is_array($value) ? ($value['jumlah'] ?? 0) : 0;
+                $skala = is_array($value) ? ($value['skala'] ?? 0) : 0;
+                $score = $jumlah * $skala;
+                $total += min($score, 5); // maksimal 5
             }
             // Indikator 20: Persentase UKM Keagamaan
             elseif ($key == 20) {
-                $total += $this->mapPercentageToScore($value['persentase']);
+                $persentase = is_array($value) ? ($value['persentase'] ?? 0) : $value;
+                $total += $this->mapPercentageToScoreKelembagaan((float)$persentase);
             } else {
-                $total += $value;
+                $val = is_array($value) ? ($value['skor'] ?? 0) : $value;
+                $total += $val;
             }
         }
         return $total;
     }
+
     private function calculatePatriotismeScore(array $items): float
     {
         $total = 0;
         foreach ($items as $key => $value) {
-            // Indikator 7: Persentase mahasiswa ikut UKM (Range 20%, 40%, dst)
+            // Indikator 7: Persentase mahasiswa ikut UKM
             if ($key == 7) {
-                $total += $this->mapRangeScore($value['persentase'], [20, 40, 60, 80]);
+                $persentase = is_array($value) ? ($value['persentase'] ?? 0) : $value;
+                $total += $this->mapPercentageToScorePatriotisme((float)$persentase);
             }
             // Indikator 2: Perbandingan dengan jumlah Prodi
             elseif ($key == 2) {
-                $total += $this->compareWithProdi($value['jumlah'], $value['total_prodi']);
+                $jumlah = is_array($value) ? ($value['jumlah'] ?? 0) : (is_numeric($value) ? $value : 0);
+                $jumlahFakultas = is_array($value) ? ($value['jumlah_fakultas'] ?? 0) : 0;
+                $jumlahProdi = is_array($value) ? ($value['jumlah_prodi'] ?? 0) : 0;
+                $total += $this->compareWithProdi((int)$jumlah, (int)$jumlahFakultas, (int)$jumlahProdi);
             } else {
-                $total += $value;
+                $val = is_array($value) ? ($value['skor'] ?? 0) : $value;
+                $total += $val;
             }
         }
         return $total;
     }
 
-    // helper function
-    private function mapRangeScore(float $value, array $thresholds): int
+    private function compareWithProdi(int $jumlah, int $jumlahFakultas, int $jumlahProdi): int
     {
-        if ($value <= 0) return 0;
-        foreach ($thresholds as $index => $threshold) {
-            if ($value <= $threshold) return $index + 1;
-        }
-        return 5;
-    }
-
-    private function compareWithProdi(int $jumlah, int $totalProdi): int
-    {
-        if ($jumlah > $totalProdi) return 5;
-        if ($jumlah == $totalProdi) return 4;
-        if ($jumlah > ($totalProdi / 2)) return 3;
-        return 1;
+        if ($jumlah <= 0) return 0;
+        if ($jumlah > $jumlahProdi && $jumlahProdi > 0) return 5;
+        if ($jumlah == $jumlahProdi && $jumlahProdi > 0) return 4;
+        if ($jumlah > $jumlahFakultas && $jumlah < $jumlahProdi) return 3;
+        if ($jumlah == $jumlahFakultas && $jumlahFakultas > 0) return 2;
+        if ($jumlah < $jumlahFakultas) return 1;
+        return 0;
     }
 
     /**
@@ -114,8 +119,8 @@ class SubmissionService extends BaseService
         if ($percentage <= 25) return 1;
         if ($percentage <= 50) return 2;
         if ($percentage <= 75) return 3;
-        if ($percentage < 100) return 4; // 76 - 99%
-        return 5; // Tepat 100%
+        if ($percentage < 100) return 4;
+        return 5;
     }
 
     /**
@@ -129,19 +134,6 @@ class SubmissionService extends BaseService
         if ($percentage <= 40) return 2;
         if ($percentage <= 60) return 3;
         if ($percentage <= 80) return 4;
-        return 5; // > 80% hingga 100%
-    }
-
-    private function mapToRange(float $value, array $thresholds): int
-    {
-        if ($value <= 0) return 0;
-
-        foreach ($thresholds as $index => $limit) {
-            if ($value <= $limit) {
-                return $index + 1;
-            }
-        }
-
-        return 5; // Default max score
+        return 5;
     }
 }
