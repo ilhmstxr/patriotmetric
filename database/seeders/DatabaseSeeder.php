@@ -55,12 +55,7 @@ class DatabaseSeeder extends Seeder
             PengaturanCmsSeeder::class,
         ]);
 
-        user::create([
-            'name' => 'Admin',
-            'email' => "admin@admin.com",
-            'password' => bcrypt('admin'),
-            'role' => 'admin',
-        ]);
+      
 
         $this->call([
             // KategoriSeeder::class,
