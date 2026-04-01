@@ -8,9 +8,9 @@
             </div>
             <div class="relative max-w-[1536px] mx-auto px-8 py-28 md:py-40">
                 <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[48px] md:text-[60px] leading-[1.2] text-white max-w-[768px]">
-                    Membangun Karakter
+                    Membangun Karakter{" "}
                     <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#d4af37] to-[#fff085]">Bangsa</span>
-                    dari Kampus
+                    {" "}dari Kampus
                 </h1>
                 <p class="mt-6 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[20px] leading-[32.5px] text-[rgba(255,255,255,0.8)] max-w-[616px]">
                     Sebuah inisiatif pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.

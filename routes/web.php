@@ -28,8 +28,42 @@ Route::get('/panduan', function () {
 
 Route::get('/masuk', function () {
     return view('auth.masuk');
-});
+})->name('login');
+
+use Illuminate\Http\Request;
+
+Route::post('/login', function (Request $request) {
+    // Simulasi login sukses yang tembus langsung ke dashboard
+    if ($request->email === 'admin@upnjatim.ac.id') {
+        return redirect()->route('dashboard.index');
+    }
+
+    // Default: simulasi login untuk pendaftar baru, arahkan ke daftar ulang
+    return redirect()->route('daftar-ulang');
+})->name('login.post');
+
+Route::get('/daftar-ulang', function () {
+    return view('auth.daftar-ulang');
+})->name('daftar-ulang');
 
 Route::get('/daftar', function () {
     return view('auth.daftar');
+});
+
+Route::prefix('dashboard')->group(function () {
+    Route::get('/', function () {
+        return view('dashboard.index');
+    })->name('dashboard.index');
+
+    Route::get('/rubrik', function () {
+        return view('dashboard.rubrik');
+    })->name('dashboard.rubrik');
+
+    Route::get('/hasil', function () {
+        return view('dashboard.hasil');
+    })->name('dashboard.hasil');
+
+    Route::get('/panduan', function () {
+        return view('dashboard.panduan');
+    })->name('dashboard.panduan');
 });
