@@ -87,15 +87,12 @@ pengumpulan_jawabans,"verified_details (JSON), skor_normalisasi"
 untuk rubrik
 
 
-
-
-
 - TODO: edit pengumpulan & pengumpulan -> user => submitter, view reviewer ga muncul
 - TODO: tugaskan reviewer masih belum konek
 - TODO: fw ketika successful create
 - TODO: password di pengaturan cms kosong
 - TODO: delete pengumpulan
-
+- TODO: plottingan submitter & reviewer
 
 
 Tabel,Kolom Baru / Revisi,Penjelasan
@@ -107,3 +104,12 @@ pengumpulan_jawabans,"verified_details (JSON), skor_normalisasi"
 
 
 untuk rubrik
+
+
+1. regist email
+2. verifikasi
+3. regist ulang untuk data penting
+4. pengerjaan kuesioner
+5. lock by  deadline
+6. validasi reviewer
+7. hasil

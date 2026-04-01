@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\SubmissionRepository;
+use App\Traits\CalculatesRubrikScore;
 use Exception;
 
 /**
@@ -10,6 +11,8 @@ use Exception;
  */
 class SubmissionService extends BaseService
 {
+    use CalculatesRubrikScore;
+
     /**
      * SubmissionService constructor.
      * Otomatis melakukan injection Repository terkait.
@@ -19,12 +22,17 @@ class SubmissionService extends BaseService
         parent::__construct($repository);
     }
 
+    /**
+     * Mengambil data pertanyaan sekaligus jawaban yang sudah diisi oleh peserta untuk ditampilkan kembali pada form.
+     */
     public function getTaskDetails($submissionId)
     {
         return $this->repository->getTaskDetailsWithRelations($submissionId);
     }
 
-    // Menyimpan draft (autosave) tanpa mengunci
+    /**
+     * Menyimpan jawaban secara masal (bulk) ke dalam tabel jawaban setiap kali terjadi autosave di frontend.
+     */
     public function saveDraft(array $answers)
     {
         foreach ($answers as $answer) {
@@ -42,23 +50,45 @@ class SubmissionService extends BaseService
         return true;
     }
 
-    public function isComplete($submissionId)
+    /**
+     * Menggunakan CalculatesRubrikScore untuk memberikan estimasi skor real-time kepada peserta sebelum data dikunci.
+     */
+    public function calculateLivePreview(array $answers, array $metadata)
+    {
+        $finalScore = 0;
+
+        // Asumsi answers di-group by category_id atau category_name
+        // Logika detail implementasi perhitungan sesuai struktur (disederhanakan untuk demonstrasi)
+        foreach ($metadata as $categoryName => $data) {
+            $subtotal = $this->calculateCategorySubtotal($answers[$categoryName] ?? [], $categoryName);
+            $maxScore = $data['jumlah_indikator'] * 5;
+            $finalScore += $this->applyCategoryWeight($subtotal, $data['bobot'], $maxScore);
+        }
+
+        return [
+            'estimated_score' => round($finalScore, 2)
+        ];
+    }
+
+    /**
+     * Memvalidasi apakah semua indikator wajib dan tautan bukti (link drive) sudah terisi.
+     */
+    public function checkCompletionStatus($submissionId)
     {
         return !$this->repository->hasEmptyEvidenceLink($submissionId);
     }
 
-    // Validasi kelengkapan & Mengunci Jawaban
+    /**
+     * Melakukan finalisasi, menghitung skor self-assessment akhir, dan mengubah status menjadi LOCKED (mengunci akses edit).
+     */
     public function lockSubmission($submissionId)
     {
-        // 1. Cek apakah semua 'evidence_link' dan 'selected_option' sudah terisi
-        if (!$this->isComplete($submissionId)) {
-            throw new Exception("Semua indikator harus diisi sebelum submit.");
+        if (!$this->checkCompletionStatus($submissionId)) {
+            throw new Exception("Semua indikator wajib dan tautan bukti harus terisi sebelum submit.");
         }
 
-        // 3. Generate Final Score (Self-Assessment)
         $totalSkorSistem = $this->repository->sumSystemScore($submissionId);
 
-        // 2. Update status ke 'LOCKED'
         return $this->repository->updateStatusAndScore($submissionId, 'LOCKED', $totalSkorSistem);
     }
 }

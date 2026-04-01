@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\ReviewController;
+use App\Services\RubrikService;
+use App\Services\SubmissionService;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {

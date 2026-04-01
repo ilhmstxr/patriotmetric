@@ -3,8 +3,12 @@
 namespace App\Services;
 
 use App\Repositories\RubrikRepository;
-use App\DTOs\RubrikDTO;
+use App\Models\kategori;
+use Exception;
 
+/**
+ * @property RubrikRepository $repository
+ */
 class RubrikService extends BaseService
 {
     /**
@@ -16,139 +20,43 @@ class RubrikService extends BaseService
         parent::__construct($repository);
     }
 
-    // Pindahkan Magic Numbers ke Constant
-    private const WEIGHTS = [
-        'kebijakan' => 5,
-        'kelembagaan' => 20,
-        'patriotisme' => 15,
-    ];
-
-    private const MAX_INDICATORS = [
-        'kebijakan' => 5,
-        'kelembagaan' => 20,
-        'patriotisme' => 15,
-    ];
-
-    public function calculateTotalScore(RubrikDTO $dto): array
+    /**
+     * Mengambil seluruh kategori beserta indikator dan opsi jawabannya secara nested untuk kebutuhan render accordion di React.
+     */
+    public function getRubrikStructure()
     {
-        $scores = [
-            'kebijakan' => $this->calculateKebijakanScore($dto->kebijakan),
-            'kelembagaan' => $this->calculateKelembagaanScore($dto->kelembagaan),
-            'patriotisme' => $this->calculatePatriotismeScore($dto->patriotisme),
-        ];
-
-        $finalScore = 0;
-        foreach (self::WEIGHTS as $key => $weight) {
-            // Rumus: (Skor / (Jumlah Indikator * 5)) * Bobot
-            $maxScore = self::MAX_INDICATORS[$key] * 5;
-            $finalScore += ($scores[$key] / $maxScore) * $weight;
-        }
-
-        return [
-            'breakdown' => $scores,
-            'final_score' => round($finalScore, 2)
-        ];
-    }
-
-    private function calculateKebijakanScore(array $items): float
-    {
-        $total = 0;
-        foreach ($items as $key => $value) {
-            $val = is_array($value) ? ($value['skor'] ?? 0) : $value;
-            $total += $val;
-        }
-        return $total;
-    }
-
-    private function calculateKelembagaanScore(array $items): float
-    {
-        $total = 0;
-        foreach ($items as $key => $value) {
-            // Indikator 13 & 14: Skor = (Jumlah) x (Skala)
-            if (in_array($key, [13, 14])) {
-                $jumlah = is_array($value) ? ($value['jumlah'] ?? 0) : 0;
-                $skala = is_array($value) ? ($value['skala'] ?? 0) : 0;
-                $score = $jumlah * $skala;
-                $total += min($score, 5); // maksimal 5
-            }
-            // Indikator 20: Persentase UKM Keagamaan
-            elseif ($key == 20) {
-                $persentase = is_array($value) ? ($value['persentase'] ?? 0) : $value;
-                $total += $this->mapPercentageToScoreKelembagaan((float)$persentase);
-            } else {
-                $val = is_array($value) ? ($value['skor'] ?? 0) : $value;
-                $total += $val;
-            }
-        }
-        return $total;
-    }
-
-    private function calculatePatriotismeScore(array $items): float
-    {
-        $total = 0;
-        foreach ($items as $key => $value) {
-            // Indikator 7: Persentase mahasiswa ikut UKM
-            if ($key == 7) {
-                $persentase = is_array($value) ? ($value['persentase'] ?? 0) : $value;
-                $total += $this->mapPercentageToScorePatriotisme((float)$persentase);
-            }
-            // Indikator 2: Perbandingan dengan jumlah Prodi
-            elseif ($key == 2) {
-                $jumlah = is_array($value) ? ($value['jumlah'] ?? 0) : (is_numeric($value) ? $value : 0);
-                $jumlahFakultas = is_array($value) ? ($value['jumlah_fakultas'] ?? 0) : 0;
-                $jumlahProdi = is_array($value) ? ($value['jumlah_prodi'] ?? 0) : 0;
-                $total += $this->compareWithProdi((int)$jumlah, (int)$jumlahFakultas, (int)$jumlahProdi);
-            } else {
-                $val = is_array($value) ? ($value['skor'] ?? 0) : $value;
-                $total += $val;
-            }
-        }
-        return $total;
-    }
-
-    // // Gunakan helper internal yang lebih bersih
-    // private function getValue($item, string $key = 'skor', $default = 0)
-    // {
-    //     return is_array($item) ? ($item[$key] ?? $default) : $item;
-    // }
-
-
-    private function compareWithProdi(int $jumlah, int $jumlahFakultas, int $jumlahProdi): int
-    {
-        if ($jumlah <= 0) return 0;
-        if ($jumlah > $jumlahProdi && $jumlahProdi > 0) return 5;
-        if ($jumlah == $jumlahProdi && $jumlahProdi > 0) return 4;
-        if ($jumlah > $jumlahFakultas && $jumlah < $jumlahProdi) return 3;
-        if ($jumlah == $jumlahFakultas && $jumlahFakultas > 0) return 2;
-        if ($jumlah < $jumlahFakultas) return 1;
-        return 0;
+        return $this->repository->getRubrikWithQuestions();
     }
 
     /**
-     * Logic untuk Indikator 20: Persentase UKM Keagamaan
-     * Range: 0, 1-25, 26-50, 51-75, 76-99, 100
+     * Mengambil informasi bobot dan jumlah indikator aktif per kategori langsung dari database.
      */
-    private function mapPercentageToScoreKelembagaan(float $percentage): int
+    public function getCategoryMetadata()
     {
-        if ($percentage <= 0) return 0;
-        if ($percentage <= 25) return 1;
-        if ($percentage <= 50) return 2;
-        if ($percentage <= 75) return 3;
-        if ($percentage < 100) return 4;
-        return 5;
+        $categories = $this->repository->getCategoryCountQuestion();
+
+        $metadata = [];
+        foreach ($categories as $category) {
+            $metadata[$category->nama_kategori] = [
+                'bobot' => $category->bobot,
+                'jumlah_indikator' => $category->pertanyaans_count,
+            ];
+        }
+
+        return $metadata;
     }
 
     /**
-     * Logic untuk Indikator 7: Persentase Mahasiswa ikut UKM
-     * Range: 1-20, 21-40, 41-60, 61-80, 81-100
+     * Memastikan total bobot seluruh kategori mencapai 100% sebelum sistem dibuka untuk pengumpulan.
      */
-    private function mapPercentageToScorePatriotisme(float $percentage): int
+    public function validateRubrikConsistency()
     {
-        if ($percentage <= 0) return 0;
-        if ($percentage <= 20) return 1;
-        if ($percentage <= 40) return 2;
-        if ($percentage <= 60) return 3;
-        if ($percentage <= 80) return 4;
-        return 5;
+        $totalBobot = $this->repository->getCategoryWeight();
+
+        if ($totalBobot != 100) {
+            throw new Exception("Total bobot kategori rubrik tidak konsisten. Total saat ini: {$totalBobot}%. Dibutuhkan tepat 100%.");
+        }
+
+        return true;
     }
 }

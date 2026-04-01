@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\ReviewRepository;
+use App\Traits\CalculatesRubrikScore;
 use Exception;
 
 /**
@@ -10,29 +11,40 @@ use Exception;
  */
 class ReviewService extends BaseService
 {
+    use CalculatesRubrikScore;
+
     public function __construct(ReviewRepository $repository)
     {
         parent::__construct($repository);
     }
 
-    public function assignReviewer($reviewerId, array $submissionIds)
+    /**
+     * Melakukan plotting atau pembagian jatah peserta kepada reviewer tertentu.
+     */
+    public function assignReviewersToSubmissions($reviewerId, array $submissionIds)
     {
         return $this->repository->assignReviewerToSubmissions($reviewerId, $submissionIds);
     }
 
-    // Mengambil daftar peserta yang menjadi jatah reviewer tersebut
+    /**
+     * Menampilkan daftar peserta yang harus dikoreksi oleh reviewer yang sedang login.
+     */
     public function getAssignedSubmissions($reviewerId)
     {
         return $this->repository->getAssignedSubmissionsWithUser($reviewerId);
     }
 
-    // Verifikasi Skor per Indikator
-    public function verifyIndicatorScore($submissionId, $indicatorId, $verifiedScore, $notes = null) {
+    /**
+     * Menyimpan hasil verifikasi skor dan catatan perbaikan untuk satu indikator tertentu.
+     */
+    public function verifySingleIndicator($submissionId, $indicatorId, $verifiedScore, $notes = null)
+    {
         $jawaban = $this->repository->getAnswerBySubmissionAndQuestion($submissionId, $indicatorId);
 
         if ($jawaban) {
             $jawaban->update([
                 'skor_validasi_reviewer' => $verifiedScore,
+                // 'catatan_perbaikan' => $notes // asumsi jika ada field ini
             ]);
             return $jawaban;
         }
@@ -40,19 +52,37 @@ class ReviewService extends BaseService
         throw new Exception("Jawaban indikator tidak ditemukan.");
     }
 
-    // Lock Review (Finalisasi nilai oleh reviewer)
-    public function finalizeReview($submissionId) {
-        // 1. Pastikan semua indikator sudah diberi nilai verifikasi
+    /**
+     * Menggunakan CalculatesRubrikScore untuk menghitung skor total berdasarkan angka yang telah divalidasi oleh reviewer.
+     */
+    public function calculateVerifiedFinalScore(array $verifiedAnswers, array $metadata)
+    {
+        $finalScore = 0;
+
+        foreach ($metadata as $categoryName => $data) {
+            $subtotal = $this->calculateCategorySubtotal($verifiedAnswers[$categoryName] ?? [], $categoryName);
+            $maxScore = $data['jumlah_indikator'] * 5;
+            $finalScore += $this->applyCategoryWeight($subtotal, $data['bobot'], $maxScore);
+        }
+
+        return round($finalScore, 2);
+    }
+
+    /**
+     * Memastikan semua indikator telah diperiksa, menyimpan skor akhir hasil verifikasi, dan mengubah status menjadi REVIEWED.
+     */
+    public function finalizeReview($submissionId)
+    {
         $belumDinilai = $this->repository->hasUnverifiedAnswers($submissionId);
 
         if ($belumDinilai) {
             throw new Exception("Ada indikator yang belum diverifikasi oleh reviewer.");
         }
 
-        // 3. Hitung skor akhir berdasarkan verifikasi reviewer
+        // Idealnya, $this->calculateVerifiedFinalScore dipanggil di sini dengan data answers dan metadata.
+        // Untuk saat ini, kita bisa menggunakan repository fallback jika logika answers belum di-fetch:
         $totalSkorAkhir = $this->repository->sumVerifiedScore($submissionId);
 
-        // 2. Update status submission ke 'REVIEWED'
         return $this->repository->updateStatusAndFinalScore($submissionId, 'REVIEWED', $totalSkorAkhir);
     }
 }

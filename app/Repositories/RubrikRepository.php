@@ -10,4 +10,19 @@ class RubrikRepository extends BaseRepository
     {
         parent::__construct($model);
     }
+
+    public function getRubrikWithQuestions()
+    {
+        return kategori::with('pertanyaans.opsi_jawaban')->get();
+    }
+    
+    public function getCategoryCountQuestion()
+    {
+        return kategori::withCount('pertanyaans')->get();
+    }
+
+    public function getCategoryWeight()
+    {
+        return kategori::sum('bobot');
+    }
 }
