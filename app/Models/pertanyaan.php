@@ -26,4 +26,3 @@ class pertanyaan extends Model
         return $this->hasMany(pengumpulan_jawaban::class, 'question_id');
     }
 }
-t

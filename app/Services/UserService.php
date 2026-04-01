@@ -24,4 +24,31 @@ class UserService extends BaseService
     {
         return $this->repository->update($id, $dto->data);
     }
+
+    /**
+     * Verifikasi Pertama: Pendaftaran email & biodata (identitas)
+     * Data disubmit untuk direview oleh admin.
+     * 
+     * @param array $data Data biodata & email
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function submitIdentityVerification(array $data)
+    {
+        $data['status'] = 'pending_identity_review';
+        return $this->repository->create($data);
+    }
+
+    /**
+     * Verifikasi Kedua: Daftar ulang & upload berkas peserta
+     * Berkas disubmit untuk direview kembali oleh admin.
+     * 
+     * @param int|string $id ID User
+     * @param array $data Data berkas
+     * @return bool
+     */
+    public function submitDocumentVerification(int|string $id, array $data): bool
+    {
+        $data['status'] = 'pending_document_review';
+        return $this->repository->update($id, $data);
+    }
 }

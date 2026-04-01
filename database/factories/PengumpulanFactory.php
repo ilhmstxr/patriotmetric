@@ -20,12 +20,14 @@ class PengumpulanFactory extends Factory
      */
     public function definition(): array
     {
+        $status = $this->faker->randomElement(['pending', 'verified']);
+
         return [
             'user_id' => User::factory(),
-            'reviewer_id' => User::factory(),
-            'status' => $this->faker->randomElement(['pending', 'approved', 'rejected']),
+            'reviewer_id' => $status === 'verified' ? User::factory() : null,
+            'status' => $status,
             'total_skor_sistem' => $this->faker->randomFloat(2, 0, 100),
-            'total_skor_akhir' => $this->faker->randomFloat(2, 0, 100),
+            'total_skor_akhir' => $status === 'verified' ? $this->faker->randomFloat(2, 0, 100) : 0,
         ];
     }
 }

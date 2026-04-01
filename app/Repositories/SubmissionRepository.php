@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\pengumpulan;
+use App\Models\pengumpulan_jawaban;
 
 class SubmissionRepository extends BaseRepository
 {
@@ -15,5 +16,43 @@ class SubmissionRepository extends BaseRepository
         parent::__construct($model);
     }
 
-    // Tambahkan query spesifik (misal: scope atau complex join) untuk Submission di sini
+    public function getTaskDetailsWithRelations($submissionId)
+    {
+        return $this->model->with(['jawabans.pertanyaan', 'user', 'reviewer'])->find($submissionId);
+    }
+
+    public function updateOrCreateAnswer($submissionId, $questionId, array $data)
+    {
+        return pengumpulan_jawaban::updateOrCreate(
+            [
+                'submission_id' => $submissionId,
+                'question_id' => $questionId
+            ],
+            $data
+        );
+    }
+
+    public function hasEmptyEvidenceLink($submissionId)
+    {
+        return pengumpulan_jawaban::where('submission_id', $submissionId)
+            ->where(function ($query) {
+                $query->whereNull('tautan_bukti_drive')->orWhere('tautan_bukti_drive', '');
+            })->exists();
+    }
+
+    public function sumSystemScore($submissionId)
+    {
+        return pengumpulan_jawaban::where('submission_id', $submissionId)
+            ->sum('skor_sistem');
+    }
+
+    public function updateStatusAndScore($submissionId, $status, $totalScore)
+    {
+        $pengumpulan = $this->model->findOrFail($submissionId);
+        $pengumpulan->update([
+            'status' => $status,
+            'total_skor_sistem' => $totalScore
+        ]);
+        return $pengumpulan;
+    }
 }

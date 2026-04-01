@@ -16,26 +16,33 @@ class RubrikService extends BaseService
         parent::__construct($repository);
     }
 
+    // Pindahkan Magic Numbers ke Constant
+    private const WEIGHTS = [
+        'kebijakan' => 5,
+        'kelembagaan' => 20,
+        'patriotisme' => 15,
+    ];
+
+    private const MAX_INDICATORS = [
+        'kebijakan' => 5,
+        'kelembagaan' => 20,
+        'patriotisme' => 15,
+    ];
+
     public function calculateTotalScore(RubrikDTO $dto): array
     {
-        // Bobot berdasarkan header klasifikasi
-        $weights = [
-            'kebijakan' => 5,
-            'kelembagaan' => 20,
-            'patriotisme' => 15,
-        ];
-
         $scores = [
             'kebijakan' => $this->calculateKebijakanScore($dto->kebijakan),
             'kelembagaan' => $this->calculateKelembagaanScore($dto->kelembagaan),
             'patriotisme' => $this->calculatePatriotismeScore($dto->patriotisme),
         ];
 
-        // Rumus Akhir: (Total Skor Per Kategori / Skor Maksimal Kategori) * Bobot Kategori
-        // Skor maksimal per indikator adalah 5. Jumlah indikator: Kebijakan=5, Kelembagaan=20, Patriotisme=15.
-        $finalScore = ($scores['kebijakan'] / (5 * 5) * $weights['kebijakan']) +
-            ($scores['kelembagaan'] / (20 * 5) * $weights['kelembagaan']) +
-            ($scores['patriotisme'] / (15 * 5) * $weights['patriotisme']);
+        $finalScore = 0;
+        foreach (self::WEIGHTS as $key => $weight) {
+            // Rumus: (Skor / (Jumlah Indikator * 5)) * Bobot
+            $maxScore = self::MAX_INDICATORS[$key] * 5;
+            $finalScore += ($scores[$key] / $maxScore) * $weight;
+        }
 
         return [
             'breakdown' => $scores,
@@ -98,6 +105,13 @@ class RubrikService extends BaseService
         }
         return $total;
     }
+
+    // // Gunakan helper internal yang lebih bersih
+    // private function getValue($item, string $key = 'skor', $default = 0)
+    // {
+    //     return is_array($item) ? ($item[$key] ?? $default) : $item;
+    // }
+
 
     private function compareWithProdi(int $jumlah, int $jumlahFakultas, int $jumlahProdi): int
     {

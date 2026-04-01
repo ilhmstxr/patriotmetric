@@ -3,10 +3,11 @@
 namespace App\Services;
 
 use App\Repositories\SubmissionRepository;
-use App\Models\pengumpulan;
-use App\Models\pengumpulan_jawaban;
 use Exception;
 
+/**
+ * @property \App\Repositories\SubmissionRepository $repository
+ */
 class SubmissionService extends BaseService
 {
     /**
@@ -20,18 +21,16 @@ class SubmissionService extends BaseService
 
     public function getTaskDetails($submissionId)
     {
-        return pengumpulan::with(['jawabans.pertanyaan', 'user', 'reviewer'])->find($submissionId);
+        return $this->repository->getTaskDetailsWithRelations($submissionId);
     }
 
     // Menyimpan draft (autosave) tanpa mengunci
     public function saveDraft(array $answers)
     {
         foreach ($answers as $answer) {
-            pengumpulan_jawaban::updateOrCreate(
-                [
-                    'submission_id' => $answer['submission_id'],
-                    'question_id' => $answer['question_id']
-                ],
+            $this->repository->updateOrCreateAnswer(
+                $answer['submission_id'],
+                $answer['question_id'],
                 [
                     'jawaban_teks' => $answer['jawaban_teks'] ?? null,
                     'tautan_bukti_drive' => $answer['tautan_bukti_drive'] ?? null,
@@ -45,13 +44,7 @@ class SubmissionService extends BaseService
 
     public function isComplete($submissionId)
     {
-        // Cek apakah ada jawaban yang kosong pada tautan bukti
-        $jawabanKosong = pengumpulan_jawaban::where('submission_id', $submissionId)
-            ->where(function ($query) {
-                $query->whereNull('tautan_bukti_drive')->orWhere('tautan_bukti_drive', '');
-            })->exists();
-
-        return !$jawabanKosong;
+        return !$this->repository->hasEmptyEvidenceLink($submissionId);
     }
 
     // Validasi kelengkapan & Mengunci Jawaban
@@ -63,16 +56,9 @@ class SubmissionService extends BaseService
         }
 
         // 3. Generate Final Score (Self-Assessment)
-        $totalSkorSistem = pengumpulan_jawaban::where('submission_id', $submissionId)
-            ->sum('skor_sistem');
+        $totalSkorSistem = $this->repository->sumSystemScore($submissionId);
 
         // 2. Update status ke 'LOCKED'
-        $pengumpulan = pengumpulan::findOrFail($submissionId);
-        $pengumpulan->update([
-            'status' => 'LOCKED',
-            'total_skor_sistem' => $totalSkorSistem
-        ]);
-
-        return $pengumpulan;
+        return $this->repository->updateStatusAndScore($submissionId, 'LOCKED', $totalSkorSistem);
     }
 }

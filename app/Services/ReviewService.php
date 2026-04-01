@@ -3,10 +3,11 @@
 namespace App\Services;
 
 use App\Repositories\ReviewRepository;
-use App\Models\pengumpulan;
-use App\Models\pengumpulan_jawaban;
 use Exception;
 
+/**
+ * @property \App\Repositories\ReviewRepository $repository
+ */
 class ReviewService extends BaseService
 {
     public function __construct(ReviewRepository $repository)
@@ -16,22 +17,18 @@ class ReviewService extends BaseService
 
     public function assignReviewer($reviewerId, array $submissionIds)
     {
-        return pengumpulan::whereIn('id', $submissionIds)->update([
-            'reviewer_id' => $reviewerId
-        ]);
+        return $this->repository->assignReviewerToSubmissions($reviewerId, $submissionIds);
     }
 
     // Mengambil daftar peserta yang menjadi jatah reviewer tersebut
     public function getAssignedSubmissions($reviewerId)
     {
-        return pengumpulan::with('user')->where('reviewer_id', $reviewerId)->get();
+        return $this->repository->getAssignedSubmissionsWithUser($reviewerId);
     }
 
     // Verifikasi Skor per Indikator
     public function verifyIndicatorScore($submissionId, $indicatorId, $verifiedScore, $notes = null) {
-        $jawaban = pengumpulan_jawaban::where('submission_id', $submissionId)
-            ->where('question_id', $indicatorId)
-            ->first();
+        $jawaban = $this->repository->getAnswerBySubmissionAndQuestion($submissionId, $indicatorId);
 
         if ($jawaban) {
             $jawaban->update([
@@ -46,25 +43,16 @@ class ReviewService extends BaseService
     // Lock Review (Finalisasi nilai oleh reviewer)
     public function finalizeReview($submissionId) {
         // 1. Pastikan semua indikator sudah diberi nilai verifikasi
-        $belumDinilai = pengumpulan_jawaban::where('submission_id', $submissionId)
-            ->whereNull('skor_validasi_reviewer')
-            ->exists();
+        $belumDinilai = $this->repository->hasUnverifiedAnswers($submissionId);
 
         if ($belumDinilai) {
             throw new Exception("Ada indikator yang belum diverifikasi oleh reviewer.");
         }
 
         // 3. Hitung skor akhir berdasarkan verifikasi reviewer
-        $totalSkorAkhir = pengumpulan_jawaban::where('submission_id', $submissionId)
-            ->sum('skor_validasi_reviewer');
+        $totalSkorAkhir = $this->repository->sumVerifiedScore($submissionId);
 
         // 2. Update status submission ke 'REVIEWED'
-        $pengumpulan = pengumpulan::findOrFail($submissionId);
-        $pengumpulan->update([
-            'status' => 'REVIEWED',
-            'total_skor_akhir' => $totalSkorAkhir
-        ]);
-
-        return $pengumpulan;
+        return $this->repository->updateStatusAndFinalScore($submissionId, 'REVIEWED', $totalSkorAkhir);
     }
 }
