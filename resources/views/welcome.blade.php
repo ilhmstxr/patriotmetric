@@ -267,11 +267,23 @@
                     </svg>
                     <div class="absolute inset-0 rounded-t-lg lg:rounded-t-none lg:rounded-r-lg shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]"></div>
                 </div>
-            </main>
-        </div>
+            </div>
+        </section>
 
-        @if (Route::has('login'))
-            <div class="h-14.5 hidden lg:block"></div>
-        @endif
-    </body>
-</html>
+        {{-- CTA Section --}}
+        <section class="bg-gradient-to-r from-[#1b5e20] to-[#2e7d32] py-24">
+            <div class="max-w-[768px] mx-auto px-8 text-center">
+                <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] leading-[48px] text-white">
+                    Wujudkan Kampus Patriot: Mari Bergabung Sekarang!
+                </h2>
+                <p class="mt-4 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[18px] leading-[28px] text-[rgba(255,255,255,0.8)]">
+                    Satu langkah kecil untuk membuat institusi Anda yang lebih baik. Daftarkan kampus Anda dan jadilah bagian dari perubahan karakter generasi penerus bangsa.
+                </p>
+                <a href="{{ url('/daftar') }}" class="inline-flex items-center gap-2 mt-8 bg-[#d4af37] text-[#1d293d] font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[18px] px-10 py-5 rounded-2xl shadow-lg hover:brightness-110 transition">
+                    Daftarkan Institusi Anda
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.16667 10H15.8333" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.66667" /><path d="M10 4.16667L15.8333 10L10 15.8333" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.66667" /></svg>
+                </a>
+            </div>
+        </section>
+    </div>
+</x-layouts.app>
