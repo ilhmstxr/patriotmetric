@@ -86,7 +86,7 @@ export function Layout() {
             UPN
           </div>
           <p className="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[#1d293d] text-[16px] leading-[24px] tracking-[0.4px] whitespace-nowrap">
-            Euis Nurul Hidayah
+            Ilham Bintang Herlambang
           </p>
           <p className="font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[#62748e] text-[10px] leading-[14px] text-center mt-[4px] uppercase px-[24px]">
             UNIVERSITAS PEMBANGUNAN NASIONAL VETERAN JAWA TIMUR
@@ -142,11 +142,6 @@ export function Layout() {
           <h1 className="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[#1d293d] text-[20px] leading-[28px] tracking-[0.5px] uppercase">
             {getPageTitle()}
           </h1>
-          
-          <div className="flex items-center gap-[8px] bg-amber-50 border border-amber-200 px-[16px] py-[8px] rounded-full">
-            <span className="w-[8px] h-[8px] rounded-full bg-amber-500 animate-pulse"></span>
-            <span className="font-semibold text-amber-700 text-[13px]">Status: Belum Diverifikasi</span>
-          </div>
         </header>
 
         <div className="flex-1 overflow-auto bg-white relative">

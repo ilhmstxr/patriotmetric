@@ -89,7 +89,7 @@
       </div>
 
       {{-- Page Header --}}
-      <div class="bg-white border-b border-[#e2e8f0] px-[40px] py-[28px] flex items-center justify-between sticky top-0 z-10 shadow-sm">
+      <div class="bg-white border-b border-[#e2e8f0] px-[40px] py-[28px] flex items-center justify-between shadow-sm">
         <div>
           <h1 class="font-bold text-[#1d293d] text-[26px] tracking-tight">Data Profil</h1>
           <p class="text-[#62748e] text-[15px] mt-[6px]">Kelola informasi institusi dan data penanggung jawab (PIC) Anda.</p>
@@ -218,7 +218,7 @@
                   <div class="absolute left-[14px] top-1/2 -translate-y-1/2 text-[#90a1b9]">
                     <i data-lucide="user-circle-2" stroke-width="2" class="w-[18px] h-[18px]"></i>
                   </div>
-                  <input type="text" value="Euis Nurul Hidayah" readonly class="w-full border rounded-[10px] h-[48px] pl-[44px] pr-[16px] font-medium text-[15px] focus:outline-none transition-all duration-200 bg-[#f1f5f9] border-transparent text-[#62748e] cursor-default" />
+                  <input type="text" value="Ilham Bintang Herlambang" readonly class="w-full border rounded-[10px] h-[48px] pl-[44px] pr-[16px] font-medium text-[15px] focus:outline-none transition-all duration-200 bg-[#f1f5f9] border-transparent text-[#62748e] cursor-default" />
                 </div>
               </div>
               <div class="flex flex-col gap-[6px]">
@@ -245,7 +245,7 @@
                   <div class="absolute left-[14px] top-1/2 -translate-y-1/2 text-[#90a1b9]">
                     <i data-lucide="mail" stroke-width="2" class="w-[18px] h-[18px]"></i>
                   </div>
-                  <input type="email" value="euis.nurul@upnjatim.ac.id" readonly class="w-full border rounded-[10px] h-[48px] pl-[44px] pr-[16px] font-medium text-[15px] focus:outline-none transition-all duration-200 bg-[#f1f5f9] border-transparent text-[#62748e] cursor-default" />
+                  <input type="email" value="ilhamgaming117@upnjatim.ac.id" readonly class="w-full border rounded-[10px] h-[48px] pl-[44px] pr-[16px] font-medium text-[15px] focus:outline-none transition-all duration-200 bg-[#f1f5f9] border-transparent text-[#62748e] cursor-default" />
                 </div>
               </div>
             </div>

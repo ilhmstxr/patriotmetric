@@ -26,10 +26,10 @@ export function DataProfil() {
     jmlDosen: "750",
     jmlTendik: "420",
     jmlMhs: "21000",
-    namaPic: "Euis Nurul Hidayah",
-    jabatanPic: "Kepala LPPM",
-    hpPic: "+6281234567890",
-    emailPic: "euis.nurul@upnjatim.ac.id"
+    namaPic: "Ilham Bintang Herlambang",
+    jabatanPic: "Rektor",
+    hpPic: "+621234567890",
+    emailPic: "ilhamgaming117@upnjatim.ac.id"
   });
 
   const [passwordData, setPasswordData] = useState({

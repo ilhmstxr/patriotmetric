@@ -1,9 +1,27 @@
 <x-layouts.app :hideNav="true" :hideFooter="true">
     <div x-data="{ activeSection: 1, isSubmitting: false }" class="min-h-screen bg-[#f8fafc] font-['Plus_Jakarta_Sans',sans-serif] flex flex-col selection:bg-[#1b5e20] selection:text-white">
       {{-- Header Form --}}
-      <header class="bg-white border-b border-[#e2e8f0] py-[20px] px-[24px] sticky top-0 z-20 shadow-sm">
-        <div class="max-w-[800px] mx-auto flex items-center justify-between">
-          <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.png') }}" alt="Logo" class="h-[40px] object-contain" />
+      <header class="sticky top-0 z-50 bg-[rgba(255,255,255,0.85)] backdrop-blur-md border-b border-[rgba(255,255,255,0.2)] shadow-[0px_4px_30px_0px_rgba(27,94,32,0.05)]">
+        <div class="max-w-[1536px] mx-auto flex items-center justify-between h-[65px] px-[24px]">
+          {{-- Logo --}}
+          <a href="{{ url('/') }}" class="flex gap-[7px] items-center shrink-0">
+              <div class="h-[65px] w-[90px] relative shrink-0">
+                  <img alt="Patriot Metric" class="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.png') }}" />
+              </div>
+              <div class="flex flex-col h-[32px] items-start px-2">
+                  <div class="bg-[#cbd5e1] h-[32px] w-px"></div>
+              </div>
+              <div class="flex gap-[10px] items-center">
+                  <div class="relative size-[36px] shrink-0">
+                      <img alt="UPN Veteran Jatim" class="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src="{{ asset('assets/images/199dc2ebf1e9cecf5218f4b20951209708831231.png') }}" />
+                  </div>
+                  <div class="hidden sm:flex flex-col font-['Plus_Jakarta_Sans',sans-serif] font-bold h-[25px] justify-center leading-[12.5px] text-[#64748b] text-[10px] uppercase w-[237px]">
+                      <p>Universitas Pembangunan nasional "veteran" jawa timur</p>
+                  </div>
+              </div>
+          </a>
+
+          {{-- Step Indicators --}}
           <div class="hidden md:flex items-center gap-[12px]">
             <div :class="activeSection === 1 ? 'text-[#1b5e20]' : 'text-[#94a3b8]'" class="flex items-center gap-[8px] transition-colors">
               <div :class="activeSection === 1 ? 'border-[#1b5e20] bg-[#f2fcf3]' : 'border-[#e2e8f0]'" class="w-[28px] h-[28px] rounded-full flex items-center justify-center font-bold text-[13px] border-2 transition-colors">1</div>

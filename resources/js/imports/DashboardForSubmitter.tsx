@@ -558,7 +558,7 @@ function TextInput1() {
   return (
     <div className="absolute bg-[#f8fafc] h-[45.333px] left-0 rounded-[8px] top-[24px] w-[423.667px]" data-name="Text Input">
       <div className="content-stretch flex items-center overflow-clip px-[16px] py-[10px] relative rounded-[inherit] size-full">
-        <p className="font-['Plus_Jakarta_Sans:Medium',sans-serif] font-medium leading-[24px] relative shrink-0 text-[#62748e] text-[16px] whitespace-nowrap">Euis Nurul Hidayah</p>
+        <p className="font-['Plus_Jakarta_Sans:Medium',sans-serif] font-medium leading-[24px] relative shrink-0 text-[#62748e] text-[16px] whitespace-nowrap">Ilham Bintang Herlambang</p>
       </div>
       <div aria-hidden="true" className="absolute border-[#cad5e2] border-[0.667px] border-solid inset-0 pointer-events-none rounded-[8px]" />
     </div>
@@ -668,7 +668,7 @@ function EmailInput() {
   return (
     <div className="absolute bg-[#f8fafc] h-[45.333px] left-0 rounded-[8px] top-0 w-[423.667px]" data-name="Email Input">
       <div className="content-stretch flex items-center overflow-clip pl-[40px] pr-[16px] py-[10px] relative rounded-[inherit] size-full">
-        <p className="font-['Plus_Jakarta_Sans:Medium',sans-serif] font-medium leading-[24px] relative shrink-0 text-[#62748e] text-[16px] whitespace-nowrap">euis.nurul@upnjatim.ac.id</p>
+        <p className="font-['Plus_Jakarta_Sans:Medium',sans-serif] font-medium leading-[24px] relative shrink-0 text-[#62748e] text-[16px] whitespace-nowrap">ilhamgaming117@upnjatim.ac.id</p>
       </div>
       <div aria-hidden="true" className="absolute border-[#cad5e2] border-[0.667px] border-solid inset-0 pointer-events-none rounded-[8px]" />
     </div>
@@ -781,7 +781,7 @@ function Container30() {
 function Heading3() {
   return (
     <div className="absolute h-[20px] left-[70.13px] top-[92px] w-[123.75px]" data-name="Heading 2">
-      <p className="-translate-x-1/2 absolute font-['Plus_Jakarta_Sans:Bold',sans-serif] font-bold leading-[20px] left-[62px] text-[#1d293d] text-[14px] text-center top-[-0.33px] whitespace-nowrap">Euis Nurul Hidayah</p>
+      <p className="-translate-x-1/2 absolute font-['Plus_Jakarta_Sans:Bold',sans-serif] font-bold leading-[20px] left-[62px] text-[#1d293d] text-[14px] text-center top-[-0.33px] whitespace-nowrap">Ilham Bintang Herlambang</p>
     </div>
   );
 }

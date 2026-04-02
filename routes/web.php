@@ -67,3 +67,17 @@ Route::prefix('dashboard')->group(function () {
         return view('dashboard.panduan');
     })->name('dashboard.panduan');
 });
+
+Route::prefix('reviewer')->group(function () {
+    Route::get('/', function () {
+        return view('reviewer.index');
+    })->name('reviewer.index');
+
+    Route::get('/panduan', function () {
+        return view('reviewer.panduan');
+    })->name('reviewer.panduan');
+
+    Route::get('/submitter/{id}', function ($id) {
+        return view('reviewer.detail', compact('id'));
+    })->name('reviewer.submitter_detail');
+});
