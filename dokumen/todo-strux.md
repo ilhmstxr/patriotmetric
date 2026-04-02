@@ -113,3 +113,5 @@ untuk rubrik
 5. lock by  deadline
 6. validasi reviewer
 7. hasil
+
+TODO: pagination admin rubrik by kategori

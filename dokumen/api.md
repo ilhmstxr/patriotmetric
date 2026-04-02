@@ -23,3 +23,35 @@ GET	/api/review/submissions	List institusi yang sudah melakukan Final Submit.
 GET	/api/review/submissions/{id}	Detail jawaban institusi tertentu (Klaim + Link Drive).
 PATCH	/api/review/answers/{id}	Verdict: Reviewer input angka granular. Memicu kalkulasi skor.
 POST	/api/review/publish/{id}	Admin Pusat mempublikasikan hasil agar skor asli muncul di user.
+
+---
+## Daftar Controller yang Memanggil Service
+
+Berdasarkan hasil pengecekan di folder `app/Http/Controllers` dan `app/Services`, saat ini **belum ada controller yang memanggil service**.
+
+Seluruh controller yang ada (seperti `AssessmentController`, `AuthController`, dll.) belum menginjeksi atau memanggil class dari `App\Services\`. Logika di dalam controller masih berupa *scaffolding logic* dasar yang mengembalikan file inertia atau `redirect()->back()` (contoh: `AuthController::login` dan `AssessmentController::submit`). Service saat ini baru digunakan oleh sumber lain (seperti Filament Resources atau Console Command).
+
+
+ReviewService
+assignReviewersToSubmissions
+getAssignedSubmissions
+calculateVerifiedFinalScore
+finalizeReview
+
+RubrikService
+getRubrikStructure
+getCategoryMetadata
+validateRubrikConsistency
+
+SubmissionService
+getTaskDetails
+saveDraft
+
+bug
+ReviewService
+verifySingleIndicator
+
+SubmissionService
+calculateLivePreview
+checkCompletionStatus
+lockSubmission

@@ -30,6 +30,10 @@ class SubmissionService extends BaseService
         return $this->repository->getTaskDetailsWithRelations($submissionId);
     }
 
+     public function getPreviewScore(String $submissionId)
+    {
+       return $this->repository->getSubmitterAnswers($submissionId);
+    }
     /**
      * Menyimpan jawaban secara masal (bulk) ke dalam tabel jawaban setiap kali terjadi autosave di frontend.
      */
@@ -50,6 +54,7 @@ class SubmissionService extends BaseService
         return true;
     }
 
+    // BUG
     /**
      * Menggunakan CalculatesRubrikScore untuk memberikan estimasi skor real-time kepada peserta sebelum data dikunci.
      */
@@ -70,6 +75,7 @@ class SubmissionService extends BaseService
         ];
     }
 
+    // BUG
     /**
      * Memvalidasi apakah semua indikator wajib dan tautan bukti (link drive) sudah terisi.
      */
@@ -78,6 +84,7 @@ class SubmissionService extends BaseService
         return !$this->repository->hasEmptyEvidenceLink($submissionId);
     }
 
+    // BUG: lock submission by frontend 
     /**
      * Melakukan finalisasi, menghitung skor self-assessment akhir, dan mengubah status menjadi LOCKED (mengunci akses edit).
      */

@@ -8,7 +8,9 @@ use App\Http\Controllers\ReviewController;
 use App\Services\RubrikService;
 use App\Services\SubmissionService;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
+// public routes / compro
 Route::get('/', function () {
     return view('welcome');
 });
@@ -37,8 +39,8 @@ Route::get('/masuk', function () {
     return view('auth.masuk');
 })->name('login');
 
-use Illuminate\Http\Request;
 
+// submitter
 Route::post('/login', function (Request $request) {
     // Simulasi login sukses yang tembus langsung ke dashboard
     if ($request->email === 'admin@upnjatim.ac.id') {
@@ -74,3 +76,6 @@ Route::prefix('dashboard')->group(function () {
         return view('dashboard.panduan');
     })->name('dashboard.panduan');
 });
+
+
+// reviewer

@@ -37,6 +37,7 @@ class ReviewService extends BaseService
     /**
      * Menyimpan hasil verifikasi skor dan catatan perbaikan untuk satu indikator tertentu.
      */
+    // BUG
     public function verifySingleIndicator($submissionId, $indicatorId, $verifiedScore, $notes = null)
     {
         $jawaban = $this->repository->getAnswerBySubmissionAndQuestion($submissionId, $indicatorId);
@@ -67,6 +68,17 @@ class ReviewService extends BaseService
 
         return round($finalScore, 2);
     }
+
+
+    /**
+     * menampilkan hasil fix peniliaian pengerjaan
+     */
+    public function getFinalScore(String $submissionId)
+    {
+        return $this->repository->getVerifiedAnswers($submissionId);
+    }
+
+
 
     /**
      * Memastikan semua indikator telah diperiksa, menyimpan skor akhir hasil verifikasi, dan mengubah status menjadi REVIEWED.

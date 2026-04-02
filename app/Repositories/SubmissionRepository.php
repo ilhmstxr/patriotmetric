@@ -55,4 +55,10 @@ class SubmissionRepository extends BaseRepository
         ]);
         return $pengumpulan;
     }
+
+    public function getSubmitterAnswers($submissionId)
+    {
+        return pengumpulan_jawaban::where('submission_id', $submissionId)
+            ->get();
+    }
 }

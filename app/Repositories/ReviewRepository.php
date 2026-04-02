@@ -53,4 +53,11 @@ class ReviewRepository extends BaseRepository
         ]);
         return $pengumpulan;
     }
+
+    public function getVerifiedAnswers($submissionId)
+    {
+        return pengumpulan_jawaban::where('submission_id', $submissionId)
+            ->where('skor_validasi_reviewer', '>', 0)
+            ->get();
+    }
 }
