@@ -23,7 +23,7 @@
                     UPN
                 </div>
                 <p class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[#1d293d] text-[16px] leading-[24px] tracking-[0.4px] whitespace-nowrap">
-                    Euis Nurul Hidayah
+                    Ilham Bintang Herlambang
                 </p>
                 <p class="font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[#62748e] text-[10px] leading-[14px] text-center mt-[4px] uppercase px-[24px]">
                     UNIVERSITAS PEMBANGUNAN NASIONAL VETERAN JAWA TIMUR
@@ -107,17 +107,6 @@
 
         {{-- Main Content Area --}}
         <main class="flex-1 flex flex-col h-full overflow-hidden bg-white">
-            <header class="bg-white border-b border-[#e2e8f0] h-[80px] px-[32px] flex items-center justify-between shrink-0 w-full z-10 relative">
-                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[#1d293d] text-[20px] leading-[28px] tracking-[0.5px] uppercase">
-                    {{ $title ?? 'DASHBOARD' }}
-                </h1>
-                
-                <div class="flex items-center gap-[8px] bg-amber-50 border border-amber-200 px-[16px] py-[8px] rounded-full">
-                    <span class="w-[8px] h-[8px] rounded-full bg-amber-500 animate-pulse"></span>
-                    <span class="font-semibold text-amber-700 text-[13px]">Status: Belum Diverifikasi</span>
-                </div>
-            </header>
-
             <div class="flex-1 overflow-auto bg-white relative">
                 {{ $slot }}
             </div>
