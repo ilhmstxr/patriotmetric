@@ -35,47 +35,42 @@ Route::get('/panduan', function () {
 
 Route::get('/masuk', function () {
     return view('auth.masuk');
-});
+})->name('login');
+
+use Illuminate\Http\Request;
+
+Route::post('/login', function (Request $request) {
+    // Simulasi login sukses yang tembus langsung ke dashboard
+    if ($request->email === 'admin@upnjatim.ac.id') {
+        return redirect()->route('dashboard.index');
+    }
+
+    // Default: simulasi login untuk pendaftar baru, arahkan ke daftar ulang
+    return redirect()->route('daftar-ulang');
+})->name('login.post');
+
+Route::get('/daftar-ulang', function () {
+    return view('auth.daftar-ulang');
+})->name('daftar-ulang');
 
 Route::get('/daftar', function () {
     return view('auth.daftar');
 });
 
+Route::prefix('dashboard')->group(function () {
+    Route::get('/', function () {
+        return view('dashboard.index');
+    })->name('dashboard.index');
 
-Route::prefix('api')->group(function () {
-    // Auth Endpoints
-    // Route::post('/auth/register', [AuthController::class, 'register'])->name('auth.register');
-    // Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login');
-    // Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
+    Route::get('/rubrik', function () {
+        return view('dashboard.rubrik');
+    })->name('dashboard.rubrik');
 
-    // Profile Endpoints
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
-    Route::post('/profile/baseline', [ProfileController::class, 'baseline'])->name('profile.baseline');
-    Route::get('/profile/status', [ProfileController::class, 'status'])->name('profile.status');
+    Route::get('/hasil', function () {
+        return view('dashboard.hasil');
+    })->name('dashboard.hasil');
 
-    // Assessment Endpoints
-    Route::get('/assessment/questions', [AssessmentController::class, 'questions'])->name('assessment.questions');
-    Route::post('/assessment/answers', [AssessmentController::class, 'answers'])->name('assessment.answers');
-    Route::post('/assessment/submit', [AssessmentController::class, 'submit'])->name('assessment.submit');
-    Route::get('/assessment/preview', [AssessmentController::class, 'preview'])->name('assessment.preview');
-
-    // Review Endpoints
-    Route::get('/review/submissions', [ReviewController::class, 'submissions'])->name('review.submissions');
-    Route::get('/review/submissions/{id}', [ReviewController::class, 'submissionDetail'])->name('review.submissionDetail');
-    Route::patch('/review/answers/{id}', [ReviewController::class, 'updateAnswer'])->name('review.updateAnswer');
-    Route::post('/review/publish/{id}', [ReviewController::class, 'publish'])->name('review.publish');
-});
-
-route::get('/sandbox-test', function () {
-
-    $rubrikService = app(RubrikService::class);
-    $submissionService = app(SubmissionService::class);
-    // --- TEST 1: Pengecekan View Pertanyaan & Opsi ---
-    // Skenario: React butuh data untuk merender Accordion
-    $viewData = [
-        'title' => 'Struktur Rubrik PatriotMetric',
-        'data' => $rubrikService->getRubrikStructure(), // Asumsi method ini ada untuk fetch repo
-    ];
-
-    return response()->json($viewData);
+    Route::get('/panduan', function () {
+        return view('dashboard.panduan');
+    })->name('dashboard.panduan');
 });
