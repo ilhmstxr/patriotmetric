@@ -26,9 +26,6 @@ class PertanyaanResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'teks_pertanyaan';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
-
     public static function form(Schema $schema): Schema
     {
         return PertanyaanForm::configure($schema);

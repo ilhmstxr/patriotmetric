@@ -57,7 +57,7 @@ class PertanyaansRelationManager extends RelationManager
                             ->placeholder('Cth: Sangat Baik')
                             ->required(),
                     ])
-                    ->visible(fn($get): bool => $get('tipe') === 'pilihan_ganda')
+                    ->visible(fn ($get): bool => $get('tipe') === 'pilihan_ganda')
                     ->columnSpanFull(),
             ]);
     }
@@ -67,7 +67,7 @@ class PertanyaansRelationManager extends RelationManager
         return $table
             ->headerActions([
                 CreateAction::make()->label('Tambah Pertanyaan'),
-                // AssociateAction::make()->label('Hubungkan Pertanyaan'),
+                AssociateAction::make()->label('Hubungkan Pertanyaan'),
             ])
             ->recordTitleAttribute('teks_pertanyaan')
             ->columns([
@@ -99,16 +99,16 @@ class PertanyaansRelationManager extends RelationManager
             ->collapsedGroupsByDefault(true)
             ->headerActions([
                 CreateAction::make(),
-                // AssociateAction::make(),
+                AssociateAction::make(),
             ])
             ->recordActions([
                 EditAction::make()->label('Ubah'),
-                // DissociateAction::make()->label('Lepas Hubungan'),
+                DissociateAction::make()->label('Lepas Hubungan'),
                 DeleteAction::make()->label('Hapus'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    // DissociateBulkAction::make()->label('Lepas Terpilih'),
+                    DissociateBulkAction::make()->label('Lepas Terpilih'),
                     DeleteBulkAction::make()->label('Hapus Terpilih'),
                 ])->label('Aksi Massal'),
             ]);
