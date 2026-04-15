@@ -8,7 +8,7 @@
                 <div class="absolute inset-0 bg-gradient-to-b from-[#f8fafc] via-transparent to-transparent"></div>
             </div>
             <div class="relative max-w-[672px] mx-auto px-8 py-24 text-center">
-                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[48px] md:text-[60px] leading-[1.2] text-white shadow-sm">Galeri Penghargaan</h1>
+                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[48px] md:text-[60px] text-white">Galeri Penghargaan</h1>
                 <p class="mt-4 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[18px] leading-[28px] text-[rgba(255,255,255,0.9)]">
                     Penghormatan tertinggi bagi institusi yang telah membuktikan dedikasinya dalam membangun karakter patriotik.
                 </p>
