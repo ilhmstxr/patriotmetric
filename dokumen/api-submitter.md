@@ -99,7 +99,7 @@ DB::transaction menjalankan AssessmentAnswer::updateOrCreate untuk setiap indica
 ---
 
 # 4. GET /api/submitter/preview-category/{cat_id}
-
+CHECK
 **Kegunaan:** Melihat estimasi skor kasar khusus untuk kategori yang baru diselesaikan.
 
 ### Route -> Controller

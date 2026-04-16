@@ -70,6 +70,21 @@ class ReviewController extends Controller
         }
     }
 
+    public function getCategoryPreview(Request $request, $submissionId, $catId)
+    {
+        try {
+            $dto = new \App\DTOs\ReviewDTO();
+            $dto->submissionId = $submissionId;
+            $dto->categoryId = $catId;
+
+            $previewData = $this->reviewService->calculateCategoryPreview($dto);
+
+            return $this->successResponse($previewData, 'Estimasi skor per kategori berhasil dihitung', 200);
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
+        }
+    }
+
     public function index()
     {
         // List institusi yang sudah melakukan Final Submit.

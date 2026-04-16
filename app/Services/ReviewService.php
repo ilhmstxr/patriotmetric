@@ -170,4 +170,26 @@ class ReviewService extends BaseService
 
         return true;
     }
+
+    /**
+     * Hitung estimasi skor khusus untuk di satu kategori saja (skor reviewer).
+     */
+    public function calculateCategoryPreview(\App\DTOs\ReviewDTO $dto)
+    {
+        $answers = $this->repository->getAnswersByCategory($dto->submissionId, $dto->categoryId);
+
+        // Anggap total bobot sudah dikonversi atau ini merupakan estimasi kumulatif
+        $totalEstimatedScore = 0;
+        foreach ($answers as $answer) {
+            if ($answer->skor_validasi_reviewer !== null) {
+                $totalEstimatedScore += $answer->skor_validasi_reviewer;
+            }
+        }
+
+        return [
+            'estimated_score' => $totalEstimatedScore,
+            'label' => "Estimasi Skor Kategori: " . $totalEstimatedScore,
+            'details' => "Skor ini bersifat estimasi dari hasil verifikasi."
+        ];
+    }
 }

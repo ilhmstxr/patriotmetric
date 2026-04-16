@@ -98,4 +98,12 @@ class ReviewRepository extends BaseRepository
             }
         });
     }
+
+    public function getAnswersByCategory($submissionId, $categoryId)
+    {
+        return \App\Models\pengumpulan_jawaban::where('submission_id', $submissionId)
+            ->whereHas('question', function ($q) use ($categoryId) {
+                $q->where('category_id', $categoryId);
+            })->get();
+    }
 }
