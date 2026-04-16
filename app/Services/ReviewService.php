@@ -97,4 +97,26 @@ class ReviewService extends BaseService
 
         return $this->repository->updateStatusAndFinalScore($submissionId, 'REVIEWED', $totalSkorAkhir);
     }
+
+    /**
+     * Mengambil daftar kategori (Stepper) dan status progres verifikasi.
+     */
+    public function getStepperProgress(\App\DTOs\ReviewDTO $dto)
+    {
+        $categories = $this->repository->getAllWithProgress($dto->submissionId);
+
+        $progressData = [];
+        foreach ($categories as $category) {
+            $isCompleted = $category->questions_count > 0 && $category->questions_count === $category->answers_count;
+            $progressData[] = [
+                'category_id' => $category->id,
+                'nama_kategori' => $category->nama_kategori,
+                'questions_count' => $category->questions_count,
+                'answers_count' => $category->answers_count,
+                'status' => $isCompleted ? 'completed' : 'pending'
+            ];
+        }
+
+        return $progressData;
+    }
 }

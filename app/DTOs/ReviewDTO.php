@@ -4,5 +4,5 @@ namespace App\DTOs;
 
 class ReviewDTO
 {
-    // Logic untuk ReviewDTO
+    public $submissionId;
 }

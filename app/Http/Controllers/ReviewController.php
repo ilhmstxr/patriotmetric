@@ -10,6 +10,23 @@ class ReviewController extends Controller
 {
     use ApiResponse;
 
+    protected $reviewService;
+
+    public function __construct(\App\Services\ReviewService $reviewService)
+    {
+        $this->reviewService = $reviewService;
+    }
+
+    public function getSteps(Request $request, $id)
+    {
+        $dto = new \App\DTOs\ReviewDTO();
+        $dto->submissionId = $id;
+
+        $progress = $this->reviewService->getStepperProgress($dto);
+
+        return $this->successResponse($progress, 'Data stepper progress berhasil diambil', 200);
+    }
+
     public function index()
     {
         // List institusi yang sudah melakukan Final Submit.

@@ -60,4 +60,15 @@ class ReviewRepository extends BaseRepository
             ->where('skor_validasi_reviewer', '>', 0)
             ->get();
     }
+
+    public function getAllWithProgress($submissionId)
+    {
+        return \App\Models\kategori::withCount([
+            'pertanyaans as questions_count',
+            'jawabans as answers_count' => function ($query) use ($submissionId) {
+                $query->where('submission_id', $submissionId)
+                      ->whereNotNull('skor_validasi_reviewer');
+            }
+        ])->get();
+    }
 }

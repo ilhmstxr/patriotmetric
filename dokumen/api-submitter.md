@@ -1,4 +1,4 @@
-# 1. GET /api/submitter/steps
+CHECK # 1. GET /api/submitter/steps
 
 **Kegunaan:** Mengambil daftar kategori (Stepper) dan status progres pengisian.
 
