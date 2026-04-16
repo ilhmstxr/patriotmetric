@@ -4,5 +4,8 @@ namespace App\DTOs;
 
 class SubmitterDTO
 {
-    // Logic untuk SubmitterDTO
+    public $assessmentId;
+    public $userId;
+    public $categoryId;
+    public $answers = [];
 }

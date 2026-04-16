@@ -129,7 +129,7 @@ AssessmentAnswer::whereHas('question', fn($q) => $q->where('category_id', $catId
 ---
 
 # 5. POST /api/submitter/finalize
-
+CHECK
 **Kegunaan:** Mengunci seluruh data kuesioner (Final Lock).
 
 ### Route -> Controller

@@ -146,3 +146,16 @@ Assessment::where('id', $id)->update(['status' => 'published']).
 * **Hybrid Scoring:** Sistem mendukung pilihan skala (1-5) untuk kemudahan, namun tetap memberikan kebebasan `manual_score` untuk akurasi desimal.
 * **Progressive Locking:** Status `REVIEWING` otomatis terpicu saat verifikasi pertama disimpan, menandakan institusi tersebut sedang dalam proses audit.
 * **Integrity Gate:** Finalize reviewer adalah titik di mana nilai tidak bisa diubah lagi oleh Reviewer, memberikan kepastian data bagi Admin Pusat.
+
+
+api-submitter.md#L131-160
+ generate insruksi ini ke dalam file 
+
+ReviewController.php
+
+ReviewDTO.php
+
+ReviewService.php
+
+ReviewRepository.php
+dengan konsep controller -> dto -> service -> repo
