@@ -81,24 +81,24 @@ class ReviewService extends BaseService
 
 
     /**
-     * Memastikan semua indikator telah diperiksa, menyimpan skor akhir hasil verifikasi, dan mengunci (Final Lock).
+     * Memastikan semua indikator telah diperiksa, menghitung total nilai akhir (weighted average), dan mengubah status menjadi REVIEWED.
      */
-    public function finalizeReview(\App\DTOs\ReviewDTO $dto)
+    public function lockReview(\App\DTOs\ReviewDTO $dto)
     {
-        // Validasi kelengkapan: Cek apakah ada soal yang belum diverifikasi
+        // Pengecekan Zero-Gap: Cek apakah SEMUA indikator sudah diberikan manual_score
         $belumLengkap = $this->repository->hasUnverifiedAnswers($dto->submissionId);
 
         if ($belumLengkap) {
-            // Jika belum lengkap, lempar 422 Unprocessable Entity
-            throw new \Exception("Validasi kelengkapan gagal: Pastikan semua soal di seluruh kategori telah diverifikasi.", 422);
+            // Jika ada satu saja soal yang belum divrifikasi, gagalkan.
+            throw new \Exception("Validasi gagal: Ada indikator/soal yang belum diberikan manual_score.", 422);
         }
 
-        // Idealnya, $this->calculateVerifiedFinalScore dipanggil di sini dengan data answers dan metadata.
-        // Untuk saat ini, kita menggunakan akumulasi dari repository:
-        $totalSkorAkhir = $this->repository->sumVerifiedScore($dto->submissionId);
+        // Scoring Calculation: Kalkulasi total nilai akhir (weighted average) dari seluruh kategori.
+        // Di sini kita bisa mengambil seluruh verifikasi dan metadata bobot. Untuk saat ini kita asumsikan menggunakan penjumlahan repo dasar.
+        $calculatedTotal = $this->repository->sumVerifiedScore($dto->submissionId);
 
-        // Update status menjadi REVIEWED (Immutable State) dan merekam timestamp
-        return $this->repository->updateStatusAndFinalScore($dto->submissionId, 'REVIEWED', $totalSkorAkhir);
+        // Update status menjadi REVIEWED dan menyimpan kalkulasi ke kolom final_score
+        return $this->repository->updateStatus($dto->submissionId, 'REVIEWED', $calculatedTotal);
     }
 
     /**

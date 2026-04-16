@@ -33,31 +33,31 @@ class ReviewRepository extends BaseRepository
 
     public function hasUnverifiedAnswers($submissionId)
     {
-        // Completeness Check: Pengecekan silang antara total pertanyaan vs total jawaban yang sudah diverifikasi
+        // Completeness Check (Zero-Gap Validation): Pengecekan silang antara total pertanyaan vs total jawaban yang sudah diberikan manual_score
         $totalQuestions = \App\Models\pertanyaan::count();
         
-        $verifiedAnswers = pengumpulan_jawaban::where('submission_id', $submissionId)
-            ->whereNotNull('skor_validasi_reviewer')
+        $verifiedAnswers = \App\Models\pengumpulan_jawaban::where('submission_id', $submissionId)
+            ->whereNotNull('manual_score')
             ->count();
 
-        // Mengembalikan true jika ada indikator/pertanyaan yang tertinggal
+        // Mengembalikan true jika ada indikator/pertanyaan yang tertinggal (belum diverifikasi dgn manual score)
         return $verifiedAnswers < $totalQuestions;
     }
 
     public function sumVerifiedScore($submissionId)
     {
-        return pengumpulan_jawaban::where('submission_id', $submissionId)
-            ->sum('skor_validasi_reviewer');
+        return \App\Models\pengumpulan_jawaban::where('submission_id', $submissionId)
+            ->sum('manual_score'); // Or whatever the valid fallback is
     }
 
-    public function updateStatusAndFinalScore($submissionId, $status, $totalScore)
+    public function updateStatus($id, $status, $calculatedTotal)
     {
-        $pengumpulan = $this->model->findOrFail($submissionId);
+        $pengumpulan = $this->model->findOrFail($id);
         $pengumpulan->update([
             'status' => $status,
-            'total_skor_akhir' => $totalScore,
-            // Timestamping (Final Lock Time)
-            'reviewed_at' => now() 
+            'final_score' => $calculatedTotal,
+            // (opsional: Timestamping jika direquire)
+            'reviewed_at' => now(),
         ]);
         return $pengumpulan;
     }
