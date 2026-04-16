@@ -138,9 +138,9 @@ class ReviewService extends BaseService
     }
 
     /**
-     * Menyimpan progres jawaban/verifikasi per kategori secara Atomic.
+     * Menyimpan hasil verifikasi (Pilihan Skala & Skor Manual) per kategori.
      */
-    public function persistProgress(\App\DTOs\ReviewDTO $dto)
+    public function persistVerification(\App\DTOs\ReviewDTO $dto)
     {
         // Cek status asesmen: Jika dinilai sudah selesai, cegah perubahan opsional.
         $submission = $this->repository->find($dto->submissionId);
@@ -149,21 +149,26 @@ class ReviewService extends BaseService
             throw new \Exception("Akses ditolak: Review untuk institusi ini sudah final (REVIEWED).", 403);
         }
 
-        // Sanitasi/membersihkan nilai (misal URL bukti untuk Reviewer, meskipun mereka lebih fokus validasi)
-        $sanitizedAnswers = [];
-        foreach ($dto->answers as $ans) {
-            $sanitizedAnswers[] = [
-                'question_id' => $ans['question_id'],
-                'skor_validasi_reviewer' => isset($ans['skor_validasi_reviewer']) ? floatval($ans['skor_validasi_reviewer']) : null,
-                // reviewer tidak menyumbang evidence_url melainkan melihatnya, jd tidak perlu sanitasi URL
+        // Sanitasi dan memvalidasi batas wajar nilai
+        $sanitizedVerifications = [];
+        foreach ($dto->answers as $ver) {
+            $manualScore = isset($ver['manual_score']) ? floatval($ver['manual_score']) : null;
+            $scaleChoice = isset($ver['scale_choice']) ? intval($ver['scale_choice']) : null;
+
+            // Logika validasi batas wajar manual score berdasarkan skema bisa ditambahkan di sini, misalnya:
+            // if ($scaleChoice && ($manualScore > ($scaleChoice * 20))) throw Exception...
+
+            $sanitizedVerifications[] = [
+                'id' => $ver['id'], // ID dari pengumpulan_jawaban
+                'scale_choice' => $scaleChoice,
+                'manual_score' => $manualScore,
             ];
         }
 
-        // Simpan beramai-ramai sekaligus dengan UpdateOrCreate DB Transaction
-        $this->repository->upsertAnswers($dto->submissionId, $sanitizedAnswers);
+        // Simpan beramai-ramai sekaligus dengan DB Transaction (atau satuan update)
+        $this->repository->updateReviewData($dto->submissionId, $sanitizedVerifications);
 
-        // Jika statusnya belum berada di 'REVIEWING', ubah ke REVIEWING 
-        // (artinya Reviewer sudah menyicil pengerjaan)
+        // Update status asesmen menjadi REVIEWING 
         if ($submission && $submission->status !== 'REVIEWING') {
             $submission->update(['status' => 'REVIEWING']);
         }

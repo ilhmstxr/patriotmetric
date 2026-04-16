@@ -43,25 +43,26 @@ class ReviewController extends Controller
         }
     }
 
-    public function saveProgress(Request $request, $submissionId)
+    public function saveVerification(Request $request, $submissionId)
     {
         // Validation Request
         $request->validate([
             'category_id' => 'required|integer',
-            'answers' => 'required|array',
-            'answers.*.question_id' => 'required|integer',
-            'answers.*.skor_validasi_reviewer' => 'nullable|numeric',
+            'verifications' => 'required|array',
+            'verifications.*.id' => 'required|integer',
+            'verifications.*.scale_choice' => 'nullable|integer|between:1,5',
+            'verifications.*.manual_score' => 'nullable|numeric|between:0,100',
         ]);
 
         try {
             $dto = new \App\DTOs\ReviewDTO();
             $dto->submissionId = $submissionId;
             $dto->categoryId = $request->input('category_id');
-            $dto->answers = $request->input('answers');
+            $dto->answers = $request->input('verifications'); // Memetakan data verifikasi
 
-            $this->reviewService->persistProgress($dto);
+            $this->reviewService->persistVerification($dto);
 
-            return $this->successResponse(null, 'Hasil verifikasi berhasil disimpan (Atomic Save)', 200);
+            return $this->successResponse(null, 'Hasil verifikasi berhasil disimpan', 200);
         } catch (\Exception $e) {
             $status = $e->getCode() == 403 ? 403 : 500;
             return $this->errorResponse($e->getMessage(), $status);

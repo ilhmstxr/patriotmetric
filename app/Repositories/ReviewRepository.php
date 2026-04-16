@@ -99,20 +99,21 @@ class ReviewRepository extends BaseRepository
             ->get();
     }
 
-    public function upsertAnswers($submissionId, array $answers)
+    public function updateReviewData($submissionId, array $verifications)
     {
-        \Illuminate\Support\Facades\DB::transaction(function () use ($submissionId, $answers) {
-            foreach ($answers as $answer) {
-                \App\Models\pengumpulan_jawaban::updateOrCreate(
-                    [
-                        'submission_id' => $submissionId,
-                        'question_id' => $answer['question_id']
-                    ],
-                    [
-                        'skor_validasi_reviewer' => $answer['skor_validasi_reviewer'] ?? null,
-                        // review payload can include other verification components
-                    ]
-                );
+        \Illuminate\Support\Facades\DB::transaction(function () use ($submissionId, $verifications) {
+            foreach ($verifications as $ver) {
+                // Sesuai dokumen "AssessmentAnswer::where('id', $id)->update(['reviewer_scale' => $scale, 'manual_score' => $score, 'verified_at' => now()])"
+                // Mengubah existing answer dari tabel pengumpulan_jawaban
+                \App\Models\pengumpulan_jawaban::where('id', $ver['id'])
+                    ->where('submission_id', $submissionId) // Mengunci untuk re-verify assessment yg tepat
+                    ->update([
+                        'reviewer_scale' => $ver['scale_choice'],
+                        'manual_score' => $ver['manual_score'],
+                        // Memastikan fallback/alias jika score validation yg utama di sistem ini disamakan:
+                        'skor_validasi_reviewer' => $ver['manual_score'],
+                        'verified_at' => now(), // Audit Trail
+                    ]);
             }
         });
     }

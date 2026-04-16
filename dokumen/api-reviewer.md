@@ -61,7 +61,7 @@ AssessmentAnswer::where('assessment_id', $subId)->whereHas('question', fn($q) =>
 ---
 
 # 3. POST /api/reviewer/save-verification
-
+CHECK
 **Kegunaan:** Menyimpan hasil verifikasi (Pilihan Skala & Skor Manual) per kategori.
 
 ### Route -> Controller
@@ -93,7 +93,7 @@ AssessmentAnswer::where('id', $id)->update(['reviewer_scale' => $scale, 'manual_
 ---
 
 # 4. POST /api/reviewer/finalize/{sub_id}
-
+CHECK
 **Kegunaan:** Mengunci proses penilaian untuk satu institusi.
 
 ### Route -> Controller
