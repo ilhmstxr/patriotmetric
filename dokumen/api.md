@@ -378,3 +378,119 @@ REQUEST
 
 RESPONSE
 - indikator telah ditandai success
+
+
+
+FIXED
+1. Submitter Endpoints 
+
+Fokus: Mengisi klaim pilihan ganda dan mengunggah link bukti per kategori.
+
+
+GET /api/submitter/steps Mengambil daftar kategori (Stepper) dan status progresnya.
+
+GET /api/submitter/questions/{cat_id} Mengambil soal kategori tertentu + jawaban yang sudah pernah diisi (Klaim & Bukti).
+
+POST /api/submitter/save-progress Atomic Save: Menyimpan jawaban untuk satu kategori. Dipanggil saat klik "Next".
+
+GET /api/submitter/preview-category/{cat_id} Melihat preview skor kasar hanya untuk kategori yang baru saja diselesaikan.
+
+POST /api/submitter/finalize Final Lock: Mengunci seluruh kategori. Status berubah menjadi Submitted.
+
+
+Contoh Request & Response (Submitter)
+
+GET /api/submitter/questions/1
+RESPONSE:
+
+{
+  "status": "success",
+  "data": {
+    "category_name": "Variabel A: Kebijakan",
+    "questions": [
+      {
+        "id": "q1",
+        "text": "Apakah terdapat SK Rektor terkait Bela Negara?",
+        "options": [
+          {"value": 0, "label": "Tidak Ada"},
+          {"value": 5, "label": "Ada dan Terpublikasi"}
+        ],
+        "existing_answer": {
+          "claim_value": "5",
+          "evidence_url": "[https://drive.google.com/](https://drive.google.com/)..."
+        }
+      }
+    ]
+  }
+}
+
+
+POST /api/submitter/save-progress
+REQUEST:
+
+{
+  "category_id": 1,
+  "answers": [
+    {
+      "indicator_id": "q1",
+      "claim_value": "5",
+      "evidence_url": "[https://drive.google.com/](https://drive.google.com/)..."
+    }
+  ]
+}
+
+
+
+2. Reviewer Endpoints (Auditor/Penilai)
+
+Fokus: Memverifikasi klaim vs bukti dan memberikan skor akhir per kategori.
+
+
+GET /api/reviewer/assignments Menampilkan daftar Institusi yang telah Final Submit dan diplot ke Reviewer ini.
+
+GET /api/reviewer/questions/{sub_id}/{cat_id} Mengambil data klaim submitter vs kolom input verifikasi reviewer.
+
+POST /api/reviewer/save-verification Atomic Verify: Menyimpan hasil verifikasi (Skala 1-5 & Skor Manual).
+
+POST /api/reviewer/finalize/{sub_id} Review Lock: Menyatakan penilaian untuk institusi tersebut selesai.
+
+Contoh Request & Response (Reviewer)
+
+GET /api/reviewer/questions/sub-001/1
+RESPONSE:
+
+{
+  "status": "success",
+  "data": {
+    "institution_name": "Universitas Merdeka",
+    "questions": [
+      {
+        "id": "q1",
+        "submitter_claim": "5",
+        "evidence_url": "[https://drive.google.com/](https://drive.google.com/)...",
+        "reviewer_guideline": "Skala 5 jika dokumen SK lengkap dan bertanda tangan.",
+        "existing_verification": {
+          "scale_choice": 4,
+          "manual_score": 80.00
+        }
+      }
+    ]
+  }
+}
+
+
+POST /api/reviewer/save-verification
+REQUEST:
+
+{
+  "submission_id": "sub-001",
+  "category_id": 1,
+  "verifications": [
+    {
+      "indicator_id": "q1",
+      "scale_choice": 5,
+      "manual_score": 100.00,
+      "note": "Dokumen sangat lengkap."
+    }
+  ]
+}
