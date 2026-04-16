@@ -45,6 +45,31 @@ class ReviewController extends Controller
         }
     }
 
+    public function saveProgress(Request $request, $submissionId)
+    {
+        // Validation Request
+        $request->validate([
+            'category_id' => 'required|integer',
+            'answers' => 'required|array',
+            'answers.*.question_id' => 'required|integer',
+            'answers.*.skor_validasi_reviewer' => 'nullable|numeric',
+        ]);
+
+        try {
+            $dto = new \App\DTOs\ReviewDTO();
+            $dto->submissionId = $submissionId;
+            $dto->categoryId = $request->input('category_id');
+            $dto->answers = $request->input('answers');
+
+            $this->reviewService->persistProgress($dto);
+
+            return $this->successResponse(null, 'Hasil verifikasi berhasil disimpan (Atomic Save)', 200);
+        } catch (\Exception $e) {
+            $status = $e->getCode() == 403 ? 403 : 500;
+            return $this->errorResponse($e->getMessage(), $status);
+        }
+    }
+
     public function index()
     {
         // List institusi yang sudah melakukan Final Submit.

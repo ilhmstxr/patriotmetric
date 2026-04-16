@@ -80,4 +80,22 @@ class ReviewRepository extends BaseRepository
             }])
             ->get();
     }
+
+    public function upsertAnswers($submissionId, array $answers)
+    {
+        \Illuminate\Support\Facades\DB::transaction(function () use ($submissionId, $answers) {
+            foreach ($answers as $answer) {
+                \App\Models\pengumpulan_jawaban::updateOrCreate(
+                    [
+                        'submission_id' => $submissionId,
+                        'question_id' => $answer['question_id']
+                    ],
+                    [
+                        'skor_validasi_reviewer' => $answer['skor_validasi_reviewer'] ?? null,
+                        // review payload can include other verification components
+                    ]
+                );
+            }
+        });
+    }
 }

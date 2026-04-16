@@ -136,4 +136,38 @@ class ReviewService extends BaseService
 
         return $questions;
     }
+
+    /**
+     * Menyimpan progres jawaban/verifikasi per kategori secara Atomic.
+     */
+    public function persistProgress(\App\DTOs\ReviewDTO $dto)
+    {
+        // Cek status asesmen: Jika dinilai sudah selesai, cegah perubahan opsional.
+        $submission = $this->repository->find($dto->submissionId);
+        
+        if ($submission && $submission->status === 'REVIEWED') {
+            throw new \Exception("Akses ditolak: Review untuk institusi ini sudah final (REVIEWED).", 403);
+        }
+
+        // Sanitasi/membersihkan nilai (misal URL bukti untuk Reviewer, meskipun mereka lebih fokus validasi)
+        $sanitizedAnswers = [];
+        foreach ($dto->answers as $ans) {
+            $sanitizedAnswers[] = [
+                'question_id' => $ans['question_id'],
+                'skor_validasi_reviewer' => isset($ans['skor_validasi_reviewer']) ? floatval($ans['skor_validasi_reviewer']) : null,
+                // reviewer tidak menyumbang evidence_url melainkan melihatnya, jd tidak perlu sanitasi URL
+            ];
+        }
+
+        // Simpan beramai-ramai sekaligus dengan UpdateOrCreate DB Transaction
+        $this->repository->upsertAnswers($dto->submissionId, $sanitizedAnswers);
+
+        // Jika statusnya belum berada di 'REVIEWING', ubah ke REVIEWING 
+        // (artinya Reviewer sudah menyicil pengerjaan)
+        if ($submission && $submission->status !== 'REVIEWING') {
+            $submission->update(['status' => 'REVIEWING']);
+        }
+
+        return true;
+    }
 }

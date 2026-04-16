@@ -1,5 +1,5 @@
-CHECK 
 # 1. GET /api/submitter/steps
+CHECK 
 
 **Kegunaan:** Mengambil daftar kategori (Stepper) dan status progres pengisian.
 
@@ -31,8 +31,8 @@ Category::withCount(['questions', 'answers' => fn($q) => $q->where('assessment_i
 
 ---
 
-CHECK 
 # 2. GET /api/submitter/questions/{cat_id}
+CHECK 
 
 **Kegunaan:** Mengambil soal kategori tertentu beserta jawaban yang sudah tersimpan (pre-filled).
 
@@ -65,7 +65,7 @@ Question::where('category_id', $catId)->with(['options', 'answers' => fn($q) => 
 ---
 
 # 3. POST /api/submitter/save-progress
-
+CHECK
 **Kegunaan:** Menyimpan jawaban (Klaim & Bukti) per kategori (Atomic Save).
 
 ### Route -> Controller
