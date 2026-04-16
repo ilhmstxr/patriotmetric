@@ -33,9 +33,15 @@ class ReviewRepository extends BaseRepository
 
     public function hasUnverifiedAnswers($submissionId)
     {
-        return pengumpulan_jawaban::where('submission_id', $submissionId)
-            ->whereNull('skor_validasi_reviewer')
-            ->exists();
+        // Completeness Check: Pengecekan silang antara total pertanyaan vs total jawaban yang sudah diverifikasi
+        $totalQuestions = \App\Models\pertanyaan::count();
+        
+        $verifiedAnswers = pengumpulan_jawaban::where('submission_id', $submissionId)
+            ->whereNotNull('skor_validasi_reviewer')
+            ->count();
+
+        // Mengembalikan true jika ada indikator/pertanyaan yang tertinggal
+        return $verifiedAnswers < $totalQuestions;
     }
 
     public function sumVerifiedScore($submissionId)
@@ -49,7 +55,9 @@ class ReviewRepository extends BaseRepository
         $pengumpulan = $this->model->findOrFail($submissionId);
         $pengumpulan->update([
             'status' => $status,
-            'total_skor_akhir' => $totalScore
+            'total_skor_akhir' => $totalScore,
+            // Timestamping (Final Lock Time)
+            'reviewed_at' => now() 
         ]);
         return $pengumpulan;
     }

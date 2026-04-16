@@ -85,6 +85,22 @@ class ReviewController extends Controller
         }
     }
 
+    public function finalize(Request $request, $submissionId)
+    {
+        try {
+            $dto = new \App\DTOs\ReviewDTO();
+            $dto->submissionId = $submissionId;
+
+            $this->reviewService->finalizeReview($dto);
+
+            return $this->successResponse(null, 'Seluruh penilaian telah dikunci secara final (Final Lock)', 200);
+        } catch (\Exception $e) {
+            // Melempar status HTTP 422 jika gagal di Completeness Check
+            $status = $e->getCode() == 422 ? 422 : 500;
+            return $this->errorResponse($e->getMessage(), $status);
+        }
+    }
+
     public function index()
     {
         // List institusi yang sudah melakukan Final Submit.

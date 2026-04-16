@@ -81,21 +81,24 @@ class ReviewService extends BaseService
 
 
     /**
-     * Memastikan semua indikator telah diperiksa, menyimpan skor akhir hasil verifikasi, dan mengubah status menjadi REVIEWED.
+     * Memastikan semua indikator telah diperiksa, menyimpan skor akhir hasil verifikasi, dan mengunci (Final Lock).
      */
-    public function finalizeReview($submissionId)
+    public function finalizeReview(\App\DTOs\ReviewDTO $dto)
     {
-        $belumDinilai = $this->repository->hasUnverifiedAnswers($submissionId);
+        // Validasi kelengkapan: Cek apakah ada soal yang belum diverifikasi
+        $belumLengkap = $this->repository->hasUnverifiedAnswers($dto->submissionId);
 
-        if ($belumDinilai) {
-            throw new Exception("Ada indikator yang belum diverifikasi oleh reviewer.");
+        if ($belumLengkap) {
+            // Jika belum lengkap, lempar 422 Unprocessable Entity
+            throw new \Exception("Validasi kelengkapan gagal: Pastikan semua soal di seluruh kategori telah diverifikasi.", 422);
         }
 
         // Idealnya, $this->calculateVerifiedFinalScore dipanggil di sini dengan data answers dan metadata.
-        // Untuk saat ini, kita bisa menggunakan repository fallback jika logika answers belum di-fetch:
-        $totalSkorAkhir = $this->repository->sumVerifiedScore($submissionId);
+        // Untuk saat ini, kita menggunakan akumulasi dari repository:
+        $totalSkorAkhir = $this->repository->sumVerifiedScore($dto->submissionId);
 
-        return $this->repository->updateStatusAndFinalScore($submissionId, 'REVIEWED', $totalSkorAkhir);
+        // Update status menjadi REVIEWED (Immutable State) dan merekam timestamp
+        return $this->repository->updateStatusAndFinalScore($dto->submissionId, 'REVIEWED', $totalSkorAkhir);
     }
 
     /**
