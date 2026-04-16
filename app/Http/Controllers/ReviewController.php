@@ -136,11 +136,17 @@ class ReviewController extends Controller
 
     public function publish(Request $request, $id)
     {
-        // Admin Pusat mempublikasikan hasil agar skor asli muncul di user.
-        $publishedData = [
-            'id' => $id,
-            'status' => 'published'
-        ];
-        return $this->successResponse($publishedData, 'Hasil berhasil dipublikasikan', 200);
+        try {
+            $dto = new \App\DTOs\ReviewDTO();
+            $dto->submissionId = $id;
+
+            // Memanggil Service untuk set PUBLISHED
+            $this->reviewService->publishAssessment($dto);
+
+            return $this->successResponse(null, 'Hasil penilaian akhir berhasil dipublikasikan ke Submitter', 200);
+        } catch (\Exception $e) {
+            $status = $e->getCode() == 422 ? 422 : 500;
+            return $this->errorResponse($e->getMessage(), $status);
+        }
     }
 }

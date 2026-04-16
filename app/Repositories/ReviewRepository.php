@@ -62,6 +62,15 @@ class ReviewRepository extends BaseRepository
         return $pengumpulan;
     }
 
+    public function publishStatus($submissionId)
+    {
+        $pengumpulan = $this->model->findOrFail($submissionId);
+        $pengumpulan->update([
+            'status' => 'PUBLISHED'
+        ]);
+        return $pengumpulan;
+    }
+
     public function getVerifiedAnswers($submissionId)
     {
         return pengumpulan_jawaban::where('submission_id', $submissionId)

@@ -197,4 +197,19 @@ class ReviewService extends BaseService
             'details' => "Skor ini bersifat estimasi dari hasil verifikasi."
         ];
     }
+
+    /**
+     * Mempublikasikan penilaian yang telah selesai.
+     */
+    public function publishAssessment(\App\DTOs\ReviewDTO $dto)
+    {
+        $submission = $this->repository->find($dto->submissionId);
+        
+        if (!$submission || $submission->status !== 'REVIEWED') {
+            throw new \Exception("Hanya institusi dengan status 'REVIEWED' yang bisa dipublikasikan.", 422);
+        }
+
+        // Service -> Repository
+        return $this->repository->publishStatus($dto->submissionId);
+    }
 }
