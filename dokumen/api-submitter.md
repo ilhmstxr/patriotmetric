@@ -1,4 +1,5 @@
-CHECK # 1. GET /api/submitter/steps
+CHECK 
+# 1. GET /api/submitter/steps
 
 **Kegunaan:** Mengambil daftar kategori (Stepper) dan status progres pengisian.
 
@@ -30,6 +31,7 @@ Category::withCount(['questions', 'answers' => fn($q) => $q->where('assessment_i
 
 ---
 
+CHECK 
 # 2. GET /api/submitter/questions/{cat_id}
 
 **Kegunaan:** Mengambil soal kategori tertentu beserta jawaban yang sudah tersimpan (pre-filled).

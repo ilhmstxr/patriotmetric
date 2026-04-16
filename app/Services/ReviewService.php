@@ -119,4 +119,21 @@ class ReviewService extends BaseService
 
         return $progressData;
     }
+
+    /**
+     * Mengambil soal kategori tertentu beserta jawaban yang ada di submission (pre-filled).
+     */
+    public function getQuestionsWithAnswers(\App\DTOs\ReviewDTO $dto)
+    {
+        // Validasi jika kategori tidak ada bisa dilakukan di sini 
+        // dengan cek ke database atau biarkan kosong jika query return []
+        
+        $questions = $this->repository->getByCategoryWithExistingAnswers($dto->categoryId, $dto->submissionId);
+        
+        if ($questions->isEmpty()) {
+            throw new \Exception("Kategori tidak ditemukan atau tidak memiliki soal.", 404);
+        }
+
+        return $questions;
+    }
 }

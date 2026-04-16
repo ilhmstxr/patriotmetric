@@ -71,4 +71,13 @@ class ReviewRepository extends BaseRepository
             }
         ])->get();
     }
+
+    public function getByCategoryWithExistingAnswers($categoryId, $submissionId)
+    {
+        return \App\Models\pertanyaan::where('category_id', $categoryId)
+            ->with(['jawaban' => function($q) use ($submissionId) {
+                $q->where('submission_id', $submissionId);
+            }])
+            ->get();
+    }
 }

@@ -27,6 +27,24 @@ class ReviewController extends Controller
         return $this->successResponse($progress, 'Data stepper progress berhasil diambil', 200);
     }
 
+    public function getQuestionsByCategory(Request $request, $submissionId, $catId)
+    {
+        try {
+            $dto = new \App\DTOs\ReviewDTO();
+            $dto->submissionId = $submissionId;
+            $dto->categoryId = $catId;
+
+            $questions = $this->reviewService->getQuestionsWithAnswers($dto);
+
+            // Resource Mapping bisa dilakukan menggunakan \Illuminate\Http\Resources\Json\JsonResource
+            // tetapi untuk sementara kita kirimkan data raw atau diproses manual.
+            return $this->successResponse($questions, 'Data soal beserta jawaban berhasil diambil', 200);
+        } catch (\Exception $e) {
+            $status = $e->getCode() == 404 ? 404 : 500;
+            return $this->errorResponse($e->getMessage(), $status);
+        }
+    }
+
     public function index()
     {
         // List institusi yang sudah melakukan Final Submit.
