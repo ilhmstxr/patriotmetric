@@ -1,5 +1,5 @@
 # 1. GET /api/reviewer/assignments
-
+CHECK
 **Kegunaan:** Menampilkan daftar Institusi yang telah Final Submit dan ditugaskan ke Reviewer tersebut.
 
 ### Route -> Controller
@@ -30,7 +30,7 @@ Assessment::where('reviewer_id', $id)->whereIn('status', ['submitted', 'reviewin
 ---
 
 # 2. GET /api/reviewer/questions/{sub_id}/{cat_id}
-
+CHECK 
 **Kegunaan:** Mengambil data perbandingan (Klaim Submitter vs Input Reviewer) per kategori.
 
 ### Route -> Controller

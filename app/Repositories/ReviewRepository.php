@@ -89,6 +89,16 @@ class ReviewRepository extends BaseRepository
             ->get();
     }
 
+    public function getWithReviewerContext($subId, $catId)
+    {
+        return \App\Models\pengumpulan_jawaban::where('submission_id', $subId)
+            ->whereHas('question', function ($q) use ($catId) {
+                $q->where('category_id', $catId);
+            })
+            ->with('question') // Include question options/guideline
+            ->get();
+    }
+
     public function upsertAnswers($submissionId, array $answers)
     {
         \Illuminate\Support\Facades\DB::transaction(function () use ($submissionId, $answers) {

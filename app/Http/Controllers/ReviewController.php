@@ -34,11 +34,9 @@ class ReviewController extends Controller
             $dto->submissionId = $submissionId;
             $dto->categoryId = $catId;
 
-            $questions = $this->reviewService->getQuestionsWithAnswers($dto);
+            $comparisonData = $this->reviewService->getComparisonData($dto);
 
-            // Resource Mapping bisa dilakukan menggunakan \Illuminate\Http\Resources\Json\JsonResource
-            // tetapi untuk sementara kita kirimkan data raw atau diproses manual.
-            return $this->successResponse($questions, 'Data soal beserta jawaban berhasil diambil', 200);
+            return $this->successResponse($comparisonData, 'Data perbandingan (Klaim Submitter vs Input Reviewer) berhasil diambil', 200);
         } catch (\Exception $e) {
             $status = $e->getCode() == 404 ? 404 : 500;
             return $this->errorResponse($e->getMessage(), $status);
