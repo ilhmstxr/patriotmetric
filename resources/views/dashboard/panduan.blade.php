@@ -69,7 +69,7 @@
                 <div class="bg-[#FFFBEB] border border-[#FDE68A] rounded-[8px] p-[20px] flex gap-[16px]">
                   <i data-lucide="alert-triangle" class="w-[24px] h-[24px] text-[#D97706] shrink-0" stroke-width="2"></i>
                   <p class="text-[#92400E] text-[14px] font-medium leading-[22px]">
-                    Pastikan link yang Anda berikan <span class="font-bold">dapat diakses (Public / Anyone with the link)</span> agar tim Reviewer/Asesor dapat membuka dan memvalidasi dokumen tersebut.
+                    Pastikan link yang Anda berikan <span class="font-bold">dapat diakses (Public / Anyone with the link)</span> agar tim Reviewer dapat membuka dan memvalidasi dokumen tersebut.
                   </p>
                 </div>
               </div>

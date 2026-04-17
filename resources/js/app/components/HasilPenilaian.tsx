@@ -63,7 +63,7 @@ export function HasilPenilaian() {
               </div>
             </div>
             <div className="bg-[rgba(27,94,32,0.1)] text-[#1b5e20] font-bold px-[24px] py-[10px] rounded-full border border-[rgba(27,94,32,0.2)] text-[14px]">
-              Telah Divalidasi Asesor
+              Telah Divalidasi Reviwer
             </div>
           </div>
 
