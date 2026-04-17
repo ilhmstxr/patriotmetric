@@ -1,17 +1,19 @@
 <x-layouts.app :hideNav="true" :hideFooter="true">
     <div class="min-h-screen flex">
         {{-- Left Panel --}}
-        <div class="hidden lg:flex w-[45%] bg-[#1b5e20] relative overflow-hidden items-center">
-            <div class="absolute inset-0 opacity-10"></div>
-            <div class="absolute -top-48 right-[-100px] bg-[rgba(212,175,55,0.2)] blur-[100px] rounded-full size-96"></div>
-            <div class="relative px-16 py-16">
+        <div class="hidden lg:flex w-[45%] relative overflow-hidden items-center">
+            <img src="{{ asset('assets/images/IMG_0940.JPG') }}" class="absolute inset-0 w-full h-full object-cover" alt="Background" />
+            <div class="absolute inset-0 bg-[#1b5e20] opacity-80"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0a230c] to-transparent opacity-50"></div>
+            <div class="absolute -top-48 right-[-100px] bg-[rgba(212,175,55,0.3)] blur-[100px] rounded-full size-96"></div>
+            <div class="relative px-16 py-16 z-10">
                 <div class="-mb-12 mt-4">
-                    <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.png') }}" alt="Logo Patriot Metric" class="h-60 w-auto object-contain object-left" />
+                    <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.png') }}" alt="Logo Patriot Metric" class="h-100 w-auto object-contain object-left" />
                 </div>
-                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] leading-[45px] text-white max-w-[294px]">
-                    Selamat Datang Kembali di Portal Patriot Metric
+                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[50px] leading-[45px] text-white max-w-[500px]">
+                    Selamat Datang di Patriot Metric
                 </h1>
-                <p class="mt-8 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[18px] leading-[29.25px] text-[rgba(255,255,255,0.8)] max-w-[374px]">
+                <p class="mt-8 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[25px] leading-[29.25px] text-[rgba(255,255,255,0.8)] max-w-[500px]">
                     Masuk untuk mengakses dashboard institusi Anda, memperbarui data rubrik, dan memantau perkembangan nilai bela negara kampus.
                 </p>
             </div>
@@ -25,12 +27,12 @@
                     Silakan masukkan kredensial institusi Anda.
                 </p>
                 
-                {{-- Testing Hint --}}
+                <!-- {{-- Testing Hint --}}
                 <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
                     <p class="text-[12px] text-amber-800 font-medium">
                         <span class="font-bold">Info Testing:</span> Gunakan email <code class="bg-white px-1 py-0.5 rounded border border-amber-100 font-mono text-[#1b5e20] font-bold">admin@upnjatim.ac.id</code> untuk langsung masuk ke halaman Dashboard Utama. Email selain itu akan masuk ke Form Daftar Ulang.
                     </p>
-                </div>
+                </div> -->
 
 <form class="mt-8 space-y-6" action="{{ route('login.post') }}" method="POST">
                     @csrf

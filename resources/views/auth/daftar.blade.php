@@ -1,17 +1,19 @@
 <x-layouts.app :hideNav="true" :hideFooter="true">
     <div class="min-h-screen flex" x-data="{ agree: false, isFormValid: false }">
         {{-- Left Panel --}}
-        <div class="hidden lg:flex w-[45%] bg-[#1b5e20] sticky top-0 h-screen overflow-hidden items-center">
-            <div class="absolute inset-0 opacity-10"></div>
-            <div class="absolute -top-48 right-[-100px] bg-[rgba(212,175,55,0.2)] blur-[100px] rounded-full size-96"></div>
-            <div class="relative px-16 py-16">
+        <div class="hidden lg:flex w-[45%] relative sticky top-0 h-screen overflow-hidden items-center">
+            <img src="{{ asset('assets/images/IMG_0940.JPG') }}" class="absolute inset-0 w-full h-full object-cover" alt="Background" />
+            <div class="absolute inset-0 bg-[#1b5e20] opacity-80"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0a230c] to-transparent opacity-50"></div>
+            <div class="absolute -top-48 right-[-100px] bg-[rgba(212,175,55,0.3)] blur-[100px] rounded-full size-96"></div>
+            <div class="relative px-16 py-16 z-10 w-full">
                 <div class="-mb-12 mt-4">
-                    <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.png') }}" alt="Logo Patriot Metric" class="h-60 w-auto object-contain object-left" />
+                    <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.png') }}" alt="Logo Patriot Metric" class="h-100 w-auto object-contain object-left" />
                 </div>
-                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] leading-[45px] text-white max-w-[321px]">
+                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[50px] leading-[45px] text-white max-w-[500px]">
                     Jadilah Bagian dari Perubahan
                 </h1>
-                <p class="mt-8 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[18px] leading-[29.25px] text-[rgba(255,255,255,0.8)] max-w-[360px]">
+                <p class="mt-8 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[25px] leading-[29.25px] text-[rgba(255,255,255,0.8)] max-w-[500px]">
                     Dengan mendaftarkan institusi Anda, Anda telah mengambil langkah nyata dalam membina karakter bela negara generasi penerus bangsa.
                 </p>
             </div>
@@ -20,7 +22,7 @@
         {{-- Right Panel --}}
         <div class="flex-1 flex items-start justify-center px-8 py-12 bg-white overflow-y-auto">
             <div class="w-full max-w-[576px]">
-                <a href="{{ url('/masuk') }}" class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] text-[#62748e] hover:underline">
+                <a href="{{ url('/masuk') }}" class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] text-[#1B5E20] hover:underline">
                     Sudah punya akun? Masuk
                 </a>
 

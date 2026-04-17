@@ -39,7 +39,7 @@
       <main class="flex-1 py-[40px] px-[24px]">
         <div class="max-w-[800px] mx-auto">
           <div class="text-center mb-[40px]">
-            <h1 class="text-[28px] md:text-[32px] font-bold text-[#1d293d] tracking-tight mb-[12px]">Form Daftar Ulang</h1>
+            <h1 class="text-[28px] md:text-[32px] font-bold text-[#1d293d] tracking-tight mb-[12px]">Selamat Datang, Universitas Pembangunan Nasional "Veteran" Jawa Timur</h1>
             <p class="text-[#64748b] text-[15px] md:text-[16px] max-w-[600px] mx-auto">
               Lengkapi formulir di bawah ini untuk mengonfirmasi partisipasi institusi Anda dalam kegiatan 
               <strong class="text-[#1d293d] font-semibold"> Patriot Metric University Ranking 2025</strong>.

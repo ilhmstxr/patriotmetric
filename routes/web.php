@@ -27,8 +27,8 @@ Route::get('/tim', function () {
     return view('tim');
 });
 
-Route::get('/pemenang', function () {
-    return view('pemenang');
+Route::get('/penghargaan', function () {
+    return view('penghargaan');
 });
 
 Route::get('/panduan', function () {
