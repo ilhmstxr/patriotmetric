@@ -5,6 +5,9 @@ namespace App\Services;
 use App\Repositories\SubmitterRepository;
 use Exception;
 
+/**
+ * @property \App\Repositories\SubmitterRepository $repository
+ */
 class SubmitterService extends BaseService
 {
     public function __construct(SubmitterRepository $repository)

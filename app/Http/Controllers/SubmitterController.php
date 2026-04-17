@@ -20,9 +20,10 @@ class SubmitterController extends Controller
     {
         $dto = new \App\DTOs\SubmitterDTO();
         $dto->assessmentId = $assessmentId;
-
+        
         $progress = $this->submitterService->getStepperProgress($dto);
-
+        
+        return "ok";
         return $this->successResponse($progress, 'Data stepper progress berhasil diambil', 200);
     }
 

@@ -6,7 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubmitterController;
-use App\Http\Controllers\ReviewerController;
+// use App\Http\Controllers\ReviewerController;
 
 // Auth Routes
 Route::prefix('auth')->group(function () {
@@ -58,17 +58,17 @@ Route::prefix('profile')->group(function () {
 //     Route::patch('/verify-indicator', [AssessmentController::class, 'verifySingleIndicator'])->name('api.review.legacy.verify-indicator');
 // });
 
-Route::prefix('api/assessment/submitter')->group(function () {
-    Route::get('/steps', [SubmitterController::class, 'steps'])->name('api.submitter.steps');
-    Route::get('/questions/{cat_id}', [SubmitterController::class, 'questions'])->name('api.submitter.questions');
+Route::prefix('assessment/submitter')->group(function () {
+    Route::get('/steps/{assessment_id}', [SubmitterController::class, 'getSteps'])->name('api.submitter.steps');
+    Route::get('/questions/{cat_id}', [SubmitterController::class, 'getQuestions'])->name('api.submitter.questions');
     Route::post('/save-progress', [SubmitterController::class, 'saveProgress'])->name('api.submitter.save-progress');
     Route::get('/preview-category/{cat_id}', [SubmitterController::class, 'previewCategory'])->name('api.submitter.preview-category');
     Route::post('/finalize', [SubmitterController::class, 'finalize'])->name('api.submitter.finalize');
 });
 
-Route::prefix('api/assessment/reviewer')->group(function () {
-    Route::get('/assignments', [ReviewerController::class, 'assignments'])->name('api.reviewer.assignments');
-    Route::get('/questions/{sub_id}/{cat_id}', [ReviewerController::class, 'questions'])->name('api.reviewer.questions');
-    Route::post('/save-verification', [ReviewerController::class, 'saveVerification'])->name('api.reviewer.save-verification');
-    Route::post('/finalize/{sub_id}', [ReviewerController::class, 'finalize'])->name('api.reviewer.finalize');
+Route::prefix('assessment/reviewer')->group(function () {
+    /* BUG */ Route::get('/assignments', [ReviewController::class, 'assignments'])->name('api.reviewer.assignments');
+    Route::get('/questions/{sub_id}/{cat_id}', [ReviewController::class, 'questions'])->name('api.reviewer.questions');
+    Route::post('/save-verification', [ReviewController::class, 'saveVerification'])->name('api.reviewer.save-verification');
+    Route::post('/finalize/{sub_id}', [ReviewController::class, 'finalize'])->name('api.reviewer.finalize');
 });

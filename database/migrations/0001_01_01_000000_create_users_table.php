@@ -21,7 +21,18 @@ return new class extends Migration {
             // $table->string('nama_institusi')->nullable();
             // $table->text('alamat')->nullable();
             // $table->string('telepon')->nullable();
-            $table->enum('status', ["PENDING_REGISTRATION", "REGISTERED", "BASELINE_SUBMITTED", "ACTIVE"]);
+            $table->enum(
+                'status',
+                [
+                    "PENDING_REGISTRATION",
+                    "PENDING_BASELINE",
+                    "ACTIVE",
+                    "SUBMITTED",
+                    "IN_PROGRESS",
+                    "REVIEWING",
+                    "PUBLISED"
+                ]
+            );
             $table->rememberToken();
             $table->timestamps();
         });

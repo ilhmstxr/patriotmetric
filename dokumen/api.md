@@ -383,20 +383,87 @@ RESPONSE
 
 FIXED
 1. Submitter Endpoints 
+Tahap 1: Autentikasi & Registrasi (The Onboarding)
 
-Fokus: Mengisi klaim pilihan ganda dan mengunggah link bukti per kategori.
+### 🟢 Tahap 1: Autentikasi & Registrasi (The Onboarding)
 
+#### 1. Register Account & Profile
+- **Endpoint**: `POST /api/auth/register`
+- **Kegunaan**: Pendaftaran akun PIC dan profil institusi (Step 1).
+- **Alur Logika**: 
+  - `Route` ➔ `Controller`: Menerima form pendaftaran.
+  - `Controller` ➔ `DTO`: `RegisterDTO` (Email, Password, Data Institusi).
+  - `DTO` ➔ `Service`: Membuat User & Institusi (Status: `PENDING`).
+  - `Service` ➔ `Repository`: `UserRepository@create` & `InstitutionRepository@create`.
+- **Penting**: Pastikan email unik dan gunakan `DB::transaction`.
 
-GET /api/submitter/steps Mengambil daftar kategori (Stepper) dan status progresnya.
+#### 2. Login System
+- **Endpoint**: `POST /api/auth/login`
+- **Kegunaan**: Masuk ke sistem.
+- **Alur Logika**: 
+  - `Route` ➔ `Controller`: Input Email & Password.
+  - `Controller` ➔ `DTO`: `LoginDTO`.
+  - `DTO` ➔ `Service`: Validasi kredensial & cek status institusi.
+  - `Service` ➔ `Repository`: `UserRepository@getByEmail`.
+- **Output**: Mengembalikan Token (Sanctum) & Status tahap pengerjaan user.
 
-GET /api/submitter/questions/{cat_id} Mengambil soal kategori tertentu + jawaban yang sudah pernah diisi (Klaim & Bukti).
+---
 
-POST /api/submitter/save-progress Atomic Save: Menyimpan jawaban untuk satu kategori. Dipanggil saat klik "Next".
+### 🔵 Tahap 2: Baseline Data (The Foundation)
 
-GET /api/submitter/preview-category/{cat_id} Melihat preview skor kasar hanya untuk kategori yang baru saja diselesaikan.
+#### 3. Input Baseline Data
+- **Endpoint**: `POST /api/profile/baseline`
+- **Kegunaan**: Input data statistik mahasiswa/dosen (Step 2).
+- **Alur Logika**: 
+  - `Route` ➔ `Controller`: Data baseline + dokumen pendukung.
+  - `Controller` ➔ `DTO`: `BaselineDTO`.
+  - `DTO` ➔ `Service`: Cek verifikasi Step 1, update/create data, set status ke `VERIFYING_BASE`.
+  - `Service` ➔ `Repository`: `IdentityBaselineRepository@updateOrCreate`.
+- **Penting**: Dokumen disimpan dalam format JSON. Data **tidak boleh diedit** jika status sudah `ACTIVE`.
 
-POST /api/submitter/finalize Final Lock: Mengunci seluruh kategori. Status berubah menjadi Submitted.
+---
 
+### 🟡 Tahap 3: Assessment Rubrik (The Core)
+
+#### 4. Stepper Navigation
+- **Endpoint**: `GET /api/submitter/steps`
+- **Kegunaan**: Mengambil navigasi Stepper & cek izin akses rubrik.
+- **Gatekeeper**: Jika `is_verified` masih `false`, lempar `403 Forbidden`.
+- **Service**: `SubmitterService@getStepperProgress` ➔ `CategoryRepository@getAllWithProgress`.
+- **Indikator**: Menghitung `questions_count` vs `answers_count`.
+
+#### 5. Get Questions by Category
+- **Endpoint**: `GET /api/submitter/questions/{cat_id}`
+- **Kegunaan**: Mengambil soal per kategori + jawaban yang sudah ada (Pre-fill).
+- **Service**: `SubmitterService@getQuestionsWithAnswers` ➔ `QuestionRepository@getByCategoryWithExistingAnswers`.
+- **Penting**: Pastikan opsi pilihan ganda ter-load.
+
+#### 6. Save Progress (Atomic Save)
+- **Endpoint**: `POST /api/submitter/save-progress`
+- **Kegunaan**: Simpan jawaban otomatis saat navigasi (klik "Next").
+- **Payload**: `Array answers` (Indicator ID, Claim Value, Evidence URL).
+- **Logic**: Menggunakan `updateOrCreate` untuk menangani pembaruan jawaban.
+
+#### 7. Category Preview
+- **Endpoint**: `GET /api/submitter/preview-category/{cat_id}`
+- **Kegunaan**: Melihat estimasi skor (skala 1-5) sementara.
+- **Scoring**: Menghitung total poin klaim pada kategori tertentu.
+
+---
+
+### 🔴 Tahap 4: Finalisasi & Hasil
+
+#### 8. Final Lock Assessment
+- **Endpoint**: `POST /api/submitter/finalize`
+- **Kegunaan**: Mengunci seluruh asesmen.
+- **Validasi**: Zero-Gap Check (Cek apakah semua indikator sudah terjawab).
+- **Effect**: Status berubah menjadi `SUBMITTED`. Setelah ini, semua akses tulis (POST/PUT) akan di-reject (`403`).
+
+#### 9. Published Results
+- **Endpoint**: `GET /api/submitter/results`
+- **Kegunaan**: Melihat hasil akhir setelah diverifikasi Reviewer & Admin.
+- **Logic**: Hanya menampilkan data jika status sudah `PUBLISHED`.
+- **Detail**: Menampilkan rincian `manual_score` dan catatan dari Reviewer.
 
 Contoh Request & Response (Submitter)
 
@@ -494,3 +561,25 @@ REQUEST:
     }
   ]
 }
+
+
+
+oke oke, dimulai dari fase daftar dan verifikasi terlebih dahulu
+1. submitter daftar di web, mengisi nama & jenis PT, data nama, jabatan, no hp, email, password => status user akan menjadi PENDING_REGISTRATION
+2. verifikasi via admin untuk approve akun submitter => status user akan menjadi PENDING_BASELINE
+3. submitter dapat login, lalu mengisi baseline, lalu status user akan berubah menjadi ACTIVE
+4. submitter dapat mengisi assessment penilaian
+5. submitter dapat mengerjakan assesment penilaian lalu klik simpan / next untuk menyimpan sementara
+6. ketika submitter sudah mengisi semua, maka klik button finalize / selesai untuk lock jawabannya (jawabannya tidak bisa dirubah) namun bisa di preview nilai sementara oleh user
+7. setelah itu reviewer akan menilai(TBD)
+
+
+POST /api/auth/register 
+POST /api/auth/login 
+POST /api/profile/baseline 
+GET /api/submitter/steps
+GET /api/submitter/{cat_id}
+POST /api/submitter/save-progress
+GET /api/submitter/preview-category/{cat_id}
+POST /api/submitter/finalize
+GET /api/submitter/results
