@@ -16,4 +16,9 @@ class kategori extends Model
     {
         return $this->hasMany(pertanyaan::class, 'category_id');
     }
+
+    public function jawabans()
+    {
+        return $this->hasManyThrough(pengumpulan_jawaban::class, pertanyaan::class, 'category_id', 'question_id');
+    }
 }

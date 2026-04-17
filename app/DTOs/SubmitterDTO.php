@@ -2,9 +2,10 @@
 
 namespace App\DTOs;
 
-class ReviewDTO
+class SubmitterDTO
 {
-    public $submissionId;
+    public $assessmentId;
+    public $userId;
     public $categoryId;
     public $answers = [];
 }
