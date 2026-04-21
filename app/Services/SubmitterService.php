@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\SubmitterRepository;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property \App\Repositories\SubmitterRepository $repository
@@ -15,66 +16,104 @@ class SubmitterService extends BaseService
         parent::__construct($repository);
     }
 
-    public function getStepperProgress(\App\DTOs\SubmitterDTO $dto)
+    /**
+     * CORE SECURITY: Helper untuk mencari Assessment ID yang sedang aktif milik user.
+     * Mencegah user memodifikasi data institusi lain.
+     */
+    private function getActiveAssessmentOrFail($userId)
     {
-        $categories = $this->repository->getAllWithProgress($dto->assessmentId);
-
-        $progressData = [];
-        foreach ($categories as $category) {
-            $isCompleted = $category->questions_count > 0 && $category->questions_count === $category->answers_count;
-            $progressData[] = [
-                'category_id' => $category->id,
-                'nama_kategori' => $category->nama_kategori,
-                'questions_count' => $category->questions_count,
-                'answers_count' => $category->answers_count,
-                'status' => $isCompleted ? 'completed' : 'pending'
-            ];
+        $assessment = $this->repository->findActiveByUserId($userId);
+        
+        if (!$assessment) {
+            throw new Exception("Sesi asesmen aktif tidak ditemukan untuk periode ini. Pastikan baseline Anda sudah terverifikasi.", 404);
         }
 
-        return $progressData;
+        return $assessment;
     }
 
-    public function getQuestionsWithAnswers(\App\DTOs\SubmitterDTO $dto)
+    /**
+     * 1. Ambil Semua Pertanyaan & Jawaban (Single Form)
+     */
+    public function getAllQuestionsWithAnswers(\App\DTOs\SubmitterDTO $dto)
     {
-        $questions = $this->repository->getByCategoryWithExistingAnswers($dto->categoryId, $dto->assessmentId);
+        $assessment = $this->getActiveAssessmentOrFail($dto->userId);
+
+        // Repository mengambil seluruh soal, beserta relasi opsi jawaban
+        // dan jawaban tersimpan (jika ada) khusus untuk assessment_id ini.
+        $questions = $this->repository->getAllQuestionsWithExistingAnswers($assessment->id);
         
         if ($questions->isEmpty()) {
-            throw new Exception("Kategori tidak ditemukan atau tidak memiliki soal.", 404);
+            throw new Exception("Master data soal belum tersedia.", 404);
         }
 
-        return $questions;
+        return [
+            'assessment_id' => $assessment->id,
+            'status' => $assessment->status,
+            'questions' => $questions
+        ];
     }
 
-    public function persistProgress(\App\DTOs\SubmitterDTO $dto)
+    /**
+     * 2. Auto-Save Progress (Simpan periodik / Single Form)
+     */
+    public function autoSaveProgress(\App\DTOs\SubmitterDTO $dto)
     {
-        $assessment = $this->repository->find($dto->assessmentId);
+        $assessment = $this->getActiveAssessmentOrFail($dto->userId);
         
-        if ($assessment && in_array($assessment->status, ['SUBMITTED', 'REVIEWING', 'REVIEWED', 'PUBLISHED'])) {
-            throw new Exception("Akses ditolak: Asesmen tidak bisa diubah karena sudah final atau sedang direview.", 403);
+        // Pagar Keamanan: Tolak jika sudah dikunci
+        if (in_array($assessment->status, ['SUBMITTED', 'REVIEWING', 'REVIEWED', 'PUBLISHED'])) {
+            throw new Exception("Akses ditolak: Asesmen tidak bisa diubah karena sudah dikunci (Final).", 403);
         }
 
+        // Sanitasi Data
         $sanitizedAnswers = [];
         foreach ($dto->answers as $ans) {
+            // Abaikan jika data kosong (membantu payload auto-save yang mungkin parsial)
+            if (!isset($ans['indicator_id'])) continue;
+
             $sanitizedAnswers[] = [
-                'question_id' => $ans['indicator_id'] ?? $ans['question_id'],
+                'question_id' => $ans['indicator_id'],
                 'claim_value' => $ans['claim_value'] ?? null,
                 'evidence_url' => filter_var($ans['evidence_url'] ?? '', FILTER_SANITIZE_URL),
+                'assessment_id' => $assessment->id // Inject ID internal, bukan dari request
             ];
         }
 
-        $this->repository->upsertAnswers($dto->assessmentId, $sanitizedAnswers);
+        // Lakukan Upsert di level Repository
+        $this->repository->upsertAnswers($assessment->id, $sanitizedAnswers);
 
         return true;
     }
 
-    public function calculateCategoryPreview(\App\DTOs\SubmitterDTO $dto)
+    /**
+     * 3. Final Lock (Validasi dan Penguncian)
+     */
+    public function lockAssessment(\App\DTOs\SubmitterDTO $dto)
     {
-        $answers = $this->repository->getAnswersByCategory($dto->assessmentId, $dto->categoryId);
+        $assessment = $this->getActiveAssessmentOrFail($dto->userId);
+
+        $totalQuestions = $this->repository->countTotalMandatoryQuestions();
+        $answered = $this->repository->countValidAnswers($assessment->id);
+
+        if ($answered < $totalQuestions) {
+            throw new Exception("Validasi kelengkapan gagal: Anda baru menjawab {$answered} dari {$totalQuestions} indikator. Harap lengkapi semua sebelum Final Submit.", 422);
+        }
+
+        // Kunci Data
+        return $this->repository->updateStatus($assessment->id, 'SUBMITTED');
+    }
+
+    /**
+     * 4. Hitung Estimasi Total (Preview Keseluruhan Form)
+     */
+    public function calculateTotalPreview(\App\DTOs\SubmitterDTO $dto)
+    {
+        $assessment = $this->getActiveAssessmentOrFail($dto->userId);
+        $answers = $this->repository->getAllAnswersByAssessment($assessment->id);
 
         $totalEstimatedScore = 0;
         foreach ($answers as $answer) {
-            // Logika pratinjau submitter (Sesuai dokumen: menjumlahkan berdasarkan bobot, konversi skala 1-5, dst)
-            // Untuk sementara kita mengakumulasikan nilai mentah (bisa diganti rumusnya sesuai kebutuhan tabel pertanyaans - bobot)
+            // TODO: Ganti dengan formula baku PatriotMetric (Normalisasi/Bobot)
             if (is_numeric($answer->claim_value)) {
                 $totalEstimatedScore += $answer->claim_value;
             }
@@ -82,22 +121,28 @@ class SubmitterService extends BaseService
 
         return [
             'estimated_score' => $totalEstimatedScore,
-            'label' => "Estimasi Skala",
-            'details' => "Skor ini bersifat estimasi kasar."
+            'label' => "Estimasi Skor Kasar",
+            'details' => "Skor ini bersifat estimasi sebelum verifikasi Reviewer."
         ];
     }
 
-    public function lockAssessment(\App\DTOs\SubmitterDTO $dto)
+    /**
+     * 5. Ambil Progres Saat Ini (Untuk UI Progress Bar)
+     */
+    public function getCurrentProgress(\App\DTOs\SubmitterDTO $dto)
     {
-        $totalQuestions = \App\Models\pertanyaan::count();
-        $answered = \App\Models\pengumpulan_jawaban::where('submission_id', $dto->assessmentId)
-            ->whereNotNull('claim_value') // Anggap jawaban valid jika ada claim value
-            ->count();
+        $assessment = $this->getActiveAssessmentOrFail($dto->userId);
+        
+        $totalQuestions = $this->repository->countTotalMandatoryQuestions();
+        $answered = $this->repository->countValidAnswers($assessment->id);
+        
+        $percentage = $totalQuestions > 0 ? round(($answered / $totalQuestions) * 100) : 0;
 
-        if ($answered < $totalQuestions) {
-            throw new Exception("Validasi kelengkapan gagal: Ada soal yang belum terjawab di kategori.", 422);
-        }
-
-        return $this->repository->updateStatus($dto->assessmentId, 'SUBMITTED');
+        return [
+            'total_questions' => $totalQuestions,
+            'answered_questions' => $answered,
+            'percentage' => $percentage,
+            'is_completed' => $answered >= $totalQuestions
+        ];
     }
 }

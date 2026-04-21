@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubmitterController;
+use App\Http\Controllers\UserController;
+
 // use App\Http\Controllers\ReviewerController;
 
 // Auth Routes
@@ -17,9 +19,12 @@ Route::prefix('auth')->group(function () {
 
 // Profile Routes
 Route::prefix('profile')->group(function () {
-/* DONE */    Route::get('/', [ProfileController::class, 'index'])->name('api.profile');
-/* DONE */    Route::post('/baseline', [ProfileController::class, 'baseline'])->name('api.profile.baseline');
-/* DONE */    Route::get('/status', [ProfileController::class, 'status'])->name('api.profile.status');
+    /* DONE */
+    Route::get('/', [ProfileController::class, 'index'])->name('api.profile');
+    /* DONE */
+    Route::post('/baseline', [ProfileController::class, 'baseline'])->name('api.profile.baseline');
+    /* DONE */
+    Route::get('/status', [ProfileController::class, 'status'])->name('api.profile.status');
 });
 
 // Assessment Routes
@@ -58,16 +63,63 @@ Route::prefix('profile')->group(function () {
 //     Route::patch('/verify-indicator', [AssessmentController::class, 'verifySingleIndicator'])->name('api.review.legacy.verify-indicator');
 // });
 
-Route::prefix('assessment/submitter')->group(function () {
-    Route::get('/steps/{assessment_id}', [SubmitterController::class, 'getSteps'])->name('api.submitter.steps');
-    Route::get('/questions/{cat_id}', [SubmitterController::class, 'getQuestions'])->name('api.submitter.questions');
-    Route::post('/save-progress', [SubmitterController::class, 'saveProgress'])->name('api.submitter.save-progress');
-    Route::get('/preview-category/{cat_id}', [SubmitterController::class, 'previewCategory'])->name('api.submitter.preview-category');
-    Route::post('/finalize', [SubmitterController::class, 'finalize'])->name('api.submitter.finalize');
+
+// --- Authentication & Account ---
+Route::prefix('auth')->group(function () {
+    Route::post('register', [UserController::class, 'register'])->name('api.register');
+    Route::post('login', [UserController::class, 'login'])->name('api.login');
+    Route::post('logout', [UserController::class, 'logout'])->name('api.logout')->middleware('auth:sanctum');
 });
 
+// --- User Profile ---
+// Route::middleware('auth:sanctum')->prefix('profile')->group(function () {
+Route::get('/', [UserController::class, 'profile'])->name('api.profile');
+
+// TAHAP 1: Baseline / Daftar Ulang (Pemberkasan)
+// Parameter assessment_id dihapus dari URL, ambil dari Auth di Controller
+// daftar ulang
+Route::post('baseline/{assessment_id?}', [SubmitterController::class, 'storeBaseline'])->name('api.profile.baseline');
+// });
+
+// --- Tahap 3: Assessment (Single Form & Auto-Save) ---
+// Route::middleware(['auth:sanctum', 'check.baseline.verified'])->prefix('assessment/submitter')->group(function () {
+Route::prefix('assessment/submitter')->group(function () {
+    // 1. Ambil semua pertanyaan (Single Form)
+    // Mendukung naked URL (/questions) atau berparameter (/questions/99)
+    Route::get('/questions/{assessment_id?}', [SubmitterController::class, 'getAllQuestions'])->name('api.submitter.questions');
+
+    // 2. Auto-save (Dipanggil tiap 5 menit atau saat ganti input)
+    Route::post('/auto-save/{assessment_id?}', [SubmitterController::class, 'autoSaveProgress'])->name('api.submitter.auto-save');
+
+    // 3. Final Lock (Submit Akhir)
+    Route::post('/finalize/{assessment_id?}', [SubmitterController::class, 'finalize'])->name('api.submitter.finalize');
+
+    // 4. Preview Nilai (Setelah Finalize atau Real-time)
+    Route::get('/preview-results/{assessment_id?}', [SubmitterController::class, 'previewResults'])->name('api.submitter.preview-results');
+
+    // 5. Progress Check (Opsional: Untuk Progress Bar Dashboard)
+    Route::get('/current-progress/{assessment_id?}', [SubmitterController::class, 'getProgress'])->name('api.submitter.progress');
+});
+
+
+// Authentication
+// submitter - only
+Route::prefix('auth')->group(function () {
+    Route::post('register', [UserController::class, 'register'])->name('api.register');
+    Route::post('login', [UserController::class, 'login'])->name('api.login');
+    Route::post('logout', [UserController::class, 'logout'])->name('api.logout');
+});
+
+// Profile
+Route::prefix('profile')->group(function () {
+    Route::post('profile', [UserController::class, 'profile'])->name('api.profile');
+});
+
+
+
 Route::prefix('assessment/reviewer')->group(function () {
-    /* BUG */ Route::get('/assignments', [ReviewController::class, 'assignments'])->name('api.reviewer.assignments');
+    /* BUG */
+    Route::get('/assignments', [ReviewController::class, 'assignments'])->name('api.reviewer.assignments');
     Route::get('/questions/{sub_id}/{cat_id}', [ReviewController::class, 'questions'])->name('api.reviewer.questions');
     Route::post('/save-verification', [ReviewController::class, 'saveVerification'])->name('api.reviewer.save-verification');
     Route::post('/finalize/{sub_id}', [ReviewController::class, 'finalize'])->name('api.reviewer.finalize');

@@ -55,6 +55,7 @@ Route::get('/daftar-ulang', function () {
     return view('auth.daftar-ulang');
 })->name('daftar-ulang');
 
+// jembot nak kene trnyt
 Route::get('/daftar', function () {
     return view('auth.daftar');
 });
