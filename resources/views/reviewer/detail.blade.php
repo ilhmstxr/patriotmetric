@@ -180,26 +180,26 @@
     }" class="flex-1 flex flex-col h-full bg-[#f8fafc] font-['Plus_Jakarta_Sans',sans-serif]">
         
       {{-- Page Header --}}
-      <div class="bg-white border-b border-[#e2e8f0] px-[40px] py-[28px] flex items-center justify-between shadow-sm">
+      <div class="bg-white border-b border-[#e2e8f0] px-[20px] md:px-[40px] py-[20px] md:py-[28px] flex items-center justify-between shadow-sm">
         <div>
           <a href="{{ route('reviewer.index') }}" class="inline-flex items-center gap-[6px] text-[#62748e] hover:text-[#1b5e20] text-[13px] font-semibold mb-[8px] transition-colors">
             <i data-lucide="arrow-left" class="w-[14px] h-[14px]"></i> Kembali ke Daftar Plotting
           </a>
-          <h1 class="font-bold text-[#1d293d] text-[26px] tracking-tight flex items-center gap-[12px]">
+          <h1 class="font-bold text-[#1d293d] text-[20px] md:text-[26px] tracking-tight flex flex-col md:flex-row items-start md:items-center gap-[8px] md:gap-[12px]">
             Detail Penilaian - {{ request('id', 'Universitas Indonesia') }}
             @if($isDone)
-            <span class="inline-flex items-center gap-[6px] bg-green-100 text-green-700 px-[12px] py-[4px] rounded-full text-[14px] font-bold">
+            <span class="inline-flex items-center gap-[6px] bg-green-100 text-green-700 px-[12px] py-[4px] rounded-full text-[13px] md:text-[14px] font-bold">
                 <i data-lucide="check-circle-2" class="w-[16px] h-[16px]"></i> Selesai Dinilai
             </span>
             @endif
           </h1>
-          <p class="text-[#62748e] text-[15px] mt-[6px]">Review isian rubrik, periksa bukti dokumen, dan berikan skor final untuk institusi ini.</p>
+          <p class="text-[#62748e] text-[13px] md:text-[15px] mt-[6px]">Review isian rubrik, periksa bukti dokumen, dan berikan skor final untuk institusi ini.</p>
         </div>
       </div>
 
       {{-- Content Area --}}
-      <div class="flex-1 overflow-y-auto p-[32px] relative">
-        <div class="space-y-[32px] max-w-[1000px]">
+      <div class="flex-1 overflow-y-auto p-[20px] md:p-[32px] relative">
+        <div class="space-y-[24px] md:space-y-[32px] max-w-[1000px]">
           <template x-for="(categoryData, cIdx) in mockDatabase" :key="cIdx">
             <div class="space-y-[16px]">
               {{-- Category Header --}}
@@ -210,7 +210,7 @@
 
               {{-- Questions --}}
               <template x-for="q in categoryData.questions" :key="q.id">
-                <div class="bg-white border border-[#e2e8f0] rounded-[10px] p-[24px] flex flex-col md:flex-row gap-[24px] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] mb-[16px]">
+                <div class="bg-white border border-[#e2e8f0] rounded-[10px] p-[20px] md:p-[24px] flex flex-col md:flex-row gap-[20px] md:gap-[24px] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] mb-[16px]">
                   
                   {{-- Left Column: Question & Evidence --}}
                   <div class="flex-[1.2] space-y-[16px]">
@@ -223,7 +223,7 @@
                       </div>
                     </div>
 
-                    <div class="bg-[#f8fafc] border border-[#e2e8f0] rounded-[8px] p-[16px] ml-[56px]">
+                    <div class="bg-[#f8fafc] border border-[#e2e8f0] rounded-[8px] p-[16px] ml-0 md:ml-[56px]">
                       <h4 class="text-[12px] font-bold text-[#45556c] mb-[8px] uppercase tracking-[0.4px]">Syarat Bukti:</h4>
                       <ul class="text-[13px] font-medium text-[#62748e] space-y-[6px]">
                         <template x-for="(req, rIdx) in q.evidenceRequirements" :key="rIdx">
@@ -238,9 +238,9 @@
 
                   {{-- Right Column: Answers & Link --}}
                   <div class="flex-[1.8] flex flex-col space-y-[20px] md:border-l border-[#e2e8f0] md:pl-[24px]">
-                    {{-- Submitter's Answer --}}
+                    {{-- Peserta's Answer --}}
                     <div>
-                        <h4 class="text-[12px] font-bold text-[#45556c] uppercase tracking-[0.4px] mb-[8px]">Jawaban Submitter:</h4>
+                        <h4 class="text-[12px] font-bold text-[#45556c] uppercase tracking-[0.4px] mb-[8px]">Jawaban Peserta:</h4>
                         
                         <template x-if="q.type === 'multiple-choice'">
                             <div class="space-y-[10px]">
@@ -265,7 +265,7 @@
                         </template>
                     </div>
                     
-                    {{-- Submitter's Link Evidence --}}
+                    {{-- Peserta's Link Evidence --}}
                     <div>
                         <h4 class="text-[12px] font-bold text-[#45556c] uppercase tracking-[0.4px] flex items-center gap-[6px] mb-[8px]">
                             <i data-lucide="link" class="w-[14px] h-[14px]"></i>
@@ -314,12 +314,12 @@
 
       {{-- Footer sticky area --}}
       <template x-if="!isDone">
-          <div class="bg-white border-t border-[#e2e8f0] px-[32px] py-[16px] flex justify-between items-center shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-            <div class="flex items-center gap-[8px] text-[14px] font-medium text-[#62748e]">
-              <span class="w-[8px] h-[8px] rounded-full bg-amber-400 animate-pulse"></span>
+          <div class="bg-white border-t border-[#e2e8f0] px-[20px] md:px-[32px] py-[16px] flex flex-col sm:flex-row justify-between items-center gap-[16px] shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+            <div class="flex items-center gap-[8px] text-[12px] md:text-[14px] font-medium text-[#62748e]">
+              <span class="w-[8px] h-[8px] rounded-full bg-amber-400 animate-pulse shrink-0"></span>
               Pekerjaan Anda otomatis disimpan sebagai Draft. Cek ulang sebelum menyelesaikan!
             </div>
-            <button class="bg-[#1b5e20] hover:bg-[#15461c] text-white px-[24px] h-[44px] rounded-[8px] text-[14px] font-bold flex items-center gap-[8px] transition-colors shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1)]">
+            <button class="w-full sm:w-auto bg-[#1b5e20] hover:bg-[#15461c] text-white px-[24px] h-[44px] rounded-[8px] text-[13px] md:text-[14px] font-bold flex items-center justify-center gap-[8px] transition-colors shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1)]">
               <i data-lucide="check-circle" class="w-[18px] h-[18px]"></i>
               Selesaikan & Simpan Penilaian
             </button>

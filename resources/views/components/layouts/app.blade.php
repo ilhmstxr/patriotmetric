@@ -7,10 +7,18 @@
     <title>Patriot Metric</title>
     <link rel="icon" type="image/png" href="{{ asset('assets/images/logo.png') }}" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="antialiased min-h-screen flex flex-col font-['Plus_Jakarta_Sans',sans-serif]">
+<body class="antialiased min-h-screen flex flex-col font-['Plus_Jakarta_Sans',sans-serif]"
+      x-data="{ showBar: true, lastPos: 0, threshold: 25 }"
+      @scroll.window="showBar = (window.pageYOffset < lastPos - threshold || window.pageYOffset < 100); lastPos = window.pageYOffset"
+      x-init="$nextTick(() => { lucide.createIcons() })">
     @if(!$hideNav)
-        <x-navbar />
+        <header class="fixed top-0 left-0 w-full z-50 transition-transform duration-300"
+                :class="showBar ? 'translate-y-0' : '-translate-y-full'">
+            <x-navbar />
+        </header>
+        <div class="h-[65px]"></div>
     @endif
     
     <main class="flex-1">

@@ -36,7 +36,7 @@ class PengumpulanResource extends Resource
     {
         return $schema
             ->components([
-                TextEntry::make('user.name')->label('Nama Submitter'),
+                TextEntry::make('user.name')->label('Nama Peserta'),
                 TextEntry::make('status')->badge(),
                 TextEntry::make('total_skor_akhir'),
                 RepeatableEntry::make('jawabans')

@@ -48,12 +48,12 @@ Route::post('/login', function (Request $request) {
     }
 
     // Default: simulasi login untuk pendaftar baru, arahkan ke daftar ulang
-    return redirect()->route('daftar-ulang');
+    return redirect()->route('verifikasi');
 })->name('login.post');
 
-Route::get('/daftar-ulang', function () {
-    return view('auth.daftar-ulang');
-})->name('daftar-ulang');
+Route::get('/verifikasi', function () {
+    return view('auth.verifikasi');
+})->name('verifikasi');
 
 Route::get('/daftar', function () {
     return view('auth.daftar');

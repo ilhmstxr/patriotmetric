@@ -1,15 +1,15 @@
 <x-layouts.app>
     <div class="bg-[#f8fafc]">
         {{-- Header --}}
-        <section class="py-20 bg-white border-b border-[#e2e8f0]">
-            <div class="max-w-[768px] mx-auto px-8 text-center">
-                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[40px] md:text-[48px] leading-[1.2] text-[#1e293b]">Tim Kami</h1>
+        <section class="py-16 md:py-20 bg-white border-b border-[#e2e8f0]">
+            <div class="max-w-[768px] mx-auto px-6 md:px-8 text-center">
+                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] md:text-[48px] leading-[1.2] text-[#1e293b]">Tim Kami</h1>
             </div>
         </section>
 
         {{-- Team Grid --}}
-        <section class="py-20">
-            <div class="max-w-[1280px] mx-auto px-8">
+        <section class="py-16 md:py-20">
+            <div class="max-w-[1280px] mx-auto px-6 md:px-8">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     @php
                     $teamMembers = [

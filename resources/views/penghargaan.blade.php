@@ -7,9 +7,9 @@
                 <div class="absolute inset-0 bg-[#1B5E20] opacity-80"></div>
                 <div class="absolute bottom-0 w-full h-[100px] bg-gradient-to-t from-[#f8fafc] to-transparent"></div>
             </div>
-            <div class="relative max-w-[800px] mx-auto px-8 py-24 text-center">
-                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[48px] md:text-[56px] text-white leading-tight">Galeri Penghargaan</h1>
-                <p class="mt-6 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[18px] md:text-[20px] leading-[1.6] text-[rgba(255,255,255,0.9)] max-w-2xl mx-auto">
+            <div class="relative max-w-[800px] mx-auto px-6 md:px-8 py-16 md:py-24 text-center">
+                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] md:text-[56px] text-white leading-tight">Galeri Penghargaan</h1>
+                <p class="mt-4 md:mt-6 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[16px] md:text-[20px] leading-[1.6] text-[rgba(255,255,255,0.9)] max-w-2xl mx-auto">
                     Penghormatan tertinggi bagi institusi yang telah membuktikan dedikasinya dalam membangun karakter patriotik dan bela negara.
                 </p>
             </div>
@@ -17,11 +17,11 @@
 
         {{-- Penghargaan List --}}
         <section class="py-16 relative z-10">
-            <div class="max-w-[1472px] mx-auto px-8">
+            <div class="max-w-[1472px] mx-auto px-6 md:px-8">
                 
                 {{-- Title Bar --}}
-                <div class="bg-white rounded-2xl border border-[#e2e8f0] shadow-sm p-5 mb-10 flex flex-col md:flex-row items-center justify-between gap-4">
-                    <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[24px] text-[#1e293b] flex items-center gap-3">
+                <div class="bg-white rounded-2xl border border-[#e2e8f0] shadow-sm p-4 md:p-5 mb-10 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+                    <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[20px] md:text-[24px] text-[#1e293b] flex flex-col md:flex-row items-center gap-3">
                         Daftar Institusi Peraih Penghargaan
                     </h2>
                 </div>
@@ -54,16 +54,7 @@
                                 @php
                                     $fillColor = $i <= floor($winner['rating']) ? '#D0B55E' : ($i - 0.5 <= $winner['rating'] ? '#D0B55E' : '#E2E8F0');
                                 @endphp
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <path
-                                        d="M10 1.66667L12.575 6.88333L18.3333 7.72499L14.1667 11.7833L15.15 17.5167L10 14.8083L4.85 17.5167L5.83333 11.7833L1.66667 7.72499L7.425 6.88333L10 1.66667Z"
-                                        fill="{{ $fillColor }}"
-                                        stroke="{{ $fillColor }}"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="1"
-                                    />
-                                </svg>
+                                <i data-lucide="star" class="w-5 h-5" style="fill: {{ $fillColor }}; color: {{ $fillColor }};"></i>
                             @endfor
                         </div>
                     </div>

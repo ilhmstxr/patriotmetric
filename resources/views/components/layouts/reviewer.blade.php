@@ -7,22 +7,41 @@
     <link rel="icon" type="image/png" href="{{ asset('assets/images/logo.png') }}" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body class="antialiased font-['Plus_Jakarta_Sans',sans-serif]" x-data x-init="$nextTick(() => { lucide.createIcons() })">
-    <div class="flex h-screen w-full bg-white">
+<body class="antialiased font-['Plus_Jakarta_Sans',sans-serif]" 
+      x-data="{ sidebarOpen: false, showBar: true, lastPos: 0, threshold: 25 }" 
+      x-init="$nextTick(() => { lucide.createIcons() })">
+    <div class="flex flex-col md:flex-row h-screen w-full bg-white relative overflow-hidden">
+        {{-- Mobile Header with Hamburger --}}
+        <div class="md:hidden flex fixed top-0 left-0 items-center justify-between px-[20px] py-[16px] bg-white border-b border-[#e2e8f0] z-30 w-full shrink-0 shadow-sm transition-transform duration-300"
+             :class="showBar ? 'translate-y-0' : '-translate-y-full'">
+            <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.png') }}" alt="Patriot Metric Logo" class="h-[36px] object-cover" />
+            <button @click="sidebarOpen = !sidebarOpen" class="text-[#1d293d] focus:outline-none p-1 border border-gray-200 rounded justify-center items-center flex">
+                <i data-lucide="menu" class="w-6 h-6" x-show="!sidebarOpen"></i>
+                <i data-lucide="x" class="w-6 h-6" x-show="sidebarOpen" style="display: none;"></i>
+            </button>
+        </div>
+
+        {{-- Mobile Header Spacer --}}
+        <div class="md:hidden h-[69px] w-full shrink-0"></div>
+
+        {{-- Mobile Sidebar Overlay --}}
+        <div x-show="sidebarOpen" @click="sidebarOpen = false" class="md:hidden fixed inset-0 bg-[#1d293d]/50 z-30" style="display: none;" x-transition.opacity></div>
+
         {{-- Sidebar --}}
-        <aside class="w-[280px] bg-white h-full shrink-0 flex flex-col relative shadow-[0_4px_6px_rgba(0,0,0,0.1)] border-r border-[#c89600]">
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed md:relative top-0 left-0 h-full z-40 transition-transform duration-300 transform md:translate-x-0 w-[260px] md:w-[280px] bg-white shrink-0 flex flex-col shadow-[0_4px_6px_rgba(0,0,0,0.1)] border-r border-[#c89600]">
             <div class="absolute bg-[#c89600] h-full right-0 top-0 w-px z-10"></div>
             
-            <div class="h-[80px] flex items-center justify-center shrink-0 border-b border-[#e2e8f0]">
-                <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.png') }}" alt="Patriot Metric Logo" class="h-[49px] w-[183px] object-cover object-center" />
+            <div class="h-[70px] md:h-[80px] flex items-center justify-center shrink-0 border-b border-[#e2e8f0]">
+                <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.png') }}" alt="Patriot Metric Logo" class="h-[40px] md:h-[49px] object-cover object-center" />
             </div>
 
-            <div class="flex flex-col items-center pt-[24px] pb-[32px] shrink-0 border-b border-[#e2e8f0]">
-                <div class="w-[72px] h-[72px] bg-[#0ea5e9] rounded-full flex items-center justify-center text-white font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[24px] tracking-[0.6px] leading-[32px] mb-[16px] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1)]">
+            <div class="flex flex-col items-center pt-[20px] md:pt-[24px] pb-[24px] md:pb-[32px] shrink-0 border-b border-[#e2e8f0]">
+                <div class="w-[60px] md:w-[72px] h-[60px] md:h-[72px] bg-[#0ea5e9] rounded-full flex items-center justify-center text-white font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[20px] md:text-[24px] tracking-[0.6px] leading-[32px] mb-[12px] md:mb-[16px] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1)]">
                     REV
                 </div>
-                <p class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[#1d293d] text-[16px] leading-[24px] tracking-[0.4px] whitespace-nowrap">
+                <p class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[#1d293d] text-[15px] md:text-[16px] leading-[24px] tracking-[0.4px] whitespace-nowrap">
                     Reviewer Patriot
                 </p>
                 <p class="font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[#62748e] text-[10px] leading-[14px] text-center mt-[4px] uppercase px-[24px]">
@@ -33,11 +52,8 @@
             <div class="flex-1 px-[16px] py-[24px] space-y-[8px]">
                 {{-- Dashboard Utama --}}
                 <a href="{{ route('reviewer.index') }}" class="flex items-center gap-[12px] h-[44px] px-[16px] rounded-[8px] transition-all duration-200 {{ request()->routeIs('reviewer.index') || request()->routeIs('reviewer.submitter_detail') ? 'bg-[#1b5e20] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1)]' : 'bg-transparent hover:bg-slate-50' }}">
-                    <div class="relative shrink-0 w-[20px] h-[20px]">
-                        <svg class="absolute block w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 20 20">
-                            <path d="M16.6667 17.5V15.8333C16.6667 14.9493 16.3155 14.1014 15.6903 13.4763C15.0652 12.8512 14.2174 12.5 13.3333 12.5H6.66667C5.78261 12.5 4.93476 12.8512 4.30964 13.4763C3.68452 14.1014 3.33333 14.9493 3.33333 15.8333V17.5" stroke="{{ request()->routeIs('reviewer.index') || request()->routeIs('reviewer.submitter_detail') ? 'white' : '#90A1B9' }}" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.66667" />
-                            <path d="M10 9.16667C11.841 9.16667 13.3333 7.67428 13.3333 5.83333C13.3333 3.99238 11.841 2.5 10 2.5C8.15905 2.5 6.66667 3.99238 6.66667 5.83333C6.66667 7.67428 8.15905 9.16667 10 9.16667Z" stroke="{{ request()->routeIs('reviewer.index') || request()->routeIs('reviewer.submitter_detail') ? 'white' : '#90A1B9' }}" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.66667" />
-                        </svg>
+                    <div class="relative shrink-0 w-[20px] h-[20px] flex items-center justify-center">
+                        <i data-lucide="layout-dashboard" class="w-[18px] h-[18px] {{ request()->routeIs('reviewer.index') || request()->routeIs('reviewer.submitter_detail') ? 'text-white' : 'text-[#90A1B9]' }}"></i>
                     </div>
                     <span class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] leading-[20px] {{ request()->routeIs('reviewer.index') || request()->routeIs('reviewer.submitter_detail') ? 'text-white' : 'text-[#45556c]' }}">
                         Dashboard Utama
@@ -46,12 +62,8 @@
 
                 {{-- Panduan Penilaian --}}
                 <a href="{{ route('reviewer.panduan') }}" class="flex items-center gap-[12px] h-[44px] px-[16px] rounded-[8px] transition-all duration-200 {{ request()->routeIs('reviewer.panduan') ? 'bg-[#1b5e20] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1)]' : 'bg-transparent hover:bg-slate-50' }}">
-                    <div class="relative shrink-0 w-[20px] h-[20px]">
-                        <svg class="absolute block w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 20 20">
-                            <path d="M10 18.3333C14.6024 18.3333 18.3333 14.6024 18.3333 10C18.3333 5.39763 14.6024 1.66667 10 1.66667C5.39763 1.66667 1.66667 5.39763 1.66667 10C1.66667 14.6024 5.39763 18.3333 10 18.3333Z" stroke="{{ request()->routeIs('reviewer.panduan') ? 'white' : '#90A1B9' }}" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.66667" />
-                            <path d="M7.58334 7.50001C7.58334 6.85968 8.10201 6.34101 8.74234 6.34101H10.8407C11.5363 6.34101 12.1003 6.90501 12.1003 7.60068C12.1003 8.29634 11.5363 8.86034 10.8407 8.86034H10C9.53966 8.86034 9.16667 9.23334 9.16667 9.69368V10.8333" stroke="{{ request()->routeIs('reviewer.panduan') ? 'white' : '#90A1B9' }}" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.66667" />
-                            <path d="M10 14.1667H10.0083" stroke="{{ request()->routeIs('reviewer.panduan') ? 'white' : '#90A1B9' }}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                        </svg>
+                    <div class="relative shrink-0 w-[20px] h-[20px] flex items-center justify-center">
+                        <i data-lucide="help-circle" class="w-[18px] h-[18px] {{ request()->routeIs('reviewer.panduan') ? 'text-white' : 'text-[#90A1B9]' }}"></i>
                     </div>
                     <span class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] leading-[20px] {{ request()->routeIs('reviewer.panduan') ? 'text-white' : 'text-[#45556c]' }}">
                         Panduan Penilaian
@@ -61,12 +73,8 @@
 
             <div class="p-[16px] mt-auto shrink-0">
                 <a href="{{ url('/') }}" class="flex items-center gap-[12px] h-[44px] px-[16px] w-full rounded-[8px] hover:bg-red-50 transition-colors">
-                    <div class="relative shrink-0 w-[20px] h-[20px]">
-                        <svg class="absolute block w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 20 20">
-                            <path d="M7.5 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H7.5" stroke="#ef4444" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.66667" />
-                            <path d="M13.3333 14.1667L17.5 10L13.3333 5.83333" stroke="#ef4444" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.66667" />
-                            <path d="M17.5 10H7.5" stroke="#ef4444" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.66667" />
-                        </svg>
+                    <div class="relative shrink-0 w-[20px] h-[20px] flex items-center justify-center">
+                        <i data-lucide="log-out" class="w-[18px] h-[18px] text-[#ef4444]"></i>
                     </div>
                     <span class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[#ef4444] text-[14px] leading-[20px]">
                         Keluar
@@ -77,7 +85,8 @@
 
         {{-- Main Content Area --}}
         <main class="flex-1 flex flex-col h-full overflow-hidden bg-white">
-            <div class="flex-1 overflow-auto bg-white relative">
+            <div class="flex-1 overflow-auto bg-white relative"
+                 @scroll="showBar = ($el.scrollTop < lastPos - threshold || $el.scrollTop < 100); lastPos = $el.scrollTop">
                 {{ $slot }}
             </div>
         </main>

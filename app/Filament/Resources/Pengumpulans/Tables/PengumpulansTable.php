@@ -16,7 +16,7 @@ class PengumpulansTable
         return $table
             ->columns([
                 \Filament\Tables\Columns\TextColumn::make('user.name')
-                    ->label('Submitter')
+                    ->label('Peserta')
                     ->searchable()
                     ->sortable(),
                 \Filament\Tables\Columns\TextColumn::make('status')

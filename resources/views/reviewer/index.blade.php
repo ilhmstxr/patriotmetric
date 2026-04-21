@@ -1,8 +1,8 @@
 <x-layouts.reviewer>
     <x-slot:title>DASHBOARD UTAMA</x-slot:title>
 
-    <div class="flex-1 overflow-y-auto bg-[#f8fafc] font-['Plus_Jakarta_Sans',sans-serif] p-[40px]">
-        <div class="max-w-[1200px] mx-auto flex flex-col gap-[32px]">
+    <div class="flex-1 overflow-y-auto bg-[#f8fafc] font-['Plus_Jakarta_Sans',sans-serif] p-[20px] md:p-[40px]">
+        <div class="max-w-[1200px] mx-auto flex flex-col gap-[24px] md:gap-[32px]">
             
             {{-- Summary Cards --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-[24px]">
@@ -37,12 +37,12 @@
                 </div>
             </div>
 
-            {{-- Table 1: Submitter Belum di Review --}}
+            {{-- Table 1: Peserta Belum di Review --}}
             <div class="bg-white rounded-[16px] border border-[#e2e8f0] shadow-sm overflow-hidden">
-                <div class="px-[24px] py-[20px] border-b border-[#e2e8f0] flex justify-between items-center bg-white">
-                    <h2 class="font-bold text-[#1d293d] text-[18px] flex items-center gap-[8px]">
+                <div class="px-[20px] md:px-[24px] py-[16px] md:py-[20px] border-b border-[#e2e8f0] flex justify-between items-center bg-white">
+                    <h2 class="font-bold text-[#1d293d] text-[16px] md:text-[18px] flex items-center gap-[8px]">
                         <i data-lucide="alert-circle" class="text-amber-500 w-[20px] h-[20px]"></i>
-                        Submitter Belum Direview (Perlu Tindakan)
+                        Peserta Belum Direview (Perlu Tindakan)
                     </h2>
                 </div>
                 <div class="overflow-x-auto">
@@ -91,12 +91,12 @@
                 </div>
             </div>
 
-            {{-- Table 2: Submitter Di-Plotting --}}
+            {{-- Table 2: Peserta Di-Plotting --}}
             <div class="bg-white rounded-[16px] border border-[#e2e8f0] shadow-sm overflow-hidden" x-data="{ filter: 'all' }">
-                <div class="px-[24px] py-[20px] border-b border-[#e2e8f0] flex flex-col md:flex-row justify-between items-start md:items-center gap-[16px] bg-white">
-                    <h2 class="font-bold text-[#1d293d] text-[18px] flex items-center gap-[8px]">
+                <div class="px-[20px] md:px-[24px] py-[16px] md:py-[20px] border-b border-[#e2e8f0] flex flex-col md:flex-row justify-between items-start md:items-center gap-[16px] bg-white">
+                    <h2 class="font-bold text-[#1d293d] text-[16px] md:text-[18px] flex items-center gap-[8px]">
                         <i data-lucide="list" class="text-blue-500 w-[20px] h-[20px]"></i>
-                        Daftar Plotting Submitter Anda
+                        Daftar Plotting Peserta Anda
                     </h2>
                     
                     <div class="flex items-center gap-[12px]">
