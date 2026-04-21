@@ -6,11 +6,11 @@
       <div class="flex-1 overflow-y-auto p-[32px]">
         <div class="max-w-[920px] space-y-[32px] mx-auto">
           {{-- Hero / Title Section --}}
-          <div class="bg-white border border-[#e2e8f0] rounded-[10px] p-[40px] text-center shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1)]">
-            <h2 class="text-[28px] font-bold text-[#1d293d] tracking-[0.5px]">
+          <div class="bg-white border border-[#e2e8f0] rounded-[10px] p-[24px] md:p-[40px] text-center shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1)]">
+            <h2 class="text-[24px] md:text-[28px] font-bold text-[#1d293d] tracking-[0.5px]">
               Panduan Penilaian Reviewer
             </h2>
-            <p class="text-[#62748e] text-[16px] font-medium mt-[12px]">
+            <p class="text-[#62748e] text-[15px] md:text-[16px] font-medium mt-[8px] md:mt-[12px]">
               Langkah-langkah dan ketentuan dalam memberikan penilaian form Patriot Metric.
             </p>
           </div>
@@ -18,20 +18,20 @@
           {{-- Steps --}}
           <div class="space-y-[24px]">
             {{-- Step 1 --}}
-            <div class="bg-white border border-[#e2e8f0] rounded-[10px] p-[32px] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1)] flex flex-col md:flex-row gap-[24px]">
+            <div class="bg-white border border-[#e2e8f0] rounded-[10px] p-[24px] md:p-[32px] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1)] flex flex-col md:flex-row gap-[16px] md:gap-[24px]">
               <div class="w-[56px] h-[56px] rounded-[10px] bg-[rgba(27,94,32,0.1)] flex items-center justify-center shrink-0 border border-[rgba(27,94,32,0.2)]">
                 <span class="text-[24px] font-bold text-[#1b5e20]">1</span>
               </div>
               <div class="space-y-[12px] pt-[4px]">
                 <h3 class="text-[20px] font-bold text-[#1d293d]">Pilih Institusi dari Daftar Plotting</h3>
                 <p class="text-[#62748e] text-[15px] font-medium leading-[24px]">
-                  Buka menu <span class="font-bold text-[#1d293d]">Dashboard Utama</span> dan lihat daftar Institusi/Submitter yang telah di-plotting kepada Anda. Klik tombol <span class="font-bold text-[#1d293d]">Lihat Detail</span> atau <span class="font-bold text-[#1d293d]">Nilai Sekarang</span> untuk mulai memeriksa isian rubrik dari submitter terkait.
+                  Buka menu <span class="font-bold text-[#1d293d]">Dashboard Utama</span> dan lihat daftar Institusi/Peserta yang telah di-plotting kepada Anda. Klik tombol <span class="font-bold text-[#1d293d]">Lihat Detail</span> atau <span class="font-bold text-[#1d293d]">Nilai Sekarang</span> untuk mulai memeriksa isian rubrik dari peserta terkait.
                 </p>
               </div>
             </div>
 
             {{-- Step 2 --}}
-            <div class="bg-white border border-[#e2e8f0] rounded-[10px] p-[32px] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1)] flex flex-col md:flex-row gap-[24px]">
+            <div class="bg-white border border-[#e2e8f0] rounded-[10px] p-[24px] md:p-[32px] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1)] flex flex-col md:flex-row gap-[16px] md:gap-[24px]">
               <div class="w-[56px] h-[56px] rounded-[10px] bg-[rgba(27,94,32,0.1)] flex items-center justify-center shrink-0 border border-[rgba(27,94,32,0.2)]">
                 <span class="text-[24px] font-bold text-[#1b5e20]">2</span>
               </div>
@@ -56,7 +56,7 @@
             </div>
 
             {{-- Step 3 --}}
-            <div class="bg-white border border-[#e2e8f0] rounded-[10px] p-[32px] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1)] flex flex-col md:flex-row gap-[24px]">
+            <div class="bg-white border border-[#e2e8f0] rounded-[10px] p-[24px] md:p-[32px] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1)] flex flex-col md:flex-row gap-[16px] md:gap-[24px]">
               <div class="w-[56px] h-[56px] rounded-[10px] bg-[rgba(27,94,32,0.1)] flex items-center justify-center shrink-0 border border-[rgba(27,94,32,0.2)]">
                 <span class="text-[24px] font-bold text-[#1b5e20]">3</span>
               </div>

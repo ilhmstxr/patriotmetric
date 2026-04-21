@@ -1,48 +1,55 @@
 <x-layouts.reviewer>
     <x-slot:title>DASHBOARD UTAMA</x-slot:title>
 
-    <div class="flex-1 overflow-y-auto bg-[#f8fafc] font-['Plus_Jakarta_Sans',sans-serif] p-[40px]">
-        <div class="max-w-[1200px] mx-auto flex flex-col gap-[32px]">
+    <div class="bg-[#f5f5f5] min-h-[calc(100vh-120px)] py-[20px] px-[16px] md:px-[32px]">
+        <div class="max-w-[1000px] mx-auto space-y-[20px]">
             
+            {{-- Header Greeting --}}
+            <div class="flex items-center justify-between bg-white p-[20px] md:p-[24px] rounded-[10px] border border-[#e0e0e0]">
+                <div>
+                    <h1 class="text-[18px] md:text-[22px] font-bold text-[#1d293d]">Selamat Datang, Tim Penilai!</h1>
+                    <p class="text-[13px] md:text-[14px] text-[#64748b] mt-1">Anda memiliki tugas review yang belum diselesaikan. Mari selesaikan tenggat waktu penilaian.</p>
+                </div>
+            </div>
+
             {{-- Summary Cards --}}
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-[24px]">
-                <div class="bg-white rounded-[16px] p-[24px] border border-[#e2e8f0] shadow-sm flex items-center gap-[16px]">
-                    <div class="w-[56px] h-[56px] rounded-[12px] bg-amber-50 text-amber-600 flex items-center justify-center">
-                        <i data-lucide="clock" class="w-[28px] h-[28px]"></i>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-[20px]">
+                <div class="bg-white rounded-[10px] p-[20px] border border-[#e0e0e0] flex items-center gap-[16px]">
+                    <div class="w-[48px] h-[48px] rounded-[10px] bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                        <i data-lucide="clock" class="w-[24px] h-[24px]"></i>
                     </div>
                     <div>
-                        <p class="text-[14px] font-medium text-[#64748b]">Belum Dinilai</p>
-                        <h3 class="text-[28px] font-bold text-[#1d293d] mt-[4px]">12</h3>
+                        <p class="text-[13px] font-semibold text-[#64748b]">Belum Dinilai</p>
+                        <h3 class="text-[24px] font-bold text-[#1d293d] mt-0.5 leading-none">2</h3>
                     </div>
                 </div>
                 
-                <div class="bg-white rounded-[16px] p-[24px] border border-[#e2e8f0] shadow-sm flex items-center gap-[16px]">
-                    <div class="w-[56px] h-[56px] rounded-[12px] bg-blue-50 text-blue-600 flex items-center justify-center">
-                        <i data-lucide="users" class="w-[28px] h-[28px]"></i>
+                <div class="bg-white rounded-[10px] p-[20px] border border-[#e0e0e0] flex items-center gap-[16px]">
+                    <div class="w-[48px] h-[48px] rounded-[10px] bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                        <i data-lucide="users" class="w-[24px] h-[24px]"></i>
                     </div>
                     <div>
-                        <p class="text-[14px] font-medium text-[#64748b]">Total Di-Plotting</p>
-                        <h3 class="text-[28px] font-bold text-[#1d293d] mt-[4px]">45</h3>
+                        <p class="text-[13px] font-semibold text-[#64748b]">Total Di-Plotting</p>
+                        <h3 class="text-[24px] font-bold text-[#1d293d] mt-0.5 leading-none">3</h3>
                     </div>
                 </div>
                 
-                <div class="bg-white rounded-[16px] p-[24px] border border-[#e2e8f0] shadow-sm flex items-center gap-[16px]">
-                    <div class="w-[56px] h-[56px] rounded-[12px] bg-green-50 text-green-600 flex items-center justify-center">
-                        <i data-lucide="check-circle" class="w-[28px] h-[28px]"></i>
+                <div class="bg-white rounded-[10px] p-[20px] border border-[#e0e0e0] flex items-center gap-[16px]">
+                    <div class="w-[48px] h-[48px] rounded-[10px] bg-green-50 border border-green-100 text-green-600 flex items-center justify-center shrink-0">
+                        <i data-lucide="check-circle" class="w-[24px] h-[24px]"></i>
                     </div>
                     <div>
-                        <p class="text-[14px] font-medium text-[#64748b]">Selesai Dinilai</p>
-                        <h3 class="text-[28px] font-bold text-[#1d293d] mt-[4px]">33</h3>
+                        <p class="text-[13px] font-semibold text-[#64748b]">Selesai Dinilai</p>
+                        <h3 class="text-[24px] font-bold text-[#1d293d] mt-0.5 leading-none">1</h3>
                     </div>
                 </div>
             </div>
 
-            {{-- Table 1: Submitter Belum di Review --}}
-            <div class="bg-white rounded-[16px] border border-[#e2e8f0] shadow-sm overflow-hidden">
-                <div class="px-[24px] py-[20px] border-b border-[#e2e8f0] flex justify-between items-center bg-white">
-                    <h2 class="font-bold text-[#1d293d] text-[18px] flex items-center gap-[8px]">
-                        <i data-lucide="alert-circle" class="text-amber-500 w-[20px] h-[20px]"></i>
-                        Submitter Belum Direview (Perlu Tindakan)
+            <div class="bg-white rounded-[10px] border border-[#e0e0e0] overflow-hidden">
+                <div class="px-[20px] md:px-[24px] py-[16px] md:py-[20px] border-b border-[#e2e8f0] flex justify-between items-center bg-[#f8fafc]">
+                    <h2 class="font-bold text-[#1b5e20] text-[15px] flex items-center gap-[8px]">
+                        <i data-lucide="alert-circle" class="text-amber-500 w-[18px] h-[18px]"></i>
+                        Peserta Belum Direview (Perlu Tindakan)
                     </h2>
                 </div>
                 <div class="overflow-x-auto">
@@ -91,17 +98,17 @@
                 </div>
             </div>
 
-            {{-- Table 2: Submitter Di-Plotting --}}
-            <div class="bg-white rounded-[16px] border border-[#e2e8f0] shadow-sm overflow-hidden" x-data="{ filter: 'all' }">
-                <div class="px-[24px] py-[20px] border-b border-[#e2e8f0] flex flex-col md:flex-row justify-between items-start md:items-center gap-[16px] bg-white">
-                    <h2 class="font-bold text-[#1d293d] text-[18px] flex items-center gap-[8px]">
-                        <i data-lucide="list" class="text-blue-500 w-[20px] h-[20px]"></i>
-                        Daftar Plotting Submitter Anda
+            {{-- Table Keseluruhan Plotting Paling Bawah --}}
+            <div class="bg-white rounded-[10px] border border-[#e0e0e0] overflow-hidden" x-data="{ filter: 'all' }">
+                <div class="px-[20px] md:px-[24px] py-[16px] md:py-[20px] border-b border-[#e2e8f0] flex flex-col md:flex-row justify-between items-start md:items-center gap-[16px] bg-[#f8fafc]">
+                    <h2 class="font-bold text-[#1b5e20] text-[15px] flex items-center gap-[8px]">
+                        <i data-lucide="list" class="text-blue-500 w-[18px] h-[18px]"></i>
+                        Daftar Plotting Peserta Anda
                     </h2>
                     
                     <div class="flex items-center gap-[12px]">
                         <span class="text-[13px] font-medium text-[#64748b]">Filter Status:</span>
-                        <select x-model="filter" class="border border-[#cbd5e1] rounded-[8px] px-[12px] py-[8px] text-[14px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20]">
+                        <select x-model="filter" class="border border-[#cbd5e1] rounded-[8px] px-[12px] py-[8px] text-[13px] font-semibold text-[#45556c] focus:outline-none focus:border-[#1b5e20]">
                             <option value="all">Semua Status</option>
                             <option value="pending">Belum Dinilai</option>
                             <option value="done">Selesai Dinilai</option>
@@ -137,6 +144,28 @@
                                 </td>
                                 <td class="py-[16px] px-[24px] text-right">
                                     <a href="{{ route('reviewer.submitter_detail', ['id' => 1]) }}" class="inline-flex items-center gap-[6px] bg-white border border-[#cbd5e1] text-[#45556c] px-[16px] py-[8px] rounded-[8px] text-[13px] font-semibold hover:bg-[#f1f5f9] transition-colors">
+                                        <i data-lucide="eye" class="w-[14px] h-[14px]"></i> Lihat Detail
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-[#f1f5f9] transition-colors" x-show="filter === 'all' || filter === 'pending'">
+                                <td class="py-[16px] px-[24px]">
+                                    <div class="flex items-center gap-[12px]">
+                                        <div class="w-[36px] h-[36px] rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-[14px]">UG</div>
+                                        <div>
+                                            <p class="text-[15px] font-semibold text-[#1d293d]">Universitas Gadjah Mada</p>
+                                            <p class="text-[12px] text-[#64748b]">PTN</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-[16px] px-[24px] text-[14px] text-[#64748b]">14 Okt 2025</td>
+                                <td class="py-[16px] px-[24px]">
+                                    <span class="inline-flex items-center gap-[4px] px-[10px] py-[4px] rounded-full bg-amber-100 text-amber-700 text-[12px] font-bold">
+                                        <i data-lucide="clock" class="w-[12px] h-[12px]"></i> Belum Dinilai
+                                    </span>
+                                </td>
+                                <td class="py-[16px] px-[24px] text-right">
+                                    <a href="{{ route('reviewer.submitter_detail', ['id' => 2]) }}" class="inline-flex items-center gap-[6px] bg-white border border-[#cbd5e1] text-[#45556c] px-[16px] py-[8px] rounded-[8px] text-[13px] font-semibold hover:bg-[#f1f5f9] transition-colors">
                                         <i data-lucide="eye" class="w-[14px] h-[14px]"></i> Lihat Detail
                                     </a>
                                 </td>

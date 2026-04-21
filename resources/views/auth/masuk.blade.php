@@ -20,9 +20,9 @@
         </div>
 
         {{-- Right Panel --}}
-        <div class="flex-1 flex items-center justify-center px-8 py-16 bg-white">
+        <div class="flex-1 flex items-center justify-center px-6 md:px-8 py-10 md:py-16 bg-white">
             <div class="w-full max-w-[448px]">
-                <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[30px] leading-[36px] text-[#1d293d]">Masuk Akun</h2>
+                <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[24px] md:text-[30px] leading-[36px] text-[#1d293d]">Masuk Akun</h2>
                 <p class="mt-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] leading-[24px] text-[#62748e]">
                     Silakan masukkan kredensial institusi Anda.
                 </p>
@@ -39,10 +39,7 @@
                     {{-- Email --}}
                     <div class="relative">
                         <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                <path d="M3.33333 3.33333H16.6667C17.5833 3.33333 18.3333 4.08333 18.3333 4.99999V15C18.3333 15.9167 17.5833 16.6667 16.6667 16.6667H3.33333C2.41667 16.6667 1.66667 15.9167 1.66667 15V4.99999C1.66667 4.08333 2.41667 3.33333 3.33333 3.33333Z" stroke="#90A1B9" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.66667" />
-                                <path d="M18.3333 5L10 10.8333L1.66667 5" stroke="#90A1B9" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.66667" />
-                            </svg>
+                            <i data-lucide="mail" class="w-5 h-5 text-[#90A1B9]"></i>
                         </div>
                         <input
                             type="email"
@@ -59,10 +56,7 @@
                     {{-- Password --}}
                     <div class="relative">
                         <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                <path d="M15.8333 9.16667H4.16667C3.24619 9.16667 2.5 9.91286 2.5 10.8333V16.6667C2.5 17.5871 3.24619 18.3333 4.16667 18.3333H15.8333C16.7538 18.3333 17.5 17.5871 17.5 16.6667V10.8333C17.5 9.91286 16.7538 9.16667 15.8333 9.16667Z" stroke="#90A1B9" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.66667" />
-                                <path d="M5.83333 9.16667V5.83333C5.83333 4.72827 6.27232 3.66846 7.05372 2.88706C7.83512 2.10565 8.89493 1.66667 10 1.66667C11.1051 1.66667 12.1649 2.10565 12.9463 2.88706C13.7277 3.66846 14.1667 4.72827 14.1667 5.83333V9.16667" stroke="#90A1B9" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.66667" />
-                            </svg>
+                            <i data-lucide="lock" class="w-5 h-5 text-[#90A1B9]"></i>
                         </div>
                         <input
                             type="password"

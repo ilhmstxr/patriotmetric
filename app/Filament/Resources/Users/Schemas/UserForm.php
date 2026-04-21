@@ -27,7 +27,7 @@ class UserForm
                     ->options([
                         'admin' => 'Admin',
                         'reviewer' => 'Reviewer',
-                        'submitter' => 'Submitter',
+                        'submitter' => 'Peserta',
                     ])
                     ->required(),
                 \Filament\Forms\Components\TextInput::make('nama_institusi')
