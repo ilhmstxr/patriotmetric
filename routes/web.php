@@ -27,8 +27,8 @@ Route::get('/tim', function () {
     return view('tim');
 });
 
-Route::get('/pemenang', function () {
-    return view('pemenang');
+Route::get('/penghargaan', function () {
+    return view('penghargaan');
 });
 
 Route::get('/panduan', function () {
@@ -77,5 +77,16 @@ Route::prefix('dashboard')->group(function () {
     })->name('dashboard.panduan');
 });
 
+Route::prefix('reviewer')->group(function () {
+    Route::get('/', function () {
+        return view('reviewer.index');
+    })->name('reviewer.index');
 
-// reviewer
+    Route::get('/panduan', function () {
+        return view('reviewer.panduan');
+    })->name('reviewer.panduan');
+
+    Route::get('/submitter/{id}', function ($id) {
+        return view('reviewer.detail', compact('id'));
+    })->name('reviewer.submitter_detail');
+});

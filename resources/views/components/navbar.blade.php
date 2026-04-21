@@ -48,9 +48,23 @@
                 </div>
             </div>
 
-            <a href="{{ url('/pemenang') }}" class="px-3 py-2 rounded-2xl font-['Plus_Jakarta_Sans',sans-serif] text-[14px] whitespace-nowrap transition-colors {{ request()->is('pemenang') ? 'font-semibold text-[#1b5e20]' : 'font-medium text-[#45556c] hover:text-[#1b5e20]' }}">
-                Pemenang
-            </a>
+            {{-- Informasi Dropdown --}}
+            <div class="relative" @mouseenter="dropdownInfoOpen = true" @mouseleave="dropdownInfoOpen = false" x-data="{ dropdownInfoOpen: false }">
+                <button class="flex items-center gap-1 px-3 py-2 rounded-2xl font-['Plus_Jakarta_Sans',sans-serif] text-[14px] whitespace-nowrap transition-colors {{ request()->is('penghargaan') ? 'font-semibold text-[#1b5e20]' : 'font-medium text-[#45556c] hover:text-[#1b5e20]' }}">
+                    Informasi
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="transition-transform" :class="dropdownInfoOpen ? 'rotate-180' : ''">
+                        <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.33" opacity="0.5" />
+                    </svg>
+                </button>
+
+                <div x-show="dropdownInfoOpen" x-transition class="absolute top-full left-0 pt-1 z-50 w-full" style="display: none;">
+                    <div class="bg-white rounded-xl shadow-lg border border-[#f1f5f9] py-2 min-w-[180px]">
+                        <a href="{{ url('/penghargaan') }}" @click="dropdownInfoOpen = false" class="block px-4 py-2.5 font-['Plus_Jakarta_Sans',sans-serif] text-[14px] transition-colors {{ request()->is('penghargaan') ? 'font-semibold text-[#1b5e20] bg-[rgba(27,94,32,0.05)]' : 'font-medium text-[#45556c] hover:text-[#1b5e20] hover:bg-[rgba(27,94,32,0.05)]' }}">
+                            Penghargaan 2026
+                        </a>
+                    </div>
+                </div>
+            </div>
 
             <a href="{{ url('/panduan') }}" class="px-3 py-2 rounded-2xl font-['Plus_Jakarta_Sans',sans-serif] text-[14px] whitespace-nowrap transition-colors {{ request()->is('panduan') ? 'font-semibold text-[#1b5e20]' : 'font-medium text-[#45556c] hover:text-[#1b5e20]' }}">
                 Panduan

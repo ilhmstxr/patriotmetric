@@ -74,7 +74,7 @@ export function PanduanPengguna() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                   <p className="text-[#92400E] text-[14px] font-medium leading-[22px]">
-                    Pastikan link yang Anda berikan <span className="font-bold">dapat diakses (Public / Anyone with the link)</span> agar tim Reviewer/Asesor dapat membuka dan memvalidasi dokumen tersebut.
+                    Pastikan link yang Anda berikan <span className="font-bold">dapat diakses (Public / Anyone with the link)</span> agar tim Reviewer dapat membuka dan memvalidasi dokumen tersebut.
                   </p>
                 </div>
               </div>
