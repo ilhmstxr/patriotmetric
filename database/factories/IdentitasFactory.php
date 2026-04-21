@@ -25,6 +25,9 @@ class IdentitasFactory extends Factory
             'jml_tendik' => fake()->numberBetween(50, 1000),
             'jml_prodi' => fake()->numberBetween(10, 100),
             'jml_ukm' => fake()->numberBetween(5, 50),
+            'jml_agama' => fake()->numberBetween(1, 6),
+            'visi' => fake()->paragraph(),
+            'misi' => fake()->paragraphs(3, true),
             'legal_documents' => [
                 'sk_rektor' => fake()->url(),
                 'aipt' => fake()->url(),

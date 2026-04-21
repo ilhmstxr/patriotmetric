@@ -114,4 +114,13 @@ untuk rubrik
 6. validasi reviewer
 7. hasil
 
-TODO: pagination admin rubrik by kategori
+TODO: pagination admin rubrik by kategor
+
+note: 
+1. jika ada data jawaban_teks kosong bisa di null kan 
+2. untuk jawabannya bisa diisi opsi & teksfield singkat
+3. diinject  
+4. untuk rumus perhitungan dibuat di frontend, jadi tinggal terima hasil nya lalu di lempar ke api
+DONE 5. untuk pengumpulan_jawabans diisi foreign di opsi jawaban + jawaban_teks
+6. qa revisi tampilan submitter 
+DONE 7. nambahin label isian singkat / pilihan ganda

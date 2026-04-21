@@ -5,7 +5,9 @@ namespace App\Services;
 use App\Repositories\SubmitterRepository;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use App\DTOs\SubmitterDTO;
+use App\DTO\SubmitterDTO\SubmitterDTO;
+use App\DTO\SubmitterDTO\BaselineDTO;
+use Illuminate\Support\Str;
 
 /**
  * @property \App\Repositories\SubmitterRepository $repository
@@ -17,31 +19,104 @@ class SubmitterService extends BaseService
         parent::__construct($repository);
     }
 
-    /**
-     * CORE SECURITY: Helper untuk mencari Assessment ID yang sedang aktif milik user.
-     * Mencegah user memodifikasi data institusi lain.
-     */
-    private function getActiveAssessmentOrFail($userId)
-    {
-        $assessment = $this->repository->findActiveByUserId($userId);
 
-        if (!$assessment) {
-            throw new Exception("Sesi asesmen aktif tidak ditemukan untuk periode ini. Pastikan baseline Anda sudah terverifikasi.", 404);
+    public function validateAccess(SubmitterDTO $dto)
+    {
+        // 1. Interogasi Tabel User
+        if (!$this->repository->isUserActive($dto->userId)) {
+            throw new Exception("Akses Ditolak: Akun Anda berstatus tidak aktif atau ditangguhkan.", 403);
         }
 
+        // 2. Interogasi Tabel Pengumpulan
+        $assessment = $this->repository->findActiveByUserId($dto->userId);
+
+        if (!$assessment) {
+            throw new Exception("Akses Ditolak: Anda tidak memiliki sesi asesmen yang berstatus ACTIVE atau IN_PROGRESS.", 403);
+        }
+
+        // Jika lolos kedua syarat, kembalikan data assessment agar bisa dipakai 
+        // oleh fungsi lain tanpa perlu query database lagi.
         return $assessment;
     }
+
+    public function storeBaseline(BaselineDTO $dto)
+    {
+        // DONE
+        $assessment = $this->repository->findActiveByUserId($dto->userId);
+
+        $existingIdentitas = $this->repository->findIdentitasByPengumpulanId($assessment->id);
+
+        if ($existingIdentitas) {
+            throw new Exception("Data baseline (identitas) sudah pernah diisi untuk periode ini.", 403);
+        }
+
+        // 3. Proses File Upload (Eksekusi array legalDocuments dari DTO)
+        // Anda wajib mengekstrak file dari DTO dan menyimpannya ke Storage (S3/Local)
+        // Array kembaliannya berisi path file, contoh: ['surat_pengantar' => 'path/to/file.pdf']
+        $documentPaths = $this->processLegalDocuments($dto->legalDocuments, $assessment->id, $assessment->tahun_periode);
+
+        // 4. Transformasi DTO ke Array Database (Pola Service-Repository)
+        $identitasData = [
+            'pengumpulan_id' => $assessment->id,
+            'jml_mahasiswa'  => $dto->jmlMahasiswa,
+            'jml_dosen'      => $dto->jmlDosen,
+            'jml_tendik'     => $dto->jmlTendik,
+            'jml_prodi'      => $dto->jmlProdi,
+            'jml_ukm'        => $dto->jmlUkm,
+            'jml_agama'      => $dto->jmlAgama,
+            'visi'           => $dto->visi,
+            'misi'           => $dto->misi,
+            // JSON Encode sangat penting jika DB kolomnya text/json
+            'legal_documents' => json_encode($documentPaths),
+            'is_verified'    => false, // Nilai default
+        ];
+
+        // 5. Eksekusi Simpan Data tanpa mengubah status pengumpulan
+        return $this->repository->createIdentitas($identitasData);
+    }
+
+    private function processLegalDocuments(array $documents, $assessment, $year): array
+    {
+        $paths = [];
+
+        // 1. Dapatkan nama instansi dan tahun (Sesuaikan pemanggilan relasi 'institution' 
+        // dengan nama relasi di Model Pengumpulan Anda)
+        // Jika tidak ada relasi, ambil dari DB berdasarkan $assessment->institution_id
+        $namaInstansi = $assessment->institusi->name ?? 'instansi-tanpa-nama';
+        $tahun = $year; // Berdasarkan struktur tabel di gambar Anda
+
+        // 2. Buat nama direktori yang aman (Output: lampiran-submitter/upn-veteran-jatim-2026)
+        $safeFolderName = Str::slug($namaInstansi) . '-' . $tahun;
+        $directoryPath = 'lampiran-submitter/' . $safeFolderName;
+
+        // 3. Looping dan simpan file
+        foreach ($documents as $key => $file) {
+            // Ambil nama file asli tanpa ekstensi
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = $file->getClientOriginalExtension();
+
+            // Format aman: timestamp_nama-file-asli.pdf
+            // Contoh: 1713600000_surat-pengantar.pdf
+            $safeFileName = time() . '_' . Str::slug($originalName) . '.' . $extension;
+
+            // Simpan ke Laravel Storage (disimpan di: storage/app/public/lampiran-submitter/...)
+            $storedPath = $file->storeAs($directoryPath, $safeFileName, 'public');
+
+            // Simpan URL public-nya ke array untuk database
+            $paths[$key] = '/storage/' . $storedPath;
+        }
+
+        return $paths;
+    }
+
 
     /**
      * 1. Ambil Semua Pertanyaan & Jawaban (Single Form)
      */
-    public function getAllQuestionsWithAnswers(SubmitterDTO $dto)
+    public function getAllQuestionsWithAnswers($assessment)
     {
-        $assessment = $this->getActiveAssessmentOrFail($dto->userId);
-
-        // Repository mengambil seluruh soal, beserta relasi opsi jawaban
-        // dan jawaban tersimpan (jika ada) khusus untuk assessment_id ini.
-        $questions = $this->repository->getAllQuestionsWithExistingAnswers($assessment->id);
+        // Langsung panggil repository menggunakan ID Assessment dari DTO
+        $questions = $this->repository->getAllQuestionsWithExistingAnswers($assessment);
 
         if ($questions->isEmpty()) {
             throw new Exception("Master data soal belum tersedia.", 404);
@@ -49,8 +124,7 @@ class SubmitterService extends BaseService
 
         return [
             'assessment_id' => $assessment->id,
-            'status' => $assessment->status,
-            'questions' => $questions
+            'questions'     => $questions
         ];
     }
 
@@ -89,34 +163,34 @@ class SubmitterService extends BaseService
     /**
      * 3. Final Lock (Validasi dan Penguncian)
      */
-    public function lockAssessment(SubmitterDTO $dto)
+    public function lockAssessment($assessment)
     {
-        $assessment = $this->getActiveAssessmentOrFail($dto->userId);
 
+        // cek total pertanyaan
+        // cek yang telah dijawab oleh user, lalu jika ada pertanyaan yang belum terisi opsi jawabannya, maka otomatis tidak bisa di lock 
         $totalQuestions = $this->repository->countTotalMandatoryQuestions();
-        $answered = $this->repository->countValidAnswers($assessment->id);
+        $answered = $this->repository->countValidAnswers($assessment);
 
         if ($answered < $totalQuestions) {
             throw new Exception("Validasi kelengkapan gagal: Anda baru menjawab {$answered} dari {$totalQuestions} indikator. Harap lengkapi semua sebelum Final Submit.", 422);
         }
 
         // Kunci Data
-        return $this->repository->updateStatus($assessment->id, 'SUBMITTED');
+        return $this->repository->updateStatusAssessment($assessment->id, 'SUBMITTED');
     }
 
     /**
      * 4. Hitung Estimasi Total (Preview Keseluruhan Form)
      */
-    public function calculateTotalPreview(SubmitterDTO $dto)
+    public function calculateTotalPreview($assessment)
     {
-        $assessment = $this->getActiveAssessmentOrFail($dto->userId);
         $answers = $this->repository->getAllAnswersByAssessment($assessment->id);
 
         $totalEstimatedScore = 0;
         foreach ($answers as $answer) {
             // TODO: Ganti dengan formula baku PatriotMetric (Normalisasi/Bobot)
-            if (is_numeric($answer->claim_value)) {
-                $totalEstimatedScore += $answer->claim_value;
+            if (is_numeric($answer->skor_sistem)) {
+                $totalEstimatedScore += $answer->skor_sistem;
             }
         }
 

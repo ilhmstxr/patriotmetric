@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\SubmitterDTO\BaselineDTO;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponse;
-use App\DTOs\SubmitterDTO;
+use App\DTO\SubmitterDTO\SubmitterDTO;
+use App\DTO\SubmitterDTO\QuestionDTO;
+use App\Http\Requests\BaselineSubmitterRequest;
 use App\Services\SubmitterService;
 use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class SubmitterController extends Controller
 {
@@ -23,31 +27,54 @@ class SubmitterController extends Controller
      * Helper internal untuk mem-build DTO dengan konteks User Auth yang aman.
      * Mencegah celah IDOR (Insecure Direct Object Reference).
      */
-    private function getAuthDTO(): SubmitterDTO
+    private function getValidatedAssessment()
     {
-        $dto = new SubmitterDTO();
-        // $dto->userId = Auth::id(); // Menggunakan ID User login, bukan dari URL
-        $dto->userId = 2;
-        return $dto;
+        $userId = Auth::id() ?? 3; // Ganti 2 dengan Auth::id() murni saat production
+
+        // Buat DTO untuk otorisasi
+        $authDto = new SubmitterDTO($userId);
+
+        // Lempar ke Service. Jika user di-banned, ini akan otomatis melempar Error 403.
+        // Jika sukses, ini mereturn object $assessment dari database.
+        return $this->submitterService->validateAccess($authDto);
+    }
+
+    public function storeBaseline(BaselineSubmitterRequest $request, $userId)
+    // DONE
+    {
+        try {
+            $validatedData = $request->validated();
+
+            $dto = new BaselineDTO((int) $userId, $validatedData);
+
+            $this->submitterService->storeBaseline($dto);
+
+            return $this->successResponse(null, 'Data baseline berhasil disimpan', 200);
+        } catch (\Throwable $e) {
+            $status = $e->getCode() == 403 ? 403 : 500;
+            return $this->errorResponse($e->getMessage(), $status);
+        }
     }
 
     /**
      * 1. Ambil Semua Pertanyaan (Single Form)
      * Menggantikan getQuestionsByCategory dan getSteps
      */
-    public function getAllQuestions(Request $request)
+    public function getAllQuestions()
     {
-        $dto = $this->getAuthDTO();
-        // Service akan mencari assessment_id aktif berdasarkan userId
-        $questions = $this->submitterService->getAllQuestionsWithAnswers($dto);
+        try {
+            // 1. Panggil Helper Otorisasi (Hasilnya sudah dijamin valid!)
+            $assessment = $this->getValidatedAssessment();
 
-        return $questions;
-        // try {
-        //     // return $this->successResponse($questions, 'Data seluruh soal dan jawaban tersimpan berhasil diambil', 200);
-        // } catch (\Exception $e) {
-        //     $status = $e->getCode() == 404 ? 404 : 500;
-        //     return $this->errorResponse($e->getMessage(), $status);
-        // }
+            // 3. Eksekusi Utama
+            $questions = $this->submitterService->getAllQuestionsWithAnswers($assessment);
+
+            // Respons ini akan secara otomatis menghasilkan JSON seperti yang Anda lampirkan
+            return $this->successResponse($questions, 'Data seluruh soal dan jawaban tersimpan berhasil diambil', 200);
+        } catch (\Throwable $e) {
+            $status = in_array($e->getCode(), [403, 404]) ? $e->getCode() : 500;
+            return $this->errorResponse($e->getMessage(), $status);
+        }
     }
 
     /**
@@ -84,9 +111,9 @@ class SubmitterController extends Controller
     public function finalize(Request $request)
     {
         try {
-            $dto = $this->getAuthDTO();
-
-            $this->submitterService->lockAssessment($dto);
+            $assessment = $this->getValidatedAssessment();
+            
+            $this->submitterService->lockAssessment($assessment);
 
             return $this->successResponse(null, 'Seluruh asesmen telah dikunci (Final Lock)', 200);
         } catch (\Exception $e) {
@@ -102,9 +129,9 @@ class SubmitterController extends Controller
     public function previewResults(Request $request)
     {
         try {
-            $dto = $this->getAuthDTO();
+            $assessment = $this->getValidatedAssessment();
 
-            $previewData = $this->submitterService->calculateTotalPreview($dto);
+            $previewData = $this->submitterService->calculateTotalPreview($assessment);
 
             return $this->successResponse($previewData, 'Estimasi skor total berhasil dihitung', 200);
         } catch (\Exception $e) {

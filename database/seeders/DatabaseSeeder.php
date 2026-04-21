@@ -30,7 +30,40 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::create([
-            'email' => "user@admin.com",
+            'email' => "user1@admin.com",
+            'password' => bcrypt('user'),
+            'role' => 'SUBMITTER',
+            'status' => 'ACTIVE',
+        ]);
+
+        User::create([
+            'email' => "user2@admin.com",
+            'password' => bcrypt('user'),
+            'role' => 'SUBMITTER',
+            'status' => 'ACTIVE',
+        ]);
+        User::create([
+            'email' => "user3@admin.com",
+            'password' => bcrypt('user'),
+            'role' => 'SUBMITTER',
+            'status' => 'ACTIVE',
+        ]);
+
+        User::create([
+            'email' => "user4@admin.com",
+            'password' => bcrypt('user'),
+            'role' => 'SUBMITTER',
+            'status' => 'ACTIVE',
+        ]);
+        User::create([
+            'email' => "user5@admin.com",
+            'password' => bcrypt('user'),
+            'role' => 'SUBMITTER',
+            'status' => 'ACTIVE',
+        ]);
+
+        User::create([
+            'email' => "user6@admin.com",
             'password' => bcrypt('user'),
             'role' => 'SUBMITTER',
             'status' => 'ACTIVE',
@@ -47,7 +80,7 @@ class DatabaseSeeder extends Seeder
             InstitusiSeeder::class,
             // AssessmentSeeder::class,
             PengumpulanSeeder::class,
-            IdentitasSeeder::class,
+            // IdentitasSeeder::class,
             
             KategoriSeeder::class,
             PertanyaanSeeder::class,

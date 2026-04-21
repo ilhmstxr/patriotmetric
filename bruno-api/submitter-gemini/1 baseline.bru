@@ -1,0 +1,29 @@
+meta {
+  name: 1 baseline
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://127.0.0.1:8000/api/baseline/2
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  jml_mahasiswa: 10000
+  jml_dosen: 100
+  jml_tendik: 100
+  jml_prodi: 25
+  jml_ukm: 40
+  jml_agama: 7
+  visi: foya
+  misi: foya foya
+  legal_documents[surat_pengantar]: @file(C:\Users\Ilhamstxr\Downloads\Poin Utama Bab 2 Netiket.pdf)
+  legal_documents[sk_pendirian_pt]: @file(C:\Users\Ilhamstxr\Downloads\Poin Utama Bab 2 Netiket.pdf)
+  legal_documents[sk_rektor_bela_negara]: @file(C:\Users\Ilhamstxr\Downloads\Poin Utama Bab 2 Netiket.pdf)
+  legal_documents[struktur_organisasi]: @file(C:\Users\Ilhamstxr\Downloads\Poin Utama Bab 2 Netiket.pdf)
+  legal_documents[pakta_integritas]: @file(C:\Users\Ilhamstxr\Downloads\Poin Utama Bab 2 Netiket.pdf)
+  legal_documents[dokumen_akreditasi]: @file(C:\Users\Ilhamstxr\Downloads\Poin Utama Bab 2 Netiket.pdf)
+  legal_documents[surat_pernyataan_pic]: @file(C:\Users\Ilhamstxr\Downloads\Poin Utama Bab 2 Netiket.pdf)
+}

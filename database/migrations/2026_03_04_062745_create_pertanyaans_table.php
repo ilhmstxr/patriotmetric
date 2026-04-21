@@ -14,12 +14,12 @@ return new class extends Migration {
             $table->id();
             $table->string('kode_pertanyaan')->nullable(); // dummy
             $table->foreignId('category_id')->constrained('kategoris')->onDelete('cascade');
-            $table->string('teks_pertanyaan'); 
+            $table->text('teks_pertanyaan');
             $table->text('deskripsi')->nullable(); // dummy
             $table->text('kebutuhan_bukti')->nullable(); // dummy
-            $table->string('tipe'); 
+            $table->enum('tipe', ['pilihan_ganda', 'isian_singkat']);
             $table->integer('skor_maksimal')->default(0); // dummy (cek rubrik)
-            $table->json('opsi_jawaban')->nullable();
+            // $table->json('opsi_jawaban')->nullable();
             $table->timestamps();
         });
     }

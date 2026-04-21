@@ -20,6 +20,11 @@ return new class extends Migration {
             $table->integer('jml_tendik')->default(0);
             $table->integer('jml_prodi')->default(0);
             $table->integer('jml_ukm')->default(0);
+            $table->integer('jml_agama')->default(0);
+            
+            // visi misi
+            $table->text('visi')->nullable();
+            $table->text('misi')->nullable();
 
             // Link Dokumen Legal (JSON untuk fleksibilitas)
             $table->json('legal_documents')->nullable(); // {'sk_rektor': 'url', 'aipt': 'url'}

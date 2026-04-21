@@ -10,10 +10,18 @@ class pertanyaan extends Model
     /** @use HasFactory<\Database\Factories\PertanyaanFactory> */
     use HasFactory;
 
-    protected $fillable = ['category_id', 'kode_pertanyaan', 'teks_pertanyaan', 'deskripsi', 'kebutuhan_bukti', 'tipe', 'opsi_jawaban', 'skor_maksimal'];
+    protected $fillable = [
+        'category_id',
+        'kode_pertanyaan',
+        'teks_pertanyaan',
+        'deskripsi',
+        'kebutuhan_bukti',
+        'tipe',
+        'skor_maksimal'
+    ];
 
     protected $casts = [
-        'opsi_jawaban' => 'array',
+        //
     ];
 
     public function kategori()
@@ -23,6 +31,11 @@ class pertanyaan extends Model
 
     public function jawaban()
     {
-        return $this->hasMany(pengumpulan_jawaban::class, 'question_id');
+        return $this->hasMany(pengumpulan_jawaban::class, 'pertanyaan_id');
+    }
+
+    public function opsiJawabans()
+    {
+        return $this->hasMany(opsiJawaban::class, 'pertanyaan_id');
     }
 }

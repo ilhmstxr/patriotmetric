@@ -13,7 +13,8 @@ return new class extends Migration {
         Schema::create('pengumpulan_jawabans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('submission_id')->constrained('pengumpulans')->onDelete('cascade');
-            $table->foreignId('question_id')->constrained('pertanyaans')->onDelete('cascade');
+            $table->foreignId('pertanyaan_id')->constrained('pertanyaans')->onDelete('cascade');
+            $table->foreignId('jawaban_id')->nullable()->constrained('opsi_jawaban')->onDelete('cascade');
             $table->text('jawaban_teks')->nullable();
             $table->string('tautan_bukti_drive')->nullable();
             $table->decimal('skor_sistem', 8, 2)->default(0);

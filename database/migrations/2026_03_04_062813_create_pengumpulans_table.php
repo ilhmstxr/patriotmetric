@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->string('no_hp_pic');
 
             $table->year('tahun_periode');
-            $table->enum('status', ['PENDING', 'PENDING_BASELINE', 'ACTIVE', 'IN_PROGRESS', 'SUBMITTED', 'GRADED'])->default('PENDING');
+            $table->enum('status', ['ACTIVE', 'IN_PROGRESS', 'SUBMITTED', 'GRADED'])->default('ACTIVE');
 
             // Satu institusi hanya boleh punya satu asesmen per tahun
             $table->unique(['institution_id', 'tahun_periode']);

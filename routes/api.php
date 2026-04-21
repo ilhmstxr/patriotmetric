@@ -77,8 +77,9 @@ Route::get('/', [UserController::class, 'profile'])->name('api.profile');
 
 // TAHAP 1: Baseline / Daftar Ulang (Pemberkasan)
 // Parameter assessment_id dihapus dari URL, ambil dari Auth di Controller
+
 // daftar ulang
-Route::post('baseline/{assessment_id?}', [SubmitterController::class, 'storeBaseline'])->name('api.profile.baseline');
+/* DONE */Route::post('baseline/{userId}', [SubmitterController::class, 'storeBaseline'])->name('api.profile.baseline');
 // });
 
 // --- Tahap 3: Assessment (Single Form & Auto-Save) ---
@@ -86,16 +87,16 @@ Route::post('baseline/{assessment_id?}', [SubmitterController::class, 'storeBase
 Route::prefix('assessment/submitter')->group(function () {
     // 1. Ambil semua pertanyaan (Single Form)
     // Mendukung naked URL (/questions) atau berparameter (/questions/99)
-    Route::get('/questions/{assessment_id?}', [SubmitterController::class, 'getAllQuestions'])->name('api.submitter.questions');
+    Route::get('/questions/{assessmentId}', [SubmitterController::class, 'getAllQuestions'])->name('api.submitter.questions');
 
     // 2. Auto-save (Dipanggil tiap 5 menit atau saat ganti input)
     Route::post('/auto-save/{assessment_id?}', [SubmitterController::class, 'autoSaveProgress'])->name('api.submitter.auto-save');
 
     // 3. Final Lock (Submit Akhir)
-    Route::post('/finalize/{assessment_id?}', [SubmitterController::class, 'finalize'])->name('api.submitter.finalize');
+    Route::post('/finalize/{assessmentId}', [SubmitterController::class, 'finalize'])->name('api.submitter.finalize');
 
     // 4. Preview Nilai (Setelah Finalize atau Real-time)
-    Route::get('/preview-results/{assessment_id?}', [SubmitterController::class, 'previewResults'])->name('api.submitter.preview-results');
+    Route::get('/preview-results/{assessmentId}', [SubmitterController::class, 'previewResults'])->name('api.submitter.preview-results');
 
     // 5. Progress Check (Opsional: Untuk Progress Bar Dashboard)
     Route::get('/current-progress/{assessment_id?}', [SubmitterController::class, 'getProgress'])->name('api.submitter.progress');

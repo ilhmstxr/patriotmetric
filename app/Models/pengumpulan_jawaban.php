@@ -10,7 +10,7 @@ class pengumpulan_jawaban extends Model
     /** @use HasFactory<\Database\Factories\PengumpulanJawabanFactory> */
     use HasFactory;
 
-    protected $fillable = ['submission_id', 'question_id', 'jawaban_teks', 'tautan_bukti_drive', 'skor_sistem', 'skor_validasi_reviewer'];
+    protected $fillable = ['submission_id', 'pertanyaan_id', 'jawaban_teks', 'tautan_bukti_drive', 'skor_sistem', 'skor_validasi_reviewer'];
 
     public function pengumpulan()
     {
@@ -19,6 +19,6 @@ class pengumpulan_jawaban extends Model
 
     public function pertanyaan()
     {
-        return $this->belongsTo(pertanyaan::class, 'question_id');
+        return $this->belongsTo(pertanyaan::class, 'pertanyaan_id');
     }
 }
