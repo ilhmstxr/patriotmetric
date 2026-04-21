@@ -11,7 +11,7 @@ class Identitas extends Model
     use HasFactory;
 
     protected $fillable = [
-        'assessment_id',
+        'pengumpulan_id',
         'jml_mahasiswa',
         'jml_dosen',
         'jml_tendik',
@@ -27,8 +27,8 @@ class Identitas extends Model
         'is_verified' => 'boolean',
     ];
 
-    public function assessment()
+    public function pengumpulan()
     {
-        return $this->belongsTo(Assessment::class, 'assessment_id');
+        return $this->belongsTo(Pengumpulan::class, 'pengumpulan_id');
     }
 }

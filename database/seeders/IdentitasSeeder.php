@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Assessment;
 use App\Models\Identitas;
+use App\Models\Pengumpulan;
 use Illuminate\Database\Seeder;
 
 class IdentitasSeeder extends Seeder
@@ -13,15 +13,15 @@ class IdentitasSeeder extends Seeder
      */
     public function run(): void
     {
-        $assessments = Assessment::all();
+        $pengumpulans = Pengumpulan::all();
 
-        if ($assessments->count() === 0) {
-            $assessments = Assessment::factory(5)->create();
+        if ($pengumpulans->count() === 0) {
+            $pengumpulans = Pengumpulan::factory(5)->create();
         }
 
-        foreach ($assessments as $assessment) {
+        foreach ($pengumpulans as $pengumpulan) {
             Identitas::factory()->create([
-                'assessment_id' => $assessment->id,
+                'pengumpulan_id' => $pengumpulan->id,
             ]);
         }
     }

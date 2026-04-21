@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\SubmitterRepository;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use App\DTOs\SubmitterDTO;
 
 /**
  * @property \App\Repositories\SubmitterRepository $repository
@@ -23,7 +24,7 @@ class SubmitterService extends BaseService
     private function getActiveAssessmentOrFail($userId)
     {
         $assessment = $this->repository->findActiveByUserId($userId);
-        
+
         if (!$assessment) {
             throw new Exception("Sesi asesmen aktif tidak ditemukan untuk periode ini. Pastikan baseline Anda sudah terverifikasi.", 404);
         }
@@ -34,14 +35,14 @@ class SubmitterService extends BaseService
     /**
      * 1. Ambil Semua Pertanyaan & Jawaban (Single Form)
      */
-    public function getAllQuestionsWithAnswers(\App\DTOs\SubmitterDTO $dto)
+    public function getAllQuestionsWithAnswers(SubmitterDTO $dto)
     {
         $assessment = $this->getActiveAssessmentOrFail($dto->userId);
 
         // Repository mengambil seluruh soal, beserta relasi opsi jawaban
         // dan jawaban tersimpan (jika ada) khusus untuk assessment_id ini.
         $questions = $this->repository->getAllQuestionsWithExistingAnswers($assessment->id);
-        
+
         if ($questions->isEmpty()) {
             throw new Exception("Master data soal belum tersedia.", 404);
         }
@@ -56,10 +57,10 @@ class SubmitterService extends BaseService
     /**
      * 2. Auto-Save Progress (Simpan periodik / Single Form)
      */
-    public function autoSaveProgress(\App\DTOs\SubmitterDTO $dto)
+    public function autoSaveProgress(SubmitterDTO $dto)
     {
         $assessment = $this->getActiveAssessmentOrFail($dto->userId);
-        
+
         // Pagar Keamanan: Tolak jika sudah dikunci
         if (in_array($assessment->status, ['SUBMITTED', 'REVIEWING', 'REVIEWED', 'PUBLISHED'])) {
             throw new Exception("Akses ditolak: Asesmen tidak bisa diubah karena sudah dikunci (Final).", 403);
@@ -88,7 +89,7 @@ class SubmitterService extends BaseService
     /**
      * 3. Final Lock (Validasi dan Penguncian)
      */
-    public function lockAssessment(\App\DTOs\SubmitterDTO $dto)
+    public function lockAssessment(SubmitterDTO $dto)
     {
         $assessment = $this->getActiveAssessmentOrFail($dto->userId);
 
@@ -106,7 +107,7 @@ class SubmitterService extends BaseService
     /**
      * 4. Hitung Estimasi Total (Preview Keseluruhan Form)
      */
-    public function calculateTotalPreview(\App\DTOs\SubmitterDTO $dto)
+    public function calculateTotalPreview(SubmitterDTO $dto)
     {
         $assessment = $this->getActiveAssessmentOrFail($dto->userId);
         $answers = $this->repository->getAllAnswersByAssessment($assessment->id);
@@ -129,13 +130,13 @@ class SubmitterService extends BaseService
     /**
      * 5. Ambil Progres Saat Ini (Untuk UI Progress Bar)
      */
-    public function getCurrentProgress(\App\DTOs\SubmitterDTO $dto)
+    public function getCurrentProgress(SubmitterDTO $dto)
     {
         $assessment = $this->getActiveAssessmentOrFail($dto->userId);
-        
+
         $totalQuestions = $this->repository->countTotalMandatoryQuestions();
         $answered = $this->repository->countValidAnswers($assessment->id);
-        
+
         $percentage = $totalQuestions > 0 ? round(($answered / $totalQuestions) * 100) : 0;
 
         return [

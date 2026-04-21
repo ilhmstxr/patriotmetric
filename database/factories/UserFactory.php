@@ -28,7 +28,12 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'role' => fake()->randomElement(['ADMIN', 'REVIEWER', 'SUBMITTER']),
-            'status' => fake()->randomElement(['PENDING_REGISTRATION', 'REGISTERED', 'BASELINE_SUBMITTED', 'ACTIVE']),
+            'status' => fake()->randomElement([ "UNVERIFIED",
+                    "PENDING",
+                    "ACTIVE",
+                    "SUSPENDED",
+                    "BANNED",
+                ]),
             'remember_token' => Str::random(10),
         ];
     }

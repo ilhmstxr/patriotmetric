@@ -24,13 +24,11 @@ return new class extends Migration {
             $table->enum(
                 'status',
                 [
-                    "PENDING_REGISTRATION",
-                    "PENDING_BASELINE",
+                    "UNVERIFIED",
+                    "PENDING",
                     "ACTIVE",
-                    "SUBMITTED",
-                    "IN_PROGRESS",
-                    "REVIEWING",
-                    "PUBLISED"
+                    "SUSPENDED",
+                    "BANNED",
                 ]
             );
             $table->rememberToken();

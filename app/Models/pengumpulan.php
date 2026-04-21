@@ -26,4 +26,9 @@ class pengumpulan extends Model
     {
         return $this->hasMany(pengumpulan_jawaban::class, 'submission_id');
     }
+
+    public function identitas()
+    {
+        return $this->hasOne(Identitas::class, 'pengumpulan_id');
+    }
 }

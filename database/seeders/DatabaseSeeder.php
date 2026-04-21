@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
             'email' => "user@admin.com",
             'password' => bcrypt('user'),
             'role' => 'SUBMITTER',
-            'status' => 'REGISTERED',
+            'status' => 'ACTIVE',
         ]);
 
         User::create([
@@ -45,12 +45,12 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             InstitusiSeeder::class,
-            AssessmentSeeder::class,
+            // AssessmentSeeder::class,
+            PengumpulanSeeder::class,
             IdentitasSeeder::class,
-
+            
             KategoriSeeder::class,
             PertanyaanSeeder::class,
-            PengumpulanSeeder::class,
             PengumpulanJawabanSeeder::class,
             PengaturanCmsSeeder::class,
         ]);

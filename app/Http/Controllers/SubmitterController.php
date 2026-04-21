@@ -27,7 +27,7 @@ class SubmitterController extends Controller
     {
         $dto = new SubmitterDTO();
         // $dto->userId = Auth::id(); // Menggunakan ID User login, bukan dari URL
-        
+        $dto->userId = 2;
         return $dto;
     }
 
@@ -37,16 +37,17 @@ class SubmitterController extends Controller
      */
     public function getAllQuestions(Request $request)
     {
-        try {
-            $dto = $this->getAuthDTO();
-            // Service akan mencari assessment_id aktif berdasarkan userId
-            $questions = $this->submitterService->getAllQuestionsWithAnswers($dto);
+        $dto = $this->getAuthDTO();
+        // Service akan mencari assessment_id aktif berdasarkan userId
+        $questions = $this->submitterService->getAllQuestionsWithAnswers($dto);
 
-            return $this->successResponse($questions, 'Data seluruh soal dan jawaban tersimpan berhasil diambil', 200);
-        } catch (\Exception $e) {
-            $status = $e->getCode() == 404 ? 404 : 500;
-            return $this->errorResponse($e->getMessage(), $status);
-        }
+        return $questions;
+        // try {
+        //     // return $this->successResponse($questions, 'Data seluruh soal dan jawaban tersimpan berhasil diambil', 200);
+        // } catch (\Exception $e) {
+        //     $status = $e->getCode() == 404 ? 404 : 500;
+        //     return $this->errorResponse($e->getMessage(), $status);
+        // }
     }
 
     /**
