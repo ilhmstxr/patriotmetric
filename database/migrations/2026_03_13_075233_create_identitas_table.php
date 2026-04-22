@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->integer('jml_tendik')->default(0);
             $table->integer('jml_prodi')->default(0);
             $table->integer('jml_ukm')->default(0);
-            $table->integer('jml_agama')->default(0);
+            $table->integer('jml_fakultas')->default(0);
             
             // visi misi
             $table->text('visi')->nullable();

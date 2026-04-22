@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Models\Agama;
 use App\Models\Identitas;
+use App\Models\Institusi;
 use App\Models\Pengumpulan; // Gunakan PascalCase
 use App\Models\PengumpulanJawaban;
 use App\Models\Kategori;
@@ -11,7 +13,7 @@ use App\Models\Pertanyaan;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
-class SubmitterRepository extends BaseRepository
+class AssessmentRepository extends BaseRepository
 {
     public function __construct(Pengumpulan $model)
     {
@@ -29,7 +31,7 @@ class SubmitterRepository extends BaseRepository
     /**
      * AUTO-SAVE (Upsert Batch)
      */
-    // Contoh penggunaan di SubmitterRepository.php
+    // Contoh penggunaan di AssessmentRepository.php
     public function upsertJawaban(array $payload)
     {
         // Set default 0 hanya jika skor_sistem tidak dikirim dari service
@@ -55,17 +57,6 @@ class SubmitterRepository extends BaseRepository
             ->first();
     }
 
-    public function getAllQuestionsWithExistingAnswers($assessment)
-    {
-        return $this->model->with([
-            'kategori',
-            'opsiJawabans',
-            'jawaban' => function ($query) use ($assessment) {
-                $query->where('submission_id', $assessment->id);
-            }
-        ])->get();
-    }
-
     /**
      * COUNT: Total jawaban valid (sudah diisi claim_value dan evidence_url)
      */
@@ -86,33 +77,55 @@ class SubmitterRepository extends BaseRepository
     }
 
     /**
-     * STATUS UPDATE: Mengunci form
+     * Mencari record identitas berdasarkan pengumpulan_id.
      */
-    public function updateStatusAssessment($id, $status)
+    public function findIdentitasByPengumpulanId(int $pengumpulanId)
     {
-        return $this->model->where('id', $id)->update([
-            'status' => $status,
-            'updated_at' => now() // Gunakan updated_at jika submitted_at tidak ada
-        ]);
-    }
-
-    /**
-     * Mencari data identitas berdasarkan ID Pengumpulan
-     */
-    public function findIdentitasByPengumpulanId($pengumpulanId)
-    {
-        // Sesuaikan dengan model Identitas Anda
         return Identitas::where('pengumpulan_id', $pengumpulanId)->first();
     }
 
+    public function findInstitusiById(string $id)
+    {
+        return Institusi::find($id);
+    }
+
+    public function updateInstitusi(string $id, array $data)
+    {
+        return Institusi::where('id', $id)->update($data);
+    }
+    /**
+     * Logic Create or Update (Upsert) untuk tabel Identitas.
+     */
+    public function upsertIdentitas(int $pengumpulanId, array $data)
+    {
+        return Identitas::updateOrCreate(
+            ['pengumpulan_id' => $pengumpulanId],
+            $data
+        );
+    }
 
     /**
-     * Membuat record baru di tabel identitas
+     * Logic Upsert untuk tabel Agama berdasarkan identitas_id dan nama agama.
      */
-    public function createIdentitas(array $data)
+    public function upsertAgama(int $identitasId, string $agama, int $jumlah)
     {
-        return Identitas::create($data);
+        return Agama::updateOrCreate(
+            [
+                'identitas_id' => $identitasId,
+                'agama' => $agama
+            ],
+            ['jumlah' => $jumlah]
+        );
     }
+
+
+    // /**
+    //  * Membuat record baru di tabel identitas
+    //  */
+    // public function createIdentitas(array $data)
+    // {
+    //     return Identitas::create($data);
+    // }
 
     public function isUserActive(int $userId): bool
     {

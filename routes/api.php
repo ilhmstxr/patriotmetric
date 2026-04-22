@@ -1,11 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\SubmitterController;
+use App\Http\Controllers\AssessmentController;
 
 // use App\Http\Controllers\ReviewerController;
 
@@ -78,7 +77,7 @@ Route::get('/', [AuthController::class, 'profile'])->name('api.profile');
 // Parameter assessment_id dihapus dari URL, ambil dari Auth di Controller
 
 // daftar ulang
-/* DONE */Route::post('baseline/{userId}', [SubmitterController::class, 'storeBaseline'])->name('api.submitter.baseline');
+/* DONE */Route::post('baseline/{userId}', [AssessmentController::class, 'storeBaseline'])->name('api.submitter.baseline');
 // });
 
 // --- Tahap 3: Assessment (Single Form & Auto-Save) ---
@@ -86,36 +85,23 @@ Route::get('/', [AuthController::class, 'profile'])->name('api.profile');
 Route::prefix('assessment/submitter')->group(function () {
     // 1. Ambil semua pertanyaan (Single Form)
     // Mendukung naked URL (/questions) atau berparameter (/questions/99)
-    Route::get('/questions/{assessmentId}', [SubmitterController::class, 'getAllQuestions'])->name('api.submitter.questions');
+    Route::get('/questions/{assessmentId}', [AssessmentController::class, 'getAllQuestions'])->name('api.submitter.questions');
 
     // 2. Auto-save (Dipanggil tiap 5 menit atau saat ganti input)
-    Route::post('/auto-save/{assessment_id?}', [SubmitterController::class, 'autoSaveProgress'])->name('api.submitter.auto-save');
+    Route::post('/auto-save/{assessment_id?}', [AssessmentController::class, 'autoSaveProgress'])->name('api.submitter.auto-save');
 
     // 3. Final Lock (Submit Akhir)
-    Route::post('/finalize/{assessmentId}', [SubmitterController::class, 'finalize'])->name('api.submitter.finalize');
+    Route::post('/finalize/{assessmentId}', [AssessmentController::class, 'finalize'])->name('api.submitter.finalize');
 
     // 4. Preview Nilai (Setelah Finalize atau Real-time)
-    Route::get('/preview-results/{assessmentId}', [SubmitterController::class, 'previewResults'])->name('api.submitter.preview-results');
+    Route::get('/preview-results/{assessmentId}', [AssessmentController::class, 'previewResults'])->name('api.submitter.preview-results');
 
     // 5. Progress Check (Opsional: Untuk Progress Bar Dashboard)
-    Route::get('/current-progress/{assessment_id?}', [SubmitterController::class, 'getProgress'])->name('api.submitter.progress');
+    Route::get('/current-progress/{assessment_id?}', [AssessmentController::class, 'getProgress'])->name('api.submitter.progress');
 
-    Route::post('/save-answer/{userId}', [SubmitterController::class, 'saveJawaban'])->name('api.submitter.save-answer');    
+    Route::post('/save-answer/{userId}', [AssessmentController::class, 'saveJawaban'])->name('api.submitter.save-answer');    
 });
 
-
-// Authentication
-// submitter - only
-// Route::prefix('auth')->group(function () {
-//     Route::post('register', [UserController::class, 'register'])->name('api.register');
-//     Route::post('login', [UserController::class, 'login'])->name('api.login');
-//     Route::post('logout', [UserController::class, 'logout'])->name('api.logout');
-// });
-
-// // Profile
-// Route::prefix('profile')->group(function () {
-//     Route::post('profile', [UserController::class, 'profile'])->name('api.profile');
-// });
 
 
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\DTO\SubmitterDTO;
+namespace App\DTO\AssessmentDTO;
 
-class SubmitterDTO
+class AssessmentDTO
 {
 
     public readonly int $userId;

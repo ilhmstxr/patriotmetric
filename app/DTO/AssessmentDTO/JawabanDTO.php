@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DTO\SubmitterDTO;
+namespace App\DTO\AssessmentDTO;
 
 class JawabanDTO
 {

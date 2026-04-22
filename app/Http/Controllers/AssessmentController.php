@@ -2,251 +2,187 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\AssessmentDTO\BaselineDTO;
+use App\DTO\AssessmentDTO\JawabanDTO;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Exception;
-
-// service
-use App\Services\ReviewService;
-use App\Services\RubrikService;
-use App\Services\SubmissionService;
 use App\Traits\ApiResponse;
-
-// DTO
+use App\DTO\AssessmentDTO\AssessmentDTO;
+use App\DTO\AssessmentDTO\QuestionDTO;
+use App\Http\Requests\BaselineSubmitterRequest;
+use App\Services\AssessmentService;
+use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class AssessmentController extends Controller
 {
     use ApiResponse;
 
-    protected $reviewService;
-    protected $rubrikService;
-    protected $submissionService;
+    protected $AssessmentService;
 
-    public function __construct(
-        ReviewService $reviewService,
-        RubrikService $rubrikService,
-        SubmissionService $submissionService
-    ) {
-        $this->reviewService = $reviewService;
-        $this->rubrikService = $rubrikService;
-        $this->submissionService = $submissionService;
+    public function __construct(AssessmentService $AssessmentService)
+    {
+        $this->AssessmentService = $AssessmentService;
     }
 
-    public function questions()
+    /**
+     * Helper internal untuk mem-build DTO dengan konteks User Auth yang aman.
+     * Mencegah celah IDOR (Insecure Direct Object Reference).
+     */
+    private function getValidatedAssessment(string $mode)
     {
+        $userId = Auth::id() ?? 3;
+        $authDto = new AssessmentDTO($userId);
+
+        // Kita panggil fungsi validate di service yang bertindak sebagai dispatcher
+        return $this->AssessmentService->validate($authDto, $mode);
+    }
+
+    private function getErrorCode(\Throwable $e)
+    {
+        $code = $e->getCode();
+        // Pastikan code adalah HTTP status code yang valid
+        return (is_numeric($code) && $code >= 400 && $code < 600) ? $code : 500;
+    }
+
+    public function storeBaseline(BaselineSubmitterRequest $request)
+    // DONE
+    {
+        // profil
         try {
-            $questions = $this->rubrikService->getRubrikStructure();
-            // return Inertia::render('Assessment/Questions', [
-            //     'questions' => $questions
-            // ]);
-            return $this->successResponse($questions, 'Struktur rubrik berhasil diambil', 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
+            $validatedData = $request->validated();
+            $assessment = $this->getValidatedAssessment(AssessmentService::MODE_WRITE);
+        
+            $dto = new BaselineDTO((int) $assessment->user_id, $validatedData);
+
+            // return $dto;
+              // 2. Eksekusi Service (Orchestration)
+            $result = $this->AssessmentService->upsertBaseline($dto);
+
+            return $this->successResponse(null, 'Data baseline berhasil disimpan', 200);
+        } catch (\Throwable $e) {
+            $status = $e->getCode() == 403 ? 403 : 500;
+            return $this->errorResponse($e->getMessage(), $status);
         }
     }
 
-    public function answers(Request $request)
+    /**
+     * 1. Ambil Semua Pertanyaan (Single Form)
+     * Menggantikan getQuestionsByCategory dan getSteps
+     */
+    public function getAllQuestions()
     {
         try {
-            $this->submissionService->saveDraft($request->answers ?? []);
-            return $this->successResponse(null, 'Jawaban berhasil disimpan', 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
+            // Gunakan mode ANY agar status SUBMITTED tetap bisa melihat soal
+            $assessment = $this->getValidatedAssessment(AssessmentService::MODE_ANY);
+
+            $questions = $this->AssessmentService->getAllPertanyaan();
+
+            return $this->successResponse($questions, 'Data berhasil diambil', 200);
+        } catch (\Throwable $e) {
+            return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
         }
     }
 
-    public function submit(Request $request)
+    // /**
+    //  * 2. Auto-Save Progress (Interval 5 Menit)
+    //  * Menggantikan saveProgress
+    //  */
+    // public function autoSaveProgress(Request $request)
+    // {
+    //     // Validasi disesuaikan untuk Single Form (tanpa category_id di root)
+    //     $request->validate([
+    //         'answers' => 'required|array',
+    //         'answers.*.indicator_id' => 'required|integer',
+    //         'answers.*.claim_value' => 'nullable',
+    //         'answers.*.evidence_url' => 'nullable|url',
+    //     ]);
+
+    //     try {
+    //         $dto = $this->getAuthDTO();
+    //         $dto->answers = $request->input('answers');
+
+    //         $this->AssessmentService->autoSaveProgress($dto);
+
+    //         // Menggunakan response 200 tanpa data untuk auto-save agar payload ringan
+    //         return $this->successResponse(null, 'Auto-save berhasil', 200);
+    //     } catch (\Exception $e) {
+    //         $status = $e->getCode() == 403 ? 403 : 500;
+    //         return $this->errorResponse($e->getMessage(), $status);
+    //     }
+    // }
+
+
+    public function saveJawaban(Request $request)
     {
         try {
-            $this->submissionService->lockSubmission($request->submission_id);
-            return $this->successResponse(null, 'Assesment berhasil disubmit', 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
+            // 1. Otorisasi & Validasi Status via Helper (MODE_WRITE)
+            // Jika status SUBMITTED/GRADED, akan otomatis lempar Exception 403
+            $assessment = $this->getValidatedAssessment(AssessmentService::MODE_WRITE);
+
+            $validated = $request->validate([
+                'pertanyaan_id' => 'required|integer',
+                'jawaban_id'    => 'nullable|integer',
+                'jawaban_teks'  => 'nullable|string',
+                'tautan_bukti'  => 'nullable|url',
+                'note_reviewer' => 'nullable|string',
+            ]);
+            // return $validated;
+
+            $dto = new JawabanDTO($assessment->id, $validated);
+
+            // 3. Eksekusi Service
+            $result = $this->AssessmentService->storeJawaban($dto);
+
+            // return $result;
+            return $this->successResponse($result, 'Jawaban berhasil disimpan.', 200);
+        } catch (\Throwable $e) {
+            return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
         }
     }
 
-    public function preview(Request $request)
+    public function finalize(Request $request)
     {
         try {
-            $score = $this->submissionService->getPreviewScore($request->submission_id);
-            // return Inertia::render('Assessment/Preview', [
-            //     'score' => $score
-            // ]);
-            return $this->successResponse($score, 'Skor final berhasil diambil', 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
+            // PROTEKSI: Paksa harus mode WRITE
+            $assessment = $this->getValidatedAssessment(AssessmentService::MODE_WRITE);
+
+            $this->AssessmentService->lockAssessment($assessment);
+
+            return $this->successResponse(null, 'Seluruh asesmen telah dikunci (Final Lock)', 200);
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
         }
     }
 
 
-    // rubrik
-    public function getRubrikStructure(Request $request)
+    public function previewResults(Request $request)
     {
         try {
-            // DTO
+            // PROTEKSI: Paksa harus mode READ (Sudah Final)
+            $assessment = $this->getValidatedAssessment(AssessmentService::MODE_READ);
 
-            // SERVICE
-            $this->rubrikService->getRubrikStructure();
-            // RESPONSE
-            return $this->successResponse(null, 'Struktur rubrik berhasil diambil', 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
+            $previewData = $this->AssessmentService->calculateTotalPreview($assessment);
+
+            return $this->successResponse($previewData, 'Estimasi skor total berhasil dihitung', 200);
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
         }
     }
 
-    public function getCategoryMetadata(Request $request)
+    /**
+     * 5. Get Progress (Untuk Progress Bar)
+     * Mengembalikan { total_questions: 40, answered_questions: 25 }
+     */
+    public function getProgress(Request $request)
     {
         try {
-            // DTO
+            $dto = $this->getAuthDTO();
 
-            // SERVICE
-            $this->rubrikService->getCategoryMetadata();
-            // RESPONSE
-            return $this->successResponse(null, 'Metadata kategori berhasil diambil', 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
-        }
-    }
+            $progress = $this->AssessmentService->getCurrentProgress($dto);
 
-    public function validateRubrikConsistency(Request $request)
-    {
-        try {
-            // DTO
-
-            // SERVICE
-            $this->rubrikService->validateRubrikConsistency();
-            // RESPONSE
-            return $this->successResponse(null, 'Konsistensi rubrik valid (100%)', 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
-        }
-    }
-
-
-    // submitter
-
-    public function getPreviewScore(Request $request)
-    {
-        try {
-            // DTO
-
-            // SERVICE
-            $this->submissionService->getPreviewScore($request->submission_id);
-            // RESPONSE
-            return $this->successResponse(null, 'Skor final berhasil diambil', 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
-        }
-    }
-    public function getTaskDetails(Request $request)
-    {
-        try {
-            // DTO
-
-            // SERVICE
-            $this->submissionService->getTaskDetails($request->submission_id);
-            // RESPONSE
-            return $this->successResponse(null, 'Detail tugas berhasil diambil', 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
-        }
-    }
-
-    public function saveDraft(Request $request)
-    {
-        try {
-            // DTO
-
-            // SERVICE
-            $this->submissionService->saveDraft($request->answers ?? []);
-            // RESPONSE
-            return $this->successResponse(null, 'Draft berhasil disimpan', 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
-        }
-    }
-
-    // reviewer
-    public function verifySingleIndicator(Request $request)
-    {
-        try {
-            $this->reviewService->verifySingleIndicator(
-                $request->submission_id,
-                $request->indicator_id,
-                $request->verified_score,
-                $request->notes ?? null
-            );
-            return $this->successResponse(null, 'Indikator berhasil diverifikasi', 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
-        }
-    }
-    public function getFinalScore(Request $request)
-    {
-        try {
-            // DTO
-
-            // SERVICE
-            $this->reviewService->getFinalScore($request->submission_id);
-            // RESPONSE
-            return $this->successResponse(null, 'Skor final berhasil diambil', 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
-        }
-    }
-    public function assignReviewersToSubmissions(Request $request)
-    {
-        try {
-            // DTO
-
-            // SERVICE
-            $this->reviewService->assignReviewersToSubmissions($request->reviewer_id, $request->submission_ids);
-            // RESPONSE
-            return $this->successResponse(null, 'Reviewer berhasil ditugaskan', 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
-        }
-    }
-
-    public function getAssignedSubmissions(Request $request)
-    {
-        try {
-            // DTO
-
-            // SERVICE
-            $this->reviewService->getAssignedSubmissions($request->reviewer_id);
-            // RESPONSE
-            return $this->successResponse(null, 'Daftar penugasan berhasil diambil', 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
-        }
-    }
-
-    public function calculateVerifiedFinalScore(Request $request)
-    {
-        try {
-            // DTO
-
-            // SERVICE
-            $this->reviewService->calculateVerifiedFinalScore($request->verified_answers ?? [], $request->metadata ?? []);
-            // RESPONSE
-            return $this->successResponse(null, 'Skor verifikasi berhasil dihitung', 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
-        }
-    }
-
-    public function finalizeReview(Request $request)
-    {
-        try {
-            // DTO
-
-            // SERVICE
-            $this->reviewService->finalizeReview($request->submission_id);
-            // RESPONSE
-            return $this->successResponse(null, 'Review berhasil difinalisasi', 200);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
+            return $this->successResponse($progress, 'Data progres pengisian berhasil diambil', 200);
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
         }
     }
 }

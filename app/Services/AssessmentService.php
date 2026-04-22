@@ -2,28 +2,28 @@
 
 namespace App\Services;
 
-use App\Repositories\SubmitterRepository;
+use App\Repositories\AssessmentRepository;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use App\DTO\SubmitterDTO\SubmitterDTO;
-use App\DTO\SubmitterDTO\BaselineDTO;
-use App\DTO\SubmitterDTO\JawabanDTO;
+use App\DTO\AssessmentDTO\AssessmentDTO;
+use App\DTO\AssessmentDTO\BaselineDTO;
+use App\DTO\AssessmentDTO\JawabanDTO;
 use App\Repositories\PertanyaanRepository;
 use Illuminate\Support\Str;
 
 /**
- * @property \App\Repositories\SubmitterRepository $repository
+ * @property \App\Repositories\AssessmentRepository $repository
  */
-class SubmitterService extends BaseService
+class AssessmentService extends BaseService
 {
     protected $pertanyaanRepository;
 
     public function __construct(
-        SubmitterRepository $submitterRepository,
+        AssessmentRepository $AssessmentRepository,
         PertanyaanRepository $pertanyaanRepository
     ) {
-        // Parent constructor mengikat SubmitterRepository sebagai repository utama
-        parent::__construct($submitterRepository);
+        // Parent constructor mengikat AssessmentRepository sebagai repository utama
+        parent::__construct($AssessmentRepository);
         $this->pertanyaanRepository = $pertanyaanRepository;
     }
 
@@ -40,7 +40,7 @@ class SubmitterService extends BaseService
     }
 
     // DONE
-    public function validate(SubmitterDTO $dto, string $mode)
+    public function validate(AssessmentDTO $dto, string $mode)
     {
         // 1. Pastikan User Aktif
         $this->ensureUserIsActive($dto->userId);
@@ -79,36 +79,67 @@ class SubmitterService extends BaseService
         return $assessment;
     }
 
-    // DONE
-    public function storeBaseline(BaselineDTO $dto)
+    // CHECK
+    public function upsertBaseline(BaselineDTO $dto)
     {
-        // Pastikan ada sesi aktif
         $assessment = $this->repository->findActiveAssessmentByUserId($dto->userId);
-        if (!$assessment) throw new Exception("Asesmen aktif tidak ditemukan.", 404);
+        if (!$assessment) throw new Exception("Sesi asesmen aktif tidak ditemukan.", 404);
 
-        // Cek duplikasi
-        if ($this->repository->findIdentitasByPengumpulanId($assessment->id)) {
-            throw new Exception("Data baseline identitas sudah pernah diisi.", 403);
-        }
+        return DB::transaction(function () use ($dto, $assessment) {
 
-        // Proses lampiran file
-        $documentPaths = $this->processLegalDocuments($dto->legalDocuments, $assessment);
+            // 1. DATA HYDRATION: Ambil data lama
+            $existingIdentitas = $this->repository->findIdentitasByPengumpulanId($assessment->id);
+            $existingInstitusi = $this->repository->findInstitusiById($assessment->institution_id);
 
-        $identitasData = [
-            'pengumpulan_id'  => $assessment->id,
-            'jml_mahasiswa'   => $dto->jmlMahasiswa,
-            'jml_dosen'       => $dto->jmlDosen,
-            'jml_tendik'      => $dto->jmlTendik,
-            'jml_prodi'       => $dto->jmlProdi,
-            'jml_ukm'         => $dto->jmlUkm,
-            'jml_agama'       => $dto->jmlAgama,
-            'visi'            => $dto->visi,
-            'misi'            => $dto->misi,
-            'legal_documents' => json_encode($documentPaths),
-            'is_verified'     => false,
-        ];
+            // 2. Update Institusi (Gunakan Null-safe operator ?-> untuk mencegah crash)
+            $this->repository->updateInstitusi($assessment->institution_id, [
+                'nama_institusi'  => $dto->namaInstitusi ?? $existingInstitusi?->nama_institusi,
+                'jenis_institusi' => $dto->jenisInstitusi ?? $existingInstitusi?->jenis_institusi
+            ]);
 
-        return $this->repository->createIdentitas($identitasData);
+            // 3. Proses File Upload (HANYA KETIKA CREATE)
+            $finalDocumentsJson = $existingIdentitas?->legal_documents ?? json_encode([]);
+
+            // ZERO-GAP LOGIC: 
+            // Hanya jalankan processLegalDocuments JIKA $existingIdentitas kosong (Create)
+            // Jika ini Update, blok if ini akan dilewati dan file lama akan dipertahankan.
+            if (!$existingIdentitas && !empty($dto->legalDocuments)) {
+                // Eksekusi pemindahan file ke Storage
+                $documentPaths = $this->processLegalDocuments($dto->legalDocuments, $assessment);
+                $finalDocumentsJson = json_encode($documentPaths);
+            }
+
+            // 4. Update Identitas (Gunakan Null-safe operator secara ketat)
+            $identitasData = [
+                'pengumpulan_id'  => $assessment->id,
+                'jml_mahasiswa'   => $dto->jmlMhs ?? $existingIdentitas?->jml_mahasiswa ?? 0,
+                'jml_dosen'       => $dto->jmlDosen ?? $existingIdentitas?->jml_dosen ?? 0,
+                'jml_tendik'      => $dto->jmlTendik ?? $existingIdentitas?->jml_tendik ?? 0,
+                'jml_prodi'       => $dto->jmlProdi ?? $existingIdentitas?->jml_prodi ?? 0,
+                'jml_ukm'         => $dto->jmlUkm ?? $existingIdentitas?->jml_ukm ?? 0,
+                'jml_fakultas'    => $dto->jmlFakultas ?? $existingIdentitas?->jml_fakultas ?? 0,
+                'visi'            => $dto->visi ?? $existingIdentitas?->visi ?? null,
+                'misi'            => $dto->misi ?? $existingIdentitas?->misi ?? null,
+                'legal_documents' => $finalDocumentsJson,
+                'is_verified'     => $existingIdentitas?->is_verified ?? false,
+            ];
+
+            // Pastikan repository menggunakan updateOrCreate di balik layar
+            $identitas = $this->repository->upsertIdentitas($assessment->id, $identitasData);
+
+            // 5. Update Agama secara Selektif
+            if (!empty($dto->dataAgama)) {
+                foreach ($dto->dataAgama as $namaAgama => $jumlah) {
+                    // Validasi Enum sebelum insert untuk mencegah SQL Error
+                    $allowedAgama = ['islam', 'kristen', 'katolik', 'hindu', 'buddha', 'konghucu'];
+                    if (in_array(strtolower($namaAgama), $allowedAgama)) {
+                        $this->repository->upsertAgama($identitas->id, strtolower($namaAgama), $jumlah);
+                    }
+                }
+            }
+
+            return $identitas;
+        });
     }
 
     // DONE
@@ -157,7 +188,7 @@ class SubmitterService extends BaseService
      * 2. Auto-Save Progress (Simpan periodik / Single Form)
      CHECK
      */
-    // public function autoSaveProgress(SubmitterDTO $dto)
+    // public function autoSaveProgress(AssessmentDTO $dto)
     // {
     //     // Gunakan mode WRITE untuk memastikan form belum dikunci
     //     $assessment = $this->validate($dto, self::MODE_WRITE);
@@ -289,7 +320,7 @@ class SubmitterService extends BaseService
      * 5. Ambil Progres Saat Ini (Untuk UI Progress Bar)
      CHECK
      */
-    public function getCurrentProgress(SubmitterDTO $dto)
+    public function getCurrentProgress(AssessmentDTO $dto)
     {
         $assessment = $this->repository->findActiveAssessmentByUserId($dto->userId);
         if (!$assessment) return ['percentage' => 0];

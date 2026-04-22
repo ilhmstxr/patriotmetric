@@ -170,3 +170,37 @@ request
     "details": "Skor ini bersifat estimasi sebelum verifikasi Reviewer."
   }
 }
+
+
+GET http:/127.0.0.1:8000/api/assessment/submitter/save-answer/{userId}
+
+contoh = 
+http:/127.0.0.1:8000/api/assessment/submitter/save-answer/{userId}
+test api = 
+http:/127.0.0.1:8000/api/assessment/submitter/save-answer/3
+
+
+cara panggil = ('api.submitter.save-answer')
+
+request
+   int $userId
+
+response
+{
+  "success": true,
+  "message": "Jawaban berhasil disimpan.",
+  "data": {
+    "id": 1,
+    "submission_id": 2,
+    "pertanyaan_id": 1,
+    "jawaban_id": 1,
+    "jawaban_teks": "0",
+    "tautan_bukti_drive": null,
+    "skor_sistem": 0,
+    "skor_validasi_reviewer": "0.00",
+    "note_reviewer": null,
+    "created_at": "2026-04-22T08:12:27.000000Z",
+    "updated_at": "2026-04-22T13:21:29.000000Z"
+  }
+}
+

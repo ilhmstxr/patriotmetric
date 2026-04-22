@@ -146,3 +146,39 @@ ketika mengisi catatan dari reviewer, maka akan fetch note_reviewer
 
     kurang yang bagian autosave, konsepnya masih belum paham & validasi form request juga belum di rapihkan ke dalam file
     pemisahan soc di sisi repository
+
+submitter di rename menjadi assessment
+
+reviewer
+plottingan reviewer dengan submitter yang telah di plotting
+
+
+profil
+
+nama pt
+jenis pt
+visi
+misi
+
+jml fakultas
+jml prodi
+
+jml dosen
+jml tendik
+
+jml mhs
+jml organisasi
+jml ukm
+
+nama pic
+jabatan pic
+nomor hp
+email
+
+islam
+kristen
+katolik
+hindu
+buddha
+konghucu
+
