@@ -1,4 +1,4 @@
-GET /api/baseline/{userId}
+POST /api/baseline/{userId}
 
 contoh = http://127.0.0.1:8000/api/baseline/{userId}
 
@@ -128,7 +128,7 @@ contoh response
 }
 
 
-GET /api/assessment/submitter/finalize/{assessmentID}
+POST /api/assessment/submitter/finalize/{assessmentID}
 
 contoh = 
 http://127.0.0.1:8000/api/assessment/submitter/finalize/{assessmentID}
@@ -153,7 +153,7 @@ contoh =
 http://127.0.0.1:8000//api/assessment/submitter/preview-results/{assessmentId}
 test api = http:/127.0.0.1:8000/api/assessment/submitter/preview-results/2
 
-cara panggil = ('api.submitter.previewResults')
+cara panggil = ('api.submitter.preview-results')
 
 request
 
@@ -170,7 +170,7 @@ request
 }
 
 
-GET http:/127.0.0.1:8000/api/assessment/submitter/save-answer/{userId}
+POST /api/assessment/submitter/save-answer/{userId}
 
 contoh = 
 http:/127.0.0.1:8000/api/assessment/submitter/save-answer/{userId}
@@ -201,4 +201,57 @@ response
     "updated_at": "2026-04-22T13:21:29.000000Z"
   }
 }
+
+---
+
+### Auth Routes
+
+POST /api/auth/register
+cara panggil = ('api.auth.register')
+
+POST /api/auth/login
+cara panggil = ('api.auth.login')
+
+POST /api/auth/logout
+cara panggil = ('api.auth.logout')
+
+---
+
+### Profile Routes
+
+GET /api/profile
+cara panggil = ('api.profile')
+
+POST /api/profile/baseline
+cara panggil = ('api.profile.baseline')
+
+GET /api/profile/status
+cara panggil = ('api.profile.status')
+
+---
+
+### Submitter Progress
+
+GET /api/assessment/submitter/current-progress/{assessment_id?}
+cara panggil = ('api.submitter.progress')
+
+POST /api/assessment/submitter/auto-save/{assessment_id?}
+cara panggil = ('api.submitter.auto-save')
+
+---
+
+### Reviewer Routes
+
+GET /api/assessment/reviewer/assignments
+cara panggil = ('api.reviewer.assignments')
+
+GET /api/assessment/reviewer/questions/{sub_id}/{cat_id}
+cara panggil = ('api.reviewer.questions')
+
+POST /api/assessment/reviewer/save-verification
+cara panggil = ('api.reviewer.save-verification')
+
+POST /api/assessment/reviewer/finalize/{sub_id}
+cara panggil = ('api.reviewer.finalize')
+
 
