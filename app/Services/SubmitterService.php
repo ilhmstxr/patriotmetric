@@ -7,6 +7,8 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use App\DTO\SubmitterDTO\SubmitterDTO;
 use App\DTO\SubmitterDTO\BaselineDTO;
+use App\DTO\SubmitterDTO\JawabanDTO;
+use App\Repositories\PertanyaanRepository;
 use Illuminate\Support\Str;
 
 /**
@@ -14,31 +16,42 @@ use Illuminate\Support\Str;
  */
 class SubmitterService extends BaseService
 {
-    public function __construct(SubmitterRepository $repository)
-    {
-        parent::__construct($repository);
+    protected $pertanyaanRepository;
+
+    public function __construct(
+        SubmitterRepository $submitterRepository,
+        PertanyaanRepository $pertanyaanRepository
+    ) {
+        // Parent constructor mengikat SubmitterRepository sebagai repository utama
+        parent::__construct($submitterRepository);
+        $this->pertanyaanRepository = $pertanyaanRepository;
     }
 
     const MODE_READ = 'read';
     const MODE_WRITE = 'write';
-    const MODE_ANY   = 'any';   
+    const MODE_ANY   = 'any';
 
+    // DONE
     private function ensureUserIsActive($userId)
     {
         if (!$this->repository->isUserActive($userId)) {
-            throw new Exception("Akses Ditolak: Akun Anda tidak aktif.", 403);
+            throw new Exception("Akses Ditolak: Akun Anda tidak aktif atau ditangguhkan.", 403);
         }
     }
 
+    // DONE
     public function validate(SubmitterDTO $dto, string $mode)
     {
-        // Pengecekan Dasar (Global)
+        // 1. Pastikan User Aktif
         $this->ensureUserIsActive($dto->userId);
 
+        // 2. Ambil Sesi Asesmen Aktif
         $assessment = $this->repository->findActiveAssessmentByUserId($dto->userId);
-        if (!$assessment) throw new Exception("Data tidak ditemukan.", 404);
+        if (!$assessment) {
+            throw new Exception("Sesi asesmen aktif tidak ditemukan untuk tahun berjalan.", 404);
+        }
 
-        // Dispatcher: Mengarahkan berdasarkan mode
+        // 3. Dispatcher Mode
         return match ($mode) {
             self::MODE_WRITE => $this->guardUpdateAccess($assessment),
             self::MODE_READ  => $this->guardReadAccess($assessment),
@@ -47,170 +60,211 @@ class SubmitterService extends BaseService
         };
     }
 
+    // DONE
     private function guardUpdateAccess($assessment)
     {
         if (!in_array($assessment->status, ['ACTIVE', 'IN_PROGRESS'])) {
-            throw new Exception("Gagal: Status {$assessment->status} tidak mengizinkan perubahan.", 403);
+            throw new Exception("Gagal: Asesmen berstatus {$assessment->status} tidak dapat diubah.", 403);
         }
         return $assessment;
     }
 
+    // DONE
     private function guardReadAccess($assessment)
     {
+        // Izinkan pembacaan jika sudah dikirim atau dinilai
         if (!in_array($assessment->status, ['SUBMITTED', 'GRADED'])) {
-            throw new Exception("Gagal: Nilai belum tersedia.", 403);
+            throw new Exception("Gagal: Hasil asesmen belum tersedia untuk dilihat.", 403);
         }
         return $assessment;
     }
 
-
+    // DONE
     public function storeBaseline(BaselineDTO $dto)
     {
-        // DONE
+        // Pastikan ada sesi aktif
         $assessment = $this->repository->findActiveAssessmentByUserId($dto->userId);
+        if (!$assessment) throw new Exception("Asesmen aktif tidak ditemukan.", 404);
 
-        $existingIdentitas = $this->repository->findIdentitasByPengumpulanId($assessment->id);
-
-        if ($existingIdentitas) {
-            throw new Exception("Data baseline (identitas) sudah pernah diisi untuk periode ini.", 403);
+        // Cek duplikasi
+        if ($this->repository->findIdentitasByPengumpulanId($assessment->id)) {
+            throw new Exception("Data baseline identitas sudah pernah diisi.", 403);
         }
 
-        // 3. Proses File Upload (Eksekusi array legalDocuments dari DTO)
-        // Anda wajib mengekstrak file dari DTO dan menyimpannya ke Storage (S3/Local)
-        // Array kembaliannya berisi path file, contoh: ['surat_pengantar' => 'path/to/file.pdf']
-        $documentPaths = $this->processLegalDocuments($dto->legalDocuments, $assessment->id, $assessment->tahun_periode);
+        // Proses lampiran file
+        $documentPaths = $this->processLegalDocuments($dto->legalDocuments, $assessment);
 
-        // 4. Transformasi DTO ke Array Database (Pola Service-Repository)
         $identitasData = [
-            'pengumpulan_id' => $assessment->id,
-            'jml_mahasiswa'  => $dto->jmlMahasiswa,
-            'jml_dosen'      => $dto->jmlDosen,
-            'jml_tendik'     => $dto->jmlTendik,
-            'jml_prodi'      => $dto->jmlProdi,
-            'jml_ukm'        => $dto->jmlUkm,
-            'jml_agama'      => $dto->jmlAgama,
-            'visi'           => $dto->visi,
-            'misi'           => $dto->misi,
-            // JSON Encode sangat penting jika DB kolomnya text/json
+            'pengumpulan_id'  => $assessment->id,
+            'jml_mahasiswa'   => $dto->jmlMahasiswa,
+            'jml_dosen'       => $dto->jmlDosen,
+            'jml_tendik'      => $dto->jmlTendik,
+            'jml_prodi'       => $dto->jmlProdi,
+            'jml_ukm'         => $dto->jmlUkm,
+            'jml_agama'       => $dto->jmlAgama,
+            'visi'            => $dto->visi,
+            'misi'            => $dto->misi,
             'legal_documents' => json_encode($documentPaths),
-            'is_verified'    => false, // Nilai default
+            'is_verified'     => false,
         ];
 
-        // 5. Eksekusi Simpan Data tanpa mengubah status pengumpulan
         return $this->repository->createIdentitas($identitasData);
     }
 
-    private function processLegalDocuments(array $documents, $assessment, $year): array
+    // DONE
+    private function processLegalDocuments(array $documents, $assessment): array
     {
         $paths = [];
-
-        // 1. Dapatkan nama instansi dan tahun (Sesuaikan pemanggilan relasi 'institution' 
-        // dengan nama relasi di Model Pengumpulan Anda)
-        // Jika tidak ada relasi, ambil dari DB berdasarkan $assessment->institution_id
-        $namaInstansi = $assessment->institusi->name ?? 'instansi-tanpa-nama';
-        $tahun = $year; // Berdasarkan struktur tabel di gambar Anda
-
-        // 2. Buat nama direktori yang aman (Output: lampiran-submitter/upn-veteran-jatim-2026)
-        $safeFolderName = Str::slug($namaInstansi) . '-' . $tahun;
+        $safeFolderName = Str::slug($assessment->institusi->name ?? 'unknown') . '-' . $assessment->tahun_periode;
         $directoryPath = 'lampiran-submitter/' . $safeFolderName;
 
-        // 3. Looping dan simpan file
         foreach ($documents as $key => $file) {
-            // Ambil nama file asli tanpa ekstensi
             $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-            $extension = $file->getClientOriginalExtension();
+            $safeFileName = time() . '_' . Str::slug($originalName) . '.' . $file->getClientOriginalExtension();
 
-            // Format aman: timestamp_nama-file-asli.pdf
-            // Contoh: 1713600000_surat-pengantar.pdf
-            $safeFileName = time() . '_' . Str::slug($originalName) . '.' . $extension;
-
-            // Simpan ke Laravel Storage (disimpan di: storage/app/public/lampiran-submitter/...)
             $storedPath = $file->storeAs($directoryPath, $safeFileName, 'public');
-
-            // Simpan URL public-nya ke array untuk database
             $paths[$key] = '/storage/' . $storedPath;
         }
 
         return $paths;
     }
 
-
     /**
      * 1. Ambil Semua Pertanyaan & Jawaban (Single Form)
      */
     public function getAllQuestionsWithAnswers($assessment)
     {
-        // Langsung panggil repository menggunakan ID Assessment dari DTO
-        $questions = $this->repository->getAllQuestionsWithExistingAnswers($assessment);
+        $questions = $this->pertanyaanRepository->getAllQuestionsWithExistingAnswers($assessment);
 
         if ($questions->isEmpty()) {
-            throw new Exception("Master data soal belum tersedia.", 404);
+            throw new Exception("Master data pertanyaan belum dikonfigurasi oleh Admin.", 404);
         }
 
         return [
             'assessment_id' => $assessment->id,
+            'status'        => $assessment->status,
             'questions'     => $questions
         ];
     }
 
+    // DONE
     public function getAllPertanyaan()
     {
-        return $this->repository->getPertanyaanWithOpsiJawaban();
+        return $this->pertanyaanRepository->getPertanyaanWithOpsiJawaban();
     }
 
     /**
      * 2. Auto-Save Progress (Simpan periodik / Single Form)
+     CHECK
      */
-    public function autoSaveProgress(SubmitterDTO $dto)
+    // public function autoSaveProgress(SubmitterDTO $dto)
+    // {
+    //     // Gunakan mode WRITE untuk memastikan form belum dikunci
+    //     $assessment = $this->validate($dto, self::MODE_WRITE);
+
+    //     $sanitizedAnswers = [];
+    //     foreach ($dto->answers as $ans) {
+    //         // Validasi minimal: harus ada ID Pertanyaan dan ID Jawaban (opsi)
+    //         if (!isset($ans['pertanyaan_id']) || !isset($ans['jawaban_id'])) continue;
+
+    //         $sanitizedAnswers[] = [
+    //             'pertanyaan_id'      => $ans['pertanyaan_id'],
+    //             'jawaban_id'         => $ans['jawaban_id'],
+    //             'jawaban_teks'       => $ans['jawaban_teks'] ?? null,
+    //             'tautan_bukti_drive' => filter_var($ans['tautan_bukti_drive'] ?? '', FILTER_SANITIZE_URL),
+    //         ];
+    //     }
+
+    //     if (empty($sanitizedAnswers)) return false;
+
+    //     $this->repository->upsertAnswers($assessment->id, $sanitizedAnswers);
+
+    //     // Update status ke IN_PROGRESS jika masih ACTIVE
+    //     if ($assessment->status === 'ACTIVE') {
+    //         $this->repository->updateStatusAssessment($assessment->id, 'IN_PROGRESS');
+    //     }
+
+    //     return true;
+    // }
+
+    public function storeJawaban(JawabanDTO $dto)
     {
-        $assessment = $this->getActiveAssessmentOrFail($dto->userId);
+        // 1. Fetch info pertanyaan untuk Technical Interrogation
+        $pertanyaan = $this->pertanyaanRepository->findPertanyaanById($dto->pertanyaanId);
+        if (!$pertanyaan) throw new Exception("Pertanyaan tidak ditemukan.", 404);
 
-        // Pagar Keamanan: Tolak jika sudah dikunci
-        if (in_array($assessment->status, ['SUBMITTED', 'REVIEWING', 'REVIEWED', 'PUBLISHED'])) {
-            throw new Exception("Akses ditolak: Asesmen tidak bisa diubah karena sudah dikunci (Final).", 403);
-        }
+        // 2. Build Payload Dasar
+        $payload = [
+            'submission_id' => $dto->submissionId,
+            'pertanyaan_id' => $dto->pertanyaanId,
+        ];
 
-        // Sanitasi Data
-        $sanitizedAnswers = [];
-        foreach ($dto->answers as $ans) {
-            // Abaikan jika data kosong (membantu payload auto-save yang mungkin parsial)
-            if (!isset($ans['indicator_id'])) continue;
+        // 3. Jalankan Auto-Sync (Merge hasil sync ke payload utama)
+        $syncData = $this->jawabanAutoSync($dto, $pertanyaan);
+        $payload = array_merge($payload, $syncData);
 
-            $sanitizedAnswers[] = [
-                'question_id' => $ans['indicator_id'],
-                'claim_value' => $ans['claim_value'] ?? null,
-                'evidence_url' => filter_var($ans['evidence_url'] ?? '', FILTER_SANITIZE_URL),
-                'assessment_id' => $assessment->id // Inject ID internal, bukan dari request
-            ];
-        }
+        // 4. KONDISI 3 & 4: Tambahan Bukti dan Note
+        $payload['tautan_bukti_drive'] = $dto->tautanBukti;
+        $payload['note_reviewer']      = $dto->noteReviewer;
 
-        // Lakukan Upsert di level Repository
-        $this->repository->upsertAnswers($assessment->id, $sanitizedAnswers);
-
-        return true;
+        // 5. Delegasi ke Repository (Upsert)
+        return $this->repository->upsertJawaban($payload);
     }
 
     /**
+     * Private Helper: Sinkronisasi Dua Arah & Kalkulasi Skor Real-time
+     */
+    private function jawabanAutoSync(JawabanDTO $dto, $pertanyaan): array
+    {
+        $data = [];
+
+        if ($pertanyaan->tipe === 'pilihan_ganda') {
+            // KONDISI 1: User kirim ID -> Ambil Teks & Skor
+            $data['jawaban_id'] = $dto->jawabanId;
+
+            $opsi = $this->pertanyaanRepository->findOpsiById($dto->jawabanId);
+            $data['jawaban_teks'] = $opsi ? $opsi->opsi_jawaban : null;
+            $data['skor_sistem']  = $opsi ? $opsi->value : 0;
+        } else {
+            // KONDISI 2: User kirim Teks (Angka) -> Cari ID & Skor yang sesuai
+            $data['jawaban_teks'] = $dto->jawabanTeks;
+
+            $matchingOpsi = $this->pertanyaanRepository->findMatchingOpsiByValue(
+                $dto->pertanyaanId,
+                $dto->jawabanTeks
+            );
+
+            if ($matchingOpsi) {
+                $data['jawaban_id']  = $matchingOpsi->id;
+                $data['skor_sistem'] = $matchingOpsi->value;
+            } else {
+                $data['jawaban_id']  = null;
+                $data['skor_sistem'] = 0;
+            }
+        }
+
+        return $data; // WAJIB return agar bisa dipakai di storeJawaban
+    }
+    /**
      * 3. Final Lock (Validasi dan Penguncian)
+    DONE
      */
     public function lockAssessment($assessment)
     {
 
-        // cek total pertanyaan
-        // cek yang telah dijawab oleh user, lalu jika ada pertanyaan yang belum terisi opsi jawabannya, maka otomatis tidak bisa di lock 
-        $totalQuestions = $this->repository->countTotalMandatoryQuestions();
-        $answered = $this->repository->countValidAnswers($assessment);
+        $totalQuestions = $this->pertanyaanRepository->countTotalMandatoryQuestions();
+        $answered       = $this->repository->countValidAnswers($assessment);
 
         if ($answered < $totalQuestions) {
-            throw new Exception("Validasi kelengkapan gagal: Anda baru menjawab {$answered} dari {$totalQuestions} indikator. Harap lengkapi semua sebelum Final Submit.", 422);
+            throw new Exception("Gagal Submit: Anda baru menjawab {$answered} dari {$totalQuestions} soal. Harap lengkapi semua jawaban.", 422);
         }
 
-        // Kunci Data
         return $this->repository->updateStatusAssessment($assessment->id, 'SUBMITTED');
     }
 
     /**
      * 4. Hitung Estimasi Total (Preview Keseluruhan Form)
+     DONE
      */
     public function calculateTotalPreview($assessment)
     {
@@ -233,21 +287,21 @@ class SubmitterService extends BaseService
 
     /**
      * 5. Ambil Progres Saat Ini (Untuk UI Progress Bar)
+     CHECK
      */
     public function getCurrentProgress(SubmitterDTO $dto)
     {
-        $assessment = $this->getActiveAssessmentOrFail($dto->userId);
+        $assessment = $this->repository->findActiveAssessmentByUserId($dto->userId);
+        if (!$assessment) return ['percentage' => 0];
 
-        $totalQuestions = $this->repository->countTotalMandatoryQuestions();
-        $answered = $this->repository->countValidAnswers($assessment->id);
-
-        $percentage = $totalQuestions > 0 ? round(($answered / $totalQuestions) * 100) : 0;
+        $totalQuestions = $this->pertanyaanRepository->countTotalMandatoryQuestions();
+        $answered       = $this->repository->countValidAnswers($assessment);
 
         return [
-            'total_questions' => $totalQuestions,
+            'total_questions'    => $totalQuestions,
             'answered_questions' => $answered,
-            'percentage' => $percentage,
-            'is_completed' => $answered >= $totalQuestions
+            'percentage'         => $totalQuestions > 0 ? round(($answered / $totalQuestions) * 100) : 0,
+            'is_completed'       => $answered >= $totalQuestions
         ];
     }
 }

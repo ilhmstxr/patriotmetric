@@ -99,6 +99,8 @@ Route::prefix('assessment/submitter')->group(function () {
 
     // 5. Progress Check (Opsional: Untuk Progress Bar Dashboard)
     Route::get('/current-progress/{assessment_id?}', [SubmitterController::class, 'getProgress'])->name('api.submitter.progress');
+
+    Route::post('/save-answer/{userId}', [SubmitterController::class, 'saveJawaban'])->name('api.submitter.save-answer');    
 });
 
 
