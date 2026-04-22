@@ -152,7 +152,7 @@ submitter di rename menjadi assessment
 reviewer
 plottingan reviewer dengan submitter yang telah di plotting
 
-
+DONE
 profil
 
 nama pt

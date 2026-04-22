@@ -1,31 +1,28 @@
 GET /api/baseline/{userId}
 
 contoh = http://127.0.0.1:8000/api/baseline/{userId}
-test api = http://127.0.0.1:8000/api/baseline/2
 
 cara panggil = ('api.submitter.baseline')
 
 request
+ int $userId;
+     string $namaInstitusi;
+     string $jenisInstitusi;
+     string $namaPic;
+     string $jabatanPic;
+     string $noHpPic;
 
- int $userId
- 
- int $jmlMahasiswa
- 
- int $jmlDosen
- 
- int $jmlTendik
- 
- int $jmlProdi
- 
- int $jmlUkm
- 
- int $jmlAgama
- 
- string $visi
- 
- string $misi
- 
- array $legalDocuments
+     int $jmlMhs;
+     int $jmlDosen;
+     int $jmlTendik;
+     int $jmlProdi;
+     int $jmlUkm;
+     int $jmlFakultas;
+
+     string $visi;
+     string $misi;
+     array $legalDocuments;
+
 
 response
  {
@@ -33,6 +30,7 @@ response
   "message": "Data baseline berhasil disimpan",
   "data": null
 }
+
 
 
 GET /api/assessment/submitter/questions/{assessmentId}
