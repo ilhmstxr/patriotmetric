@@ -9,3 +9,27 @@ get {
   body: none
   auth: none
 }
+
+docs {
+  GET /api/assessment/submitter/preview-results/{assessmentId}
+  
+  contoh = 
+  http://127.0.0.1:8000//api/assessment/submitter/preview-results/{assessmentId}
+  test api = http:/127.0.0.1:8000/api/assessment/submitter/preview-results/2
+  
+  cara panggil = ('api.submitter.previewResults')
+  
+  request
+  
+   int $userId
+   
+  {
+    "success": true,
+    "message": "Estimasi skor total berhasil dihitung",
+    "data": {
+      "estimated_score": 90,
+      "label": "Estimasi Skor Kasar",
+      "details": "Skor ini bersifat estimasi sebelum verifikasi Reviewer."
+    }
+  }
+}

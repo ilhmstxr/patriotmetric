@@ -26,7 +26,7 @@
                 <p class="mt-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] leading-[24px] text-[#62748e]">
                     Silakan masukkan kredensial institusi Anda.
                 </p>
-                
+
                 <!-- {{-- Testing Hint --}}
                 <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
                     <p class="text-[12px] text-amber-800 font-medium">
@@ -34,7 +34,7 @@
                     </p>
                 </div> -->
 
-<form class="mt-8 space-y-6" action="{{ route('login.post') }}" method="POST">
+                <form class="mt-8 space-y-6" action="{{ route('login.post') }}" method="POST">
                     @csrf
                     {{-- Email --}}
                     <div class="relative">
@@ -46,8 +46,7 @@
                             name="email"
                             required
                             placeholder=" "
-                            class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition"
-                        />
+                            class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
                         <label class="absolute left-12 top-4 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#62748e] transition-all peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[12px] peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-[12px] pointer-events-none">
                             Email Resmi Institusi / PIC
                         </label>
@@ -63,8 +62,7 @@
                             name="password"
                             required
                             placeholder=" "
-                            class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition"
-                        />
+                            class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
                         <label class="absolute left-12 top-4 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#62748e] transition-all peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[12px] peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-[12px] pointer-events-none">
                             Kata Sandi
                         </label>
@@ -84,8 +82,7 @@
                     {{-- Submit --}}
                     <button
                         type="submit"
-                        class="w-full bg-[#1b5e20] text-white font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[18px] leading-[28px] py-4 rounded-[20px] shadow-[0px_20px_25px_0px_rgba(27,94,32,0.2)] hover:bg-[#174d1a] transition flex items-center justify-center gap-2"
-                    >
+                        class="w-full bg-[#1b5e20] text-white font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[18px] leading-[28px] py-4 rounded-[20px] shadow-[0px_20px_25px_0px_rgba(27,94,32,0.2)] hover:bg-[#174d1a] transition flex items-center justify-center gap-2">
                         Masuk Sekarang
                     </button>
                 </form>

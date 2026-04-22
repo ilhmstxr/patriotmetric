@@ -1,0 +1,19 @@
+meta {
+  name: 5 save jawaban per pertanyaan
+  type: http
+  seq: 6
+}
+
+post {
+  url: http:/127.0.0.1:8000/api/assessment/submitter/save-answer/3
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  pertanyaan_id: 1
+  jawaban_id: 1
+  tautan_bukti: 
+  note_reviewer: 
+  jawaban_teks: 
+}

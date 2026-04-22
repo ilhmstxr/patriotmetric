@@ -6,6 +6,7 @@ use App\Models\Identitas;
 use App\Models\Pengumpulan; // Gunakan PascalCase
 use App\Models\PengumpulanJawaban;
 use App\Models\Kategori;
+use App\Models\opsiJawaban;
 use App\Models\Pertanyaan;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -17,66 +18,52 @@ class SubmitterRepository extends BaseRepository
         parent::__construct($model);
     }
 
-    /**
-     * MENCARI SESI AKTIF BERDASARKAN USER (Keamanan Utama)
-     * Mengembalikan Assessment/Pengumpulan yang valid untuk tahun berjalan
-     * dan statusnya BUKAN draft awal/ditolak.
-     */
-    public function findActiveByUserId($userId)
+    public function findActiveAssessmentByUserId($userId)
     {
-        // Asumsi: Anda punya kolom user_id atau relasi melalui institusi
-        // Sesuaikan query ini dengan struktur spesifik tabel Pengumpulan Anda
         return $this->model
             ->where('user_id', $userId)
             ->where('tahun_periode', date('Y')) // Opsional: Filter tahun
-            ->whereIn('status', ['ACTIVE', 'IN_PROGRESS'])
             ->first();
-    }
-
-
-    /**
-     * SINGLE FORM: Mengambil seluruh pertanyaan + relasi jawaban jika sudah ada
-     */
-    public function getAllQuestionsWithExistingAnswers($assessment)
-    {
-        return Pertanyaan::with([
-            'kategori', // Pastikan relasi ini ada di Model Pertanyaan
-            'opsiJawabans', // <--- WAJIB DITAMBAHKAN AGAR OPSI PILIHAN GANDA MUNCUL DI JSON
-            'jawaban' => function ($query) use ($assessment) {
-                // Filter jawaban spesifik untuk submission ini
-                $query->where('submission_id', $assessment->id);
-            }
-        ])->get();
     }
 
     /**
      * AUTO-SAVE (Upsert Batch)
      */
     // Contoh penggunaan di SubmitterRepository.php
-    public function upsertAnswers($assessmentId, array $answers)
+    public function upsertJawaban(array $payload)
     {
-        foreach ($answers as $answer) {
-            PengumpulanJawaban::updateOrCreate(
-                [
-                    'submission_id' => $assessmentId,
-                    'pertanyaan_id' => $answer['pertanyaan_id'] // Kunci unik untuk pencarian
-                ],
-                [
-                    'jawaban_id' => $answer['jawaban_id'], // Opsi yang dipilih
-                    'jawaban_teks' => $answer['jawaban_teks'] ?? null,
-                    'tautan_bukti_drive' => $answer['tautan_bukti_drive'] ?? null,
-                ]
-            );
-        }
+        // Set default 0 hanya jika skor_sistem tidak dikirim dari service
+        $payload['skor_sistem'] = $payload['skor_sistem'] ?? 0;
+
+        return PengumpulanJawaban::updateOrCreate(
+            [
+                'submission_id' => $payload['submission_id'],
+                'pertanyaan_id' => $payload['pertanyaan_id']
+            ],
+            $payload
+        );
+    }
+    /**
+     * Logic Pencocokan (Kondisi 2): Mencari opsi_jawaban berdasarkan value
+     * Alur: Cari opsi yang nilainya <= input, ambil yang paling mendekati (terbesar)
+     */
+    public function findMatchingOpsiByValue($pertanyaanId, $inputValue)
+    {
+        return opsiJawaban::where('pertanyaan_id', $pertanyaanId)
+            ->where('value', '<=', (int) $inputValue)
+            ->orderBy('value', 'desc')
+            ->first();
     }
 
-    /**
-     * COUNT: Total soal wajib yang harus dijawab
-     */
-    public function countTotalMandatoryQuestions()
+    public function getAllQuestionsWithExistingAnswers($assessment)
     {
-        // Sesuaikan jika ada pertanyaan yang tidak wajib (is_mandatory = false)
-        return Pertanyaan::count();
+        return $this->model->with([
+            'kategori',
+            'opsiJawabans',
+            'jawaban' => function ($query) use ($assessment) {
+                $query->where('submission_id', $assessment->id);
+            }
+        ])->get();
     }
 
     /**

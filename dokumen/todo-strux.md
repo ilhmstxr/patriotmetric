@@ -117,10 +117,32 @@ untuk rubrik
 TODO: pagination admin rubrik by kategor
 
 note: 
+CHECK
 1. jika ada data jawaban_teks kosong bisa di null kan 
+CHECK
 2. untuk jawabannya bisa diisi opsi & teksfield singkat
+DONE
 3. diinject  
 4. untuk rumus perhitungan dibuat di frontend, jadi tinggal terima hasil nya lalu di lempar ke api
 DONE 5. untuk pengumpulan_jawabans diisi foreign di opsi jawaban + jawaban_teks
 6. qa revisi tampilan submitter 
 DONE 7. nambahin label isian singkat / pilihan ganda
+
+DONE
+contoh
+fetch harus
+fetch pertanyaan_id
+fetch submission_id
+
+kondisi 1
+ketika mengklik tipe pilihan_ganda, maka akan fetch jawaban_id
+ketika mengklik tipe isian, maka akan fetch jawaban_teks
+
+kondisi 2
+ketika mengisi url, maka akan fetch tautan_bukti_drive
+
+kondisi 3
+ketika mengisi catatan dari reviewer, maka akan fetch note_reviewer
+
+    kurang yang bagian autosave, konsepnya masih belum paham & validasi form request juga belum di rapihkan ke dalam file
+    pemisahan soc di sisi repository

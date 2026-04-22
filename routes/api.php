@@ -6,7 +6,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubmitterController;
-use App\Http\Controllers\UserController;
 
 // use App\Http\Controllers\ReviewerController;
 
@@ -66,20 +65,20 @@ Route::prefix('profile')->group(function () {
 
 // --- Authentication & Account ---
 Route::prefix('auth')->group(function () {
-    Route::post('register', [UserController::class, 'register'])->name('api.register');
-    Route::post('login', [UserController::class, 'login'])->name('api.login');
-    Route::post('logout', [UserController::class, 'logout'])->name('api.logout')->middleware('auth:sanctum');
+    Route::post('register', [AuthController::class, 'register'])->name('api.register');
+    Route::post('login', [AuthController::class, 'login'])->name('api.login');
+    Route::post('logout', [AuthController::class, 'logout'])->name('api.logout')->middleware('auth:sanctum');
 });
 
 // --- User Profile ---
 // Route::middleware('auth:sanctum')->prefix('profile')->group(function () {
-Route::get('/', [UserController::class, 'profile'])->name('api.profile');
+Route::get('/', [AuthController::class, 'profile'])->name('api.profile');
 
 // TAHAP 1: Baseline / Daftar Ulang (Pemberkasan)
 // Parameter assessment_id dihapus dari URL, ambil dari Auth di Controller
 
 // daftar ulang
-/* DONE */Route::post('baseline/{userId}', [SubmitterController::class, 'storeBaseline'])->name('api.profile.baseline');
+/* DONE */Route::post('baseline/{userId}', [SubmitterController::class, 'storeBaseline'])->name('api.submitter.baseline');
 // });
 
 // --- Tahap 3: Assessment (Single Form & Auto-Save) ---
@@ -100,21 +99,23 @@ Route::prefix('assessment/submitter')->group(function () {
 
     // 5. Progress Check (Opsional: Untuk Progress Bar Dashboard)
     Route::get('/current-progress/{assessment_id?}', [SubmitterController::class, 'getProgress'])->name('api.submitter.progress');
+
+    Route::post('/save-answer/{userId}', [SubmitterController::class, 'saveJawaban'])->name('api.submitter.save-answer');    
 });
 
 
 // Authentication
 // submitter - only
-Route::prefix('auth')->group(function () {
-    Route::post('register', [UserController::class, 'register'])->name('api.register');
-    Route::post('login', [UserController::class, 'login'])->name('api.login');
-    Route::post('logout', [UserController::class, 'logout'])->name('api.logout');
-});
+// Route::prefix('auth')->group(function () {
+//     Route::post('register', [UserController::class, 'register'])->name('api.register');
+//     Route::post('login', [UserController::class, 'login'])->name('api.login');
+//     Route::post('logout', [UserController::class, 'logout'])->name('api.logout');
+// });
 
-// Profile
-Route::prefix('profile')->group(function () {
-    Route::post('profile', [UserController::class, 'profile'])->name('api.profile');
-});
+// // Profile
+// Route::prefix('profile')->group(function () {
+//     Route::post('profile', [UserController::class, 'profile'])->name('api.profile');
+// });
 
 
 
