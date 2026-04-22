@@ -17,19 +17,12 @@ class SubmitterRepository extends BaseRepository
         parent::__construct($model);
     }
 
-    /**
-     * MENCARI SESI AKTIF BERDASARKAN USER (Keamanan Utama)
-     * Mengembalikan Assessment/Pengumpulan yang valid untuk tahun berjalan
-     * dan statusnya BUKAN draft awal/ditolak.
-     */
-    public function findActiveByUserId($userId)
+    public function findActiveAssessmentByUserId($userId)
     {
-        // Asumsi: Anda punya kolom user_id atau relasi melalui institusi
-        // Sesuaikan query ini dengan struktur spesifik tabel Pengumpulan Anda
         return $this->model
             ->where('user_id', $userId)
             ->where('tahun_periode', date('Y')) // Opsional: Filter tahun
-            ->whereIn('status', ['ACTIVE', 'IN_PROGRESS'])
+            // ->whereIn('status', ['ACTIVE', 'IN_PROGRESS','SUBMITTED'])
             ->first();
     }
 
@@ -47,6 +40,13 @@ class SubmitterRepository extends BaseRepository
                 $query->where('submission_id', $assessment->id);
             }
         ])->get();
+    }
+
+    public function getPertanyaanWithOpsiJawaban(){
+        return Pertanyaan::with(
+            'kategori',
+            'opsiJawabans'
+        )->get();
     }
 
     /**

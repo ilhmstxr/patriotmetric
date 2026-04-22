@@ -19,30 +19,55 @@ class SubmitterService extends BaseService
         parent::__construct($repository);
     }
 
+    const MODE_READ = 'read';
+    const MODE_WRITE = 'write';
+    const MODE_ANY   = 'any';   
 
-    public function validateAccess(SubmitterDTO $dto)
+    private function ensureUserIsActive($userId)
     {
-        // 1. Interogasi Tabel User
-        if (!$this->repository->isUserActive($dto->userId)) {
-            throw new Exception("Akses Ditolak: Akun Anda berstatus tidak aktif atau ditangguhkan.", 403);
+        if (!$this->repository->isUserActive($userId)) {
+            throw new Exception("Akses Ditolak: Akun Anda tidak aktif.", 403);
         }
+    }
 
-        // 2. Interogasi Tabel Pengumpulan
-        $assessment = $this->repository->findActiveByUserId($dto->userId);
+    public function validate(SubmitterDTO $dto, string $mode)
+    {
+        // Pengecekan Dasar (Global)
+        $this->ensureUserIsActive($dto->userId);
 
-        if (!$assessment) {
-            throw new Exception("Akses Ditolak: Anda tidak memiliki sesi asesmen yang berstatus ACTIVE atau IN_PROGRESS.", 403);
+        $assessment = $this->repository->findActiveAssessmentByUserId($dto->userId);
+        if (!$assessment) throw new Exception("Data tidak ditemukan.", 404);
+
+        // Dispatcher: Mengarahkan berdasarkan mode
+        return match ($mode) {
+            self::MODE_WRITE => $this->guardUpdateAccess($assessment),
+            self::MODE_READ  => $this->guardReadAccess($assessment),
+            self::MODE_ANY   => $assessment,
+            default          => throw new Exception("Mode validasi tidak dikenali.", 500),
+        };
+    }
+
+    private function guardUpdateAccess($assessment)
+    {
+        if (!in_array($assessment->status, ['ACTIVE', 'IN_PROGRESS'])) {
+            throw new Exception("Gagal: Status {$assessment->status} tidak mengizinkan perubahan.", 403);
         }
-
-        // Jika lolos kedua syarat, kembalikan data assessment agar bisa dipakai 
-        // oleh fungsi lain tanpa perlu query database lagi.
         return $assessment;
     }
+
+    private function guardReadAccess($assessment)
+    {
+        if (!in_array($assessment->status, ['SUBMITTED', 'GRADED'])) {
+            throw new Exception("Gagal: Nilai belum tersedia.", 403);
+        }
+        return $assessment;
+    }
+
 
     public function storeBaseline(BaselineDTO $dto)
     {
         // DONE
-        $assessment = $this->repository->findActiveByUserId($dto->userId);
+        $assessment = $this->repository->findActiveAssessmentByUserId($dto->userId);
 
         $existingIdentitas = $this->repository->findIdentitasByPengumpulanId($assessment->id);
 
@@ -126,6 +151,11 @@ class SubmitterService extends BaseService
             'assessment_id' => $assessment->id,
             'questions'     => $questions
         ];
+    }
+
+    public function getAllPertanyaan()
+    {
+        return $this->repository->getPertanyaanWithOpsiJawaban();
     }
 
     /**

@@ -9,3 +9,96 @@ get {
   body: none
   auth: none
 }
+
+docs {
+  GET /api/assessment/submitter/questions/{assessmentId}
+  
+  contoh = 
+  http://127.0.0.1:8000/api/assessment/submitter/questions/{assessmentId}
+  
+  cara panggil = ('api.submitter.questions')
+  
+  request
+    int $userId
+  
+  contoh response
+  {
+    "success": true,
+    "message": "Data seluruh soal dan jawaban tersimpan berhasil diambil",
+    "data": [
+      {
+        "id": 1,
+        "kode_pertanyaan": "A.1",
+        "category_id": 1,
+        "teks_pertanyaan": "A.1. Kebijakan tentang Implementasi Nilai-Nilai Bela Negara dalam Kegiatan Tridharma dan Penunjang",
+        "deskripsi": "dummy - deskripsi",
+        "kebutuhan_bukti": "Bukti A.1: SK rektor, ST, laporan kegiatan, dokumentasi",
+        "tipe": "pilihan_ganda",
+        "skor_maksimal": 0,
+        "created_at": "2026-04-21T22:38:39.000000Z",
+        "updated_at": "2026-04-21T22:38:39.000000Z",
+        "kategori": {
+          "id": 1,
+          "nama_kategori": "A. VARIABEL PATRIOTISME KEBIJAKAN",
+          "deskripsi": null,
+          "created_at": null,
+          "updated_at": null
+        },
+        "opsi_jawabans": [
+          {
+            "id": 1,
+            "pertanyaan_id": 1,
+            "opsi_jawaban": "0",
+            "value": null,
+            "keterangan": "Tidak ada",
+            "created_at": "2026-04-21T22:38:39.000000Z",
+            "updated_at": "2026-04-21T22:38:39.000000Z"
+          },
+          {
+            "id": 2,
+            "pertanyaan_id": 1,
+            "opsi_jawaban": "1",
+            "value": null,
+            "keterangan": "Ada kebijakan tertulis tetapi belum diimplementasikan",
+            "created_at": "2026-04-21T22:38:39.000000Z",
+            "updated_at": "2026-04-21T22:38:39.000000Z"
+          },
+          {
+            "id": 3,
+            "pertanyaan_id": 1,
+            "opsi_jawaban": "2",
+            "value": null,
+            "keterangan": "Ada kebijakan dan diimplementasikan dalam satu kegiatan dari Tridharma",
+            "created_at": "2026-04-21T22:38:39.000000Z",
+            "updated_at": "2026-04-21T22:38:39.000000Z"
+          },
+          {
+            "id": 4,
+            "pertanyaan_id": 1,
+            "opsi_jawaban": "3",
+            "value": null,
+            "keterangan": "Ada kebijakan dan diimplementasikan dalam dua kegiatan dari Tridharma",
+            "created_at": "2026-04-21T22:38:39.000000Z",
+            "updated_at": "2026-04-21T22:38:39.000000Z"
+          },
+          {
+            "id": 5,
+            "pertanyaan_id": 1,
+            "opsi_jawaban": "4",
+            "value": null,
+            "keterangan": "Ada kebijakan dan diimplementasikan dalam seluruh kegiatan Tridharma",
+            "created_at": "2026-04-21T22:38:39.000000Z",
+            "updated_at": "2026-04-21T22:38:39.000000Z"
+          },
+          {
+            "id": 6,
+            "pertanyaan_id": 1,
+            "opsi_jawaban": "5",
+            "value": null,
+            "keterangan": "Ada kebijakan dan diimplementasikan dalam seluruh kegiatan Tridharma serta kegiatan penunjang",
+            "created_at": "2026-04-21T22:38:39.000000Z",
+            "updated_at": "2026-04-21T22:38:39.000000Z"
+          }
+        ]
+      },
+}

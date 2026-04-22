@@ -2,8 +2,19 @@
 
 namespace App\Services;
 
+use App\DTO\AuthDTO\LoginDTO;
+use App\DTO\AuthDTO\registerDTO;
+use App\Models\Institusi;
+use App\Models\User;
 use App\Repositories\UserRepository;
+use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
+
+/**
+ * @property \App\Repositories\UserrRepository $repository
+ */
 class UserService extends BaseService
 {
     /**
@@ -14,41 +25,65 @@ class UserService extends BaseService
     {
         parent::__construct($repository);
     }
-
-    public function store(object $dto): \Illuminate\Database\Eloquent\Model
+    public function register(registerDTO $dto)
     {
-        return $this->repository->create($dto->data);
-    }
+        return DB::transaction(function () use ($dto) {
+            // 1. Buat User (PIC) melalui Repository
+            $user = $this->repository->createUser([
+                'email' => $dto->email,
+                'password' => Hash::make($dto->password),
+                'role' => 'SUBMITTER',
+                'status' => 'PENDING',
+            ]);
 
-    public function update(int|string $id, object $dto): bool
-    {
-        return $this->repository->update($id, $dto->data);
+            // 2. Buat Institusi terkait (Melewati Repository yang benar)
+            // Kita kirimkan user_id yang baru saja dibuat
+            $this->repository->createInstitusi([
+                'name' => $dto->namaPt,
+                'category' => $dto->kategoriPt,
+                'user_id' => $user->id,
+            ]);
+
+            return $user;
+        });
     }
 
     /**
-     * Verifikasi Pertama: Pendaftaran email & biodata (identitas)
-     * Data disubmit untuk direview oleh admin.
-     * 
-     * @param array $data Data biodata & email
-     * @return \Illuminate\Database\Eloquent\Model
+     * LOGIN: Pengecekan Status & Kredensial
      */
-    public function submitIdentityVerification(array $data)
+    public function login(LoginDTO $dto)
     {
-        $data['status'] = 'pending_identity_review';
-        return $this->repository->create($data);
+        // 1. Cek User berdasarkan email
+        $user = $this->repository->findByEmail($dto->email);
+
+        if (!$user || !Hash::check($dto->password, $user->password)) {
+            throw new Exception("Email atau password salah.", 401);
+        }
+
+        // 2. Cek Status Akun (Keamanan Utama)
+        if ($user->status === 'BANNED' || $user->status === 'SUSPENDED') {
+            throw new Exception("Akun Anda telah ditangguhkan. Silakan hubungi admin.", 403);
+        }
+
+        // 3. Invalidate Session Lama (Single Session Policy)
+        // Jika menggunakan Sanctum:
+        $user->tokens()->delete();
+
+        // 4. Generate Token / Login Session
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return [
+            'user' => $user,
+            'token' => $token
+        ];
     }
 
     /**
-     * Verifikasi Kedua: Daftar ulang & upload berkas peserta
-     * Berkas disubmit untuk direview kembali oleh admin.
-     * 
-     * @param int|string $id ID User
-     * @param array $data Data berkas
-     * @return bool
+     * LOGOUT: Pembersihan Token & Sesi
      */
-    public function submitDocumentVerification(int|string $id, array $data): bool
+    public function logout(User $user)
     {
-        $data['status'] = 'pending_document_review';
-        return $this->repository->update($id, $data);
+        // Hapus token saat ini
+        return $user->currentAccessToken()->delete();
     }
 }

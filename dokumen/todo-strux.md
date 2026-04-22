@@ -124,3 +124,18 @@ note:
 DONE 5. untuk pengumpulan_jawabans diisi foreign di opsi jawaban + jawaban_teks
 6. qa revisi tampilan submitter 
 DONE 7. nambahin label isian singkat / pilihan ganda
+
+contoh
+fetch harus
+fetch pertanyaan_id
+fetch submission_id
+
+kondisi 1
+ketika mengklik tipe pilihan_ganda, maka akan fetch jawaban_id
+ketika mengklik tipe isian, maka akan fetch jawaban_teks
+
+kondisi 2
+ketika mengisi url, maka akan fetch tautan_bukti_drive
+
+kondisi 3
+ketika mengisi catatan dari reviewer, maka akan fetch note_reviewer

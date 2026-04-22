@@ -27,3 +27,40 @@ body:multipart-form {
   legal_documents[dokumen_akreditasi]: @file(C:\Users\Ilhamstxr\Downloads\Poin Utama Bab 2 Netiket.pdf)
   legal_documents[surat_pernyataan_pic]: @file(C:\Users\Ilhamstxr\Downloads\Poin Utama Bab 2 Netiket.pdf)
 }
+
+docs {
+  GET /api/baseline/{userId}
+  
+  contoh = http://127.0.0.1:8000/api/baseline/{userId}
+  
+  cara panggil = ('api.submitter.baseline')
+  
+  request
+  
+   int $userId
+   
+   int $jmlMahasiswa
+   
+   int $jmlDosen
+   
+   int $jmlTendik
+   
+   int $jmlProdi
+   
+   int $jmlUkm
+   
+   int $jmlAgama
+   
+   string $visi
+   
+   string $misi
+   
+   array $legalDocuments
+  
+  response
+   {
+    "success": true,
+    "message": "Data baseline berhasil disimpan",
+    "data": null
+  }
+}

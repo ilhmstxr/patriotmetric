@@ -9,3 +9,24 @@ post {
   body: none
   auth: none
 }
+
+docs {
+  GET /api/assessment/submitter/finalize/{assessmentID}
+  
+  contoh = 
+  http://127.0.0.1:8000/api/assessment/submitter/finalize/{assessmentID}
+  test api = http:/127.0.0.1:8000/api/assessment/submitter/finalize/1
+  
+  cara panggil = ('api.submitter.finalize')
+  
+  request
+     int $userId
+  
+  response
+   {
+    "success": true,
+    "message": "Data baseline berhasil disimpan",
+    "data": null
+  }
+  
+}

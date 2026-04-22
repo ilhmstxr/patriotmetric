@@ -27,16 +27,20 @@ class SubmitterController extends Controller
      * Helper internal untuk mem-build DTO dengan konteks User Auth yang aman.
      * Mencegah celah IDOR (Insecure Direct Object Reference).
      */
-    private function getValidatedAssessment()
+    private function getValidatedAssessment(string $mode)
     {
-        $userId = Auth::id() ?? 3; // Ganti 2 dengan Auth::id() murni saat production
-
-        // Buat DTO untuk otorisasi
+        $userId = Auth::id() ?? 3;
         $authDto = new SubmitterDTO($userId);
 
-        // Lempar ke Service. Jika user di-banned, ini akan otomatis melempar Error 403.
-        // Jika sukses, ini mereturn object $assessment dari database.
-        return $this->submitterService->validateAccess($authDto);
+        // Kita panggil fungsi validate di service yang bertindak sebagai dispatcher
+        return $this->submitterService->validate($authDto, $mode);
+    }
+
+    private function getErrorCode(\Throwable $e)
+    {
+        $code = $e->getCode();
+        // Pastikan code adalah HTTP status code yang valid
+        return (is_numeric($code) && $code >= 400 && $code < 600) ? $code : 500;
     }
 
     public function storeBaseline(BaselineSubmitterRequest $request, $userId)
@@ -63,17 +67,14 @@ class SubmitterController extends Controller
     public function getAllQuestions()
     {
         try {
-            // 1. Panggil Helper Otorisasi (Hasilnya sudah dijamin valid!)
-            $assessment = $this->getValidatedAssessment();
+            // Gunakan mode ANY agar status SUBMITTED tetap bisa melihat soal
+            $assessment = $this->getValidatedAssessment(SubmitterService::MODE_ANY);
 
-            // 3. Eksekusi Utama
-            $questions = $this->submitterService->getAllQuestionsWithAnswers($assessment);
+            $questions = $this->submitterService->getAllPertanyaan();
 
-            // Respons ini akan secara otomatis menghasilkan JSON seperti yang Anda lampirkan
-            return $this->successResponse($questions, 'Data seluruh soal dan jawaban tersimpan berhasil diambil', 200);
+            return $this->successResponse($questions, 'Data berhasil diambil', 200);
         } catch (\Throwable $e) {
-            $status = in_array($e->getCode(), [403, 404]) ? $e->getCode() : 500;
-            return $this->errorResponse($e->getMessage(), $status);
+            return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
         }
     }
 
@@ -105,37 +106,32 @@ class SubmitterController extends Controller
         }
     }
 
-    /**
-     * 3. Final Lock (Submit Akhir)
-     */
     public function finalize(Request $request)
     {
         try {
-            $assessment = $this->getValidatedAssessment();
-            
+            // PROTEKSI: Paksa harus mode WRITE
+            $assessment = $this->getValidatedAssessment(SubmitterService::MODE_WRITE);
+
             $this->submitterService->lockAssessment($assessment);
 
             return $this->successResponse(null, 'Seluruh asesmen telah dikunci (Final Lock)', 200);
         } catch (\Exception $e) {
-            $status = $e->getCode() == 422 ? 422 : 500;
-            return $this->errorResponse($e->getMessage(), $status);
+            return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
         }
     }
 
-    /**
-     * 4. Preview Nilai (Opsional)
-     * Menggantikan previewCategory. Menghitung estimasi nilai total dari satu form.
-     */
+
     public function previewResults(Request $request)
     {
         try {
-            $assessment = $this->getValidatedAssessment();
+            // PROTEKSI: Paksa harus mode READ (Sudah Final)
+            $assessment = $this->getValidatedAssessment(SubmitterService::MODE_READ);
 
             $previewData = $this->submitterService->calculateTotalPreview($assessment);
 
             return $this->successResponse($previewData, 'Estimasi skor total berhasil dihitung', 200);
         } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 500);
+            return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
         }
     }
 
