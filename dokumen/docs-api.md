@@ -202,6 +202,46 @@ response
   }
 }
 
+
+GET /api/assessment/reviewer/tasks/{userId}
+
+contoh = 
+http://127.0.0.1:8000/api/assessment/reviewer/tasks/{userId}
+test api = http:/127.0.0.1:8000/api/assessment/reviewer/tasks/{userId}/2
+
+cara panggil = ('api.reviewer.tasks')
+
+request
+
+ int $userId
+ 
+response{
+  "success": true,
+  "message": "Daftar plottingan tugas berhasil diambil.",
+  "data": {
+    "total_tugas": 5,
+    "menunggu_review": 0,
+    "selesai_review": 0,
+    "daftar_asesmen": [
+      {
+        "id": 1,
+        "institution_id": "14c1dd87-54fe-30e0-8750-0b7160de62f9",
+        "nama_pic": "PIC Default",
+        "jabatan_pic": null,
+        "no_hp_pic": "081234567890",
+        "tahun_periode": "2026",
+        "status": "ACTIVE",
+        "user_id": 2,
+        "reviewer_id": 8,
+        "total_skor_sistem": "0.00",
+        "total_skor_akhir": "0.00",
+        "created_at": "2026-04-22T15:52:03.000000Z",
+        "updated_at": "2026-04-22T15:52:03.000000Z",
+        "institusi": null
+      }
+    ]
+  }
+}
 ---
 
 ### Auth Routes

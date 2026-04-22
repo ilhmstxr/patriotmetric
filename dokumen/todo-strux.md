@@ -182,3 +182,10 @@ hindu
 buddha
 konghucu
 
+TODO 
+setelah registrasi terdapat proses verifikasi via email
+pakai laravel sanctum untuk authnya
+alur
+registrasi, data tersimpan & trigger ke email yang telah didaftar
+verifikasi email , membuka emailnya, dan klik button verifikasi akun ini, lalu otomatis terverif & status user dirubah menjadi active
+lanjut mengisi verifikasi(daftar ulang)

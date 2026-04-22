@@ -276,6 +276,27 @@ class AssessmentService extends BaseService
 
         return $data; // WAJIB return agar bisa dipakai di storeJawaban
     }
+
+    public function getAssignedReviews(int $reviewerId)
+    {
+        // 1. Pastikan akun Reviewer masih aktif (menggunakan fungsi yang sudah ada)
+        $this->ensureUserIsActive($reviewerId);
+
+        // 2. Tarik data dari Repository
+        $assessments = $this->repository->getAssignedAssessmentsByReviewer($reviewerId);
+
+        // 3. (Opsional) Transformasi data jika diperlukan sebelum dikirim ke Controller
+        // Misalnya menghitung statistik ringan untuk dashboard Reviewer
+        $summary = [
+            'total_tugas' => $assessments->count(),
+            'menunggu_review' => $assessments->where('status', 'SUBMITTED')->count(),
+            'selesai_review' => $assessments->where('status', 'GRADED')->count(),
+            'daftar_asesmen' => $assessments->values() // Reset key array
+        ];
+
+        return $summary;
+    }
+
     /**
      * 3. Final Lock (Validasi dan Penguncian)
     DONE

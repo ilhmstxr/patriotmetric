@@ -118,14 +118,17 @@ class AssessmentRepository extends BaseRepository
         );
     }
 
-
-    // /**
-    //  * Membuat record baru di tabel identitas
-    //  */
-    // public function createIdentitas(array $data)
-    // {
-    //     return Identitas::create($data);
-    // }
+    public function getAssignedAssessmentsByReviewer(int $reviewerId)
+    {
+        return $this->model
+            ->where('reviewer_id', $reviewerId)
+            // ->whereIn('status', ['ACTIVE', 'IN_PROGRESS', 'SUBMITTED', 'GRADED']) // Reviewer tidak boleh melihat yang masih ACTIVE/IN_PROGRESS
+            ->with(['institusi' => function ($query) {
+                $query->select('id', 'nama_institusi', 'jenis_institusi');
+            }])
+            ->orderBy('updated_at', 'desc') // Yang terbaru diubah ada di atas
+            ->get();
+    }
 
     public function isUserActive(int $userId): bool
     {

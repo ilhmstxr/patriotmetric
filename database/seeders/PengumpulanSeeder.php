@@ -51,6 +51,7 @@ class PengumpulanSeeder extends Seeder
                 'status' => 'ACTIVE',
                 'total_skor_sistem' => 0,
                 'total_skor_akhir' => 0,
+                'reviewer_id' => 8
             ]);
         }
     }

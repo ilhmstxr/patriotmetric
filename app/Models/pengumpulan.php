@@ -31,4 +31,9 @@ class pengumpulan extends Model
     {
         return $this->hasOne(Identitas::class, 'pengumpulan_id');
     }
+
+    public function institusi()
+    {
+        return $this->belongsTo(Institusi::class, 'institusi_id');
+    }
 }
