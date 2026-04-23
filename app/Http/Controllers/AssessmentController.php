@@ -28,10 +28,15 @@ class AssessmentController extends Controller
      * Helper internal untuk mem-build DTO dengan konteks User Auth yang aman.
      * Mencegah celah IDOR (Insecure Direct Object Reference).
      */
-    private function getValidatedAssessment(string $mode)
+    private function getAuthDTO(): AssessmentDTO
     {
         $userId = Auth::id() ?? 3;
-        $authDto = new AssessmentDTO($userId);
+        return new AssessmentDTO($userId);
+    }
+
+    private function getValidatedAssessment(string $mode)
+    {
+        $authDto = $this->getAuthDTO();
 
         // Kita panggil fungsi validate di service yang bertindak sebagai dispatcher
         return $this->AssessmentService->validate($authDto, $mode);

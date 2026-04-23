@@ -5,21 +5,21 @@ namespace App\DTO\AssessmentDTO;
 class BaselineDTO
 {
     public readonly int $userId;
-    public readonly string $namaInstitusi;
-    public readonly string $jenisInstitusi;
-    public readonly string $namaPic;
-    public readonly string $jabatanPic;
-    public readonly string $noHpPic;
+    public readonly ?string $namaInstitusi;
+    public readonly ?string $jenisInstitusi;
+    public readonly ?string $namaPic;
+    public readonly ?string $jabatanPic;
+    public readonly ?string $noHpPic;
 
-    public readonly int $jmlMhs;
-    public readonly int $jmlDosen;
-    public readonly int $jmlTendik;
-    public readonly int $jmlProdi;
-    public readonly int $jmlUkm;
-    public readonly int $jmlFakultas;
+    public readonly ?int $jmlMhs;
+    public readonly ?int $jmlDosen;
+    public readonly ?int $jmlTendik;
+    public readonly ?int $jmlProdi;
+    public readonly ?int $jmlUkm;
+    public readonly ?int $jmlFakultas;
 
-    public readonly string $visi;
-    public readonly string $misi;
+    public readonly ?string $visi;
+    public readonly ?string $misi;
     public readonly array $legalDocuments;
 
     public readonly array $dataAgama;
