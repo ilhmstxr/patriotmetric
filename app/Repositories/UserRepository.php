@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Institusi;
+use App\Models\pengumpulan;
 use App\Models\User;
 
 class UserRepository extends BaseRepository
@@ -23,8 +24,12 @@ class UserRepository extends BaseRepository
 
     public function createInstitusi(array $data)
     {
-        // Gunakan Model Institusi langsung atau inject InstitusiRepository
         return Institusi::create($data);
+    }
+
+    public function createPengumpulan(array $data)
+    {
+        return pengumpulan::create($data);
     }
 
     public function findByEmail(string $email)

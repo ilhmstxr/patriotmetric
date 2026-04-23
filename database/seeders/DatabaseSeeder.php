@@ -32,40 +32,40 @@ class DatabaseSeeder extends Seeder
         User::create([
             'email' => "user1@admin.com",
             'password' => bcrypt('user'),
-            'role' => 'SUBMITTER',
+            'role' => 'PESERTA',
             'status' => 'ACTIVE',
         ]);
 
         User::create([
             'email' => "user2@admin.com",
             'password' => bcrypt('user'),
-            'role' => 'SUBMITTER',
+            'role' => 'PESERTA',
             'status' => 'ACTIVE',
         ]);
         User::create([
             'email' => "user3@admin.com",
             'password' => bcrypt('user'),
-            'role' => 'SUBMITTER',
+            'role' => 'PESERTA',
             'status' => 'ACTIVE',
         ]);
 
         User::create([
             'email' => "user4@admin.com",
             'password' => bcrypt('user'),
-            'role' => 'SUBMITTER',
+            'role' => 'PESERTA',
             'status' => 'ACTIVE',
         ]);
         User::create([
             'email' => "user5@admin.com",
             'password' => bcrypt('user'),
-            'role' => 'SUBMITTER',
+            'role' => 'PESERTA',
             'status' => 'ACTIVE',
         ]);
 
         User::create([
             'email' => "user6@admin.com",
             'password' => bcrypt('user'),
-            'role' => 'SUBMITTER',
+            'role' => 'PESERTA',
             'status' => 'ACTIVE',
         ]);
 
@@ -81,15 +81,15 @@ class DatabaseSeeder extends Seeder
             // AssessmentSeeder::class,
             PengumpulanSeeder::class,
             // IdentitasSeeder::class,
-            
+
             KategoriSeeder::class,
             PertanyaanSeeder::class,
             PengumpulanJawabanSeeder::class,
             PengaturanCmsSeeder::class,
         ]);
 
-      
-        
+
+
 
         $this->call([
             // KategoriSeeder::class,

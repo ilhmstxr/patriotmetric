@@ -15,7 +15,7 @@ class AssessmentSeeder extends Seeder
     public function run(): void
     {
         $institusi = Institusi::first() ?? Institusi::factory()->create();
-        $user = User::where('role', 'SUBMITTER')->first() ?? User::factory()->create(['role' => 'SUBMITTER']);
+        $user = User::where('role', 'PESERTA')->first() ?? User::factory()->create(['role' => 'PESERTA']);
 
         Assessment::factory()->create([
             'institution_id' => $institusi->id,

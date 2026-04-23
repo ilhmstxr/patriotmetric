@@ -40,7 +40,7 @@ Route::get('/masuk', function () {
 })->name('login');
 
 
-// submitter
+// peserta
 Route::post('/login', function (Request $request) {
     // Simulasi login sukses yang tembus langsung ke dashboard
     if ($request->email === 'admin@upnjatim.ac.id') {
@@ -87,7 +87,7 @@ Route::prefix('reviewer')->group(function () {
         return view('reviewer.panduan');
     })->name('reviewer.panduan');
 
-    Route::get('/submitter/{id}', function ($id) {
+    Route::get('/peserta/{id}', function ($id) {
         return view('reviewer.detail', compact('id'));
-    })->name('reviewer.submitter_detail');
+    })->name('reviewer.peserta_detail');
 });

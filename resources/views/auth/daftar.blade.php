@@ -1,5 +1,61 @@
 <x-layouts.app :hideNav="true" :hideFooter="true">
-    <div class="min-h-screen flex" x-data="{ agree: false, isFormValid: false }">
+    <div class="min-h-screen flex" x-data="{ 
+        agree: false, 
+        isFormValid: false,
+        isLoading: false,
+        errorMessage: '',
+        successMessage: '',
+        formData: {
+            nama_pt: '',
+            jenis_pt: '',
+            nama_pic: '',
+            jabatan_pic: '',
+            no_hp_pic: '',
+            email: '',
+            password: '',
+            password_confirmation: ''
+        },
+        async register() {
+            if (!this.agree || !this.$refs.form.checkValidity()) return;
+            
+            // Bypass confirmasi password jika form tidak memiliki field tersebut
+            this.formData.password_confirmation = this.formData.password;
+
+            this.isLoading = true;
+            this.errorMessage = '';
+            this.successMessage = '';
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(this.formData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    this.successMessage = result.message;
+                    setTimeout(() => {
+                        window.location.href = '/masuk';
+                    }, 2000);
+                } else {
+                    if (result.errors) {
+                        this.errorMessage = Object.values(result.errors)[0][0];
+                    } else {
+                        this.errorMessage = result.message || 'Registrasi gagal. Periksa kembali data Anda.';
+                    }
+                }
+            } catch (error) {
+                this.errorMessage = 'Terjadi kesalahan jaringan. Silakan coba lagi.';
+            } finally {
+                this.isLoading = false;
+            }
+        }
+    }">
         {{-- Left Panel --}}
         <div class="hidden lg:flex w-[45%] relative sticky top-0 h-screen overflow-hidden items-center">
             <img src="{{ asset('assets/images/IMG_0940.JPG') }}" class="absolute inset-0 w-full h-full object-cover" alt="Background" />
@@ -31,8 +87,11 @@
                     Lengkapi data berikut untuk membuat akun institusi.
                 </p>
 
-                <form class="mt-8 space-y-8" action="#" method="POST" x-ref="form" @input="isFormValid = $refs.form.checkValidity()" @change="isFormValid = $refs.form.checkValidity()">
-                    @csrf
+                <!-- Notifikasi Status -->
+                <div x-show="errorMessage" style="display: none;" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-[14px] text-red-600 font-medium" x-text="errorMessage"></div>
+                <div x-show="successMessage" style="display: none;" class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-[14px] text-green-600 font-medium" x-text="successMessage"></div>
+
+                <form class="mt-8 space-y-8" @submit.prevent="register" x-ref="form" @input="isFormValid = $refs.form.checkValidity()" @change="isFormValid = $refs.form.checkValidity()">
                     {{-- Data Institusi --}}
                     <div>
                         <div class="flex items-center gap-2 pb-3 border-b border-[#f1f5f9] mb-6">
@@ -45,7 +104,7 @@
                                 <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                                     <i data-lucide="building-2" class="w-5 h-5 text-[#90A1B9]"></i>
                                 </div>
-                                <input name="nama_institusi" type="text" required placeholder=" " class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
+                                <input name="nama_institusi" type="text" x-model="formData.nama_pt" required placeholder=" " class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
                                 <label class="absolute left-12 top-4 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#62748e] transition-all peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[12px] peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-[12px] pointer-events-none">
                                     Nama Perguruan Tinggi
                                 </label>
@@ -56,14 +115,14 @@
                                 <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                                     <i data-lucide="building-2" class="w-5 h-5 text-[#90A1B9]"></i>
                                 </div>
-                                <select name="jenis_institusi" required class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition appearance-none">
+                                <select name="jenis_institusi" x-model="formData.jenis_pt" required class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition appearance-none">
                                     <option value="" disabled selected hidden></option>
                                     <option value="PTN">PTN</option>
                                     <option value="PTS">PTS</option>
                                     <option value="PTK">PTK</option>
                                 </select>
                                 <label class="absolute left-12 top-4 font-['Plus_Jakarta_Sans',sans-serif] font-medium transition-all pointer-events-none text-[14px] text-[#62748e] peer-valid:top-2 peer-valid:text-[12px] peer-invalid:top-5 peer-invalid:text-[14px] peer-focus:top-2 peer-focus:text-[12px]">
-                                    Kategori Perguruan Tinggi
+                                    jenis Perguruan Tinggi
                                 </label>
                             </div>
                         </div>
@@ -81,7 +140,7 @@
                                 <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                                     <i data-lucide="user" class="w-5 h-5 text-[#90A1B9]"></i>
                                 </div>
-                                <input name="nama_pic" type="text" required placeholder=" " class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
+                                <input name="nama_pic" type="text" x-model="formData.nama_pic" required placeholder=" " class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
                                 <label class="absolute left-12 top-4 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#62748e] transition-all peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[12px] peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-[12px] pointer-events-none">
                                     Nama PIC Peserta
                                 </label>
@@ -92,7 +151,7 @@
                                 <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                                     <i data-lucide="briefcase" class="w-5 h-5 text-[#90A1B9]"></i>
                                 </div>
-                                <input name="jabatan_pic" type="text" required placeholder=" " class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
+                                <input name="jabatan_pic" type="text" x-model="formData.jabatan_pic" required placeholder=" " class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
                                 <label class="absolute left-12 top-4 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#62748e] transition-all peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[12px] peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-[12px] pointer-events-none">
                                     Jabatan PIC Peserta
                                 </label>
@@ -103,7 +162,7 @@
                                 <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                                     <i data-lucide="phone" class="w-5 h-5 text-[#90A1B9]"></i>
                                 </div>
-                                <input name="no_hp" type="tel" required placeholder=" " class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
+                                <input name="no_hp" type="tel" x-model="formData.no_hp_pic" required placeholder=" " class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
                                 <label class="absolute left-12 top-4 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#62748e] transition-all peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[12px] peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-[12px] pointer-events-none">
                                     No HP/ WhatsApp Aktif PIC Peserta
                                 </label>
@@ -114,7 +173,7 @@
                                 <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                                     <i data-lucide="mail" class="w-5 h-5 text-[#90A1B9]"></i>
                                 </div>
-                                <input name="email" type="email" required placeholder="dosen@upnjatim.ac.id" class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] placeholder-hide-on-blur transition" />
+                                <input name="email" type="email" x-model="formData.email" required placeholder="dosen@upnjatim.ac.id" class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] placeholder-hide-on-blur transition" />
                                 <label class="absolute left-12 top-4 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#62748e] transition-all peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[12px] peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-[12px] pointer-events-none">
                                     Email PIC
                                 </label>
@@ -125,7 +184,7 @@
                                 <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                                     <i data-lucide="lock" class="w-5 h-5 text-[#90A1B9]"></i>
                                 </div>
-                                <input name="password" type="password" required placeholder=" " class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
+                                <input name="password" type="password" x-model="formData.password" required placeholder=" " class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
                                 <label class="absolute left-12 top-4 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#62748e] transition-all peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[12px] peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-[12px] pointer-events-none">
                                     Password
                                 </label>
@@ -158,9 +217,10 @@
                     <button
                         type="submit"
                         class="w-full bg-[#1b5e20] text-white font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[18px] leading-[28px] py-4 rounded-[20px] shadow-[0px_20px_25px_0px_rgba(27,94,32,0.2)] hover:bg-[#174d1a] transition flex items-center justify-center gap-2 disabled:opacity-50"
-                        x-bind:disabled="!agree || !isFormValid"
+                        x-bind:disabled="!agree || !isFormValid || isLoading"
                     >
-                        Kirim Pendaftaran
+                        <span x-show="!isLoading">Kirim Pendaftaran</span>
+                        <span x-show="isLoading" style="display: none;">Memproses...</span>
                     </button>
                 </form>
             </div>

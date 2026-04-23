@@ -11,12 +11,16 @@ class ReviewerController extends Controller
 {
     use ApiResponse;
 
+    private $authController;
     protected $assessmentService;
 
     public function __construct(AssessmentService $assessmentService)
     {
         $this->assessmentService = $assessmentService;
+        $this->authController = app(AuthController::class);
     }
+
+
 
     private function getErrorCode(\Throwable $e)
     {
@@ -32,14 +36,29 @@ class ReviewerController extends Controller
     {
         try {
             // Ambil ID Auth Reviewer yang sedang login (Fallback 4 untuk testing Bruno)
-            $reviewerId = Auth::id() ?? 8; 
+            $reviewerId = $this->authController->getAuth();
             // return $reviewerId;
 
             // Eksekusi Service
             $result = $this->assessmentService->getAssignedReviews($reviewerId);
 
             return $this->successResponse($result, 'Daftar plottingan tugas berhasil diambil.', 200);
-            
+        } catch (\Throwable $e) {
+            return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
+        }
+    }
+
+    public function getDetailTasks(Request $request, $pesertaId)
+    {
+        try {
+            // Ambil ID Auth Reviewer yang sedang login (Fallback 4 untuk testing Bruno)
+            $reviewerId = $this->authController->getAuth();
+            // return $reviewerId;
+
+            // Eksekusi Service
+            $result = $this->assessmentService->getDetailReviewTasks($reviewerId, $pesertaId);
+
+            return $this->successResponse($result, 'Daftar plottingan tugas berhasil diambil.', 200);
         } catch (\Throwable $e) {
             return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
         }

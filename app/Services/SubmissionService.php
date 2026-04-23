@@ -30,9 +30,9 @@ class SubmissionService extends BaseService
         return $this->repository->getTaskDetailsWithRelations($submissionId);
     }
 
-     public function getPreviewScore(String $submissionId)
+    public function getPreviewScore(String $submissionId)
     {
-       return $this->repository->getSubmitterAnswers($submissionId);
+        return $this->repository->getPesertaAnswers($submissionId);
     }
     /**
      * Menyimpan jawaban secara masal (bulk) ke dalam tabel jawaban setiap kali terjadi autosave di frontend.

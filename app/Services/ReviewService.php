@@ -124,12 +124,12 @@ class ReviewService extends BaseService
     }
 
     /**
-     * Mengambil data perbandingan (Klaim Submitter vs Input Reviewer) per kategori.
+     * Mengambil data perbandingan (Klaim Peserta vs Input Reviewer) per kategori.
      */
     public function getComparisonData(\App\DTOs\ReviewDTO $dto)
     {
         $comparisonData = $this->repository->getWithReviewerContext($dto->submissionId, $dto->categoryId);
-        
+
         if ($comparisonData->isEmpty()) {
             throw new \Exception("Data tidak ditemukan untuk kategori tersebut.", 404);
         }
@@ -144,7 +144,7 @@ class ReviewService extends BaseService
     {
         // Cek status asesmen: Jika dinilai sudah selesai, cegah perubahan opsional.
         $submission = $this->repository->find($dto->submissionId);
-        
+
         if ($submission && $submission->status === 'REVIEWED') {
             throw new \Exception("Akses ditolak: Review untuk institusi ini sudah final (REVIEWED).", 403);
         }
@@ -204,7 +204,7 @@ class ReviewService extends BaseService
     public function publishAssessment(\App\DTOs\ReviewDTO $dto)
     {
         $submission = $this->repository->find($dto->submissionId);
-        
+
         if (!$submission || $submission->status !== 'REVIEWED') {
             throw new \Exception("Hanya institusi dengan status 'REVIEWED' yang bisa dipublikasikan.", 422);
         }

@@ -17,32 +17,32 @@
     {{-- ===== NAV LINKS ===== --}}
 
     {{-- Dashboard / Plotting --}}
-    @php $isDashboard = request()->routeIs('reviewer.index') || request()->routeIs('reviewer.submitter_detail'); @endphp
+    @php $isDashboard = request()->routeIs('reviewer.index') || request()->routeIs('reviewer.peserta_detail'); @endphp
     <a href="{{ route('reviewer.index') }}"
-       class="flex items-center gap-2 px-4 h-[48px] text-[13px] font-medium transition-colors relative
+        class="flex items-center gap-2 px-4 h-[48px] text-[13px] font-medium transition-colors relative
               {{ $isDashboard ? 'text-[#1b5e20] font-semibold' : 'text-[#45556c] hover:text-[#1b5e20]' }}">
         <i data-lucide="layout-dashboard" class="w-[15px] h-[15px]"></i>
         Dashboard Utama
         @if($isDashboard)
-            <span class="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#1b5e20] rounded-t"></span>
+        <span class="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#1b5e20] rounded-t"></span>
         @endif
     </a>
 
     {{-- Panduan Penilaian --}}
     @php $isPanduan = request()->routeIs('reviewer.panduan'); @endphp
     <a href="{{ route('reviewer.panduan') }}"
-       class="flex items-center gap-2 px-4 h-[48px] text-[13px] font-medium transition-colors relative
+        class="flex items-center gap-2 px-4 h-[48px] text-[13px] font-medium transition-colors relative
               {{ $isPanduan ? 'text-[#1b5e20] font-semibold' : 'text-[#45556c] hover:text-[#1b5e20]' }}">
         <i data-lucide="help-circle" class="w-[15px] h-[15px]"></i>
         Panduan Penilaian
         @if($isPanduan)
-            <span class="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#1b5e20] rounded-t"></span>
+        <span class="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#1b5e20] rounded-t"></span>
         @endif
     </a>
 
     {{-- Riwayat Penilaian --}}
     <a href="#"
-       class="flex items-center gap-2 px-4 h-[48px] text-[13px] font-medium transition-colors relative text-[#45556c] hover:text-[#1b5e20]">
+        class="flex items-center gap-2 px-4 h-[48px] text-[13px] font-medium transition-colors relative text-[#45556c] hover:text-[#1b5e20]">
         <i data-lucide="history" class="w-[15px] h-[15px]"></i>
         Riwayat Penilaian
     </a>
@@ -58,9 +58,9 @@
         </div>
         <span class="text-[13px] font-semibold text-[#1d293d]">{{ $title ?? 'Reviewer Area' }}</span>
     </div>
-    
+
     <button @click="mobileMenuOpen = !mobileMenuOpen"
-            class="p-2 text-[#45556c] hover:text-[#1b5e20] transition-colors">
+        class="p-2 text-[#45556c] hover:text-[#1b5e20] transition-colors">
         <i data-lucide="menu" x-show="!mobileMenuOpen" class="w-5 h-5"></i>
         <i data-lucide="x" x-show="mobileMenuOpen" class="w-5 h-5" style="display:none"></i>
     </button>
@@ -70,19 +70,19 @@
 <div x-show="mobileMenuOpen" x-transition class="md:hidden border-t border-[#e0e0e0] bg-white" style="display:none;">
     <div class="px-4 py-3 space-y-1">
         <a href="{{ route('reviewer.index') }}"
-           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors
                   {{ $isDashboard ? 'bg-[#e8f5e9] text-[#1b5e20] font-semibold' : 'text-[#45556c] hover:bg-[#f5f5f5]' }}">
             <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
             Dashboard Utama
         </a>
         <a href="{{ route('reviewer.panduan') }}"
-           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors
                   {{ $isPanduan ? 'bg-[#e8f5e9] text-[#1b5e20] font-semibold' : 'text-[#45556c] hover:bg-[#f5f5f5]' }}">
             <i data-lucide="help-circle" class="w-4 h-4"></i>
             Panduan Penilaian
         </a>
         <a href="#"
-           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors text-[#45556c] hover:bg-[#f5f5f5]">
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors text-[#45556c] hover:bg-[#f5f5f5]">
             <i data-lucide="history" class="w-4 h-4"></i>
             Riwayat Penilaian
         </a>

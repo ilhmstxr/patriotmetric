@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class BaselineSubmitterRequest extends FormRequest
+class BaselinePesertaRequest extends FormRequest
 {
     /**
      * Otorisasi dilakukan di Middleware (Sanctum/Auth),
@@ -12,7 +12,7 @@ class BaselineSubmitterRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true; 
+        return true;
     }
 
     /**

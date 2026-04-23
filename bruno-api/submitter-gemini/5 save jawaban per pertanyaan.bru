@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: http:/127.0.0.1:8000/api/assessment/submitter/save-answer/3
+  url: http:/127.0.0.1:8000/api/assessment/peserta/save-answer/3
   body: multipartForm
   auth: none
 }
@@ -20,15 +20,15 @@ body:multipart-form {
 
 docs {
   
-  GET http:/127.0.0.1:8000/api/assessment/submitter/save-answer/{userId}
+  GET http:/127.0.0.1:8000/api/assessment/peserta/save-answer/{userId}
   
   contoh = 
-  http:/127.0.0.1:8000/api/assessment/submitter/save-answer/{userId}
+  http:/127.0.0.1:8000/api/assessment/peserta/save-answer/{userId}
   test api = 
-  http:/127.0.0.1:8000/api/assessment/submitter/save-answer/3
+  http:/127.0.0.1:8000/api/assessment/peserta/save-answer/3
   
   
-  cara panggil = ('api.submitter.save-answer')
+  cara panggil = ('api.peserta.save-answer')
   
   request
      int $userId

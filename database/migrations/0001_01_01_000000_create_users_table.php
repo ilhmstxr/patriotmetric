@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ["ADMIN", "REVIEWER", "SUBMITTER"])->default("SUBMITTER");
+            $table->enum('role', ["ADMIN", "REVIEWER", "PESERTA"])->default("PESERTA");
             // $table->string('last_session_id')->nullable(); // Untuk Single Session logic
             // $table->string('name');
             // $table->string('nama_institusi')->nullable();

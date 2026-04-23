@@ -5,7 +5,7 @@ namespace App\DTO\AuthDTO;
 readonly class registerDTO
 {
     public string $namaPt;
-    public string $kategoriPt;
+    public string $jenisPt;
     public string $namaPic;
     public string $noHpPic;
     public string $jabatanPic;
@@ -15,7 +15,7 @@ readonly class registerDTO
     public function __construct(array $validated)
     {
         $this->namaPt = $validated['nama_pt'];
-        $this->kategoriPt = $validated['kategori_pt'];
+        $this->jenisPt = $validated['jenis_pt'];
         $this->namaPic = $validated['nama_pic'];
         $this->noHpPic = $validated['no_hp_pic'];
         $this->jabatanPic = $validated['jabatan_pic'];

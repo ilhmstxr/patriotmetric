@@ -8,35 +8,27 @@ use Illuminate\Http\Request;
 use App\Traits\ApiResponse;
 use App\DTO\AssessmentDTO\AssessmentDTO;
 use App\DTO\AssessmentDTO\QuestionDTO;
-use App\Http\Requests\BaselineSubmitterRequest;
+use App\Http\Requests\BaselinePesertaRequest;
 use App\Services\AssessmentService;
-use Illuminate\Support\Facades\Auth;
 use Exception;
 
 class AssessmentController extends Controller
 {
     use ApiResponse;
 
+    private $authController;
     protected $AssessmentService;
 
     public function __construct(AssessmentService $AssessmentService)
     {
         $this->AssessmentService = $AssessmentService;
+        $this->authController = app(AuthController::class);
     }
 
-    /**
-     * Helper internal untuk mem-build DTO dengan konteks User Auth yang aman.
-     * Mencegah celah IDOR (Insecure Direct Object Reference).
-     */
-    private function getAuthDTO(): AssessmentDTO
-    {
-        $userId = Auth::id() ?? 3;
-        return new AssessmentDTO($userId);
-    }
 
     private function getValidatedAssessment(string $mode)
     {
-        $authDto = $this->getAuthDTO();
+        $authDto = $this->authController->getAuthDTO();
 
         // Kita panggil fungsi validate di service yang bertindak sebagai dispatcher
         return $this->AssessmentService->validate($authDto, $mode);
@@ -49,18 +41,18 @@ class AssessmentController extends Controller
         return (is_numeric($code) && $code >= 400 && $code < 600) ? $code : 500;
     }
 
-    public function storeBaseline(BaselineSubmitterRequest $request)
+    public function storeBaseline(BaselinePesertaRequest $request)
     // DONE
     {
         // profil
         try {
             $validatedData = $request->validated();
             $assessment = $this->getValidatedAssessment(AssessmentService::MODE_WRITE);
-        
+
             $dto = new BaselineDTO((int) $assessment->user_id, $validatedData);
 
             // return $dto;
-              // 2. Eksekusi Service (Orchestration)
+            // 2. Eksekusi Service (Orchestration)
             $result = $this->AssessmentService->upsertBaseline($dto);
 
             return $this->successResponse(null, 'Data baseline berhasil disimpan', 200);

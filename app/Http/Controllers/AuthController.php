@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\DTO\UserDto\UserDTO;
+use App\DTO\AssessmentDTO\AssessmentDTO;
+use App\DTO\AuthDTO\LoginDTO;
+use App\DTO\AuthDTO\registerDTO;
 use App\Services\UserService;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    use ApiResponse;
     protected $userService;
 
     public function __construct(UserService $userService)
@@ -19,57 +23,71 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         try {
-            // data
-            // nama pt
-            // kategori pt
-            // no pic
-            // no hp pic
-            // jabatan pic
-            // email pic
-            // password pic
-            // konfirmasi password pic
+            $validated = $request->validate([
+                'nama_pt' => 'required|string|max:255',
+                'jenis_pt' => 'required|string|max:100',
+                'nama_pic' => 'required|string|max:255',
+                'no_hp_pic' => 'required|string|max:20',
+                'jabatan_pic' => 'required|string|max:100',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:8|confirmed',
+            ]);
 
+            $dto = new registerDTO($validated);
+            $user = $this->userService->register($dto);
 
-            // $dto = UserDTO::formRequest($request);
-
-            // validasi dari db, apakah ada email double
-            // transaksi berhasil
-            // return user
-
+            return $this->successResponse($user, 'Registrasi berhasil. Silakan cek Email untuk verifikasi.', 201);
         } catch (\Throwable $th) {
-            //throw $th;
+            $code = (is_numeric($th->getCode()) && $th->getCode() >= 400 && $th->getCode() < 600) ? $th->getCode() : 500;
+            return $this->errorResponse($th->getMessage(), $code);
         }
-
-        return redirect()->back()->with('message', 'Registrasi berhasil');
     }
 
     public function login(Request $request)
     {
         try {
-            // data
-            // email 
-            // password
+            $validated = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required|string',
+            ]);
 
-            // pengecekkan apakah email ada di db lalu di get by service
-            // pengecekkan apakah password cocok dengan data di db  
-            // jika iya maka return autentikasi + session dkk
+            $dto = new LoginDTO($validated);
+            $result = $this->userService->login($dto);
+
+            return $this->successResponse($result, 'Login berhasil.', 200);
         } catch (\Throwable $th) {
-            //throw $th;
+            $code = (is_numeric($th->getCode()) && $th->getCode() >= 400 && $th->getCode() < 600) ? $th->getCode() : 401;
+            return $this->errorResponse($th->getMessage(), $code);
         }
-
-        // Login & hapus sesi di perangkat lain (Invalidate old session).
-        return redirect()->back()->with('message', 'Login berhasil');
     }
 
     public function logout(Request $request)
     {
         try {
-            // cek auth id
-            // hapus token
-            // hapus last_session_id
+            $user = $request->user();
+            if ($user) {
+                $this->userService->logout($user);
+            }
+            return $this->successResponse(null, 'Logout berhasil.', 200);
         } catch (\Throwable $th) {
-            //throw $th;
+            $code = (is_numeric($th->getCode()) && $th->getCode() >= 400 && $th->getCode() < 600) ? $th->getCode() : 500;
+            return $this->errorResponse($th->getMessage(), $code);
         }
-        return redirect()->route('login');
+    }
+
+    public function getAuth()
+    {
+        $userId = Auth::id();
+        return $userId;
+    }
+
+    /**
+     * Helper internal untuk mem-build DTO dengan konteks User Auth yang aman.
+     * Mencegah celah IDOR (Insecure Direct Object Reference).
+     */
+    public function getAuthDTO(): AssessmentDTO
+    {
+        $userId = $this->getAuth();
+        return new AssessmentDTO($userId);
     }
 }

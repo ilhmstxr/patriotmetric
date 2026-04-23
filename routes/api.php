@@ -63,6 +63,9 @@ Route::prefix('assessment/peserta')->group(function () {
 
 Route::prefix('assessment/reviewer')->group(function () {
     Route::get('/tasks', [ReviewerController::class, 'getAssignedTasks'])->name('api.reviewer.tasks');
+    Route::get('/tasks/reviewer/peseta/{pesertaId}', [ReviewerController::class, 'getDetailTasks'])->name('api.reviewer.detail');
+    // Route::get('/tasks', [ReviewerController::class, 'getAssignedTasks'])->name('api.reviewer.tasks');
+    
     /* BUG */
     // Route::get('/assignments', [ReviewerController::class, 'assignments'])->name('api.reviewer.assignments');
     // Route::get('/questions/{sub_id}/{cat_id}', [ReviewerController::class, 'questions'])->name('api.reviewer.questions');

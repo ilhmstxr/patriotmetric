@@ -34,4 +34,9 @@ class Identitas extends Model
     {
         return $this->belongsTo(Pengumpulan::class, 'pengumpulan_id');
     }
+
+    public function agamas()
+    {
+        return $this->hasMany(Agama::class, 'identitas_id');
+    }
 }

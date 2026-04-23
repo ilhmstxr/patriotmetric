@@ -10,7 +10,7 @@ class pengumpulan extends Model
     /** @use HasFactory<\Database\Factories\PengumpulanFactory> */
     use HasFactory;
 
-    protected $fillable = ['user_id', 'reviewer_id', 'status', 'total_skor_sistem', 'total_skor_akhir'];
+    protected $fillable = ['user_id', 'reviewer_id', 'institution_id', 'tahun_periode', 'status', 'total_skor_sistem', 'total_skor_akhir', 'nama_pic', 'jabatan_pic', 'no_hp_pic'];
 
     public function user()
     {

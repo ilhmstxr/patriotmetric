@@ -32,16 +32,25 @@ class UserService extends BaseService
             $user = $this->repository->createUser([
                 'email' => $dto->email,
                 'password' => Hash::make($dto->password),
-                'role' => 'SUBMITTER',
+                'role' => 'PESERTA',
                 'status' => 'PENDING',
             ]);
 
-            // 2. Buat Institusi terkait (Melewati Repository yang benar)
-            // Kita kirimkan user_id yang baru saja dibuat
-            $this->repository->createInstitusi([
-                'name' => $dto->namaPt,
-                'category' => $dto->kategoriPt,
+            // 2. Buat Institusi terkait
+            $institusi = $this->repository->createInstitusi([
+                'nama_institusi' => $dto->namaPt,
+                'jenis_institusi' => $dto->jenisPt,
+            ]);
+
+            // 3. Buat Data Pengumpulan (Assessment Record) wajib untuk tahun ini
+            $this->repository->createPengumpulan([
                 'user_id' => $user->id,
+                'institution_id' => $institusi->id,
+                'tahun_periode' => date('Y'),
+                'status' => 'ACTIVE',
+                'nama_pic' => $dto->namaPic,
+                'jabatan_pic' => $dto->jabatanPic,
+                'no_hp_pic' => $dto->noHpPic,
             ]);
 
             return $user;

@@ -135,4 +135,13 @@ class AssessmentRepository extends BaseRepository
         $user = User::find($userId);
         return $user && $user->status === 'ACTIVE';
     }
+
+    public function getDetailAssessmentByReviewer(int $reviewerId, int $pesertaId)
+    {
+        return $this->model
+            ->where('reviewer_id', $reviewerId)
+            ->where('id', $pesertaId)
+            ->with(['institusi', 'identitas.agamas'])
+            ->first();
+    }
 }

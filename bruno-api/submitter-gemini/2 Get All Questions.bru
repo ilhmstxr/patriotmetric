@@ -5,18 +5,18 @@ meta {
 }
 
 get {
-  url: http://127.0.0.1:8000/api/assessment/submitter/questions/1
+  url: http://127.0.0.1:8000/api/assessment/peserta/questions/1
   body: none
   auth: none
 }
 
 docs {
-  GET /api/assessment/submitter/questions/{assessmentId}
+  GET /api/assessment/peserta/questions/{assessmentId}
   
   contoh = 
-  http://127.0.0.1:8000/api/assessment/submitter/questions/{assessmentId}
+  http://127.0.0.1:8000/api/assessment/peserta/questions/{assessmentId}
   
-  cara panggil = ('api.submitter.questions')
+  cara panggil = ('api.peserta.questions')
   
   request
     int $userId

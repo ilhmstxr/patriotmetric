@@ -147,7 +147,7 @@ class AssessmentService extends BaseService
     {
         $paths = [];
         $safeFolderName = Str::slug($assessment->institusi->name ?? 'unknown') . '-' . $assessment->tahun_periode;
-        $directoryPath = 'lampiran-submitter/' . $safeFolderName;
+        $directoryPath = 'lampiran-peserta/' . $safeFolderName;
 
         foreach ($documents as $key => $file) {
             $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -355,6 +355,50 @@ class AssessmentService extends BaseService
             'answered_questions' => $answered,
             'percentage'         => $totalQuestions > 0 ? round(($answered / $totalQuestions) * 100) : 0,
             'is_completed'       => $answered >= $totalQuestions
+        ];
+    }
+
+    /**
+     * Mengambil detail profil peserta (institusi, identitas, agama, dokumen) untuk reviewer
+     */
+    public function getDetailReviewTasks(int $reviewerId, int $pesertaId)
+    {
+        // 1. Pastikan akun Reviewer masih aktif
+        $this->ensureUserIsActive($reviewerId);
+
+        // 2. Tarik data dari Repository
+        $assessment = $this->repository->getDetailAssessmentByReviewer($reviewerId, $pesertaId);
+
+        if (!$assessment) {
+            throw new Exception("Data asesmen tidak ditemukan atau Anda tidak memiliki hak akses.", 404);
+        }
+
+        $identitas = $assessment->identitas;
+
+        // Memformat data sesuai spesifikasi docs-api.md
+        return [
+            'pengumpulan' => [
+                'id' => $assessment->id,
+                'status' => $assessment->status,
+                'total_skor_sistem' => $assessment->total_skor_sistem,
+                'total_skor_akhir' => $assessment->total_skor_akhir,
+                'tahun_periode' => $assessment->tahun_periode,
+            ],
+            'institusi' => $assessment->institusi,
+            'profil_peserta' => $identitas ? [
+                'visi' => $identitas->visi,
+                'misi' => $identitas->misi,
+                'jml_fakultas' => $identitas->jml_fakultas,
+                'jml_studi' => $identitas->jml_prodi,
+                'jml_dosen' => $identitas->jml_dosen,
+                'jml_tendik' => $identitas->jml_tendik,
+                'jml_mhs' => $identitas->jml_mahasiswa,
+                'jml_ukm' => $identitas->jml_ukm,
+                'berkas_pendukung' => $identitas->legal_documents,
+                'agama' => $identitas->agamas->mapWithKeys(function ($item) {
+                    return [strtolower($item->agama) => $item->jumlah];
+                })
+            ] : null
         ];
     }
 }

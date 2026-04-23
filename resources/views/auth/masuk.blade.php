@@ -20,7 +20,47 @@
         </div>
 
         {{-- Right Panel --}}
-        <div class="flex-1 flex items-center justify-center px-6 md:px-8 py-10 md:py-16 bg-white">
+        <div class="flex-1 flex items-center justify-center px-6 md:px-8 py-10 md:py-16 bg-white" x-data="{ 
+            email: '', 
+            password: '', 
+            isLoading: false, 
+            errorMessage: '',
+            successMessage: '',
+            async login() {
+                this.isLoading = true;
+                this.errorMessage = '';
+                this.successMessage = '';
+                try {
+                    const response = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: this.email,
+                            password: this.password
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok && result.success) {
+                        this.successMessage = result.message;
+                        localStorage.setItem('auth_token', result.data.token);
+                        setTimeout(() => {
+                            window.location.href = '/verifikasi';
+                        }, 1000);
+                    } else {
+                        this.errorMessage = result.message || 'Login gagal. Periksa kembali kredensial Anda.';
+                    }
+                } catch (error) {
+                    this.errorMessage = 'Terjadi kesalahan jaringan. Silakan coba lagi.';
+                } finally {
+                    this.isLoading = false;
+                }
+            }
+        }">
             <div class="w-full max-w-[448px]">
                 <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[24px] md:text-[30px] leading-[36px] text-[#1d293d]">Masuk Akun</h2>
                 <p class="mt-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] leading-[24px] text-[#62748e]">
@@ -34,8 +74,11 @@
                     </p>
                 </div> -->
 
-                <form class="mt-8 space-y-6" action="{{ route('login.post') }}" method="POST">
-                    @csrf
+                <!-- Notifikasi Status -->
+                <div x-show="errorMessage" style="display: none;" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-[14px] text-red-600 font-medium" x-text="errorMessage"></div>
+                <div x-show="successMessage" style="display: none;" class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-[14px] text-green-600 font-medium" x-text="successMessage"></div>
+
+                <form class="mt-8 space-y-6" @submit.prevent="login">
                     {{-- Email --}}
                     <div class="relative">
                         <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -44,6 +87,7 @@
                         <input
                             type="email"
                             name="email"
+                            x-model="email"
                             required
                             placeholder=" "
                             class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
@@ -60,6 +104,7 @@
                         <input
                             type="password"
                             name="password"
+                            x-model="password"
                             required
                             placeholder=" "
                             class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
@@ -82,8 +127,10 @@
                     {{-- Submit --}}
                     <button
                         type="submit"
-                        class="w-full bg-[#1b5e20] text-white font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[18px] leading-[28px] py-4 rounded-[20px] shadow-[0px_20px_25px_0px_rgba(27,94,32,0.2)] hover:bg-[#174d1a] transition flex items-center justify-center gap-2">
-                        Masuk Sekarang
+                        x-bind:disabled="isLoading"
+                        class="w-full bg-[#1b5e20] text-white font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[18px] leading-[28px] py-4 rounded-[20px] shadow-[0px_20px_25px_0px_rgba(27,94,32,0.2)] hover:bg-[#174d1a] transition flex items-center justify-center gap-2 disabled:opacity-50">
+                        <span x-show="!isLoading">Masuk Sekarang</span>
+                        <span x-show="isLoading" style="display: none;">Memproses...</span>
                     </button>
                 </form>
 
