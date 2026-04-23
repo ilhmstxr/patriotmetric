@@ -62,8 +62,8 @@ Route::prefix('assessment/peserta')->group(function () {
 
 
 Route::prefix('assessment/reviewer')->group(function () {
+    Route::get('/tasks', [ReviewerController::class, 'getAssignedTasks'])->name('api.reviewer.tasks');
     /* BUG */
-    Route::get('/tasks/{userId}', [ReviewerController::class, 'getAssignedTasks'])->name('api.reviewer.tasks');
     // Route::get('/assignments', [ReviewerController::class, 'assignments'])->name('api.reviewer.assignments');
     // Route::get('/questions/{sub_id}/{cat_id}', [ReviewerController::class, 'questions'])->name('api.reviewer.questions');
     // Route::post('/save-verification', [ReviewerController::class, 'saveVerification'])->name('api.reviewer.save-verification');

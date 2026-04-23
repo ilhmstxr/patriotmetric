@@ -189,3 +189,36 @@ alur
 registrasi, data tersimpan & trigger ke email yang telah didaftar
 verifikasi email , membuka emailnya, dan klik button verifikasi akun ini, lalu otomatis terverif & status user dirubah menjadi active
 lanjut mengisi verifikasi(daftar ulang)
+
+---
+
+## 🕵️‍♂️ Hasil Technical Interrogation (Arsitektur Frontend)
+
+Berdasarkan analisis kode (khususnya `routes/web.php`, `routes/api.php`, struktur `resources/views`, dan Controller), berikut adalah jawaban pasti untuk 3 skenario yang Anda tanyakan:
+
+**1. Apakah menggunakan "Blade Murni + SSR"? ❌ BUKAN UTAMA**
+- **Fakta:** Di `routes/web.php`, halaman dirender **kosong** tanpa memparsing variabel. Contoh: `Route::get('/', function () { return view('dashboard.index'); });`
+- **Fakta:** Controller untuk Web (yang seharusnya memanggil `compact()` atau `with()`) nyaris tidak mem-passing data dinamis apapun ke View. 
+- *Catatan:* Memang ada penggunaan `@foreach` (contoh di `demografi.blade.php`), tapi itu hanya _hardcode array_ untuk dummy data UI, bukan dari Database.
+
+**2. Apakah menggunakan "Blade + AJAX/Vanilla Fetch"? ✅ YA, INI MAZHAB ANDA**
+- **Fakta:** Anda mereturn view kosong di `web.php`, namun menyediakan Endpoint API lengkap di `routes/api.php` (`/assessment/peserta/questions/{id}`, `/assessment/peserta/save-answer/{id}`, dll).
+- **Fakta:** Semua interaksi data dikelola oleh Controller API (seperti `AssessmentController`) yang mengembalikan format JSON.
+- **Fakta:** Di dokumen `todo-strux.md` ini sendiri sudah terkonfirmasi pola kerjanya: *"fetch harus fetch pertanyaan_id... ketika mengklik tipe pilihan_ganda, maka akan fetch jawaban_id"*.
+- **Fakta Ekstra:** Interaksi dan UI State dikelola juga dengan **Alpine.js** (terlihat penggunaan atribut reaktif seperti `x-data`, `x-show`, `x-model` pada `reviewer/index.blade.php`).
+
+**3. Apakah tanpa sadar mencampur dengan Inertia.js / Livewire? ❌ TIDAK**
+- **Fakta:** Tidak ditemukan file `.jsx` / `.tsx` sama sekali di dalam folder `resources/js`. Folder `resources/js` hanya berisi `app.js` dan `bootstrap.js` bawaan.
+- **Fakta:** Tidak ada satupun pemanggilan `Inertia::render()` di Controller.
+- **Fakta:** Tidak ada directive `@livewire` ataupun `wire:model` di seluruh file `.blade.php`.
+
+### 💡 Kesimpulan "Mazhab" Anda:
+Mazhab arsitektur Frontend Anda secara konsisten adalah: **API-Driven Blade (Blade sebagai UI Container Statis + Alpine.js + Vanilla Fetch AJAX)**.
+
+**Alurnya:**
+1. User mengakses web → Laravel (`web.php`) mereturn layout/shell Blade yang secara fungsional "kosongan" dari sisi data.
+2. Browser merender UI HTML/CSS awal beserta inisialisasi script.
+3. JavaScript (Vanilla Fetch API dipanggil via Alpine.js/Script tag) menembak endpoint di `routes/api.php` untuk mengambil/mengirim data JSON.
+4. Data JSON dari API tersebut langsung disuntikkan/dirender ke DOM secara interaktif di sisi Client (browser).
+
+**Saran Konsistensi:** Lanjutkan pola ini! Jangan tiba-tiba mengirim data dari Controller `web.php` menggunakan `compact()` ke View, karena itu akan merusak arsitektur API-Driven Anda yang sudah cukup rapih dan terpisah ini (Separation of Concerns). Semua pengolahan data harus selalu masuk melalui Fetch API + Trait ApiResponse JSON.

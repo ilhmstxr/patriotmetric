@@ -291,6 +291,7 @@ class AssessmentService extends BaseService
             'total_tugas' => $assessments->count(),
             'menunggu_review' => $assessments->where('status', 'SUBMITTED')->count(),
             'selesai_review' => $assessments->where('status', 'GRADED')->count(),
+            'yang_belum_direview' => $assessments->where('status', 'SUBMITTED')->values(),
             'daftar_asesmen' => $assessments->values() // Reset key array
         ];
 

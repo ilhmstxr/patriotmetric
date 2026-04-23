@@ -242,6 +242,51 @@ response{
     ]
   }
 }
+
+reviewer
+method get
+menu dashboard
+belum dinilai = tabel pengumpulan where status = submitted where total diplotting = true return hasil angka / count 
+total diplotting =tabel pengumpulan where reviewer_id = user id return hasil angka/ count
+selesai dinilai = tabel pengumpulan where status = graded where total diplotting = true return hasil angka/ count
+yang belum di review = belum dinilai true return id tabel pengumpulan with tabel institusi(get nama institusi)
+daftar plotting = total diplotting true return id tabel pengumpulan with tabel institusi(get nama institusi)
+
+menu data profil peserta
+get
+visi
+misi
+jml fakultas
+jml studi
+jml dosen
+jml tendik
+
+jml mhs
+jml ukm
+
+jml agama
+islam
+protestan
+khatolik
+hindu
+budha
+konghucu
+
+berkas pendukung (path ke view js)
+logo institusi 
+profil institus
+struktur organisasi
+sk tim pemeringkatan
+
+form penilaian rubrik
+post
+skor final
+note reviewer
+
+menu riwayat penilaian
+get
+
+
 ---
 
 ### Auth Routes

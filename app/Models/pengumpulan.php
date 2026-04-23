@@ -34,6 +34,6 @@ class pengumpulan extends Model
 
     public function institusi()
     {
-        return $this->belongsTo(Institusi::class, 'institusi_id');
+        return $this->belongsTo(Institusi::class, 'institution_id');
     }
 }
