@@ -4,148 +4,54 @@
     <div x-data="{
         answers: {},
         links: {},
-        mockDatabase: [
-          {
-            category: 'KEBIJAKAN (01)',
-            weight: '25%',
-            questions: [
-              {
-                id: 'kebijakan_1',
-                code: '01',
-                title: 'Kebijakan/Implementasi Nilai-Nilai Bela Negara dalam Kegiatan Tridharma',
-                evidenceRequirements: [
-                  'Dokumen Kebijakan berupa SK',
-                  'Bukti Implementasi (foto/video/dokumen-nya)'
-                ],
-                type: 'multiple-choice',
-                options: [
-                  'Tidak Ada',
-                  'Ada kebijakan/SK tapi belum diimplementasikan',
-                  'Ada kebijakan dan diimplementasikan dalam satu kegiatan Tridharma',
-                  'Ada kebijakan dan diimplementasikan dalam dua kegiatan Tridharma',
-                  'Ada kebijakan dan diimplementasikan dalam seluruh kegiatan Tridharma',
-                  'Ada kebijakan dan diimplementasikan dalam seluruh kegiatan Tridharma dan kegiatan penunjang'
-                ]
-              },
-              {
-                id: 'kebijakan_2',
-                code: '02',
-                title: 'Kebijakan pencegahan dan penanganan kekerasan',
-                evidenceRequirements: [
-                  'Dokumen Kebijakan / Pedoman',
-                  'SK Satgas PPKS',
-                  'Dokumentasi Sosialisasi',
-                  'Laporan/Hasil Aduan'
-                ],
-                type: 'multiple-choice',
-                options: [
-                  'Tidak Ada',
-                  'Ada kebijakan, pedoman pencegahan dan penanganan kekerasan tetapi belum diimplementasikan',
-                  'Ada kebijakan, pedoman, sosialisasi, langkah pencegahan dan penanganan kekerasan',
-                  'Ada kebijakan, pedoman, sosialisasi, Satgas Pencegahan dan Penanganan Kekerasan',
-                  'Ada kebijakan, pedoman, sosialisasi, Satgas, jurnal pelaporan/tindak lanjut',
-                  'Lengkap (beserta tindak lanjut laporan dan/atau pendampingan, perlindungan, pemulihan korban dan sanksi)'
-                ]
-              },
-              {
-                id: 'kebijakan_3',
-                code: '03',
-                title: 'Kebijakan bagi sivitas akademika untuk bangga menggunakan produk lokal dalam pelaksanaan pembelajaran',
-                evidenceRequirements: [
-                  'Dokumen Edaran SK / Himbauan',
-                  'Foto implementasi di lingkungan kampus'
-                ],
-                type: 'multiple-choice',
-                options: [
-                  'Tidak ada',
-                  'Kebijakan ada/tidak tidak diterapkan dalam praktik.',
-                  'Kebijakan ada, tetapi penerapannya tidak konsisten dan tidak diawasi/dikendalikan',
-                  'Kebijakan ada dan diterapkan, tetapi hanya dalam beberapa prodi/fakultas tertentu.',
-                  'Kebijakan penggunaan produk lokal diterapkan secara luas, tetapi belum sepenuhnya didukung oleh seluruh sivitas akademik',
-                  'Kebijakan penggunaan produk lokal di kampus diterapkan secara konsisten dan mendapat dukungan penuh'
-                ]
-              }
-            ]
-          },
-          {
-            category: 'KELEMBAGAAN (02)',
-            weight: '25%',
-            questions: [
-              {
-                id: 'kelembagaan_1',
-                code: '01',
-                title: 'Unit kerja yang berfokus pada pengembangan karakter bela negara',
-                evidenceRequirements: [
-                  'SK Pembentukan Unit Kerja',
-                  'Dokumen Program Kerja',
-                  'Laporan Pelaksanaan Program'
-                ],
-                type: 'multiple-choice',
-                options: [
-                  'Tidak Ada',
-                  'Ada unit kerja',
-                  'Ada unit kerja, program kerja',
-                  'Ada unit kerja, program kerja, kegiatan implementasi program kerja',
-                  'Ada unit kerja, program kerja, kegiatan implementasi, evaluasi program',
-                  'Ada unit kerja, program kerja, kegiatan implementasi, evaluasi, perencanaan tahun berikutnya'
-                ]
-              },
-              {
-                id: 'kelembagaan_2',
-                code: '02',
-                title: 'Jumlah kelompok riset berkarakter bela negara',
-                evidenceRequirements: [
-                  'Daftar kelompok riset dari LPPM',
-                  'Publikasi hasil jurnal terkait'
-                ],
-                type: 'short-answer',
-                options: []
-              }
-            ]
-          },
-          {
-            category: 'PATRIOTISME MAHASISWA (03)',
-            weight: '10%',
-            questions: [
-              {
-                id: 'patriotisme_1',
-                code: '01',
-                title: 'Mahasiswa aktif sebagai anggota komponen cadangan (KOMCAD)',
-                evidenceRequirements: [
-                  'SK Pembentukan Unit Kerja',
-                  'Sertifikat/Kartu Anggota KOMCAD'
-                ],
-                type: 'multiple-choice',
-                options: [
-                  'Tidak ada',
-                  '1 mahasiswa aktif',
-                  '2 mahasiswa aktif',
-                  '3 mahasiswa aktif',
-                  '4 mahasiswa aktif',
-                  '> 4 mahasiswa aktif'
-                ]
-              },
-              {
-                id: 'patriotisme_2',
-                code: '02',
-                title: 'Jumlah Unit Kegiatan Mahasiswa (UKM)',
-                evidenceRequirements: [
-                  'SK Rektor/Direktur tentang UKM',
-                  'Laporan Kegiatan Tahunan UKM'
-                ],
-                type: 'multiple-choice',
-                options: [
-                  'Tidak ada',
-                  'Terdapat 1 - 5 UKM',
-                  'Terdapat 6 - 10 UKM',
-                  'Terdapat 11 - 15 UKM',
-                  'Terdapat 16 - 20 UKM',
-                  'Terdapat > 20 UKM'
-                ]
-              }
-            ]
-          }
-        ]
+        categories: [],
+        loading: true,
+
+        async init() {
+            try {
+                // Panggil API untuk mengambil semua pertanyaan
+                // assessmentId diisi dummy '0' karena controller menggunakan Auth::id()
+                const response = await fetch('/api/assessment/peserta/questions/0');
+                const result = await response.json();
+
+                if (result.success) {
+                    this.categories = this.groupByCategory(result.data);
+                }
+            } catch (error) {
+                console.error('Gagal mengambil data pertanyaan:', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        groupByCategory(data) {
+            const groups = {};
+            data.forEach(item => {
+                const catName = item.kategori.nama_kategori;
+                if (!groups[catName]) {
+                    groups[catName] = {
+                        category: catName,
+                        weight: item.kategori.bobot + '%',
+                        questions: []
+                    };
+                }
+
+                // Map data API ke format UI
+                groups[catName].questions.push({
+                    id: item.id,
+                    code: item.kode_pertanyaan,
+                    title: item.teks_pertanyaan,
+                    evidenceRequirements: item.kebutuhan_bukti ? item.kebutuhan_bukti.split('\n') : [],
+                    type: item.tipe === 'pilihan_ganda' ? 'multiple-choice' : 'short-answer',
+                    options: item.opsi_jawabans.map(opt => ({
+                        id: opt.id,
+                        text: opt.keterangan || opt.opsi_jawaban
+                    }))
+                });
+            });
+
+            return Object.values(groups);
+        }
     }" class="bg-[#f5f5f5] min-h-full font-['Plus_Jakarta_Sans',sans-serif]">
 
         {{-- Scrollable content area --}}
@@ -156,7 +62,15 @@
                 <h1 class="font-bold text-[#1d293d] text-[18px] uppercase tracking-wide mb-5">Form Rubrik</h1>
 
                 <div class="space-y-6">
-                    <template x-for="(categoryData, cIdx) in mockDatabase" :key="cIdx">
+                    {{-- Loading State --}}
+                    <template x-if="loading">
+                        <div class="flex flex-col items-center justify-center py-20 space-y-4">
+                            <div class="w-10 h-10 border-4 border-[#1b5e20] border-t-transparent rounded-full animate-spin"></div>
+                            <p class="text-[14px] font-medium text-[#62748e]">Memuat data pertanyaan...</p>
+                        </div>
+                    </template>
+
+                    <template x-if="!loading" x-for="(categoryData, cIdx) in categories" :key="cIdx">
                         <div class="space-y-4">
 
                             {{-- Category Header --}}
@@ -201,12 +115,12 @@
                                                     <template x-for="(opt, oIdx) in q.options" :key="oIdx">
                                                         <button
                                                             type="button"
-                                                            @click="answers[q.id] = opt"
-                                                            :class="answers[q.id] === opt
+                                                            @click="answers[q.id] = opt.id"
+                                                            :class="answers[q.id] === opt.id
                                                                 ? 'bg-[#e8f5e9] border-[#1b5e20] text-[#1b5e20] font-semibold'
                                                                 : 'bg-white border-[#e0e0e0] text-[#45556c] font-medium hover:border-[#b0b0b0]'"
                                                             class="w-full text-left px-3.5 py-2.5 rounded border text-[12px] leading-snug transition-colors"
-                                                            x-text="opt">
+                                                            x-text="opt.text">
                                                         </button>
                                                     </template>
                                                 </div>

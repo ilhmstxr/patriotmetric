@@ -136,6 +136,14 @@ class AssessmentRepository extends BaseRepository
         return $user && $user->status === 'ACTIVE';
     }
 
+    public function getProfilePeserta(int $pesertaId)
+    {
+        return $this->model
+            ->where('user_id', $pesertaId)
+            ->with(['institusi', 'identitas.agamas', 'identitas'])
+            ->first();  
+    }
+
     public function getDetailAssessmentByReviewer(int $reviewerId, int $pesertaId)
     {
         return $this->model

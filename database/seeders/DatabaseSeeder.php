@@ -80,7 +80,7 @@ class DatabaseSeeder extends Seeder
             InstitusiSeeder::class,
             // AssessmentSeeder::class,
             PengumpulanSeeder::class,
-            // IdentitasSeeder::class,
+            IdentitasSeeder::class,
 
             KategoriSeeder::class,
             PertanyaanSeeder::class,

@@ -80,34 +80,18 @@ class AssessmentController extends Controller
         }
     }
 
-    // /**
-    //  * 2. Auto-Save Progress (Interval 5 Menit)
-    //  * Menggantikan saveProgress
-    //  */
-    // public function autoSaveProgress(Request $request)
-    // {
-    //     // Validasi disesuaikan untuk Single Form (tanpa category_id di root)
-    //     $request->validate([
-    //         'answers' => 'required|array',
-    //         'answers.*.indicator_id' => 'required|integer',
-    //         'answers.*.claim_value' => 'nullable',
-    //         'answers.*.evidence_url' => 'nullable|url',
-    //     ]);
+    public function getProfilePeserta()
+    {
+        try {
+            $assessment = $this->getValidatedAssessment(AssessmentService::MODE_ANY);
 
-    //     try {
-    //         $dto = $this->getAuthDTO();
-    //         $dto->answers = $request->input('answers');
+            $questions = $this->AssessmentService->getProfilePeserta($pesertaId);
 
-    //         $this->AssessmentService->autoSaveProgress($dto);
-
-    //         // Menggunakan response 200 tanpa data untuk auto-save agar payload ringan
-    //         return $this->successResponse(null, 'Auto-save berhasil', 200);
-    //     } catch (\Exception $e) {
-    //         $status = $e->getCode() == 403 ? 403 : 500;
-    //         return $this->errorResponse($e->getMessage(), $status);
-    //     }
-    // }
-
+            return $this->successResponse($questions, 'Data berhasil diambil', 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
 
     public function saveJawaban(Request $request)
     {

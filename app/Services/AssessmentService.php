@@ -184,39 +184,10 @@ class AssessmentService extends BaseService
         return $this->pertanyaanRepository->getPertanyaanWithOpsiJawaban();
     }
 
-    /**
-     * 2. Auto-Save Progress (Simpan periodik / Single Form)
-     CHECK
-     */
-    // public function autoSaveProgress(AssessmentDTO $dto)
-    // {
-    //     // Gunakan mode WRITE untuk memastikan form belum dikunci
-    //     $assessment = $this->validate($dto, self::MODE_WRITE);
-
-    //     $sanitizedAnswers = [];
-    //     foreach ($dto->answers as $ans) {
-    //         // Validasi minimal: harus ada ID Pertanyaan dan ID Jawaban (opsi)
-    //         if (!isset($ans['pertanyaan_id']) || !isset($ans['jawaban_id'])) continue;
-
-    //         $sanitizedAnswers[] = [
-    //             'pertanyaan_id'      => $ans['pertanyaan_id'],
-    //             'jawaban_id'         => $ans['jawaban_id'],
-    //             'jawaban_teks'       => $ans['jawaban_teks'] ?? null,
-    //             'tautan_bukti_drive' => filter_var($ans['tautan_bukti_drive'] ?? '', FILTER_SANITIZE_URL),
-    //         ];
-    //     }
-
-    //     if (empty($sanitizedAnswers)) return false;
-
-    //     $this->repository->upsertAnswers($assessment->id, $sanitizedAnswers);
-
-    //     // Update status ke IN_PROGRESS jika masih ACTIVE
-    //     if ($assessment->status === 'ACTIVE') {
-    //         $this->repository->updateStatusAssessment($assessment->id, 'IN_PROGRESS');
-    //     }
-
-    //     return true;
-    // }
+ 
+    public function getProfilePeserta(int $pesertaId){
+        return $this->repository->getProfilePeserta($pesertaId);
+    }
 
     public function storeJawaban(JawabanDTO $dto)
     {

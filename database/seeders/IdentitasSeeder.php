@@ -13,16 +13,48 @@ class IdentitasSeeder extends Seeder
      */
     public function run(): void
     {
-        $pengumpulans = Pengumpulan::all();
+        $emails = [
+            'user1@admin.com',
+            'user2@admin.com',
+            'user3@admin.com',
+        ];
 
-        if ($pengumpulans->count() === 0) {
-            $pengumpulans = Pengumpulan::factory(5)->create();
-        }
+        foreach ($emails as $email) {
+            $user = \App\Models\User::where('email', $email)->first();
+            if (!$user) continue;
 
-        foreach ($pengumpulans as $pengumpulan) {
-            Identitas::factory()->create([
-                'pengumpulan_id' => $pengumpulan->id,
-            ]);
+            $pengumpulan = \App\Models\pengumpulan::where('user_id', $user->id)->first();
+            if (!$pengumpulan) continue;
+
+            // Seed Identitas
+            $identitas = \App\Models\Identitas::updateOrCreate(
+                ['pengumpulan_id' => $pengumpulan->id],
+                [
+                    'jml_mahasiswa' => rand(5000, 20000),
+                    'jml_dosen' => rand(200, 1000),
+                    'jml_tendik' => rand(100, 500),
+                    'jml_prodi' => rand(20, 100),
+                    'jml_ukm' => rand(10, 50),
+                    'jml_fakultas' => rand(5, 15),
+                    'visi' => 'Menjadi institusi unggul dan berdaya saing global.',
+                    'misi' => 'Menyelenggarakan pendidikan berkualitas dan penelitian inovatif.',
+                    'is_verified' => true,
+                ]
+            );
+
+            // Seed Agama
+            $agamas = ['islam', 'kristen', 'katolik', 'hindu', 'buddha', 'konghucu'];
+            foreach ($agamas as $agama) {
+                \App\Models\Agama::updateOrCreate(
+                    [
+                        'identitas_id' => $identitas->id,
+                        'agama' => $agama
+                    ],
+                    [
+                        'jumlah' => rand(0, 5000)
+                    ]
+                );
+            }
         }
     }
 }
