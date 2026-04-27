@@ -1,0 +1,457 @@
+{
+    "register": {
+        "status": 500,
+        "body": {
+            "success": false,
+            "message": "SQLSTATE[23000]: Integrity constraint violation: 19 CHECK constraint failed: jenis_institusi (Connection: sqlite, Database: :memory:, SQL: insert into \"institusis\" (\"nama_institusi\", \"jenis_institusi\", \"id\", \"updated_at\", \"created_at\") values (PT Test, Universitas, 0a795a8e-bb39-4a8a-a6ec-1c2b771c6557, 2026-04-24 12:02:19, 2026-04-24 12:02:19))",
+            "errors": null
+        }
+    },
+    "login": {
+        "status": 200,
+        "body": {
+            "success": true,
+            "message": "Login berhasil.",
+            "data": {
+                "user": {
+                    "id": 1,
+                    "email": "ifarida@example.com",
+                    "email_verified_at": "2026-04-24T12:02:21.000000Z",
+                    "role": "PESERTA",
+                    "status": "ACTIVE",
+                    "created_at": "2026-04-24T12:02:21.000000Z",
+                    "updated_at": "2026-04-24T12:02:21.000000Z"
+                },
+                "token": "2|dwzfPd85RTfWpLFcjh6BoIRGzB1VDVLpxA3tS7io846cba1c"
+            }
+        }
+    },
+    "profile": {
+        "status": 401,
+        "body": {
+            "message": "Unauthenticated."
+        }
+    },
+    "profile_status": {
+        "status": 401,
+        "body": {
+            "message": "Unauthenticated."
+        }
+    },
+    "baseline_userId": {
+        "status": 500,
+        "body": {
+            "message": "Class \"App\\Http\\Requests\\BaselinePesertaRequest\" does not exist",
+            "exception": "ReflectionException",
+            "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ResolvesRouteDependencies.php",
+            "line": 88,
+            "trace": [
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ResolvesRouteDependencies.php",
+                    "line": 88,
+                    "function": "__construct",
+                    "class": "ReflectionClass",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ResolvesRouteDependencies.php",
+                    "line": 51,
+                    "function": "transformDependency",
+                    "class": "Illuminate\\Routing\\ControllerDispatcher",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ResolvesRouteDependencies.php",
+                    "line": 30,
+                    "function": "resolveMethodDependencies",
+                    "class": "Illuminate\\Routing\\ControllerDispatcher",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ControllerDispatcher.php",
+                    "line": 59,
+                    "function": "resolveClassMethodDependencies",
+                    "class": "Illuminate\\Routing\\ControllerDispatcher",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ControllerDispatcher.php",
+                    "line": 40,
+                    "function": "resolveParameters",
+                    "class": "Illuminate\\Routing\\ControllerDispatcher",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php",
+                    "line": 265,
+                    "function": "dispatch",
+                    "class": "Illuminate\\Routing\\ControllerDispatcher",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php",
+                    "line": 211,
+                    "function": "runController",
+                    "class": "Illuminate\\Routing\\Route",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php",
+                    "line": 822,
+                    "function": "run",
+                    "class": "Illuminate\\Routing\\Route",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php",
+                    "line": 180,
+                    "function": "Illuminate\\Routing\\{closure}",
+                    "class": "Illuminate\\Routing\\Router",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\SubstituteBindings.php",
+                    "line": 50,
+                    "function": "Illuminate\\Pipeline\\{closure}",
+                    "class": "Illuminate\\Pipeline\\Pipeline",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php",
+                    "line": 219,
+                    "function": "handle",
+                    "class": "Illuminate\\Routing\\Middleware\\SubstituteBindings",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php",
+                    "line": 137,
+                    "function": "Illuminate\\Pipeline\\{closure}",
+                    "class": "Illuminate\\Pipeline\\Pipeline",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php",
+                    "line": 821,
+                    "function": "then",
+                    "class": "Illuminate\\Pipeline\\Pipeline",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php",
+                    "line": 800,
+                    "function": "runRouteWithinStack",
+                    "class": "Illuminate\\Routing\\Router",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php",
+                    "line": 764,
+                    "function": "runRoute",
+                    "class": "Illuminate\\Routing\\Router",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php",
+                    "line": 753,
+                    "function": "dispatchToRoute",
+                    "class": "Illuminate\\Routing\\Router",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php",
+                    "line": 200,
+                    "function": "dispatch",
+                    "class": "Illuminate\\Routing\\Router",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php",
+                    "line": 180,
+                    "function": "Illuminate\\Foundation\\Http\\{closure}",
+                    "class": "Illuminate\\Foundation\\Http\\Kernel",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\livewire\\livewire\\src\\Features\\SupportDisablingBackButtonCache\\DisableBackButtonCacheMiddleware.php",
+                    "line": 19,
+                    "function": "Illuminate\\Pipeline\\{closure}",
+                    "class": "Illuminate\\Pipeline\\Pipeline",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php",
+                    "line": 219,
+                    "function": "handle",
+                    "class": "Livewire\\Features\\SupportDisablingBackButtonCache\\DisableBackButtonCacheMiddleware",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\inertiajs\\inertia-laravel\\src\\Middleware\\EnsureGetOnRedirect.php",
+                    "line": 19,
+                    "function": "Illuminate\\Pipeline\\{closure}",
+                    "class": "Illuminate\\Pipeline\\Pipeline",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php",
+                    "line": 219,
+                    "function": "handle",
+                    "class": "Inertia\\Middleware\\EnsureGetOnRedirect",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php",
+                    "line": 21,
+                    "function": "Illuminate\\Pipeline\\{closure}",
+                    "class": "Illuminate\\Pipeline\\Pipeline",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull.php",
+                    "line": 31,
+                    "function": "handle",
+                    "class": "Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php",
+                    "line": 219,
+                    "function": "handle",
+                    "class": "Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php",
+                    "line": 21,
+                    "function": "Illuminate\\Pipeline\\{closure}",
+                    "class": "Illuminate\\Pipeline\\Pipeline",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TrimStrings.php",
+                    "line": 51,
+                    "function": "handle",
+                    "class": "Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php",
+                    "line": 219,
+                    "function": "handle",
+                    "class": "Illuminate\\Foundation\\Http\\Middleware\\TrimStrings",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\ValidatePostSize.php",
+                    "line": 27,
+                    "function": "Illuminate\\Pipeline\\{closure}",
+                    "class": "Illuminate\\Pipeline\\Pipeline",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php",
+                    "line": 219,
+                    "function": "handle",
+                    "class": "Illuminate\\Http\\Middleware\\ValidatePostSize",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance.php",
+                    "line": 109,
+                    "function": "Illuminate\\Pipeline\\{closure}",
+                    "class": "Illuminate\\Pipeline\\Pipeline",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php",
+                    "line": 219,
+                    "function": "handle",
+                    "class": "Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\HandleCors.php",
+                    "line": 74,
+                    "function": "Illuminate\\Pipeline\\{closure}",
+                    "class": "Illuminate\\Pipeline\\Pipeline",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php",
+                    "line": 219,
+                    "function": "handle",
+                    "class": "Illuminate\\Http\\Middleware\\HandleCors",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\TrustProxies.php",
+                    "line": 58,
+                    "function": "Illuminate\\Pipeline\\{closure}",
+                    "class": "Illuminate\\Pipeline\\Pipeline",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php",
+                    "line": 219,
+                    "function": "handle",
+                    "class": "Illuminate\\Http\\Middleware\\TrustProxies",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks.php",
+                    "line": 22,
+                    "function": "Illuminate\\Pipeline\\{closure}",
+                    "class": "Illuminate\\Pipeline\\Pipeline",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php",
+                    "line": 219,
+                    "function": "handle",
+                    "class": "Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\ValidatePathEncoding.php",
+                    "line": 26,
+                    "function": "Illuminate\\Pipeline\\{closure}",
+                    "class": "Illuminate\\Pipeline\\Pipeline",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php",
+                    "line": 219,
+                    "function": "handle",
+                    "class": "Illuminate\\Http\\Middleware\\ValidatePathEncoding",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php",
+                    "line": 137,
+                    "function": "Illuminate\\Pipeline\\{closure}",
+                    "class": "Illuminate\\Pipeline\\Pipeline",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php",
+                    "line": 175,
+                    "function": "then",
+                    "class": "Illuminate\\Pipeline\\Pipeline",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php",
+                    "line": 144,
+                    "function": "sendRequestThroughRouter",
+                    "class": "Illuminate\\Foundation\\Http\\Kernel",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Testing\\Concerns\\MakesHttpRequests.php",
+                    "line": 607,
+                    "function": "handle",
+                    "class": "Illuminate\\Foundation\\Http\\Kernel",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Testing\\Concerns\\MakesHttpRequests.php",
+                    "line": 573,
+                    "function": "call",
+                    "class": "Illuminate\\Foundation\\Testing\\TestCase",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Testing\\Concerns\\MakesHttpRequests.php",
+                    "line": 411,
+                    "function": "json",
+                    "class": "Illuminate\\Foundation\\Testing\\TestCase",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\tests\\Feature\\ApiFlowTest.php",
+                    "line": 79,
+                    "function": "postJson",
+                    "class": "Illuminate\\Foundation\\Testing\\TestCase",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\phpunit\\phpunit\\src\\Framework\\TestCase.php",
+                    "line": 1667,
+                    "function": "test_api_scenarios",
+                    "class": "Tests\\Feature\\ApiFlowTest",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\phpunit\\phpunit\\src\\Framework\\TestCase.php",
+                    "line": 519,
+                    "function": "runTest",
+                    "class": "PHPUnit\\Framework\\TestCase",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\phpunit\\phpunit\\src\\Framework\\TestRunner\\TestRunner.php",
+                    "line": 87,
+                    "function": "runBare",
+                    "class": "PHPUnit\\Framework\\TestCase",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\phpunit\\phpunit\\src\\Framework\\TestCase.php",
+                    "line": 365,
+                    "function": "run",
+                    "class": "PHPUnit\\Framework\\TestRunner",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\phpunit\\phpunit\\src\\Framework\\TestSuite.php",
+                    "line": 369,
+                    "function": "run",
+                    "class": "PHPUnit\\Framework\\TestCase",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\phpunit\\phpunit\\src\\TextUI\\TestRunner.php",
+                    "line": 64,
+                    "function": "run",
+                    "class": "PHPUnit\\Framework\\TestSuite",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\phpunit\\phpunit\\src\\TextUI\\Application.php",
+                    "line": 211,
+                    "function": "run",
+                    "class": "PHPUnit\\TextUI\\TestRunner",
+                    "type": "->"
+                },
+                {
+                    "file": "E:\\Patriot Metric\\patriotmetric\\vendor\\phpunit\\phpunit\\phpunit",
+                    "line": 104,
+                    "function": "run",
+                    "class": "PHPUnit\\TextUI\\Application",
+                    "type": "->"
+                }
+            ]
+        }
+    },
+    "profile_baseline": {
+        "status": 401,
+        "body": "{\"message\":\"Unauthenticated.\"}"
+    },
+    "assessment_questions": {
+        "status": 500,
+        "body": "{\"success\":false,\"message\":\"App\\\\DTO\\\\AssessmentDTO\\\\AssessmentDTO::__construct(): Argument #1 ($userId) must be of type int, null given, called in E:\\\\Patriot Metric\\\\patriotmetric\\\\app\\\\Http\\\\Controllers\\\\AuthController.php on line 91\",\"errors\":null}"
+    },
+    "assessment_save_answer": {
+        "status": 500,
+        "body": "{\"success\":false,\"message\":\"App\\\\DTO\\\\AssessmentDTO\\\\AssessmentDTO::__construct(): Argument #1 ($userId) must be of type int, null given, called in E:\\\\Patriot Metric\\\\patriotmetric\\\\app\\\\Http\\\\Controllers\\\\AuthController.php on line 91\",\"errors\":null}"
+    },
+    "reviewer_tasks": {
+        "status": 500,
+        "body": "{\"success\":false,\"message\":\"App\\\\Services\\\\AssessmentService::getAssignedReviews(): Argument #1 ($reviewerId) must be of type int, null given, called in E:\\\\Patriot Metric\\\\patriotmetric\\\\app\\\\Http\\\\Controllers\\\\ReviewerController.php on line 43\",\"errors\":null}"
+    },
+    "logout": {
+        "status": 401,
+        "body": "{\"message\":\"Unauthenticated.\"}"
+    }
+}
