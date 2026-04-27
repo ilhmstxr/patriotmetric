@@ -21,7 +21,7 @@ class Pertanyaan extends Model
     ];
 
     protected $casts = [
-        //
+        'kebutuhan_bukti' => 'json',
     ];
 
     public function kategori()

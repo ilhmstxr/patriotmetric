@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class UserForm
@@ -10,32 +13,32 @@ class UserForm
     {
         return $schema
             ->components([
-                \Filament\Forms\Components\TextInput::make('name')
+                TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                \Filament\Forms\Components\TextInput::make('email')
+                TextInput::make('email')
                     ->email()
                     ->required()
                     ->maxLength(255),
-                \Filament\Forms\Components\TextInput::make('password')
+                TextInput::make('password')
                     ->password()
                     ->required(fn(string $operation): bool => $operation === 'create')
                     ->dehydrateStateUsing(fn($state) => \Illuminate\Support\Facades\Hash::make($state))
                     ->dehydrated(fn($state) => filled($state))
                     ->maxLength(255),
-                \Filament\Forms\Components\Select::make('role')
+                Select::make('role')
                     ->options([
                         'admin' => 'Admin',
                         'reviewer' => 'Reviewer',
                         'peserta' => 'Peserta',
                     ])
                     ->required(),
-                \Filament\Forms\Components\TextInput::make('nama_institusi')
+                TextInput::make('nama_institusi')
                     ->maxLength(255),
-                \Filament\Forms\Components\TextInput::make('telepon')
+                TextInput::make('telepon')
                     ->tel()
                     ->maxLength(255),
-                \Filament\Forms\Components\Textarea::make('alamat')
+                Textarea::make('alamat')
                     ->columnSpanFull(),
             ]);
     }

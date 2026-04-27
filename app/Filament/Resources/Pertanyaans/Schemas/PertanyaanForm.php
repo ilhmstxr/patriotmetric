@@ -2,6 +2,11 @@
 
 namespace App\Filament\Resources\Pertanyaans\Schemas;
 
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class PertanyaanForm
@@ -10,23 +15,23 @@ class PertanyaanForm
     {
         return $schema
             ->components([
-                \Filament\Forms\Components\Select::make('category_id')
+                Select::make('category_id')
                     ->label('Kategori')
                     ->relationship('kategori', 'nama_kategori')
                     ->required(),
-                \Filament\Forms\Components\TextInput::make('kode_pertanyaan')
+                TextInput::make('kode_pertanyaan')
                     ->label('Kode/Indikator (Cth: PU1)'),
-                \Filament\Forms\Components\Textarea::make('teks_pertanyaan')
+                Textarea::make('teks_pertanyaan')
                     ->label('Teks Pertanyaan')
                     ->required()
                     ->columnSpanFull(),
-                \Filament\Forms\Components\Textarea::make('deskripsi')
+                Textarea::make('deskripsi')
                     ->label('Deskripsi Penjelasan')
                     ->columnSpanFull(),
-                \Filament\Forms\Components\RichEditor::make('kebutuhan_bukti')
+                RichEditor::make('kebutuhan_bukti')
                     ->label('Kebutuhan Bukti (Evidence)')
                     ->columnSpanFull(),
-                \Filament\Forms\Components\Select::make('tipe')
+                Select::make('tipe')
                     ->label('Tipe Jawaban')
                     ->options([
                         'pilihan_ganda' => 'Pilihan Ganda',
@@ -34,15 +39,15 @@ class PertanyaanForm
                     ])
                     ->live()
                     ->required(),
-                \Filament\Forms\Components\TextInput::make('skor_maksimal')
+                TextInput::make('skor_maksimal')
                     ->label('Skor Maksimal')
                     ->numeric()
                     ->default(0)
                     ->required(),
-                \Filament\Forms\Components\Repeater::make('OpsiJawaban')
+                Repeater::make('OpsiJawaban')
                     ->label('Opsi Pilihan')
                     ->schema([
-                        \Filament\Forms\Components\TextInput::make('teks')
+                        TextInput::make('teks')
                             ->label('Teks Opsi')
                             ->placeholder('Cth: Sangat Baik')
                             ->required(),

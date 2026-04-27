@@ -12,13 +12,13 @@ return new class extends Migration {
     {
         Schema::create('pertanyaans', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_pertanyaan')->nullable(); // dummy
+            $table->string('kode_pertanyaan')->nullable(); 
             $table->foreignId('category_id')->constrained('kategoris')->onDelete('cascade');
             $table->text('teks_pertanyaan');
-            $table->text('deskripsi')->nullable(); // dummy
-            $table->text('kebutuhan_bukti')->nullable(); // dummy
+            $table->text('deskripsi')->nullable(); 
+            $table->text('kebutuhan_bukti')->nullable(); 
             $table->enum('tipe', ['pilihan_ganda', 'isian_singkat','otomatis_sistem']);
-            $table->integer('skor_maksimal')->default(0); // dummy (cek rubrik)
+            $table->integer('skor_maksimal')->default(0); 
             // $table->json('opsi_jawaban')->nullable();
             $table->timestamps();
         });
