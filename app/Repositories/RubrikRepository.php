@@ -2,27 +2,27 @@
 
 namespace App\Repositories;
 
-use App\Models\kategori;
+use App\Models\Kategori;
 
 class RubrikRepository extends BaseRepository
 {
-    public function __construct(kategori $model)
+    public function __construct(Kategori $model)
     {
         parent::__construct($model);
     }
 
     public function getRubrikWithQuestions()
     {
-        return kategori::with('pertanyaans.opsi_jawaban')->get();
+        return Kategori::with('pertanyaans.opsi_jawaban')->get();
     }
     
     public function getCategoryCountQuestion()
     {
-        return kategori::withCount('pertanyaans')->get();
+        return Kategori::withCount('pertanyaans')->get();
     }
 
     public function getCategoryWeight()
     {
-        return kategori::sum('bobot');
+        return Kategori::sum('bobot');
     }
 }

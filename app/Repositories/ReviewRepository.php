@@ -2,12 +2,14 @@
 
 namespace App\Repositories;
 
-use App\Models\pengumpulan;
-use App\Models\pengumpulan_jawaban;
+use App\Models\Kategori;
+use App\Models\Pengumpulan;
+use App\Models\PengumpulanJawaban;
+use App\Models\Pertanyaan;
 
 class ReviewRepository extends BaseRepository
 {
-    public function __construct(pengumpulan $model)
+    public function __construct(Pengumpulan $model)
     {
         parent::__construct($model);
     }
@@ -26,7 +28,7 @@ class ReviewRepository extends BaseRepository
 
     public function getAnswerBySubmissionAndQuestion($submissionId, $questionId)
     {
-        return pengumpulan_jawaban::where('submission_id', $submissionId)
+        return PengumpulanJawaban::where('submission_id', $submissionId)
             ->where('question_id', $questionId)
             ->first();
     }
@@ -34,9 +36,9 @@ class ReviewRepository extends BaseRepository
     public function hasUnverifiedAnswers($submissionId)
     {
         // Completeness Check (Zero-Gap Validation): Pengecekan silang antara total pertanyaan vs total jawaban yang sudah diberikan manual_score
-        $totalQuestions = \App\Models\pertanyaan::count();
+        $totalQuestions = Pertanyaan::count();
         
-        $verifiedAnswers = \App\Models\pengumpulan_jawaban::where('submission_id', $submissionId)
+        $verifiedAnswers = PengumpulanJawaban::where('submission_id', $submissionId)
             ->whereNotNull('manual_score')
             ->count();
 
@@ -46,7 +48,7 @@ class ReviewRepository extends BaseRepository
 
     public function sumVerifiedScore($submissionId)
     {
-        return \App\Models\pengumpulan_jawaban::where('submission_id', $submissionId)
+        return \App\Models\PengumpulanJawaban::where('submission_id', $submissionId)
             ->sum('manual_score'); // Or whatever the valid fallback is
     }
 
@@ -73,14 +75,14 @@ class ReviewRepository extends BaseRepository
 
     public function getVerifiedAnswers($submissionId)
     {
-        return pengumpulan_jawaban::where('submission_id', $submissionId)
+        return PengumpulanJawaban::where('submission_id', $submissionId)
             ->where('skor_validasi_reviewer', '>', 0)
             ->get();
     }
 
     public function getAllWithProgress($submissionId)
     {
-        return \App\Models\kategori::withCount([
+        return Kategori::withCount([
             'pertanyaans as questions_count',
             'jawabans as answers_count' => function ($query) use ($submissionId) {
                 $query->where('submission_id', $submissionId)
@@ -91,7 +93,7 @@ class ReviewRepository extends BaseRepository
 
     public function getByCategoryWithExistingAnswers($categoryId, $submissionId)
     {
-        return \App\Models\pertanyaan::where('category_id', $categoryId)
+        return Pertanyaan::where('category_id', $categoryId)
             ->with(['jawaban' => function($q) use ($submissionId) {
                 $q->where('submission_id', $submissionId);
             }])
@@ -100,7 +102,7 @@ class ReviewRepository extends BaseRepository
 
     public function getWithReviewerContext($subId, $catId)
     {
-        return \App\Models\pengumpulan_jawaban::where('submission_id', $subId)
+        return PengumpulanJawaban::where('submission_id', $subId)
             ->whereHas('question', function ($q) use ($catId) {
                 $q->where('category_id', $catId);
             })
@@ -114,7 +116,7 @@ class ReviewRepository extends BaseRepository
             foreach ($verifications as $ver) {
                 // Sesuai dokumen "AssessmentAnswer::where('id', $id)->update(['reviewer_scale' => $scale, 'manual_score' => $score, 'verified_at' => now()])"
                 // Mengubah existing answer dari tabel pengumpulan_jawaban
-                \App\Models\pengumpulan_jawaban::where('id', $ver['id'])
+                PengumpulanJawaban::where('id', $ver['id'])
                     ->where('submission_id', $submissionId) // Mengunci untuk re-verify assessment yg tepat
                     ->update([
                         'reviewer_scale' => $ver['scale_choice'],
@@ -129,7 +131,7 @@ class ReviewRepository extends BaseRepository
 
     public function getAnswersByCategory($submissionId, $categoryId)
     {
-        return \App\Models\pengumpulan_jawaban::where('submission_id', $submissionId)
+        return PengumpulanJawaban::where('submission_id', $submissionId)
             ->whereHas('question', function ($q) use ($categoryId) {
                 $q->where('category_id', $categoryId);
             })->get();

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\pengumpulan;
+use App\Models\Pengumpulan;
 use Illuminate\Http\Request;
 
 class PengumpulanController extends Controller
@@ -34,7 +34,7 @@ class PengumpulanController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(pengumpulan $pengumpulan)
+    public function show(Pengumpulan $pengumpulan)
     {
         //
     }
@@ -42,7 +42,7 @@ class PengumpulanController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(pengumpulan $pengumpulan)
+    public function edit(Pengumpulan $pengumpulan)
     {
         //
     }
@@ -50,7 +50,7 @@ class PengumpulanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, pengumpulan $pengumpulan)
+    public function update(Request $request, Pengumpulan $pengumpulan)
     {
         //
     }
@@ -58,7 +58,7 @@ class PengumpulanController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(pengumpulan $pengumpulan)
+    public function destroy(Pengumpulan $pengumpulan)
     {
         //
     }

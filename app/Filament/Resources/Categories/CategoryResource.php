@@ -7,7 +7,7 @@ use App\Filament\Resources\Categories\Pages\EditCategory;
 use App\Filament\Resources\Categories\Pages\ListCategories;
 use App\Filament\Resources\Categories\Schemas\CategoryForm;
 use App\Filament\Resources\Categories\Tables\CategoriesTable;
-use App\Models\kategori;
+use App\Models\Kategori;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -16,7 +16,7 @@ use Filament\Tables\Table;
 
 class CategoryResource extends Resource
 {
-    protected static ?string $model = kategori::class;
+    protected static ?string $model = Kategori::class;
 
     protected static ?string $navigationLabel = 'Kategori';
 

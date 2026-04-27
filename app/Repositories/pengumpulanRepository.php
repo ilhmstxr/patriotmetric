@@ -2,15 +2,15 @@
 
 namespace App\Repositories;
 
-use App\Models\pengumpulan;
+use App\Models\Pengumpulan;
 
-class pengumpulanRepository extends BaseRepository
+class PengumpulanRepository extends BaseRepository
 {
     /**
-     * pengumpulanRepository constructor.
+     * PengumpulanRepository constructor.
      * Mengikat Model terkait ke BaseRepository.
      */
-    public function __construct(pengumpulan $model)
+    public function __construct(Pengumpulan $model)
     {
         parent::__construct($model);
     }

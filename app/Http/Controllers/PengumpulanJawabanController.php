@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\pengumpulan_jawaban;
+use App\Models\PengumpulanJawaban;
 use Illuminate\Http\Request;
 
 class PengumpulanJawabanController extends Controller
@@ -34,7 +34,7 @@ class PengumpulanJawabanController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(pengumpulan_jawaban $pengumpulan_jawaban)
+    public function show(PengumpulanJawaban $pengumpulan_jawaban)
     {
         //
     }
@@ -42,7 +42,7 @@ class PengumpulanJawabanController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(pengumpulan_jawaban $pengumpulan_jawaban)
+    public function edit(PengumpulanJawaban $pengumpulan_jawaban)
     {
         //
     }
@@ -50,7 +50,7 @@ class PengumpulanJawabanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, pengumpulan_jawaban $pengumpulan_jawaban)
+    public function update(Request $request, PengumpulanJawaban $pengumpulan_jawaban)
     {
         //
     }
@@ -58,7 +58,7 @@ class PengumpulanJawabanController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(pengumpulan_jawaban $pengumpulan_jawaban)
+    public function destroy(PengumpulanJawaban $pengumpulan_jawaban)
     {
         //
     }

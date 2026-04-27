@@ -7,7 +7,7 @@ use App\Filament\Resources\Pertanyaans\Pages\EditPertanyaan;
 use App\Filament\Resources\Pertanyaans\Pages\ListPertanyaans;
 use App\Filament\Resources\Pertanyaans\Schemas\PertanyaanForm;
 use App\Filament\Resources\Pertanyaans\Tables\PertanyaansTable;
-use App\Models\pertanyaan;
+use App\Models\Pertanyaan;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -16,7 +16,7 @@ use Filament\Tables\Table;
 
 class PertanyaanResource extends Resource
 {
-    protected static ?string $model = pertanyaan::class;
+    protected static ?string $model = Pertanyaan::class;
 
     protected static ?string $navigationLabel = 'Pertanyaan';
 
