@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class pertanyaan extends Model
+class Pertanyaan extends Model
 {
     /** @use HasFactory<\Database\Factories\PertanyaanFactory> */
     use HasFactory;
@@ -26,16 +26,16 @@ class pertanyaan extends Model
 
     public function kategori()
     {
-        return $this->belongsTo(kategori::class, 'category_id');
+        return $this->belongsTo(Kategori::class, 'category_id');
     }
 
     public function jawaban()
     {
-        return $this->hasMany(pengumpulan_jawaban::class, 'pertanyaan_id');
+        return $this->hasMany(PengumpulanJawaban::class, 'pertanyaan_id');
     }
 
     public function opsiJawabans()
     {
-        return $this->hasMany(opsiJawaban::class, 'pertanyaan_id');
+        return $this->hasMany(OpsiJawaban::class, 'pertanyaan_id');
     }
 }

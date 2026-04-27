@@ -66,7 +66,10 @@ Route::prefix('dashboard')->group(function () {
     })->name('dashboard.index');
 
     Route::get('/rubrik', function () {
-        return view('dashboard.rubrik');
+        $userId = \Illuminate\Support\Facades\Auth::id() ?? 3;
+        $assessment = \App\Models\Pengumpulan::where('user_id', $userId)->where('status', 'ACTIVE')->first();
+        $assessmentId = $assessment ? $assessment->id : 0;
+        return view('dashboard.rubrik', compact('assessmentId'));
     })->name('dashboard.rubrik');
 
     Route::get('/hasil', function () {

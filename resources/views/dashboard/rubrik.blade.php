@@ -10,8 +10,7 @@
         async init() {
             try {
                 // Panggil API untuk mengambil semua pertanyaan
-                // assessmentId diisi dummy '0' karena controller menggunakan Auth::id()
-                const response = await fetch('/api/assessment/peserta/questions/0');
+                const response = await fetch('/api/assessment/peserta/questions/assessmentid={{ $assessmentId ?? 0 }}');
                 const result = await response.json();
 
                 if (result.success) {
@@ -27,11 +26,13 @@
         groupByCategory(data) {
             const groups = {};
             data.forEach(item => {
-                const catName = item.kategori.nama_kategori;
+                const category = item.kategori || { nama_kategori: 'Tanpa Kategori', bobot_presentase: 0 };
+                const catName = category.nama_kategori;
+                
                 if (!groups[catName]) {
                     groups[catName] = {
                         category: catName,
-                        weight: item.kategori.bobot + '%',
+                        weight: (category.bobot_presentase || 0) + '%',
                         questions: []
                     };
                 }
@@ -70,8 +71,9 @@
                         </div>
                     </template>
 
-                    <template x-if="!loading" x-for="(categoryData, cIdx) in categories" :key="cIdx">
-                        <div class="space-y-4">
+                    <template x-if="!loading">
+                        <template x-for="(categoryData, cIdx) in categories" :key="cIdx">
+                            <div class="space-y-4">
 
                             {{-- Category Header --}}
                             <div class="flex items-center justify-between border-b border-[#e0e0e0] pb-2">
@@ -156,6 +158,7 @@
                                 </div>
                             </template>
                         </div>
+                        </template>
                     </template>
                 </div>
 

@@ -146,7 +146,7 @@ class AssessmentService extends BaseService
     private function processLegalDocuments(array $documents, $assessment): array
     {
         $paths = [];
-        $safeFolderName = Str::slug($assessment->institusi->name ?? 'unknown') . '-' . $assessment->tahun_periode;
+        $safeFolderName = Str::slug($assessment->institusi?->nama_institusi ?? 'unknown') . '-' . $assessment->tahun_periode;
         $directoryPath = 'lampiran-peserta/' . $safeFolderName;
 
         foreach ($documents as $key => $file) {

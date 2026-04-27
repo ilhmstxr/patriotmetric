@@ -3,12 +3,12 @@
 
 namespace App\Repositories;
 
-use App\Models\opsiJawaban;
-use App\Models\pertanyaan;
+use App\Models\OpsiJawaban;
+use App\Models\Pertanyaan;
 
 class PertanyaanRepository extends BaseRepository
 {
-    public function __construct(pertanyaan $model)
+    public function __construct(Pertanyaan $model)
     {
         parent::__construct($model);
     }
@@ -42,7 +42,7 @@ class PertanyaanRepository extends BaseRepository
      */
     public function findMatchingOpsiByValue($pertanyaanId, $inputValue)
     {
-        return opsiJawaban::where('pertanyaan_id', $pertanyaanId)
+        return OpsiJawaban::where('pertanyaan_id', $pertanyaanId)
             ->where('value', '<=', (int) $inputValue)
             ->orderBy('value', 'desc')
             ->first();

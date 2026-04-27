@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class pengumpulanJawaban extends Model
+class PengumpulanJawaban extends Model
 {
     /** @use HasFactory<\Database\Factories\PengumpulanJawabanFactory> */
     protected $table = 'pengumpulan_jawabans';
@@ -23,15 +23,15 @@ class pengumpulanJawaban extends Model
 
     public function pengumpulan()
     {
-        return $this->belongsTo(pengumpulan::class, 'submission_id');
+        return $this->belongsTo(Pengumpulan::class, 'submission_id');
     }
 
     public function jawabanOpsi()
     {
-        return $this->belongsTo(opsiJawaban::class, 'jawaban_id');
+        return $this->belongsTo(OpsiJawaban::class, 'jawaban_id');
     }
     public function pertanyaan()
     {
-        return $this->belongsTo(pertanyaan::class, 'pertanyaan_id');
+        return $this->belongsTo(Pertanyaan::class, 'pertanyaan_id');
     }
 }

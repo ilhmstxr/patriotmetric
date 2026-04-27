@@ -8,7 +8,7 @@ use App\Models\Institusi;
 use App\Models\Pengumpulan; // Gunakan PascalCase
 use App\Models\PengumpulanJawaban;
 use App\Models\Kategori;
-use App\Models\opsiJawaban;
+use App\Models\OpsiJawaban;
 use App\Models\Pertanyaan;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -51,7 +51,7 @@ class AssessmentRepository extends BaseRepository
      */
     public function findMatchingOpsiByValue($pertanyaanId, $inputValue)
     {
-        return opsiJawaban::where('pertanyaan_id', $pertanyaanId)
+        return OpsiJawaban::where('pertanyaan_id', $pertanyaanId)
             ->where('value', '<=', (int) $inputValue)
             ->orderBy('value', 'desc')
             ->first();

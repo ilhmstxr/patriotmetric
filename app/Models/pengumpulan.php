@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class pengumpulan extends Model
+class Pengumpulan extends Model
 {
     /** @use HasFactory<\Database\Factories\PengumpulanFactory> */
     use HasFactory;
@@ -24,7 +24,7 @@ class pengumpulan extends Model
 
     public function jawabans()
     {
-        return $this->hasMany(pengumpulan_jawaban::class, 'submission_id');
+        return $this->hasMany(PengumpulanJawaban::class, 'submission_id');
     }
 
     public function identitas()

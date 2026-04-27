@@ -49,7 +49,7 @@ Route::post('baseline/{userId}', [AssessmentController::class, 'storeBaseline'])
 // --- Tahap 3: Assessment (Single Form & Auto-Save) ---
 // Route::middleware(['auth:sanctum', 'check.baseline.verified'])->prefix('assessment/peserta')->group(function () {
 Route::prefix('assessment/peserta')->group(function () {
-    Route::get('/questions/{assessmentId}', [AssessmentController::class, 'getAllQuestions'])->name('api.peserta.questions'); 
+    Route::get('/questions/assessmentid={assessmentId}', [AssessmentController::class, 'getAllQuestions'])->name('api.peserta.questions'); 
     Route::post('/finalize/{assessmentId}', [AssessmentController::class, 'finalize'])->name('api.peserta.finalize');
     Route::get('/preview-results/{assessmentId}', [AssessmentController::class, 'previewResults'])->name('api.peserta.preview-results');    
     Route::post('/save-answer/{userId}', [AssessmentController::class, 'saveJawaban'])->name('api.peserta.save-answer');

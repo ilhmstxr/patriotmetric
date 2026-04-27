@@ -11,24 +11,26 @@ use App\DTO\AssessmentDTO\QuestionDTO;
 use App\Http\Requests\BaselinePesertaRequest;
 use App\Services\AssessmentService;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class AssessmentController extends Controller
 {
     use ApiResponse;
 
-    private $authController;
     protected $AssessmentService;
 
     public function __construct(AssessmentService $AssessmentService)
     {
         $this->AssessmentService = $AssessmentService;
-        $this->authController = app(AuthController::class);
     }
 
 
     private function getValidatedAssessment(string $mode)
     {
-        $authDto = $this->authController->getAuthDTO();
+        $testUser = 3;
+        $userId = Auth::id() ?? $testUser;
+        
+        $authDto = new AssessmentDTO((int) $userId);
 
         // Kita panggil fungsi validate di service yang bertindak sebagai dispatcher
         return $this->AssessmentService->validate($authDto, $mode);
@@ -66,7 +68,7 @@ class AssessmentController extends Controller
      * 1. Ambil Semua Pertanyaan (Single Form)
      * Menggantikan getQuestionsByCategory dan getSteps
      */
-    public function getAllQuestions()
+    public function getAllQuestions($assessmentId = null)
     {
         try {
             // Gunakan mode ANY agar status SUBMITTED tetap bisa melihat soal
@@ -80,16 +82,16 @@ class AssessmentController extends Controller
         }
     }
 
-    public function getProfilePeserta()
+    public function getProfilePeserta($pesertaId)
     {
         try {
             $assessment = $this->getValidatedAssessment(AssessmentService::MODE_ANY);
 
-            $questions = $this->AssessmentService->getProfilePeserta($pesertaId);
+            $profile = $this->AssessmentService->getProfilePeserta($pesertaId);
 
-            return $this->successResponse($questions, 'Data berhasil diambil', 200);
+            return $this->successResponse($profile, 'Data berhasil diambil', 200);
         } catch (\Throwable $th) {
-            //throw $th;
+            return $this->errorResponse($th->getMessage(), $this->getErrorCode($th));
         }
     }
 

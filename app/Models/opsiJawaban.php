@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class opsiJawaban extends Model
+class OpsiJawaban extends Model
 {
+    /** @use HasFactory<\Database\Factories\OpsiJawabanFactory> */
+    use HasFactory;
+
     protected $table = 'opsi_jawaban';
 
     protected $fillable = [
@@ -17,11 +21,11 @@ class opsiJawaban extends Model
 
     public function pertanyaan()
     {
-        return $this->belongsTo(pertanyaan::class, 'pertanyaan_id');
+        return $this->belongsTo(Pertanyaan::class, 'pertanyaan_id');
     }
 
     public function jawabanUser()
     {
-        return $this->hasMany(pengumpulanJawaban::class, 'jawaban_id');
+        return $this->hasMany(PengumpulanJawaban::class, 'jawaban_id');
     }
 }
