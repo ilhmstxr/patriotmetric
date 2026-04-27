@@ -13,7 +13,7 @@ class RubrikRepository extends BaseRepository
 
     public function getRubrikWithQuestions()
     {
-        return Kategori::with('pertanyaans.opsi_jawaban')->get();
+        return Kategori::with('pertanyaans.OpsiJawaban')->get();
     }
     
     public function getCategoryCountQuestion()

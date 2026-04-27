@@ -10,7 +10,7 @@
         async init() {
             try {
                 // Panggil API untuk mengambil semua pertanyaan
-                const response = await fetch('/api/assessment/peserta/questions/assessmentid={{ $assessmentId ?? 0 }}');
+                const response = await fetch('/api/assessment/peserta/questions');
                 const result = await response.json();
 
                 if (result.success) {
@@ -43,10 +43,10 @@
                     code: item.kode_pertanyaan,
                     title: item.teks_pertanyaan,
                     evidenceRequirements: item.kebutuhan_bukti ? item.kebutuhan_bukti.split('\n') : [],
-                    type: item.tipe === 'pilihan_ganda' ? 'multiple-choice' : 'short-answer',
-                    options: item.opsi_jawabans.map(opt => ({
+                    type: item.tipe,
+                    options: (item.OpsiJawaban || item.opsi_jawaban || []).map(opt => ({
                         id: opt.id,
-                        text: opt.keterangan || opt.opsi_jawaban
+                        text: opt.keterangan || opt.opsi_jawaban || opt.OpsiJawaban
                     }))
                 });
             });
@@ -111,8 +111,8 @@
                                         <div class="flex-1 p-5 space-y-4">
                                             <p class="text-[10px] font-bold text-[#62748e] uppercase tracking-wider">Jawaban:</p>
 
-                                            {{-- Multiple choice options --}}
-                                            <template x-if="q.type === 'multiple-choice'">
+                                            {{-- Pilihan Ganda --}}
+                                            <template x-if="q.type === 'pilihan_ganda'">
                                                 <div class="space-y-2">
                                                     <template x-for="(opt, oIdx) in q.options" :key="oIdx">
                                                         <button
@@ -121,21 +121,38 @@
                                                             :class="answers[q.id] === opt.id
                                                                 ? 'bg-[#e8f5e9] border-[#1b5e20] text-[#1b5e20] font-semibold'
                                                                 : 'bg-white border-[#e0e0e0] text-[#45556c] font-medium hover:border-[#b0b0b0]'"
-                                                            class="w-full text-left px-3.5 py-2.5 rounded border text-[12px] leading-snug transition-colors"
+                                                            class="w-full text-left px-3.5 py-2.5 rounded border text-[12px] leading-snug transition-colors whitespace-pre-line"
                                                             x-text="opt.text">
                                                         </button>
                                                     </template>
                                                 </div>
                                             </template>
-
-                                            {{-- Short answer --}}
-                                            <template x-if="q.type !== 'multiple-choice'">
+ 
+                                            {{-- Isian Singkat --}}
+                                            <template x-if="q.type === 'isian_singkat'">
                                                 <input
                                                     type="text"
                                                     placeholder="Masukkan jawaban..."
                                                     class="w-full px-3.5 py-2.5 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9]"
                                                     x-model="answers[q.id]"
                                                 />
+                                            </template>
+ 
+                                            {{-- Otomatis Sistem --}}
+                                            <template x-if="q.type === 'otomatis_sistem'">
+                                                <div class="relative">
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Akan dihitung otomatis oleh sistem"
+                                                        disabled
+                                                        class="w-full px-3.5 py-2.5 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#62748e] bg-[#f8f9fa] cursor-not-allowed italic"
+                                                        x-model="answers[q.id]"
+                                                    />
+                                                    <div class="mt-2 flex items-center gap-1.5 text-[10px] text-[#2e7d32] font-semibold">
+                                                        <i data-lucide="cpu" class="w-3 h-3"></i>
+                                                        AUTOCALCULATE BY SYSTEM
+                                                    </div>
+                                                </div>
                                             </template>
 
                                             {{-- Tautan Bukti --}}

@@ -19,7 +19,7 @@ class PertanyaanRepository extends BaseRepository
     {
         return $this->model->with([
             'kategori', // Pastikan relasi ini ada di Model Pertanyaan
-            'opsiJawabans', // <--- WAJIB DITAMBAHKAN AGAR OPSI PILIHAN GANDA MUNCUL DI JSON
+            'OpsiJawaban', // <--- WAJIB DITAMBAHKAN AGAR OPSI PILIHAN GANDA MUNCUL DI JSON
             'jawaban' => function ($query) use ($assessment) {
                 // Filter jawaban spesifik untuk submission ini
                 $query->where('submission_id', $assessment->id);
@@ -52,7 +52,7 @@ class PertanyaanRepository extends BaseRepository
     {
         return $this->model->with(
             'kategori',
-            'opsiJawabans'
+            'OpsiJawaban'
         )->get();
     }
 

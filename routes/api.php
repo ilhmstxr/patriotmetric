@@ -43,19 +43,19 @@ Route::get('/', [AuthController::class, 'profile'])->name('api.profile');
 
 // daftar ulang
 /* DONE */
-Route::post('baseline/{userId}', [AssessmentController::class, 'storeBaseline'])->name('api.peserta.baseline');
+Route::post('baseline', [AssessmentController::class, 'storeBaseline'])->name('api.peserta.baseline');
 // });
 
 // --- Tahap 3: Assessment (Single Form & Auto-Save) ---
 // Route::middleware(['auth:sanctum', 'check.baseline.verified'])->prefix('assessment/peserta')->group(function () {
 Route::prefix('assessment/peserta')->group(function () {
-    Route::get('/questions/assessmentid={assessmentId}', [AssessmentController::class, 'getAllQuestions'])->name('api.peserta.questions'); 
-    Route::post('/finalize/{assessmentId}', [AssessmentController::class, 'finalize'])->name('api.peserta.finalize');
-    Route::get('/preview-results/{assessmentId}', [AssessmentController::class, 'previewResults'])->name('api.peserta.preview-results');    
-    Route::post('/save-answer/{userId}', [AssessmentController::class, 'saveJawaban'])->name('api.peserta.save-answer');
+    Route::get('/questions', [AssessmentController::class, 'getAllQuestions'])->name('api.peserta.questions'); 
+    Route::post('/finalize', [AssessmentController::class, 'finalize'])->name('api.peserta.finalize');
+    Route::get('/preview-results', [AssessmentController::class, 'previewResults'])->name('api.peserta.preview-results');    
+    Route::post('/save-answer', [AssessmentController::class, 'saveJawaban'])->name('api.peserta.save-answer');
 
-    Route::get('/current-progress/{assessment_id?}', [AssessmentController::class, 'getProgress'])->name('api.peserta.progress');
-    Route::post('/auto-save/{assessment_id?}', [AssessmentController::class, 'autoSaveProgress'])->name('api.peserta.auto-save');
+    Route::get('/current-progress', [AssessmentController::class, 'getProgress'])->name('api.peserta.progress');
+    // Route::post('/auto-save', [AssessmentController::class, 'autoSaveProgress'])->name('api.peserta.auto-save');
 });
 
 

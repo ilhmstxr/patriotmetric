@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\pengumpulanJawaban;
+use App\Models\PengumpulanJawaban;
+use App\Models\Pertanyaan;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class PengumpulanJawabanSeeder extends Seeder
 {
@@ -14,14 +16,14 @@ class PengumpulanJawabanSeeder extends Seeder
     public function run(): void
     {
         $submissionId = 2;
-        $pertanyaans = \App\Models\pertanyaan::all();
+        $pertanyaans = Pertanyaan::all();
 
         foreach ($pertanyaans as $pertanyaan) {
             $jawabanId = null;
             $jawabanTeks = null;
 
             if ($pertanyaan->tipe === 'pilihan_ganda') {
-                $opsi = $pertanyaan->opsiJawabans()->inRandomOrder()->first();
+                $opsi = $pertanyaan->opsiJawaban()->inRandomOrder()->first();
                 $jawabanId = $opsi ? $opsi->id : null;
             } else {
                 $jawabanTeks = 'Jawaban simulasi untuk pertanyaan: ' . $pertanyaan->kode_pertanyaan;
@@ -30,10 +32,10 @@ class PengumpulanJawabanSeeder extends Seeder
             // Random URL for tautan_bukti_drive (can be null)
             $url = null;
             if (rand(0, 1)) {
-                $url = 'https://drive.google.com/file/d/' . \Illuminate\Support\Str::random(32) . '/view?usp=sharing';
+                $url = 'https://drive.google.com/file/d/' . Str::random(32) . '/view?usp=sharing';
             }
 
-            \App\Models\pengumpulanJawaban::updateOrCreate(
+            PengumpulanJawaban::updateOrCreate(
                 [
                     'submission_id' => $submissionId,
                     'pertanyaan_id' => $pertanyaan->id,

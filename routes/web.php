@@ -66,17 +66,7 @@ Route::prefix('dashboard')->group(function () {
     })->name('dashboard.index');
 
     Route::get('/rubrik', function () {
-        // Fallback untuk development: jika yang login adalah admin/reviewer (tidak punya assessment), pakai assessment user 3.
-        $userId = \App\Http\Controllers\AuthController::getAuthPeserta();
-        $assessment = \App\Models\Pengumpulan::where('user_id', $userId)->where('status', 'ACTIVE')->first();
-        
-        // Jika tidak ketemu (karena login sbg reviewer dsb), paksa ke user 3 untuk testing peserta
-        if (!$assessment) {
-            $assessment = \App\Models\Pengumpulan::where('user_id', 3)->where('status', 'ACTIVE')->first();
-        }
-
-        $assessmentId = $assessment ? $assessment->id : 0;
-        return view('dashboard.rubrik', compact('assessmentId'));
+        return view('dashboard.rubrik');
     })->name('dashboard.rubrik');
 
     Route::get('/hasil', function () {

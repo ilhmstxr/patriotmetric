@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\OpsiJawaban;
 use App\Models\pertanyaan;
 use Illuminate\Database\Seeder;
 
@@ -107,7 +108,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'SK, ST, Laporan kegiatan, sertifikat',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Unit kerja yang berfokus pada pengembangan karakter bela negara (leadership, patriotisme, dsb) dan sudah beroperasi',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => 'lama beroperasi ≤ 6 bulan', 'value' => '6'],
@@ -124,7 +125,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'RPS, Portofolio mata kuliah',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Implementasi penyelenggaraan MKWK (Mata Kuliah Wajib Kurikulum : Pancasila, Agama, Bahasa Indonesia, Kewarganegaraan)',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '2 SKS', 'value' => '2'],
@@ -141,7 +142,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'RPS, Portofolio mata kuliah',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah mata kuliah wajib institusi berkarakter bela negara (contoh: mata kuliah olahraga/kesehatan mental, bahasa inggris, bela negara, dsb)',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '1 mata kuliah', 'value' => '1'],
@@ -158,7 +159,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'Surat Keputusan (SK), Proposal dan Laporan Penelitian Terkait Bela Negara, Publikasi Ilmiah Hasil Riset Bela Negara, Dokumen Kerja Sama (MoU/MoA), Alokasi Anggaran Riset',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah kelompok riset berkarakter bela negara',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '1 kelompok riset', 'value' => '1'],
@@ -175,7 +176,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'SK, Laporan Kegiatan dan Dokumentasi',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Pelaksanaan skema Kuliah Kerja Nyata (KKN)',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => 'Terlaksana 1 skema KKN', 'value' => '1'],
@@ -192,7 +193,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'ST Pengabdian Masyarakat, Daftar karya dan produk inovasi yang dihasilkan, Laporan Kegiatan, Dokumentasi',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Persentase jumlah luaran pengabdian masyarakat berupa karya inovatif, seperti pengembangan teknologi atau prototipe, desain produk terhadap jumlah dosen',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '≤ 25%', 'value' => '25'],
@@ -209,7 +210,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'MoU/PKS/IA, Laporan kegiatan, Publikasi kegiatan di media',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Persentase jumlah kolaborasi dengan UMKM atau pelaku usaha lokal untuk mendukung program tridharma terhadap jumlah prodi',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '≤ 1%', 'value' => '1'],
@@ -229,10 +230,6 @@ class PertanyaanSeeder extends Seeder
                 'tipe' => 'pilihan_ganda',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
-                    ['urutan' => 1, 'teks_jawaban' => '-'],
-                    ['urutan' => 2, 'teks_jawaban' => '-'],
-                    ['urutan' => 3, 'teks_jawaban' => '-'],
-                    ['urutan' => 4, 'teks_jawaban' => '-'],
                     ['urutan' => 5, 'teks_jawaban' => 'Ada'],
                 ],
             ],
@@ -243,7 +240,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'SK, ST, Laporan kegiatan, sertifikat',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Pusat konseling bagi sivitas akademik',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => 'lama beroperasi ≤ 6 bulan', 'value' => '6'],
@@ -260,7 +257,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'Dokumen: SK/ST, kartu anggota KOMCAD, dokumen identas sivitas akademika (kartu tanda mahasiswa, kartu pegawai)',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah pegawai institusi sebagai anggota komponen cadangan (KOMCAD)',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '1 pegawai institusi yang menjadi KOMCAD', 'value' => '1'],
@@ -294,7 +291,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'laporan atau publikasi di web/media sosial terkait pelaksanaan  sosialisasi/seminar/workshop',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah kegiatan sosialisasi/seminar/workshop tentang langkah-langkah menjaga kebersihan, keamanan dan pengelolaan lingkungan, serta anti-radikalisme, seperti pelatihan deteksi dini risiko keamanan atau mitigasi bencana',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '1', 'value' => '1'],
@@ -311,7 +308,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'Dokumen laporan kegiatan, terpublikasi di media massa (cetak, online)/website kampus',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Skor jumlah penyelenggaraan kompetisi yang bertema nilai-nilai bela negara',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '≤ 25', 'value' => '25'],
@@ -328,11 +325,11 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'SK, sertifikat, dokumentasi kegiatan',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah penghargaan atau insentif atas prestasi sivitas akademika dari perguruan tinggi',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
-                    ['urutan' => 1, 'teks_jawaban' => '2026-01-10', 'value' => '1'],
-                    ['urutan' => 2, 'teks_jawaban' => '2026-11-30', 'value' => '11'],
+                    ['urutan' => 1, 'teks_jawaban' => '01-10', 'value' => '1'],
+                    ['urutan' => 2, 'teks_jawaban' => '11-30', 'value' => '11'],
                     ['urutan' => 3, 'teks_jawaban' => '31-60', 'value' => '31'],
                     ['urutan' => 4, 'teks_jawaban' => '61-100', 'value' => '61'],
                     ['urutan' => 5, 'teks_jawaban' => '>100', 'value' => '101'],
@@ -348,51 +345,60 @@ class PertanyaanSeeder extends Seeder
                 'tipe' => 'pilihan_ganda',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
-                    ['urutan' => 1, 'teks_jawaban' => 'memiliki 1 dari 5 fasilitasi (1. unit pelayanan disabilitas (wajib); 
-2. Aksesibilitas pada bangunan gedung; 
-3. media/alat pembelajaran; 
-4. ruang pusat sumber; 
-5. sarana dan prasarana)', 'value' => 'memiliki 1 dari 5 fasilitasi (1. unit pelayanan disabilitas (wajib); 
-2. Aksesibilitas pada bangunan gedung; 
-3. media/alat pembelajaran; 
-4. ruang pusat sumber; 
-5. sarana dan prasarana)'],
-                    ['urutan' => 2, 'teks_jawaban' => 'memiliki 2 dari 5 fasilitasi (1. unit pelayanan disabilitas (wajib); 
-2. Aksesibilitas pada bangunan gedung; 
-3. media/alat pembelajaran; 
-4. ruang pusat sumber; 
-5. sarana dan prasarana)', 'value' => 'memiliki 2 dari 5 fasilitasi (1. unit pelayanan disabilitas (wajib); 
-2. Aksesibilitas pada bangunan gedung; 
-3. media/alat pembelajaran; 
-4. ruang pusat sumber; 
-5. sarana dan prasarana)'],
-                    ['urutan' => 3, 'teks_jawaban' => 'memiliki 3 dari 5 fasilitasi (1. unit pelayanan disabilitas (wajib); 
-2. Aksesibilitas pada bangunan gedung; 
-3. media/alat pembelajaran; 
-4. ruang pusat sumber; 
-5. sarana dan prasarana)', 'value' => 'memiliki 3 dari 5 fasilitasi (1. unit pelayanan disabilitas (wajib); 
-2. Aksesibilitas pada bangunan gedung; 
-3. media/alat pembelajaran; 
-4. ruang pusat sumber; 
-5. sarana dan prasarana)'],
-                    ['urutan' => 4, 'teks_jawaban' => 'memiliki 4 dari 5 fasilitasi (1. unit pelayanan disabilitas (wajib); 
-2. Aksesibilitas pada bangunan gedung; 
-3. media/alat pembelajaran; 
-4. ruang pusat sumber; 
-5. sarana dan prasarana)', 'value' => 'memiliki 4 dari 5 fasilitasi (1. unit pelayanan disabilitas (wajib); 
-2. Aksesibilitas pada bangunan gedung; 
-3. media/alat pembelajaran; 
-4. ruang pusat sumber; 
-5. sarana dan prasarana)'],
-                    ['urutan' => 5, 'teks_jawaban' => 'memiliki seluruh fasilitasi (1. unit pelayanan disabilitas (wajib); 
-2. Aksesibilitas pada bangunan gedung; 
-3. media/alat pembelajaran; 
-4. ruang pusat sumber; 
-5. sarana dan prasarana)', 'value' => 'memiliki seluruh fasilitasi (1. unit pelayanan disabilitas (wajib); 
-2. Aksesibilitas pada bangunan gedung; 
-3. media/alat pembelajaran; 
-4. ruang pusat sumber; 
-5. sarana dan prasarana)'],
+                    ['urutan' => 1, 'teks_jawaban' => 'memiliki 1 dari 5 fasilitasi 
+                    (1. unit pelayanan disabilitas (wajib); 
+                    2. Aksesibilitas pada bangunan gedung; 
+                    3. media/alat pembelajaran; 
+                    4. ruang pusat sumber; 
+                    5. sarana dan prasarana)', 'value' => 'memiliki 1 dari 5 fasilitasi (1. unit pelayanan disabilitas (wajib); 
+                    2. Aksesibilitas pada bangunan gedung; 
+                    3. media/alat pembelajaran; 
+                    4. ruang pusat sumber; 
+                    5. sarana dan prasarana)'],
+                    ['urutan' => 2, 'teks_jawaban' => 'memiliki 2 dari 5 fasilitasi 
+                    (1. unit pelayanan disabilitas (wajib); 
+                    2. Aksesibilitas pada bangunan gedung; 
+                    3. media/alat pembelajaran; 
+                    4. ruang pusat sumber; 
+                    5. sarana dan prasarana)', 'value' => 'memiliki 2 dari 5 fasilitasi 
+                    (1. unit pelayanan disabilitas (wajib); 
+                    2. Aksesibilitas pada bangunan gedung; 
+                    3. media/alat pembelajaran; 
+                    4. ruang pusat sumber; 
+                    5. sarana dan prasarana)'],
+                    ['urutan' => 3, 'teks_jawaban' => 'memiliki 3 dari 5 fasilitasi 
+                    (1. unit pelayanan disabilitas (wajib); 
+                    2. Aksesibilitas pada bangunan gedung; 
+                    3. media/alat pembelajaran; 
+                    4. ruang pusat sumber; 
+                    5. sarana dan prasarana)', 'value' => 'memiliki 3 dari 5 fasilitasi 
+                    (1. unit pelayanan disabilitas (wajib); 
+                    2. Aksesibilitas pada bangunan gedung; 
+                    3. media/alat pembelajaran; 
+                    4. ruang pusat sumber; 
+                    5. sarana dan prasarana)'],
+                    ['urutan' => 4, 'teks_jawaban' => 'memiliki 4 dari 5 fasilitasi 
+                    (1. unit pelayanan disabilitas (wajib); 
+                    2. Aksesibilitas pada bangunan gedung; 
+                    3. media/alat pembelajaran; 
+                    4. ruang pusat sumber; 
+                    5. sarana dan prasarana)', 'value' => 'memiliki 4 dari 5 fasilitasi 
+                    (1. unit pelayanan disabilitas (wajib); 
+                    2. Aksesibilitas pada bangunan gedung; 
+                    3. media/alat pembelajaran; 
+                    4. ruang pusat sumber; 
+                    5. sarana dan prasarana)'],
+                    ['urutan' => 5, 'teks_jawaban' => 'memiliki seluruh fasilitasi 
+                    (1. unit pelayanan disabilitas (wajib); 
+                    2. Aksesibilitas pada bangunan gedung; 
+                    3. media/alat pembelajaran; 
+                    4. ruang pusat sumber; 
+                    5. sarana dan prasarana)', 'value' => 'memiliki seluruh fasilitasi 
+                    (1. unit pelayanan disabilitas (wajib); 
+                    2. Aksesibilitas pada bangunan gedung; 
+                    3. media/alat pembelajaran; 
+                    4. ruang pusat sumber; 
+                    5. sarana dan prasarana)'],
                 ],
             ],
             [
@@ -402,7 +408,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'Poster, video, atau infografis',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah ragam dan variasi media kampanye nilai-nilai cinta tanah air (termasuk pentingnya menjaga kebersihan, keamanan lingkungan, penggunaan produk lokal) yang disebarluaskan di area kampus',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '1 variasi', 'value' => '1'],
@@ -419,7 +425,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'Denah ruang, video lokasi, daftar inventaris',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Fasilitas yang disediakan universitas seperti ruang atau galeri yang digunakan untuk menampilkan karya seni atau hasil kreatifitas mahasiswa dan kegiatan kebudayaan, seperti: museum mini, galeri seni, studio, ruang latihan musik dan tari, atau ruang pertunjukan tradisional',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '1-2 ruangan', 'value' => '1'],
@@ -436,7 +442,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'SK Penetapan Ruang, Dokumentasi',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Persentase ruang (sekretariat) untuk organisasi mahasiswa seperti Himpunan Mahasiswa dan UKM terhadap jumlah oganisasi mahasiswa',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '<25%', 'value' => '1'],
@@ -453,7 +459,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'SK, Dokumentasi',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Monumen tentang pahlawan nasional di area perguruan tinggi',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '1', 'value' => '1'],
@@ -470,7 +476,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'SK, laporan, data identitas agama mahasiswa, dan Dokumentasi',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Persentase jumlah UKM Keagamaan terhadap jumlah agama dan aliran kepercayaan yang dianut oleh mahasiswa',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '<25%', 'value' => '1'],
@@ -487,7 +493,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => 'Dokumen: SK/ST, kartu anggota KOMCAD, dokumen identas (kartu tanda mahasiswa)',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah mahasiswa aktif sebagai anggota komponen cadangan (KOMCAD)',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '1 mahasiswa aktif yang menjadi KOMCAD', 'value' => '1'],
@@ -509,8 +515,7 @@ class PertanyaanSeeder extends Seeder
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => 'jumlah mahasiswa < jumlah fakultas'],
                     ['urutan' => 2, 'teks_jawaban' => 'jumlah mahasiswa = jumlah fakultas PT'],
-                    ['urutan' => 3, 'teks_jawaban' => 'jumlah mahasiswa yang terlibat > jumlah fakultas
-dan < dibandingkan jumlah prodi PT'],
+                    ['urutan' => 3, 'teks_jawaban' => 'jumlah mahasiswa yang terlibat > jumlah fakultas dan < dibandingkan jumlah prodi PT'],
                     ['urutan' => 4, 'teks_jawaban' => 'jumlah mahasiswa yang terlibat sama banyak dibandingkan jumlah prodi PT'],
                     ['urutan' => 5, 'teks_jawaban' => 'jumlah mahasiswa yang terlibat lebih banyak dibandingkan jumlah prodi PT'],
                 ],
@@ -525,7 +530,6 @@ dan < dibandingkan jumlah prodi PT'],
                 'tipe' => 'pilihan_ganda',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
-                    ['urutan' => 1, 'teks_jawaban' => '-'],
                     ['urutan' => 2, 'teks_jawaban' => 'Skala dalam kampus'],
                     ['urutan' => 3, 'teks_jawaban' => 'Skala regional kota/kabupaten di luar kampus'],
                     ['urutan' => 4, 'teks_jawaban' => 'Skala Regional Provinsi'],
@@ -542,10 +546,6 @@ dan < dibandingkan jumlah prodi PT'],
                 'tipe' => 'pilihan_ganda',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
-                    ['urutan' => 1, 'teks_jawaban' => '-'],
-                    ['urutan' => 2, 'teks_jawaban' => '-'],
-                    ['urutan' => 3, 'teks_jawaban' => '-'],
-                    ['urutan' => 4, 'teks_jawaban' => '-'],
                     ['urutan' => 5, 'teks_jawaban' => 'Ada'],
                 ],
             ],
@@ -556,7 +556,7 @@ dan < dibandingkan jumlah prodi PT'],
                 'kebutuhan_bukti' => 'Daftar pengabdian masyarakat, Laporan Kegiatan, berita/publikasi online',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Persentase jumlah mahasiswa yang terlibat dalam pengabdian masyarakat di luar Kuliah Kerja Nyata (KKN) oleh mahasiswa terhadap jumlah mahasiswa aktif',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '0 < x ≤ 0,25%'],
@@ -573,7 +573,7 @@ dan < dibandingkan jumlah prodi PT'],
                 'kebutuhan_bukti' => 'SK REKTOR / PERTOR / SURAT TUGAS --> SK Rektor dan LPJ Terbaru',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah Unit Kegiatan Mahasiswa (UKM)',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'otomatis_sistem',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => 'terdapat 1-5 UKM', 'value' => '1'],
@@ -590,7 +590,7 @@ dan < dibandingkan jumlah prodi PT'],
                 'kebutuhan_bukti' => 'Daftar Nama Mahasiswa Peserta UKM yang di tandatangani oleh Pembina UKM dan disahkan oleh Rektor/Wakil Rektor',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Persentase mahasiswa yang mengikuti UKM terhadap jumlah mahasiswa',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '1-20%'],
@@ -607,7 +607,7 @@ dan < dibandingkan jumlah prodi PT'],
                 'kebutuhan_bukti' => 'Dokumen: SK/ST, laporan kegiatan, dokumentasi (foto dan video kegiatan)',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah mahasiswa yang mengikuti UKM resimen mahasiswa (MENWA)',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '1-5 mahasiswa', 'value' => '1'],
@@ -624,7 +624,7 @@ dan < dibandingkan jumlah prodi PT'],
                 'kebutuhan_bukti' => 'Kartu Anggota yang Masih Aktif',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Persentase mahasiswa yang mengikuti organisasi (sesuai bidang keilmuan masing-masing) diluar kampus terhadap jumlah mahasiswa',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '<1%', 'value' => '<1%'],
@@ -641,7 +641,7 @@ dan < dibandingkan jumlah prodi PT'],
                 'kebutuhan_bukti' => 'SK, sertifikat, dokumentasi kegiatan',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah prestasi mahasiswa dalam kompetisi atau perlombaan',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => 'Total 1–20 poin prestasi', 'value' => '1'],
@@ -658,7 +658,7 @@ dan < dibandingkan jumlah prodi PT'],
                 'kebutuhan_bukti' => 'SK/ & LPJ Kegiatan',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah mahasiswa yang mendirikan startup yang tergubung dalam inkubator bisnis Perguruan Tinggi',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '1-5 mahasiswa yang terlibat', 'value' => '1'],
@@ -675,7 +675,7 @@ dan < dibandingkan jumlah prodi PT'],
                 'kebutuhan_bukti' => 'Daftar kegiatan dan link bukti dokumentasi di Media Massa',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Penyelenggaraan kegiatan yang berkaitan dengan seni budaya oleh mahasiswa',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '1', 'value' => '1'],
@@ -692,7 +692,7 @@ dan < dibandingkan jumlah prodi PT'],
                 'kebutuhan_bukti' => 'Publikasi karya di media massa',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah karya (seni, desain, dan tulis) mahasiswa yang menyuarakan nilai-nilai kebangsaan dan toleransi di media massa (website kampus, berita online, koran, majalah, TV) dan atau jurnal penelitian/pengabdian',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '1-5', 'value' => '1'],
@@ -709,7 +709,7 @@ dan < dibandingkan jumlah prodi PT'],
                 'kebutuhan_bukti' => 'Publikasi kegiatan di media massa  (website kampus, berita online, koran, majalah, TV)',
                 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah kegiatan mahasiswa dalam menjaga lingkungan di dalam kampus dan terprogram',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => '1', 'value' => '1'],
@@ -747,7 +747,7 @@ dan < dibandingkan jumlah prodi PT'],
 
             if (is_array($opsiJawabanData)) {
                 foreach ($opsiJawabanData as $opsi) {
-                    \App\Models\opsiJawaban::create([
+                    OpsiJawaban::create([
                         'pertanyaan_id' => $createdPertanyaan->id,
                         'opsi_jawaban' => (string) $opsi['urutan'],
                         'keterangan' => $opsi['teks_jawaban'],

@@ -39,7 +39,7 @@ class PertanyaanForm
                     ->numeric()
                     ->default(0)
                     ->required(),
-                \Filament\Forms\Components\Repeater::make('opsi_jawaban')
+                \Filament\Forms\Components\Repeater::make('OpsiJawaban')
                     ->label('Opsi Pilihan')
                     ->schema([
                         \Filament\Forms\Components\TextInput::make('teks')
