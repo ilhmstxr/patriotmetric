@@ -33,8 +33,8 @@ class ReviewerController extends Controller
     public function getAssignedTasks(Request $request)
     {
         try {
-            // Ambil ID Auth Reviewer yang sedang login (Fallback 8 untuk testing)
-            $reviewerId = Auth::id() ?? 8;
+            // Ambil ID Auth Reviewer yang sedang login
+            $reviewerId = AuthController::getAuthReviewer();
 
             // Eksekusi Service
             $result = $this->assessmentService->getAssignedReviews($reviewerId);
@@ -48,8 +48,8 @@ class ReviewerController extends Controller
     public function getDetailTasks(Request $request, $pesertaId)
     {
         try {
-            // Ambil ID Auth Reviewer yang sedang login (Fallback 8 untuk testing)
-            $reviewerId = Auth::id() ?? 8;
+            // Ambil ID Auth Reviewer yang sedang login
+            $reviewerId = AuthController::getAuthReviewer();
 
             // Eksekusi Service
             $result = $this->assessmentService->getDetailReviewTasks($reviewerId, $pesertaId);

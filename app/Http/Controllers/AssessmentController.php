@@ -27,8 +27,7 @@ class AssessmentController extends Controller
 
     private function getValidatedAssessment(string $mode)
     {
-        $testUser = 3;
-        $userId = Auth::id() ?? $testUser;
+        $userId = AuthController::getAuthPeserta();
         
         $authDto = new AssessmentDTO((int) $userId);
 

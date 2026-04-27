@@ -75,12 +75,19 @@ class AuthController extends Controller
         }
     }
 
+    public static function getAuthReviewer()
+    {
+        return Auth::id() ?? 8;
+    }
+
+    public static function getAuthPeserta()
+    {
+        return Auth::id() ?? 3;
+    }
+
     public function getAuth()
     {
-        $testUser = 3;
-        $testAdmin = 8;
-        $userId = Auth::id() ?? $testAdmin;
-        return $userId;
+        return self::getAuthReviewer();
     }
 
     /**

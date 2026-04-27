@@ -67,7 +67,7 @@ Route::prefix('dashboard')->group(function () {
 
     Route::get('/rubrik', function () {
         // Fallback untuk development: jika yang login adalah admin/reviewer (tidak punya assessment), pakai assessment user 3.
-        $userId = \Illuminate\Support\Facades\Auth::id() ?? 3;
+        $userId = \App\Http\Controllers\AuthController::getAuthPeserta();
         $assessment = \App\Models\Pengumpulan::where('user_id', $userId)->where('status', 'ACTIVE')->first();
         
         // Jika tidak ketemu (karena login sbg reviewer dsb), paksa ke user 3 untuk testing peserta
