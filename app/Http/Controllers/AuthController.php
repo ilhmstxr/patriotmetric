@@ -78,7 +78,8 @@ class AuthController extends Controller
     public function getAuth()
     {
         $testUser = 3;
-        $userId = Auth::id() ?? $testUser;
+        $testAdmin = 8;
+        $userId = Auth::id() ?? $testAdmin;
         return $userId;
     }
 
