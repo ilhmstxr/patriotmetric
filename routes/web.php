@@ -35,31 +35,20 @@ Route::get('/panduan', function () {
     return view('panduan');
 });
 
+// Auth pages (public - no middleware needed, auth is handled via API token)
 Route::get('/masuk', function () {
     return view('auth.masuk');
 })->name('login');
 
-
-// peserta
-Route::post('/login', function (Request $request) {
-    // Simulasi login sukses yang tembus langsung ke dashboard
-    if ($request->email === 'admin@upnjatim.ac.id') {
-        return redirect()->route('dashboard.index');
-    }
-
-    // Default: simulasi login untuk pendaftar baru, arahkan ke daftar ulang
-    return redirect()->route('verifikasi');
-})->name('login.post');
+Route::get('/daftar', function () {
+    return view('auth.daftar');
+});
 
 Route::get('/verifikasi', function () {
     return view('auth.verifikasi');
 })->name('verifikasi');
 
-// jembot nak kene trnyt
-Route::get('/daftar', function () {
-    return view('auth.daftar');
-});
-
+// Dashboard pages (peserta)
 Route::prefix('dashboard')->group(function () {
     Route::get('/', function () {
         return view('dashboard.index');
@@ -78,6 +67,7 @@ Route::prefix('dashboard')->group(function () {
     })->name('dashboard.panduan');
 });
 
+// Reviewer pages
 Route::prefix('reviewer')->group(function () {
     Route::get('/', function () {
         return view('reviewer.index');

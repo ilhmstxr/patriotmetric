@@ -13,7 +13,19 @@
         </div>
     </div>
     {{-- ✏️ Ganti teks status (misal: "Belum Divalidasi", "Dalam Review", dll) --}}
-    <div class="bg-[#1b5e20] text-white font-semibold text-[12px] px-4 py-2 rounded shrink-0">
-        Telah Divalidasi Asesor
-    </div>
+    <template x-if="is_validated">
+        <div class="bg-[#1b5e20] text-white font-semibold text-[12px] px-4 py-2 rounded shrink-0">
+            Telah Divalidasi Asesor
+        </div>
+    </template>
+    <template x-if="!is_validated && status === 'SUBMITTED'">
+        <div class="bg-blue-600 text-white font-semibold text-[12px] px-4 py-2 rounded shrink-0">
+            Menunggu Review Asesor
+        </div>
+    </template>
+    <template x-if="status === 'IN_PROGRESS' || status === 'ACTIVE'">
+        <div class="bg-orange-500 text-white font-semibold text-[12px] px-4 py-2 rounded shrink-0">
+            Draft (Belum Submit)
+        </div>
+    </template>
 </div>

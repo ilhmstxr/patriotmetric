@@ -330,14 +330,15 @@ class AssessmentService extends BaseService
     }
 
     /**
-     * Mengambil detail profil peserta (institusi, identitas, agama, dokumen) untuk reviewer
+     * Mengambil detail profil peserta + rubrik + jawaban untuk reviewer
+     * Hanya menampilkan jawaban ketika status SUBMITTED
      */
     public function getDetailReviewTasks(int $reviewerId, int $pesertaId)
     {
         // 1. Pastikan akun Reviewer masih aktif
         $this->ensureUserIsActive($reviewerId);
 
-        // 2. Tarik data dari Repository
+        // 2. Tarik data dari Repository (now includes jawabans with pertanyaan)
         $assessment = $this->repository->getDetailAssessmentByReviewer($reviewerId, $pesertaId);
 
         if (!$assessment) {
@@ -346,7 +347,66 @@ class AssessmentService extends BaseService
 
         $identitas = $assessment->identitas;
 
-        // Memformat data sesuai spesifikasi docs-api.md
+        // 3. Get all pertanyaan with opsi jawaban (for reviewer guide)
+        $allPertanyaan = $this->pertanyaanRepository->getPertanyaanWithOpsiJawaban();
+
+        // 4. Build jawaban map (pertanyaan_id => jawaban data) from peserta's answers
+        $jawabanMap = [];
+        if (in_array($assessment->status, ['SUBMITTED', 'GRADED'])) {
+            foreach ($assessment->jawabans as $jawaban) {
+                $jawabanMap[$jawaban->pertanyaan_id] = [
+                    'jawaban_id' => $jawaban->jawaban_id,
+                    'jawaban_teks' => $jawaban->jawaban_teks,
+                    'tautan_bukti_drive' => $jawaban->tautan_bukti_drive,
+                    'skor_sistem' => $jawaban->skor_sistem,
+                    'skor_validasi_reviewer' => $jawaban->skor_validasi_reviewer,
+                    'opsi_dipilih' => $jawaban->jawabanOpsi ? [
+                        'id' => $jawaban->jawabanOpsi->id,
+                        'opsi_jawaban' => $jawaban->jawabanOpsi->opsi_jawaban,
+                        'keterangan' => $jawaban->jawabanOpsi->keterangan,
+                        'value' => $jawaban->jawabanOpsi->value,
+                    ] : null,
+                ];
+            }
+        }
+
+        // 5. Group pertanyaan by kategori with jawaban
+        $rubrikData = [];
+        foreach ($allPertanyaan as $pertanyaan) {
+            $kategoriName = $pertanyaan->kategori->nama_kategori ?? 'Tanpa Kategori';
+
+            if (!isset($rubrikData[$kategoriName])) {
+                $rubrikData[$kategoriName] = [
+                    'kategori' => $kategoriName,
+                    'pertanyaan_count' => 0,
+                    'bobot_maksimal' => 0,
+                    'pertanyaan' => [],
+                ];
+            }
+
+            $rubrikData[$kategoriName]['pertanyaan_count']++;
+            $rubrikData[$kategoriName]['bobot_maksimal'] += 5; // Max 5 per rubrik
+
+            $rubrikData[$kategoriName]['pertanyaan'][] = [
+                'id' => $pertanyaan->id,
+                'kode_pertanyaan' => $pertanyaan->kode_pertanyaan,
+                'teks_pertanyaan' => $pertanyaan->teks_pertanyaan,
+                'deskripsi' => $pertanyaan->deskripsi,
+                'kebutuhan_bukti' => $pertanyaan->kebutuhan_bukti,
+                'tipe' => $pertanyaan->tipe,
+                'skor_maksimal' => $pertanyaan->skor_maksimal,
+                'opsi_jawaban' => $pertanyaan->OpsiJawaban->map(function ($opsi) {
+                    return [
+                        'id' => $opsi->id,
+                        'opsi_jawaban' => $opsi->opsi_jawaban,
+                        'keterangan' => $opsi->keterangan,
+                        'value' => $opsi->value,
+                    ];
+                }),
+                'jawaban_peserta' => $jawabanMap[$pertanyaan->id] ?? null,
+            ];
+        }
+
         return [
             'pengumpulan' => [
                 'id' => $assessment->id,
@@ -360,16 +420,117 @@ class AssessmentService extends BaseService
                 'visi' => $identitas->visi,
                 'misi' => $identitas->misi,
                 'jml_fakultas' => $identitas->jml_fakultas,
-                'jml_studi' => $identitas->jml_prodi,
+                'jml_prodi' => $identitas->jml_prodi,
                 'jml_dosen' => $identitas->jml_dosen,
                 'jml_tendik' => $identitas->jml_tendik,
                 'jml_mhs' => $identitas->jml_mahasiswa,
                 'jml_ukm' => $identitas->jml_ukm,
+                'jml_ormawa' => $identitas->jml_ormawa ?? 0,
                 'berkas_pendukung' => $identitas->legal_documents,
                 'agama' => $identitas->agamas->mapWithKeys(function ($item) {
                     return [strtolower($item->agama) => $item->jumlah];
                 })
-            ] : null
+            ] : null,
+            'rubrik' => array_values($rubrikData),
+            'nama_pic' => $assessment->nama_pic,
+            'jabatan_pic' => $assessment->jabatan_pic,
+            'no_hp_pic' => $assessment->no_hp_pic,
+            'email_pic' => $assessment->email_pic ?? null,
         ];
     }
+
+    /**
+     * Get hasil data for peserta dashboard — shows raw scores if not yet validated
+     */
+    public function getHasilData(int $userId)
+    {
+        $assessment = $this->repository->findActiveAssessmentByUserId($userId);
+        if (!$assessment) {
+            throw new Exception("Sesi asesmen aktif tidak ditemukan.", 404);
+        }
+
+        // Get all answers with pertanyaan+kategori
+        $answers = $this->repository->getAnswersGroupedByCategory($assessment->id);
+
+        // Group by category
+        $categories = [];
+        foreach ($answers as $answer) {
+            $pertanyaan = $answer->pertanyaan;
+            if (!$pertanyaan || !$pertanyaan->kategori) continue;
+
+            $kategoriName = $pertanyaan->kategori->nama_kategori;
+
+            if (!isset($categories[$kategoriName])) {
+                $categories[$kategoriName] = [
+                    'name' => $kategoriName,
+                    'score' => 0,
+                    'max' => 0,
+                    'items' => [],
+                ];
+            }
+
+            $categories[$kategoriName]['max'] += 5; // Max 5 per rubrik
+
+            // Use reviewer score if validated, otherwise use raw system score
+            $displayScore = $answer->skor_validasi_reviewer ?? $answer->skor_sistem ?? 0;
+            $categories[$kategoriName]['score'] += $displayScore;
+
+            $categories[$kategoriName]['items'][] = [
+                'no' => $pertanyaan->kode_pertanyaan,
+                'title' => $pertanyaan->teks_pertanyaan,
+                'score' => $displayScore,
+                'max' => 5,
+                'jawaban' => $answer->jawaban_teks ?? ($answer->jawabanOpsi ? $answer->jawabanOpsi->keterangan : 'Belum diisi'),
+                'tautan' => $answer->tautan_bukti_drive,
+                'catatan' => $answer->note_reviewer ?? null,
+                'is_validated' => $answer->skor_validasi_reviewer !== null,
+            ];
+        }
+
+        // Calculate total
+        $totalScore = array_sum(array_column($categories, 'score'));
+        $totalMax = array_sum(array_column($categories, 'max'));
+
+        return [
+            'status' => $assessment->status,
+            'is_validated' => $assessment->status === 'GRADED',
+            'total_score' => $totalScore,
+            'total_max' => $totalMax,
+            'tahun_periode' => $assessment->tahun_periode,
+            'institusi' => $assessment->institusi?->nama_institusi ?? '-',
+            'categories' => array_values($categories),
+        ];
+    }
+
+    /**
+     * Save all draft answers in batch (called by "Simpan Draft" button)
+     * Updates status to SUBMITTED
+     */
+    public function saveDraftBatch($assessment, array $answers)
+    {
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($assessment, $answers) {
+            foreach ($answers as $answer) {
+                $dto = new \App\DTO\AssessmentDTO\JawabanDTO($assessment->id, $answer);
+                $pertanyaan = $this->pertanyaanRepository->findPertanyaanById($dto->pertanyaanId);
+                if (!$pertanyaan) continue;
+
+                $payload = [
+                    'submission_id' => $dto->submissionId,
+                    'pertanyaan_id' => $dto->pertanyaanId,
+                ];
+
+                $syncData = $this->jawabanAutoSync($dto, $pertanyaan);
+                $payload = array_merge($payload, $syncData);
+                $payload['tautan_bukti_drive'] = $dto->tautanBukti;
+
+                $this->repository->upsertJawaban($payload);
+            }
+
+            // Update status to SUBMITTED
+            $this->repository->updateStatusAssessment($assessment->id, 'SUBMITTED');
+
+            return ['saved_count' => count($answers)];
+        });
+    }
 }
+

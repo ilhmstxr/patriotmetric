@@ -6,15 +6,24 @@
         links: {},
         categories: [],
         loading: true,
+        isSaving: false,
+        lastSaved: '',
+        status: '',
 
         async init() {
             try {
-                // Panggil API untuk mengambil semua pertanyaan
-                const response = await fetch('/api/assessment/peserta/questions');
+                // Panggil API untuk mengambil semua pertanyaan dan jawaban draft
+                const response = await fetch('/api/assessment/peserta/questions', {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
+                        'Accept': 'application/json'
+                    }
+                });
                 const result = await response.json();
 
                 if (result.success) {
-                    this.categories = this.groupByCategory(result.data);
+                    this.status = result.data.status;
+                    this.categories = this.groupByCategory(result.data.questions);
                 }
             } catch (error) {
                 console.error('Gagal mengambil data pertanyaan:', error);
@@ -26,15 +35,26 @@
         groupByCategory(data) {
             const groups = {};
             data.forEach(item => {
-                const category = item.kategori || { nama_kategori: 'Tanpa Kategori', bobot_presentase: 0 };
+                const category = item.kategori || { nama_kategori: 'Tanpa Kategori' };
                 const catName = category.nama_kategori;
                 
                 if (!groups[catName]) {
                     groups[catName] = {
                         category: catName,
-                        weight: (category.bobot_presentase || 0) + '%',
+                        weight: 0,
                         questions: []
                     };
+                }
+
+                // Map existing answers if any
+                const existingJawaban = item.jawaban && item.jawaban.length > 0 ? item.jawaban[0] : null;
+                if (existingJawaban) {
+                    if (item.tipe === 'pilihan_ganda') {
+                        this.answers[item.id] = existingJawaban.jawaban_id;
+                    } else {
+                        this.answers[item.id] = existingJawaban.jawaban_teks;
+                    }
+                    this.links[item.id] = existingJawaban.tautan_bukti_drive || '';
                 }
 
                 // Map data API ke format UI
@@ -50,9 +70,55 @@
                         text: opt.keterangan || opt.opsi_jawaban || opt.OpsiJawaban
                     }))
                 });
+                
+                // Update bobot
+                groups[catName].weight += 5;
             });
 
             return Object.values(groups);
+        },
+
+        async saveDraft() {
+            this.isSaving = true;
+            
+            // Format payload to array of answers
+            const answersPayload = [];
+            for (const qId in this.answers) {
+                const isNumeric = !isNaN(this.answers[qId]) && this.answers[qId] !== '';
+                answersPayload.push({
+                    pertanyaan_id: parseInt(qId),
+                    jawaban_id: isNumeric ? parseInt(this.answers[qId]) : null,
+                    jawaban_teks: isNumeric ? null : String(this.answers[qId] || ''),
+                    tautan_bukti: this.links[qId] || null
+                });
+            }
+
+            try {
+                const response = await fetch('/api/assessment/peserta/save-draft', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ answers: answersPayload })
+                });
+                
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    let d = new Date();
+                    this.lastSaved = d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+                    alert('Draft berhasil disimpan dan di-submit!');
+                    this.status = 'SUBMITTED';
+                    window.location.href = '/dashboard/hasil';
+                } else {
+                    alert(result.message || 'Gagal menyimpan draft.');
+                }
+            } catch (error) {
+                alert('Terjadi kesalahan jaringan.');
+            } finally {
+                this.isSaving = false;
+            }
         }
     }" class="bg-[#f5f5f5] min-h-full font-['Plus_Jakarta_Sans',sans-serif]">
 

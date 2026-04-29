@@ -167,4 +167,46 @@ class AssessmentController extends Controller
             return $this->errorResponse($e->getMessage(), 500);
         }
     }
+
+    /**
+     * GET /api/assessment/peserta/hasil
+     * Returns hasil (results) data for the dashboard with raw/validated scores
+     */
+    public function getHasil(Request $request)
+    {
+        try {
+            $userId = AuthController::getAuthPeserta();
+            $hasilData = $this->AssessmentService->getHasilData($userId);
+
+            return $this->successResponse($hasilData, 'Data hasil berhasil diambil', 200);
+        } catch (\Throwable $e) {
+            return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
+        }
+    }
+
+    /**
+     * POST /api/assessment/peserta/save-draft
+     * Save all answers in batch and update status to SUBMITTED
+     */
+    public function saveDraft(Request $request)
+    {
+        try {
+            $assessment = $this->getValidatedAssessment(AssessmentService::MODE_WRITE);
+
+            $validated = $request->validate([
+                'answers' => 'required|array',
+                'answers.*.pertanyaan_id' => 'required|integer',
+                'answers.*.jawaban_id' => 'nullable|integer',
+                'answers.*.jawaban_teks' => 'nullable|string',
+                'answers.*.tautan_bukti' => 'nullable|url',
+            ]);
+
+            $result = $this->AssessmentService->saveDraftBatch($assessment, $validated['answers']);
+
+            return $this->successResponse($result, 'Semua jawaban berhasil disimpan dan di-submit.', 200);
+        } catch (\Throwable $e) {
+            return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
+        }
+    }
 }
+

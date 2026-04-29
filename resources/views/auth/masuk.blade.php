@@ -47,9 +47,14 @@
                     
                     if (response.ok && result.success) {
                         this.successMessage = result.message;
+                        // Simpan token untuk API calls selanjutnya
                         localStorage.setItem('auth_token', result.data.token);
+                        localStorage.setItem('auth_user', JSON.stringify(result.data.user));
+
+                        // Redirect berdasarkan status dari server
+                        const redirectTo = result.data.redirect_to || '/verifikasi';
                         setTimeout(() => {
-                            window.location.href = '/verifikasi';
+                            window.location.href = redirectTo;
                         }, 1000);
                     } else {
                         this.errorMessage = result.message || 'Login gagal. Periksa kembali kredensial Anda.';
@@ -66,13 +71,6 @@
                 <p class="mt-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] leading-[24px] text-[#62748e]">
                     Silakan masukkan kredensial institusi Anda.
                 </p>
-
-                <!-- {{-- Testing Hint --}}
-                <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                    <p class="text-[12px] text-amber-800 font-medium">
-                        <span class="font-bold">Info Testing:</span> Gunakan email <code class="bg-white px-1 py-0.5 rounded border border-amber-100 font-mono text-[#1b5e20] font-bold">admin@upnjatim.ac.id</code> untuk langsung masuk ke halaman Dashboard Utama. Email selain itu akan masuk ke Form Daftar Ulang.
-                    </p>
-                </div> -->
 
                 <!-- Notifikasi Status -->
                 <div x-show="errorMessage" style="display: none;" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-[14px] text-red-600 font-medium" x-text="errorMessage"></div>

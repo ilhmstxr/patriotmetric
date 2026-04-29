@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\DTO\AssessmentDTO\AssessmentDTO;
 use App\DTO\AuthDTO\LoginDTO;
 use App\DTO\AuthDTO\registerDTO;
+use App\Models\Pengumpulan;
+use App\Models\User;
 use App\Services\UserService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
@@ -36,7 +38,7 @@ class AuthController extends Controller
             $dto = new registerDTO($validated);
             $user = $this->userService->register($dto);
 
-            return $this->successResponse($user, 'Registrasi berhasil. Silakan cek Email untuk verifikasi.', 201);
+            return $this->successResponse($user, 'Registrasi berhasil. Silakan login untuk melanjutkan.', 201);
         } catch (\Throwable $th) {
             $code = (is_numeric($th->getCode()) && $th->getCode() >= 400 && $th->getCode() < 600) ? $th->getCode() : 500;
             return $this->errorResponse($th->getMessage(), $code);
@@ -54,7 +56,26 @@ class AuthController extends Controller
             $dto = new LoginDTO($validated);
             $result = $this->userService->login($dto);
 
-            return $this->successResponse($result, 'Login berhasil.', 200);
+            // Determine redirect path based on user status
+            $user = $result['user'];
+            $pengumpulan = Pengumpulan::where('user_id', $user->id)->first();
+            
+            $redirectTo = '/verifikasi'; // Default: needs verification
+            if ($pengumpulan && in_array($pengumpulan->status, ['IN_PROGRESS', 'SUBMITTED', 'GRADED'])) {
+                $redirectTo = '/dashboard';
+            }
+
+            // Include user role for reviewer redirect
+            if ($user->role === 'REVIEWER') {
+                $redirectTo = '/reviewer';
+            }
+
+            return $this->successResponse([
+                'user' => $user,
+                'token' => $result['token'],
+                'redirect_to' => $redirectTo,
+                'pengumpulan_status' => $pengumpulan?->status,
+            ], 'Login berhasil.', 200);
         } catch (\Throwable $th) {
             $code = (is_numeric($th->getCode()) && $th->getCode() >= 400 && $th->getCode() < 600) ? $th->getCode() : 401;
             return $this->errorResponse($th->getMessage(), $code);
@@ -75,11 +96,59 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * GET /api/auth/me — Return current user info + pengumpulan status
+     * Used by frontend to determine redirect after login
+     */
+    public function me(Request $request)
+    {
+        try {
+            $userId = self::getAuthPeserta();
+            $user = User::find($userId);
+
+            if (!$user) {
+                return $this->errorResponse('User tidak ditemukan.', 404);
+            }
+
+            $pengumpulan = Pengumpulan::where('user_id', $user->id)
+                ->with(['institusi'])
+                ->first();
+
+            return $this->successResponse([
+                'user' => [
+                    'id' => $user->id,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                    'status' => $user->status,
+                ],
+                'pengumpulan' => $pengumpulan ? [
+                    'id' => $pengumpulan->id,
+                    'status' => $pengumpulan->status,
+                    'tahun_periode' => $pengumpulan->tahun_periode,
+                    'nama_pic' => $pengumpulan->nama_pic,
+                    'jabatan_pic' => $pengumpulan->jabatan_pic,
+                    'no_hp_pic' => $pengumpulan->no_hp_pic,
+                    'institusi' => $pengumpulan->institusi,
+                ] : null,
+            ], 'Data user berhasil diambil.', 200);
+        } catch (\Throwable $th) {
+            return $this->errorResponse($th->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Helper: Get authenticated reviewer ID.
+     * Falls back to hardcoded ID 8 for development/plotting sementara.
+     */
     public static function getAuthReviewer()
     {
         return Auth::id() ?? 8;
     }
 
+    /**
+     * Helper: Get authenticated peserta ID.
+     * Falls back to hardcoded ID 3 for development/plotting sementara.
+     */
     public static function getAuthPeserta()
     {
         return Auth::id() ?? 3;

@@ -1,5 +1,197 @@
 <x-layouts.app :hideNav="true" :hideFooter="true">
-  <div x-data="{ activeSection: 1, isSubmitting: false }" class="min-h-screen bg-[#f8fafc] font-['Plus_Jakarta_Sans',sans-serif] flex flex-col selection:bg-[#1b5e20] selection:text-white">
+  <div x-data="{ 
+    activeSection: 1, 
+    isSubmitting: false,
+    errorMessage: '',
+    successMessage: '',
+    
+    // Auth User Data
+    user: JSON.parse(localStorage.getItem('auth_user')) || {},
+    
+    // Form Data
+    formData: {
+        nama_pt: '',
+        jenis_pt: '',
+        visi: '',
+        misi: '',
+        jumlah_fakultas: '',
+        jumlah_prodi: '',
+        jumlah_dosen: '',
+        jumlah_tendik: '',
+        jumlah_mahasiswa: '',
+        jumlah_ormawa: '',
+        jumlah_ukm: '',
+        agama_islam: 0,
+        agama_kristen: 0,
+        agama_katolik: 0,
+        agama_hindu: 0,
+        agama_buddha: 0,
+        agama_konghucu: 0,
+        nama_pic: '',
+        jabatan_pic: '',
+        no_hp_pic: '',
+        email_pic: ''
+    },
+    
+    // File Data (store File objects)
+    files: {
+        surat_pernyataan: null,
+        sk_pendirian: null,
+        sk_akreditasi: null,
+        profil_pt: null,
+        logo_pt: null,
+        struktur_organisasi: null,
+        sk_tim: null
+    },
+    
+    // File Previews
+    previews: {
+        surat_pernyataan: '',
+        sk_pendirian: '',
+        sk_akreditasi: '',
+        profil_pt: '',
+        logo_pt: '',
+        struktur_organisasi: '',
+        sk_tim: ''
+    },
+
+    init() {
+        if (!localStorage.getItem('auth_token')) {
+            window.location.href = '/masuk';
+            return;
+        }
+        
+        // Fetch user data if not in localStorage or to get fresh pengumpulan status
+        this.fetchUserData();
+    },
+    
+    async fetchUserData() {
+        try {
+            const response = await fetch('/api/auth/me', {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
+                    'Accept': 'application/json'
+                }
+            });
+            const result = await response.json();
+            if (response.ok && result.success) {
+                if (result.data.pengumpulan) {
+                    const p = result.data.pengumpulan;
+                    if (['IN_PROGRESS', 'SUBMITTED', 'GRADED'].includes(p.status)) {
+                        window.location.href = '/dashboard';
+                    }
+                    if (p.institusi) {
+                        this.formData.nama_pt = p.institusi.nama_institusi || '';
+                        this.formData.jenis_pt = p.institusi.jenis_institusi || '';
+                    }
+                    this.formData.nama_pic = p.nama_pic || '';
+                    this.formData.jabatan_pic = p.jabatan_pic || '';
+                    this.formData.no_hp_pic = p.no_hp_pic || '';
+                    this.formData.email_pic = p.email_pic || '';
+                }
+            } else {
+                localStorage.removeItem('auth_token');
+                window.location.href = '/masuk';
+            }
+        } catch (error) {
+            console.error('Error fetching user data', error);
+        }
+    },
+
+    handleFileChange(event, field, accept) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Validasi max 5MB
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Ukuran file maksimal 5MB');
+            event.target.value = '';
+            return;
+        }
+
+        // Simpan object file
+        this.files[field] = file;
+
+        // Preview
+        if (accept.includes('image') && file.type.startsWith('image/')) {
+            this.previews[field] = URL.createObjectURL(file);
+        } else {
+            this.previews[field] = file.name;
+        }
+    },
+
+    removeFile(field) {
+        this.files[field] = null;
+        this.previews[field] = '';
+        if (this.$refs[field]) {
+            this.$refs[field].value = '';
+        }
+    },
+
+    get isFormComplete() {
+        const requiredFiles = ['surat_pernyataan', 'sk_pendirian', 'sk_akreditasi', 'profil_pt', 'logo_pt', 'struktur_organisasi', 'sk_tim'];
+        const requiredData = ['nama_pt', 'jenis_pt', 'visi', 'misi', 'jumlah_fakultas', 'jumlah_prodi', 'jumlah_dosen', 'jumlah_tendik', 'jumlah_mahasiswa', 'jumlah_ormawa', 'jumlah_ukm', 'nama_pic', 'jabatan_pic', 'no_hp_pic', 'email_pic'];
+        
+        const filesComplete = requiredFiles.every(f => this.files[f] !== null);
+        const dataComplete = requiredData.every(d => this.formData[d] !== '' && this.formData[d] !== null && this.formData[d] !== undefined);
+        
+        return filesComplete && dataComplete;
+    },
+
+    async submitForm() {
+        if (!this.isFormComplete) {
+            this.errorMessage = 'Mohon lengkapi semua field dan file yang diwajibkan.';
+            return;
+        }
+
+        this.isSubmitting = true;
+        this.errorMessage = '';
+        
+        const payload = new FormData();
+        
+        // Append form data
+        for (const key in this.formData) {
+            payload.append(key, this.formData[key]);
+        }
+        
+        // Append files
+        for (const key in this.files) {
+            if (this.files[key]) {
+                payload.append(key, this.files[key]);
+            }
+        }
+
+        try {
+            const response = await fetch('/api/auth/verification', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
+                    'Accept': 'application/json'
+                },
+                body: payload
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                this.successMessage = result.message;
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 1500);
+            } else {
+                if (result.errors) {
+                    this.errorMessage = Object.values(result.errors)[0][0];
+                } else {
+                    this.errorMessage = result.message || 'Verifikasi gagal.';
+                }
+            }
+        } catch (error) {
+            this.errorMessage = 'Terjadi kesalahan jaringan. Silakan coba lagi.';
+        } finally {
+            this.isSubmitting = false;
+        }
+    }
+  }" class="min-h-screen bg-[#f8fafc] font-['Plus_Jakarta_Sans',sans-serif] flex flex-col selection:bg-[#1b5e20] selection:text-white">
     {{-- Header Form --}}
     <header class="sticky top-0 z-50 bg-[rgba(255,255,255,0.85)] backdrop-blur-md border-b border-[rgba(255,255,255,0.2)] shadow-[0px_4px_30px_0px_rgba(27,94,32,0.05)]">
       <div class="max-w-[1536px] mx-auto flex items-center justify-between h-[65px] px-[24px]">
@@ -44,35 +236,31 @@
       <main class="flex-1 py-[40px] px-[24px]">
         <div class="max-w-[800px] mx-auto">
           <div class="text-center mb-[40px]">
-            <h1 class="text-[28px] md:text-[32px] font-bold text-[#1d293d] tracking-tight mb-[12px]">Selamat Datang, Universitas Pembangunan Nasional "Veteran" Jawa Timur</h1>
+            <h1 class="text-[28px] md:text-[32px] font-bold text-[#1d293d] tracking-tight mb-[12px]">
+              Selamat Datang, <span x-text="formData.nama_pt || user.email || 'Peserta'"></span>
+            </h1>
             <p class="text-[#64748b] text-[15px] md:text-[16px] max-w-[600px] mx-auto">
               Lengkapi formulir di bawah ini untuk mengonfirmasi partisipasi institusi Anda dalam kegiatan 
               <strong class="text-[#1d293d] font-semibold"> Patriot Metric University Ranking 2026</strong>.
             </p>
           </div>
 
-          <form @submit.prevent="isSubmitting = true; setTimeout(() => { window.location.href = '{{ route('dashboard.index') }}' }, 1500)" class="bg-white rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#e2e8f0] overflow-hidden">
+          <!-- Alert Messages -->
+          <div x-show="errorMessage" style="display: none;" class="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
+            <i data-lucide="alert-circle" class="w-5 h-5 text-red-600 mt-0.5"></i>
+            <p class="text-red-700 text-[14px] font-medium" x-text="errorMessage"></p>
+          </div>
+          <div x-show="successMessage" style="display: none;" class="mb-4 p-4 bg-green-50 border border-green-200 rounded-xl flex items-start gap-3">
+            <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mt-0.5"></i>
+            <p class="text-green-700 text-[14px] font-medium" x-text="successMessage"></p>
+          </div>
+
+          <form @submit.prevent="submitForm" class="bg-white rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#e2e8f0] overflow-hidden">
             {{-- Progress Bar Mobile --}}
             <div class="md:hidden flex bg-[#f8fafc] border-b border-[#e2e8f0]">
-              <button 
-                type="button" 
-                @click="activeSection = 1" 
-                :class="activeSection === 1 ? 'text-[#1b5e20] border-b-2 border-[#1b5e20]' : 'text-[#94a3b8]'"
-                class="flex-1 py-[16px] text-center font-semibold text-[13px] transition-colors"
-                x-text="'1. Dokumen Legal'"
-              ></button>
-              <button 
-                type="button" 
-                @click="activeSection = 2" 
-                :class="activeSection === 2 ? 'text-[#1b5e20] border-b-2 border-[#1b5e20]' : 'text-[#94a3b8]'"
-                class="flex-1 py-[16px] text-center font-semibold text-[13px] transition-colors"
-                x-text="'2. Berkas'"></button>
-              <button 
-                type="button" 
-                @click="activeSection = 3" 
-                :class="activeSection === 3 ? 'text-[#1b5e20] border-b-2 border-[#1b5e20]' : 'text-[#94a3b8]'"
-                class="flex-1 py-[16px] text-center font-semibold text-[13px] transition-colors"
-                x-text="'3. Data'"></button>
+              <button type="button" @click="activeSection = 1" :class="activeSection === 1 ? 'text-[#1b5e20] border-b-2 border-[#1b5e20]' : 'text-[#94a3b8]'" class="flex-1 py-[16px] text-center font-semibold text-[13px] transition-colors">1. Dokumen Legal</button>
+              <button type="button" @click="activeSection = 2" :class="activeSection === 2 ? 'text-[#1b5e20] border-b-2 border-[#1b5e20]' : 'text-[#94a3b8]'" class="flex-1 py-[16px] text-center font-semibold text-[13px] transition-colors">2. Berkas</button>
+              <button type="button" @click="activeSection = 3" :class="activeSection === 3 ? 'text-[#1b5e20] border-b-2 border-[#1b5e20]' : 'text-[#94a3b8]'" class="flex-1 py-[16px] text-center font-semibold text-[13px] transition-colors">3. Data</button>
             </div>
 
           <div class="p-[32px] md:p-[48px]">
@@ -89,24 +277,32 @@
                     1. Surat Pernyataan Resmi <span class="text-red-500">*</span>
                   </label>
                   <p class="text-[#62748e] text-[13px] leading-relaxed">Unggah Surat Pernyataan resmi yang ditandatangani oleh pimpinan perguruan tinggi sebagai bentuk konfirmasi keikutsertaan.</p>
-                  <a href="https://bit.ly/TemplateSuratPernyataanUPNJatimPatriotMetric" target="_blank" class="text-[#1b5e20] text-[13px] font-medium hover:underline flex items-center gap-[4px] w-fit">
-                    <i data-lucide="file-text" class="w-[14px] h-[14px]"></i> 
-                    Unduh Template Surat Pernyataan UPN Jatim Patriot Metric
-                  </a>
-                  <div class="mt-[4px] border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer relative overflow-hidden bg-white">
-                    <input type="file" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" required />
-                    <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
-                      <i data-lucide="upload" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#1b5e20]"></i>
-                    </div>
-                    <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah atau seret file ke sini</p>
-                    <p class="text-[#64748b] text-[12px]">Maksimal 5MB dan Format PDF</p>
-                  </div>
-                  <div class="flex items-start gap-[6px] mt-[2px] bg-amber-50 p-[8px] rounded-[6px] border border-amber-100">
-                    <i data-lucide="alert-circle" class="w-[14px] h-[14px] text-amber-600 mt-[2px] shrink-0"></i>
-                    <p class="text-amber-800 text-[12px] leading-tight">
-                      <span class="font-semibold">Format nama file:</span> SuratPernyataan_[NamaPerguruanTinggi]<br/>
-                      <span class="text-amber-600/80">Contoh: SuratPernyataan_UPNVeteranJatim</span>
-                    </p>
+                  
+                  <div class="mt-[4px] relative">
+                      <div x-show="!previews.surat_pernyataan" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
+                        <input type="file" accept=".pdf" x-ref="surat_pernyataan" @change="handleFileChange($event, 'surat_pernyataan', '.pdf')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                        <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
+                          <i data-lucide="upload" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#1b5e20]"></i>
+                        </div>
+                        <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah PDF</p>
+                        <p class="text-[#64748b] text-[12px]">Maks 5MB</p>
+                      </div>
+                      
+                      <!-- Preview PDF -->
+                      <div x-show="previews.surat_pernyataan" style="display: none;" class="border border-[#cbd5e1] rounded-[12px] p-[16px] bg-white flex items-center justify-between">
+                          <div class="flex items-center gap-3 overflow-hidden">
+                              <div class="bg-red-50 p-2 rounded-lg text-red-500 shrink-0">
+                                  <i data-lucide="file-text" class="w-6 h-6"></i>
+                              </div>
+                              <div class="truncate">
+                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="previews.surat_pernyataan"></p>
+                                  <p class="text-[12px] text-[#64748b]" x-text="files.surat_pernyataan ? (files.surat_pernyataan.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
+                              </div>
+                          </div>
+                          <button type="button" @click="removeFile('surat_pernyataan')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors shrink-0">
+                              <i data-lucide="trash-2" class="w-5 h-5"></i>
+                          </button>
+                      </div>
                   </div>
                 </div>
 
@@ -115,20 +311,31 @@
                   <label class="font-semibold text-[#1d293d] text-[14px]">
                     2. Surat Keputusan (SK) Pendirian Perguruan Tinggi <span class="text-red-500">*</span>
                   </label>
-                  <div class="mt-[4px] border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer relative overflow-hidden bg-white">
-                    <input type="file" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" required />
-                    <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
-                      <i data-lucide="upload" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#1b5e20]"></i>
-                    </div>
-                    <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah atau seret file ke sini</p>
-                    <p class="text-[#64748b] text-[12px]">Maksimal 5MB dan Format PDF</p>
-                  </div>
-                  <div class="flex items-start gap-[6px] mt-[2px] bg-amber-50 p-[8px] rounded-[6px] border border-amber-100">
-                    <i data-lucide="alert-circle" class="w-[14px] h-[14px] text-amber-600 mt-[2px] shrink-0"></i>
-                    <p class="text-amber-800 text-[12px] leading-tight">
-                      <span class="font-semibold">Format nama file:</span> SKPendirian_[NamaPerguruanTinggi]<br/>
-                      <span class="text-amber-600/80">Contoh: SKPendirian_UPNVeteranJatim</span>
-                    </p>
+                  <div class="mt-[4px] relative">
+                      <div x-show="!previews.sk_pendirian" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
+                        <input type="file" accept=".pdf" x-ref="sk_pendirian" @change="handleFileChange($event, 'sk_pendirian', '.pdf')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                        <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
+                          <i data-lucide="upload" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#1b5e20]"></i>
+                        </div>
+                        <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah PDF</p>
+                        <p class="text-[#64748b] text-[12px]">Maks 5MB</p>
+                      </div>
+                      
+                      <!-- Preview PDF -->
+                      <div x-show="previews.sk_pendirian" style="display: none;" class="border border-[#cbd5e1] rounded-[12px] p-[16px] bg-white flex items-center justify-between">
+                          <div class="flex items-center gap-3 overflow-hidden">
+                              <div class="bg-red-50 p-2 rounded-lg text-red-500 shrink-0">
+                                  <i data-lucide="file-text" class="w-6 h-6"></i>
+                              </div>
+                              <div class="truncate">
+                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="previews.sk_pendirian"></p>
+                                  <p class="text-[12px] text-[#64748b]" x-text="files.sk_pendirian ? (files.sk_pendirian.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
+                              </div>
+                          </div>
+                          <button type="button" @click="removeFile('sk_pendirian')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors shrink-0">
+                              <i data-lucide="trash-2" class="w-5 h-5"></i>
+                          </button>
+                      </div>
                   </div>
                 </div>
 
@@ -138,20 +345,31 @@
                     3. Surat Keputusan Akreditasi Institusi Perguruan Tinggi (AIPT) <span class="text-red-500">*</span>
                   </label>
                   <p class="text-[#62748e] text-[13px] leading-relaxed">Unggah SK AIPT yang masih berlaku.</p>
-                  <div class="mt-[4px] border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer relative overflow-hidden bg-white">
-                    <input type="file" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" required />
-                    <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
-                      <i data-lucide="upload" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#1b5e20]"></i>
-                    </div>
-                    <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah atau seret file ke sini</p>
-                    <p class="text-[#64748b] text-[12px]">Maksimal 5MB dan Format PDF</p>
-                  </div>
-                  <div class="flex items-start gap-[6px] mt-[2px] bg-amber-50 p-[8px] rounded-[6px] border border-amber-100">
-                    <i data-lucide="alert-circle" class="w-[14px] h-[14px] text-amber-600 mt-[2px] shrink-0"></i>
-                    <p class="text-amber-800 text-[12px] leading-tight">
-                      <span class="font-semibold">Format nama file:</span> SKAkreditasi_[NamaPerguruanTinggi]<br/>
-                      <span class="text-amber-600/80">Contoh: SKAkreditasi_UPNVeteranJatim</span>
-                    </p>
+                  <div class="mt-[4px] relative">
+                      <div x-show="!previews.sk_akreditasi" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
+                        <input type="file" accept=".pdf" x-ref="sk_akreditasi" @change="handleFileChange($event, 'sk_akreditasi', '.pdf')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                        <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
+                          <i data-lucide="upload" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#1b5e20]"></i>
+                        </div>
+                        <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah PDF</p>
+                        <p class="text-[#64748b] text-[12px]">Maks 5MB</p>
+                      </div>
+                      
+                      <!-- Preview PDF -->
+                      <div x-show="previews.sk_akreditasi" style="display: none;" class="border border-[#cbd5e1] rounded-[12px] p-[16px] bg-white flex items-center justify-between">
+                          <div class="flex items-center gap-3 overflow-hidden">
+                              <div class="bg-red-50 p-2 rounded-lg text-red-500 shrink-0">
+                                  <i data-lucide="file-text" class="w-6 h-6"></i>
+                              </div>
+                              <div class="truncate">
+                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="previews.sk_akreditasi"></p>
+                                  <p class="text-[12px] text-[#64748b]" x-text="files.sk_akreditasi ? (files.sk_akreditasi.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
+                              </div>
+                          </div>
+                          <button type="button" @click="removeFile('sk_akreditasi')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors shrink-0">
+                              <i data-lucide="trash-2" class="w-5 h-5"></i>
+                          </button>
+                      </div>
                   </div>
                 </div>
 
@@ -179,25 +397,29 @@
                   <label class="font-semibold text-[#1d293d] text-[14px]">
                     4. Profil Perguruan Tinggi <span class="text-red-500">*</span>
                   </label>
-                  <p class="text-[#62748e] text-[13px] leading-relaxed">Unggah profil Perguruan Tinggi Peserta Pemeringkatan UPN Jatim Patriot Metric.</p>
-                  <a href="https://docs.google.com/document/d/14qJSdTvFKcjrlzMAiE-aqOR72YpzNPAa/edit?usp=sharing&ouid=114349104875977587212&rtpof=true&sd=true" target="_blank" class="text-[#1b5e20] text-[13px] font-medium hover:underline flex items-center gap-[4px] w-fit">
-                    <i data-lucide="file-text" class="w-[14px] h-[14px]"></i> 
-                    Unduh Template pengisian profil Perguruan Tinggi
-                  </a>
-                  <div class="mt-[4px] border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer relative overflow-hidden bg-white">
-                    <input type="file" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" required />
-                    <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
-                      <i data-lucide="upload" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#1b5e20]"></i>
-                    </div>
-                    <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah atau seret file ke sini</p>
-                    <p class="text-[#64748b] text-[12px]">Maksimal 5MB dan Format PDF</p>
-                  </div>
-                  <div class="flex items-start gap-[6px] mt-[2px] bg-amber-50 p-[8px] rounded-[6px] border border-amber-100">
-                    <i data-lucide="alert-circle" class="w-[14px] h-[14px] text-amber-600 mt-[2px] shrink-0"></i>
-                    <p class="text-amber-800 text-[12px] leading-tight">
-                      <span class="font-semibold">Format nama file:</span> Profil PT_[NamaPerguruanTinggi]<br/>
-                      <span class="text-amber-600/80">Contoh: Profil PT_UPNVeteranJatim</span>
-                    </p>
+                  <div class="mt-[4px] relative">
+                      <div x-show="!previews.profil_pt" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
+                        <input type="file" accept=".pdf" x-ref="profil_pt" @change="handleFileChange($event, 'profil_pt', '.pdf')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                        <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
+                          <i data-lucide="upload" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#1b5e20]"></i>
+                        </div>
+                        <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah PDF</p>
+                        <p class="text-[#64748b] text-[12px]">Maks 5MB</p>
+                      </div>
+                      <div x-show="previews.profil_pt" style="display: none;" class="border border-[#cbd5e1] rounded-[12px] p-[16px] bg-white flex items-center justify-between">
+                          <div class="flex items-center gap-3 overflow-hidden">
+                              <div class="bg-red-50 p-2 rounded-lg text-red-500 shrink-0">
+                                  <i data-lucide="file-text" class="w-6 h-6"></i>
+                              </div>
+                              <div class="truncate">
+                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="previews.profil_pt"></p>
+                                  <p class="text-[12px] text-[#64748b]" x-text="files.profil_pt ? (files.profil_pt.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
+                              </div>
+                          </div>
+                          <button type="button" @click="removeFile('profil_pt')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors shrink-0">
+                              <i data-lucide="trash-2" class="w-5 h-5"></i>
+                          </button>
+                      </div>
                   </div>
                 </div>
 
@@ -206,13 +428,29 @@
                   <label class="font-semibold text-[#1d293d] text-[14px]">
                     5. Logo Instansi <span class="text-red-500">*</span>
                   </label>
-                  <div class="mt-[4px] border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer relative overflow-hidden bg-white">
-                    <input type="file" accept="image/png, image/jpeg" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" required />
-                    <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
-                      <i data-lucide="image" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#0ea5e9]"></i>
-                    </div>
-                    <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah atau seret file ke sini</p>
-                    <p class="text-[#64748b] text-[12px]">Maksimal 5MB dan Format Image (JPG/PNG)</p>
+                  <div class="mt-[4px] relative">
+                      <div x-show="!previews.logo_pt" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
+                        <input type="file" accept="image/png, image/jpeg, image/jpg" x-ref="logo_pt" @change="handleFileChange($event, 'logo_pt', 'image/*')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                        <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
+                          <i data-lucide="image" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#0ea5e9]"></i>
+                        </div>
+                        <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah Gambar</p>
+                        <p class="text-[#64748b] text-[12px]">Maks 5MB (JPG/PNG)</p>
+                      </div>
+                      
+                      <!-- Preview Image -->
+                      <div x-show="previews.logo_pt" style="display: none;" class="border border-[#cbd5e1] rounded-[12px] p-[16px] bg-white flex items-center justify-between">
+                          <div class="flex items-center gap-4 overflow-hidden">
+                              <img :src="previews.logo_pt" alt="Preview Logo" class="w-16 h-16 object-contain rounded-lg border border-[#e2e8f0] bg-[#f8fafc]" />
+                              <div class="truncate">
+                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="files.logo_pt ? files.logo_pt.name : ''"></p>
+                                  <p class="text-[12px] text-[#64748b]" x-text="files.logo_pt ? (files.logo_pt.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
+                              </div>
+                          </div>
+                          <button type="button" @click="removeFile('logo_pt')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors shrink-0">
+                              <i data-lucide="trash-2" class="w-5 h-5"></i>
+                          </button>
+                      </div>
                   </div>
                 </div>
 
@@ -221,20 +459,29 @@
                   <label class="font-semibold text-[#1d293d] text-[14px]">
                     6. Struktur Organisasi Perguruan Tinggi <span class="text-red-500">*</span>
                   </label>
-                  <div class="mt-[4px] border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer relative overflow-hidden bg-white">
-                    <input type="file" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" required />
-                    <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
-                      <i data-lucide="upload" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#1b5e20]"></i>
-                    </div>
-                    <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah atau seret file ke sini</p>
-                    <p class="text-[#64748b] text-[12px]">Maksimal 5MB dan Format PDF</p>
-                  </div>
-                  <div class="flex items-start gap-[6px] mt-[2px] bg-amber-50 p-[8px] rounded-[6px] border border-amber-100">
-                    <i data-lucide="alert-circle" class="w-[14px] h-[14px] text-amber-600 mt-[2px] shrink-0"></i>
-                    <p class="text-amber-800 text-[12px] leading-tight">
-                      <span class="font-semibold">Format nama file:</span> StrukturOrganisasi_[NamaPerguruanTinggi]<br/>
-                      <span class="text-amber-600/80">Contoh: StrukturOrganisasi_UPNVeteranJatim</span>
-                    </p>
+                  <div class="mt-[4px] relative">
+                      <div x-show="!previews.struktur_organisasi" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
+                        <input type="file" accept=".pdf" x-ref="struktur_organisasi" @change="handleFileChange($event, 'struktur_organisasi', '.pdf')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                        <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
+                          <i data-lucide="upload" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#1b5e20]"></i>
+                        </div>
+                        <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah PDF</p>
+                        <p class="text-[#64748b] text-[12px]">Maks 5MB</p>
+                      </div>
+                      <div x-show="previews.struktur_organisasi" style="display: none;" class="border border-[#cbd5e1] rounded-[12px] p-[16px] bg-white flex items-center justify-between">
+                          <div class="flex items-center gap-3 overflow-hidden">
+                              <div class="bg-red-50 p-2 rounded-lg text-red-500 shrink-0">
+                                  <i data-lucide="file-text" class="w-6 h-6"></i>
+                              </div>
+                              <div class="truncate">
+                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="previews.struktur_organisasi"></p>
+                                  <p class="text-[12px] text-[#64748b]" x-text="files.struktur_organisasi ? (files.struktur_organisasi.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
+                              </div>
+                          </div>
+                          <button type="button" @click="removeFile('struktur_organisasi')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors shrink-0">
+                              <i data-lucide="trash-2" class="w-5 h-5"></i>
+                          </button>
+                      </div>
                   </div>
                 </div>
 
@@ -243,38 +490,36 @@
                   <label class="font-semibold text-[#1d293d] text-[14px]">
                     7. SK Tim Pemeringkatan UPN Jatim Patriot Metric <span class="text-red-500">*</span>
                   </label>
-                  <div class="mt-[4px] border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer relative overflow-hidden bg-white">
-                    <input type="file" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" required />
-                    <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
-                      <i data-lucide="upload" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#1b5e20]"></i>
-                    </div>
-                    <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah atau seret file ke sini</p>
-                    <p class="text-[#64748b] text-[12px]">Maksimal 5MB dan Format PDF</p>
-                  </div>
-                  <div class="flex items-start gap-[6px] mt-[2px] bg-amber-50 p-[8px] rounded-[6px] border border-amber-100">
-                    <i data-lucide="alert-circle" class="w-[14px] h-[14px] text-amber-600 mt-[2px] shrink-0"></i>
-                    <p class="text-amber-800 text-[12px] leading-tight">
-                      <span class="font-semibold">Format nama file:</span> SKTimPatriotMetric_[NamaPerguruanTinggi]<br/>
-                      <span class="text-amber-600/80">Contoh: SKTimPatriotMetric_UPNVeteranJatim</span>
-                    </p>
+                  <div class="mt-[4px] relative">
+                      <div x-show="!previews.sk_tim" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
+                        <input type="file" accept=".pdf" x-ref="sk_tim" @change="handleFileChange($event, 'sk_tim', '.pdf')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                        <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
+                          <i data-lucide="upload" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#1b5e20]"></i>
+                        </div>
+                        <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah PDF</p>
+                        <p class="text-[#64748b] text-[12px]">Maks 5MB</p>
+                      </div>
+                      <div x-show="previews.sk_tim" style="display: none;" class="border border-[#cbd5e1] rounded-[12px] p-[16px] bg-white flex items-center justify-between">
+                          <div class="flex items-center gap-3 overflow-hidden">
+                              <div class="bg-red-50 p-2 rounded-lg text-red-500 shrink-0">
+                                  <i data-lucide="file-text" class="w-6 h-6"></i>
+                              </div>
+                              <div class="truncate">
+                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="previews.sk_tim"></p>
+                                  <p class="text-[12px] text-[#64748b]" x-text="files.sk_tim ? (files.sk_tim.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
+                              </div>
+                          </div>
+                          <button type="button" @click="removeFile('sk_tim')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors shrink-0">
+                              <i data-lucide="trash-2" class="w-5 h-5"></i>
+                          </button>
+                      </div>
                   </div>
                 </div>
 
                 <div class="pt-[32px] mt-[16px] border-t border-[#e2e8f0] flex flex-col md:flex-row gap-[16px] items-center justify-between">
-                  <button 
-                    type="button" 
-                    @click="activeSection = 1"
-                    class="w-full md:w-auto text-[#64748b] hover:text-[#1d293d] px-[24px] py-[12px] rounded-[10px] font-semibold transition-colors flex items-center justify-center"
-                  >
-                    Kembali
-                  </button>
-                  <button 
-                    type="button" 
-                    @click="activeSection = 3"
-                    class="w-full md:w-auto bg-[#1b5e20] hover:bg-[#15461c] text-white px-[32px] py-[14px] rounded-[10px] font-bold flex items-center justify-center gap-[10px] transition-all shadow-sm"
-                  >
-                    Selanjutnya 
-                    <i data-lucide="arrow-right" class="w-[18px] h-[18px]"></i>
+                  <button type="button" @click="activeSection = 1" class="w-full md:w-auto text-[#64748b] hover:text-[#1d293d] px-[24px] py-[12px] rounded-[10px] font-semibold transition-colors flex items-center justify-center">Kembali</button>
+                  <button type="button" @click="activeSection = 3" class="w-full md:w-auto bg-[#1b5e20] hover:bg-[#15461c] text-white px-[32px] py-[14px] rounded-[10px] font-bold flex items-center justify-center gap-[10px] transition-all shadow-sm">
+                    Selanjutnya <i data-lucide="arrow-right" class="w-[18px] h-[18px]"></i>
                   </button>
                 </div>
               </div>
@@ -289,55 +534,51 @@
                 {{-- Group A: Identitas Institusi --}}
                 <div class="bg-[#f8fafc] p-6 rounded-xl border border-[#cbd5e1] space-y-6">
                   <h3 class="font-bold text-[#1b5e20] text-[15px] mb-2 border-b border-[#e2e8f0] pb-2">A. Identitas Institusi</h3>
-                  
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
                     <div class="flex flex-col gap-[8px]">
                       <label class="font-semibold text-[#1d293d] text-[14px]">8. Nama Perguruan Tinggi <span class="text-red-500">*</span></label>
-                      <input type="text" required class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" placeholder="Misal: UPN Veteran Jawa Timur" />
+                      <input type="text" x-model="formData.nama_pt" required class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" placeholder="Misal: UPN Veteran Jawa Timur" />
                     </div>
                     <div class="flex flex-col gap-[8px]">
                       <label class="font-semibold text-[#1d293d] text-[14px]">9. Jenis Perguruan Tinggi <span class="text-red-500">*</span></label>
-                      <select required class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px] bg-white">
+                      <select x-model="formData.jenis_pt" required class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px] bg-white">
                         <option value="">Pilih Jenis...</option>
-                        <option value="Negeri">Negeri</option>
-                        <option value="Swasta">Swasta</option>
-                        <option value="Kedinasan">Kedinasan</option>
+                        <option value="PTN">PTN</option>
+                        <option value="PTS">PTS</option>
+                        <option value="PTK">PTK</option>
                         <option value="Lainnya">Lainnya</option>
                       </select>
                     </div>
                   </div>
-
                   <div class="flex flex-col gap-[8px]">
                     <label class="font-semibold text-[#1d293d] text-[14px]">10. Visi Perguruan Tinggi <span class="text-red-500">*</span></label>
-                    <textarea required rows="3" class="w-full border border-[#cbd5e1] rounded-[10px] p-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[14px] resize-y placeholder:text-[#94a3b8]" placeholder="Tuliskan Visi Perguruan Tinggi..."></textarea>
+                    <textarea x-model="formData.visi" required rows="3" class="w-full border border-[#cbd5e1] rounded-[10px] p-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[14px] resize-y placeholder:text-[#94a3b8]"></textarea>
                   </div>
-
                   <div class="flex flex-col gap-[8px]">
                     <label class="font-semibold text-[#1d293d] text-[14px]">11. Misi Perguruan Tinggi <span class="text-red-500">*</span></label>
-                    <textarea required rows="4" class="w-full border border-[#cbd5e1] rounded-[10px] p-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[14px] resize-y placeholder:text-[#94a3b8]" placeholder="Tuliskan Misi Perguruan Tinggi..."></textarea>
+                    <textarea x-model="formData.misi" required rows="4" class="w-full border border-[#cbd5e1] rounded-[10px] p-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[14px] resize-y placeholder:text-[#94a3b8]"></textarea>
                   </div>
                 </div>
 
                 {{-- Group B: Akademik & SDM --}}
                 <div class="bg-[#f8fafc] p-6 rounded-xl border border-[#cbd5e1] space-y-6">
                   <h3 class="font-bold text-[#1b5e20] text-[15px] mb-2 border-b border-[#e2e8f0] pb-2">B. Akademik & SDM</h3>
-                  
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
                     <div class="flex flex-col gap-[8px]">
                       <label class="font-semibold text-[#1d293d] text-[14px]">12. Jumlah Fakultas <span class="text-red-500">*</span></label>
-                      <input type="number" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" placeholder="Misal: 7" />
+                      <input type="number" x-model="formData.jumlah_fakultas" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                     </div>
                     <div class="flex flex-col gap-[8px]">
                       <label class="font-semibold text-[#1d293d] text-[14px]">13. Jumlah Program Studi <span class="text-red-500">*</span></label>
-                      <input type="number" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" placeholder="Misal: 30" />
+                      <input type="number" x-model="formData.jumlah_prodi" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                     </div>
                     <div class="flex flex-col gap-[8px]">
                       <label class="font-semibold text-[#1d293d] text-[14px]">14. Jumlah Dosen <span class="text-red-500">*</span></label>
-                      <input type="number" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" placeholder="Misal: 750" />
+                      <input type="number" x-model="formData.jumlah_dosen" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                     </div>
                     <div class="flex flex-col gap-[8px]">
-                      <label class="font-semibold text-[#1d293d] text-[14px]">15. Jumlah Tenaga Akademik (Tendik) <span class="text-red-500">*</span></label>
-                      <input type="number" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" placeholder="Misal: 420" />
+                      <label class="font-semibold text-[#1d293d] text-[14px]">15. Jumlah Tendik <span class="text-red-500">*</span></label>
+                      <input type="number" x-model="formData.jumlah_tendik" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                     </div>
                   </div>
                 </div>
@@ -345,19 +586,18 @@
                 {{-- Group C: Kemahasiswaan --}}
                 <div class="bg-[#f8fafc] p-6 rounded-xl border border-[#cbd5e1] space-y-6">
                   <h3 class="font-bold text-[#1b5e20] text-[15px] mb-2 border-b border-[#e2e8f0] pb-2">C. Kemahasiswaan</h3>
-                  
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-[24px]">
                     <div class="flex flex-col gap-[8px]">
-                      <label class="font-semibold text-[#1d293d] text-[14px]">16. Jumlah Mahasiswa Aktif <span class="text-red-500">*</span></label>
-                      <input type="number" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" placeholder="Misal: 21000" />
+                      <label class="font-semibold text-[#1d293d] text-[14px]">16. Jumlah Mahasiswa <span class="text-red-500">*</span></label>
+                      <input type="number" x-model="formData.jumlah_mahasiswa" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                     </div>
                     <div class="flex flex-col gap-[8px]">
                       <label class="font-semibold text-[#1d293d] text-[14px]">17. Jumlah Ormawa <span class="text-red-500">*</span></label>
-                      <input type="number" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" placeholder="Misal: 45" />
+                      <input type="number" x-model="formData.jumlah_ormawa" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                     </div>
                     <div class="flex flex-col gap-[8px]">
                       <label class="font-semibold text-[#1d293d] text-[14px]">18. Jumlah UKM <span class="text-red-500">*</span></label>
-                      <input type="number" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" placeholder="Misal: 28" />
+                      <input type="number" x-model="formData.jumlah_ukm" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                     </div>
                   </div>
                 </div>
@@ -366,51 +606,62 @@
                 <div class="bg-[#f8fafc] p-6 rounded-xl border border-[#cbd5e1] space-y-6">
                   <h3 class="font-bold text-[#1b5e20] text-[15px] mb-2 border-b border-[#e2e8f0] pb-2">D. Demografi Agama Mahasiswa</h3>
                   <div class="grid grid-cols-2 md:grid-cols-3 gap-[24px]">
-                    @foreach(['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Konghucu'] as $index => $agama)
                     <div class="flex flex-col gap-[8px]">
-                      <label class="font-semibold text-[#1d293d] text-[14px]">19.{{ ['a','b','c','d','e','f'][$index] }} {{ $agama }}</label>
-                      <input type="number" required min="0" value="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
+                      <label class="font-semibold text-[#1d293d] text-[14px]">Islam</label>
+                      <input type="number" x-model="formData.agama_islam" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                     </div>
-                    @endforeach
+                    <div class="flex flex-col gap-[8px]">
+                      <label class="font-semibold text-[#1d293d] text-[14px]">Kristen</label>
+                      <input type="number" x-model="formData.agama_kristen" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
+                    </div>
+                    <div class="flex flex-col gap-[8px]">
+                      <label class="font-semibold text-[#1d293d] text-[14px]">Katolik</label>
+                      <input type="number" x-model="formData.agama_katolik" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
+                    </div>
+                    <div class="flex flex-col gap-[8px]">
+                      <label class="font-semibold text-[#1d293d] text-[14px]">Hindu</label>
+                      <input type="number" x-model="formData.agama_hindu" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
+                    </div>
+                    <div class="flex flex-col gap-[8px]">
+                      <label class="font-semibold text-[#1d293d] text-[14px]">Buddha</label>
+                      <input type="number" x-model="formData.agama_buddha" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
+                    </div>
+                    <div class="flex flex-col gap-[8px]">
+                      <label class="font-semibold text-[#1d293d] text-[14px]">Konghucu</label>
+                      <input type="number" x-model="formData.agama_konghucu" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
+                    </div>
                   </div>
                 </div>
 
                 {{-- Group E: PIC --}}
                 <div class="bg-[#f8fafc] p-6 rounded-xl border border-[#cbd5e1] space-y-6">
                   <h3 class="font-bold text-[#1b5e20] text-[15px] mb-2 border-b border-[#e2e8f0] pb-2">E. Kontak Penanggung Jawab (PIC)</h3>
-                  
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
                     <div class="flex flex-col gap-[8px]">
-                      <label class="font-semibold text-[#1d293d] text-[14px]">20. Nama PIC <span class="text-red-500">*</span></label>
-                      <input type="text" required class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" placeholder="Nama lengkap beserta gelar" />
+                      <label class="font-semibold text-[#1d293d] text-[14px]">Nama PIC <span class="text-red-500">*</span></label>
+                      <input type="text" x-model="formData.nama_pic" required class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                     </div>
                     <div class="flex flex-col gap-[8px]">
-                      <label class="font-semibold text-[#1d293d] text-[14px]">21. Jabatan PIC <span class="text-red-500">*</span></label>
-                      <input type="text" required class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" placeholder="Misal: Kepala LPPM" />
+                      <label class="font-semibold text-[#1d293d] text-[14px]">Jabatan PIC <span class="text-red-500">*</span></label>
+                      <input type="text" x-model="formData.jabatan_pic" required class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                     </div>
                     <div class="flex flex-col gap-[8px]">
-                      <label class="font-semibold text-[#1d293d] text-[14px]">22. No. HP / WhatsApp <span class="text-red-500">*</span></label>
-                      <input type="text" required class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" placeholder="+62..." />
+                      <label class="font-semibold text-[#1d293d] text-[14px]">No. HP / WhatsApp <span class="text-red-500">*</span></label>
+                      <input type="text" x-model="formData.no_hp_pic" required class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                     </div>
                     <div class="flex flex-col gap-[8px]">
-                      <label class="font-semibold text-[#1d293d] text-[14px]">23. Email PIC <span class="text-red-500">*</span></label>
-                      <input type="email" required class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" placeholder="alamat@email.ac.id" />
+                      <label class="font-semibold text-[#1d293d] text-[14px]">Email PIC <span class="text-red-500">*</span></label>
+                      <input type="email" x-model="formData.email_pic" required class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                     </div>
                   </div>
                 </div>
 
                 <div class="pt-[32px] mt-[16px] border-t border-[#e2e8f0] flex flex-col md:flex-row gap-[16px] items-center justify-between">
-                  <button 
-                    type="button" 
-                    @click="activeSection = 2"
-                    class="w-full md:w-auto text-[#64748b] hover:text-[#1d293d] px-[24px] py-[12px] rounded-[10px] font-semibold transition-colors flex items-center justify-center"
-                  >
-                    Kembali
-                  </button>
+                  <button type="button" @click="activeSection = 2" class="w-full md:w-auto text-[#64748b] hover:text-[#1d293d] px-[24px] py-[12px] rounded-[10px] font-semibold transition-colors flex items-center justify-center">Kembali</button>
                   <button 
                     type="submit" 
-                    :disabled="isSubmitting"
-                    class="w-full md:w-auto bg-[#1b5e20] hover:bg-[#15461c] text-white px-[32px] py-[14px] rounded-[10px] font-bold flex items-center justify-center gap-[10px] transition-all shadow-[0_4px_14px_rgba(27,94,32,0.3)] hover:shadow-[0_6px_20px_rgba(27,94,32,0.4)] disabled:opacity-70 disabled:cursor-not-allowed"
+                    :disabled="isSubmitting || !isFormComplete"
+                    class="w-full md:w-auto bg-[#1b5e20] hover:bg-[#15461c] text-white px-[32px] py-[14px] rounded-[10px] font-bold flex items-center justify-center gap-[10px] transition-all shadow-[0_4px_14px_rgba(27,94,32,0.3)] hover:shadow-[0_6px_20px_rgba(27,94,32,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <template x-if="isSubmitting">
                       <div class="flex items-center gap-2">

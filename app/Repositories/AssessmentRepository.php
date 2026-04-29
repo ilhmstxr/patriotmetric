@@ -149,7 +149,35 @@ class AssessmentRepository extends BaseRepository
         return $this->model
             ->where('reviewer_id', $reviewerId)
             ->where('id', $pesertaId)
-            ->with(['institusi', 'identitas.agamas'])
+            ->with([
+                'institusi',
+                'identitas.agamas',
+                'jawabans.pertanyaan.kategori',
+                'jawabans.pertanyaan.OpsiJawaban',
+                'jawabans.jawabanOpsi',
+            ])
             ->first();
+    }
+
+    /**
+     * Get all answers for an assessment grouped by category, including pertanyaan & opsi data
+     */
+    public function getAnswersGroupedByCategory(int $assessmentId)
+    {
+        return PengumpulanJawaban::where('submission_id', $assessmentId)
+            ->with([
+                'pertanyaan.kategori',
+                'pertanyaan.OpsiJawaban',
+                'jawabanOpsi',
+            ])
+            ->get();
+    }
+
+    /**
+     * Update status of an assessment
+     */
+    public function updateStatusAssessment(int $assessmentId, string $status)
+    {
+        return $this->model->where('id', $assessmentId)->update(['status' => $status]);
     }
 }
