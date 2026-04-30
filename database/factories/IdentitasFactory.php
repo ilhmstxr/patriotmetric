@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Assessment;
-use App\Models\pengumpulan;
+use App\Models\Pengumpulan;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,7 +19,7 @@ class IdentitasFactory extends Factory
     public function definition(): array
     {
         return [
-            'pengumpulan_id' => pengumpulan::factory(),
+            'pengumpulan_id' => Pengumpulan::factory(),
             'jml_mahasiswa' => fake()->numberBetween(1000, 50000),
             'jml_dosen' => fake()->numberBetween(100, 2000),
             'jml_tendik' => fake()->numberBetween(50, 1000),

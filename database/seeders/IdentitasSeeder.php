@@ -21,7 +21,7 @@ class IdentitasSeeder extends Seeder
             $user = \App\Models\User::where('email', $email)->first();
             if (!$user) continue;
 
-            $pengumpulan = \App\Models\pengumpulan::where('user_id', $user->id)->first();
+            $pengumpulan = \App\Models\Pengumpulan::where('user_id', $user->id)->first();
             if (!$pengumpulan) continue;
 
             // Seed Identitas

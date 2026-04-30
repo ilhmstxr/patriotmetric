@@ -3,16 +3,16 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\pengumpulan;
-use App\Models\pengumpulanJawaban;
-use App\Models\pertanyaan;
+use App\Models\Pengumpulan;
+use App\Models\PengumpulanJawaban;
+use App\Models\Pertanyaan;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\pengumpulan_jawaban>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PengumpulanJawaban>
  */
 class PengumpulanJawabanFactory extends Factory
 {
-    protected $model = pengumpulanJawaban::class;
+    protected $model = PengumpulanJawaban::class;
 
     /**
      * Define the model's default state.
@@ -22,8 +22,8 @@ class PengumpulanJawabanFactory extends Factory
     public function definition(): array
     {
         return [
-            'submission_id' => pengumpulan::factory(),
-            'question_id' => pertanyaan::factory(),
+            'submission_id' => Pengumpulan::factory(),
+            'question_id' => Pertanyaan::factory(),
             'jawaban_teks' => $this->faker->paragraph(),
             'tautan_bukti_drive' => $this->faker->url(),
             'skor_sistem' => $this->faker->randomFloat(2, 0, 100),

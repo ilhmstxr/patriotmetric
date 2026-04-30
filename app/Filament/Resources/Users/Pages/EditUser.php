@@ -19,7 +19,7 @@ class EditUser extends EditRecord
 
     protected function handleRecordUpdate(\Illuminate\Database\Eloquent\Model $record, array $data): \Illuminate\Database\Eloquent\Model
     {
-        $dto = new \App\DTOs\UserDTO($data);
+        $dto = new \App\DTO\UserDTO($data);
         app(\App\Services\UserService::class)->update($record->getKey(), $dto);
 
         return $record->refresh();

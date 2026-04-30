@@ -83,7 +83,7 @@ class ReviewService extends BaseService
     /**
      * Memastikan semua indikator telah diperiksa, menghitung total nilai akhir (weighted average), dan mengubah status menjadi REVIEWED.
      */
-    public function lockReview(\App\DTOs\ReviewDTO $dto)
+    public function lockReview(\App\DTO\ReviewDTO $dto)
     {
         // Pengecekan Zero-Gap: Cek apakah SEMUA indikator sudah diberikan manual_score
         $belumLengkap = $this->repository->hasUnverifiedAnswers($dto->submissionId);
@@ -104,7 +104,7 @@ class ReviewService extends BaseService
     /**
      * Mengambil daftar kategori (Stepper) dan status progres verifikasi.
      */
-    public function getStepperProgress(\App\DTOs\ReviewDTO $dto)
+    public function getStepperProgress(\App\DTO\ReviewDTO $dto)
     {
         $categories = $this->repository->getAllWithProgress($dto->submissionId);
 
@@ -126,7 +126,7 @@ class ReviewService extends BaseService
     /**
      * Mengambil data perbandingan (Klaim Peserta vs Input Reviewer) per kategori.
      */
-    public function getComparisonData(\App\DTOs\ReviewDTO $dto)
+    public function getComparisonData(\App\DTO\ReviewDTO $dto)
     {
         $comparisonData = $this->repository->getWithReviewerContext($dto->submissionId, $dto->categoryId);
 
@@ -140,7 +140,7 @@ class ReviewService extends BaseService
     /**
      * Menyimpan hasil verifikasi (Pilihan Skala & Skor Manual) per kategori.
      */
-    public function persistVerification(\App\DTOs\ReviewDTO $dto)
+    public function persistVerification(\App\DTO\ReviewDTO $dto)
     {
         // Cek status asesmen: Jika dinilai sudah selesai, cegah perubahan opsional.
         $submission = $this->repository->find($dto->submissionId);
@@ -179,7 +179,7 @@ class ReviewService extends BaseService
     /**
      * Hitung estimasi skor khusus untuk di satu kategori saja (skor reviewer).
      */
-    public function calculateCategoryPreview(\App\DTOs\ReviewDTO $dto)
+    public function calculateCategoryPreview(\App\DTO\ReviewDTO $dto)
     {
         $answers = $this->repository->getAnswersByCategory($dto->submissionId, $dto->categoryId);
 
@@ -201,7 +201,7 @@ class ReviewService extends BaseService
     /**
      * Mempublikasikan penilaian yang telah selesai.
      */
-    public function publishAssessment(\App\DTOs\ReviewDTO $dto)
+    public function publishAssessment(\App\DTO\ReviewDTO $dto)
     {
         $submission = $this->repository->find($dto->submissionId);
 

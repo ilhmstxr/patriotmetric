@@ -3,16 +3,16 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\pengumpulan;
+use App\Models\Pengumpulan;
 use App\Models\User;
 use App\Models\Institusi;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\pengumpulan>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Pengumpulan>
  */
 class PengumpulanFactory extends Factory
 {
-    protected $model = pengumpulan::class;
+    protected $model = Pengumpulan::class;
 
     /**
      * Define the model's default state.

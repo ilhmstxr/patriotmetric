@@ -11,7 +11,7 @@ class CreateUser extends CreateRecord
 
     protected function handleRecordCreation(array $data): \Illuminate\Database\Eloquent\Model
     {
-        $dto = new \App\DTOs\UserDTO($data);
+        $dto = new \App\DTO\UserDTO($data);
         return app(\App\Services\UserService::class)->store($dto);
     }
 }

@@ -3,15 +3,15 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\pertanyaan;
-use App\Models\kategori;
+use App\Models\Pertanyaan;
+use App\Models\Kategori;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\pertanyaan>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Pertanyaan>
  */
 class PertanyaanFactory extends Factory
 {
-    protected $model = pertanyaan::class;
+    protected $model = Pertanyaan::class;
 
     /**
      * Define the model's default state.
@@ -22,7 +22,7 @@ class PertanyaanFactory extends Factory
     {
         return [
             'kode_pertanyaan' => $this->faker->unique()->regexify('[A-Z]{3}-[0-9]{4}'),
-            'category_id' => kategori::factory(),
+            'category_id' => Kategori::factory(),
             'teks_pertanyaan' => $this->faker->sentence(),
             'deskripsi' => $this->faker->sentence(),
             'kebutuhan_bukti' => $this->faker->sentence(),

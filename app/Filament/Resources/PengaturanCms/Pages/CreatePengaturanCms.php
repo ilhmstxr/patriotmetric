@@ -11,7 +11,7 @@ class CreatePengaturanCms extends CreateRecord
 
     protected function handleRecordCreation(array $data): \Illuminate\Database\Eloquent\Model
     {
-        $dto = new \App\DTOs\PengaturanCmsDTO($data);
+        $dto = new \App\DTO\PengaturanCmsDTO($data);
         return app(\App\Services\PengaturanCmsService::class)->store($dto);
     }
 }

@@ -19,8 +19,8 @@ class EditPengumpulan extends EditRecord
 
     protected function handleRecordUpdate(\Illuminate\Database\Eloquent\Model $record, array $data): \Illuminate\Database\Eloquent\Model
     {
-        $dto = new \App\DTOs\pengumpulanDTO($data);
-        app(\App\Services\pengumpulanService::class)->update($record->getKey(), $dto);
+        $dto = new \App\DTO\PengumpulanDTO($data);
+        app(\App\Services\PengumpulanService::class)->update($record->getKey(), $dto);
 
         return $record->refresh();
     }

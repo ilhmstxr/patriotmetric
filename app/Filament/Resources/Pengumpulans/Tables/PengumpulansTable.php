@@ -52,7 +52,7 @@ class PengumpulansTable
                             ->required(),
                     ])
                     ->action(function (\Illuminate\Database\Eloquent\Model $record, array $data) {
-                        app(\App\Services\pengumpulanService::class)->assignReviewer($record->id, $data['reviewer_id']);
+                        app(\App\Services\PengumpulanService::class)->assignReviewer($record->id, $data['reviewer_id']);
                     })
             ])
             ->toolbarActions([

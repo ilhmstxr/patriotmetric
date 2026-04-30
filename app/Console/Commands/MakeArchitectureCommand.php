@@ -16,7 +16,7 @@ class MakeArchitectureCommand extends Command
     {
         $name = $this->argument('name');
 
-        $this->generateFile($name, 'DTO', 'app/DTOs');
+        $this->generateFile($name, 'DTO', 'app/DTO');
         $this->generateFile($name, 'Service', 'app/Services');
         $this->generateFile($name, 'Repository', 'app/Repositories');
 

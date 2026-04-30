@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Institusi;
-use App\Models\pengumpulan;
+use App\Models\Pengumpulan;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,7 +15,7 @@ class PengumpulanSeeder extends Seeder
      */
     public function run(): void
     {
-        // pengumpulan::factory(15)->create();
+        // Pengumpulan::factory(15)->create();
 
         $emails = [
             'peserta@test.com',
@@ -36,7 +36,7 @@ class PengumpulanSeeder extends Seeder
 
             $institusi = $institusis->get($index);
 
-            pengumpulan::create([
+            Pengumpulan::create([
                 'user_id' => $user->id,
                 'institution_id' => $institusi->id,
                 'nama_pic' => 'PIC Default',

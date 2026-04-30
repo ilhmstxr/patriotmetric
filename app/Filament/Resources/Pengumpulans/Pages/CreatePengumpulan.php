@@ -11,7 +11,7 @@ class CreatePengumpulan extends CreateRecord
 
     protected function handleRecordCreation(array $data): \Illuminate\Database\Eloquent\Model
     {
-        $dto = new \App\DTOs\pengumpulanDTO($data);
-        return app(\App\Services\pengumpulanService::class)->store($dto);
+        $dto = new \App\DTO\PengumpulanDTO($data);
+        return app(\App\Services\PengumpulanService::class)->store($dto);
     }
 }

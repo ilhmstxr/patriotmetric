@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\OpsiJawaban;
-use App\Models\pertanyaan;
+use App\Models\Pertanyaan;
 use Illuminate\Database\Seeder;
 
 class PertanyaanSeeder extends Seeder
@@ -12,7 +12,7 @@ class PertanyaanSeeder extends Seeder
     {
         \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
         OpsiJawaban::truncate();
-        pertanyaan::truncate();
+        Pertanyaan::truncate();
         \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
 
 
@@ -744,7 +744,7 @@ class PertanyaanSeeder extends Seeder
             $opsiJawabanData = $p['opsi_jawaban'] ?? null;
             unset($p['opsi_jawaban']);
 
-            $createdPertanyaan = pertanyaan::create($p);
+            $createdPertanyaan = Pertanyaan::create($p);
 
             if (is_array($opsiJawabanData)) {
                 foreach ($opsiJawabanData as $opsi) {
