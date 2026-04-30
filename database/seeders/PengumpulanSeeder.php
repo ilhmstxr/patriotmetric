@@ -18,12 +18,7 @@ class PengumpulanSeeder extends Seeder
         // pengumpulan::factory(15)->create();
 
         $emails = [
-            'user1@admin.com',
-            'user2@admin.com',
-            'user3@admin.com',
-            'user4@admin.com',
-            'user5@admin.com',
-            'user6@admin.com',
+            'peserta@test.com',
         ];
 
         $users = User::whereIn('email', $emails)->get();
@@ -48,10 +43,10 @@ class PengumpulanSeeder extends Seeder
                 'jabatan_pic' => null,
                 'no_hp_pic' => '081234567890',
                 'tahun_periode' => 2026,
-                'status' => 'ACTIVE',
+                'status' => 'IN_PROGRESS',
                 'total_skor_sistem' => 0,
                 'total_skor_akhir' => 0,
-                'reviewer_id' => 8
+                'reviewer_id' => null
             ]);
         }
     }

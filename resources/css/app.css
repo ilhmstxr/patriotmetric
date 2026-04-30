@@ -202,4 +202,20 @@
   .placeholder-hide-on-blur:focus::placeholder {
     opacity: 1;
   }
+
+  /* Global interactive elements cursor */
+  button, 
+  [role="button"],
+  a,
+  select,
+  summary,
+  [onclick],
+  input[type="submit"],
+  input[type="reset"],
+  input[type="button"],
+  input[type="checkbox"],
+  input[type="radio"],
+  .clickable {
+    cursor: pointer;
+  }
 }

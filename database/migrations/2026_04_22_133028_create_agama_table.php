@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('agama', function (Blueprint $table) {
             $table->id();
             $table->foreignId('identitas_id')->constrained('identitas')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->enum('agama', ['islam', 'kristen', 'katolik', 'hindu', 'buddha', 'konghucu'])->nullable();
+            $table->string('agama')->nullable();
             $table->integer('jumlah')->default(0);
             $table->timestamps();
         });

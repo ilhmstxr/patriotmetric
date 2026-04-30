@@ -16,16 +16,14 @@
             <div>
                 <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">Nama PIC</label>
                 <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center">
-                    {{-- ✏️ Ganti nama PIC --}}
-                    <p class="text-[13px] font-medium text-[#45556c]">Euis Nurul Hidayah</p>
+                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.pengumpulan?.nama_pic || '-'"></p>
                 </div>
             </div>
             {{-- Jabatan PIC --}}
             <div>
                 <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">Jabatan PIC</label>
                 <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center">
-                    {{-- ✏️ Ganti jabatan PIC --}}
-                    <p class="text-[13px] font-medium text-[#45556c]">Kepala LPPM</p>
+                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.pengumpulan?.jabatan_pic || '-'"></p>
                 </div>
             </div>
             {{-- Nomor HP --}}
@@ -33,8 +31,7 @@
                 <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">Nomor HP / WhatsApp</label>
                 <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
                     <i data-lucide="phone" class="w-[14px] h-[14px] text-[#90a1b9] shrink-0"></i>
-                    {{-- ✏️ Ganti nomor HP PIC --}}
-                    <p class="text-[13px] font-medium text-[#45556c]">+6281234567890</p>
+                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.pengumpulan?.no_hp_pic || '-'"></p>
                 </div>
             </div>
             {{-- Email --}}
@@ -42,8 +39,7 @@
                 <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">Alamat Email</label>
                 <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
                     <i data-lucide="mail" class="w-[14px] h-[14px] text-[#90a1b9] shrink-0"></i>
-                    {{-- ✏️ Ganti email PIC --}}
-                    <p class="text-[13px] font-medium text-[#45556c]">euis.nurul@upnjatim.ac.id</p>
+                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.pengumpulan?.email_pic || '-'"></p>
                 </div>
             </div>
         </div>

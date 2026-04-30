@@ -29,6 +29,10 @@ class AssessmentController extends Controller
     {
         $userId = AuthController::getAuthPeserta();
         
+        if (!$userId) {
+            throw new \Exception("Unauthorized: Silakan login terlebih dahulu.", 401);
+        }
+
         $authDto = new AssessmentDTO((int) $userId);
 
         // Kita panggil fungsi validate di service yang bertindak sebagai dispatcher
@@ -73,9 +77,9 @@ class AssessmentController extends Controller
             // Gunakan mode ANY agar status SUBMITTED tetap bisa melihat soal
             $assessment = $this->getValidatedAssessment(AssessmentService::MODE_ANY);
 
-            $questions = $this->AssessmentService->getAllPertanyaan();
+            $data = $this->AssessmentService->getAllQuestionsWithAnswers($assessment);
 
-            return $this->successResponse($questions, 'Data berhasil diambil', 200);
+            return $this->successResponse($data, 'Data berhasil diambil', 200);
         } catch (\Throwable $e) {
             return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
         }

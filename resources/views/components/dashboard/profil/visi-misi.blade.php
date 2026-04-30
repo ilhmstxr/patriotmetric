@@ -16,23 +16,15 @@
         <div>
             <label class="text-[13px] font-semibold text-[#1d293d] mb-2 block">Visi</label>
             <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 py-3">
-                {{-- ✏️ Ganti teks visi --}}
-                <p class="text-[13px] font-medium text-[#45556c] leading-relaxed">
-                    Menjadi Universitas Unggul dalam Penyelenggaraan Pendidikan Kelas Dunia di Bidang Teknologi Bela Negara pada tahun 2024.
-                </p>
+                <p class="text-[13px] font-medium text-[#45556c] leading-relaxed" x-text="profileData.identitas?.visi || '-'"></p>
             </div>
         </div>
 
         {{-- Misi --}}
         <div>
             <label class="text-[13px] font-semibold text-[#1d293d] mb-2 block">Misi</label>
-            <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 py-3 space-y-1.5">
-                {{-- ✏️ Tambah/hapus/edit poin misi --}}
-                <p class="text-[13px] font-medium text-[#45556c] leading-relaxed">Menyelenggarakan pendidikan tinggi berkualitas yang didukung oleh hasil-hasil penelitian dan pengabdian kepada masyarakat.</p>
-                <p class="text-[13px] font-medium text-[#45556c] leading-relaxed">Mengembangkan penelitian dalam bidang ilmu pengetahuan, teknologi, dan seni yang inovatif dan berdaya guna untuk kesejahteraan masyarakat.</p>
-                <p class="text-[13px] font-medium text-[#45556c] leading-relaxed">Menyelenggarakan pengabdian kepada masyarakat yang partisipatif untuk meningkatkan kesejahteraan masyarakat.</p>
-                <p class="text-[13px] font-medium text-[#45556c] leading-relaxed">Menyelenggarakan tata kelola yang baik, bersih, dan akuntabel untuk meningkatkan mutu dan citra universitas.</p>
-                <p class="text-[13px] font-medium text-[#45556c] leading-relaxed">Mengembangkan karakter Bela Negara yang berintegritas dan profesional.</p>
+            <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 py-3">
+                <p class="text-[13px] font-medium text-[#45556c] leading-relaxed whitespace-pre-line" x-text="profileData.identitas?.misi || '-'"></p>
             </div>
         </div>
     </div>

@@ -11,24 +11,16 @@
     </div>
 
     <div class="p-5 md:p-6">
-        <div class="grid grid-cols-3 gap-4">
-            {{-- ✏️ Ganti nilai masing-masing agama --}}
-            @foreach([
-                'Islam'    => '19845',
-                'Kristen'  => '523',
-                'Katolik'  => '287',
-                'Hindu'    => '156',
-                'Buddha'   => '134',
-                'Konghucu' => '55',
-            ] as $agama => $jumlah)
-            <div>
-                <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">{{ $agama }}</label>
-                <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
-                    <i data-lucide="users" class="w-[14px] h-[14px] text-[#90a1b9] shrink-0"></i>
-                    <p class="text-[13px] font-medium text-[#45556c]">{{ $jumlah }}</p>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {{-- ✏️ Nilai masing-masing agama --}}
+            <template x-for="agama in ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Konghucu', 'Kepercayaan Terhadap Tuhan Yang Maha Esa']">
+                <div>
+                    <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block" x-text="agama"></label>
+                    <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
+                        <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.agamas[agama.toLowerCase()] || '0'"></p>
+                    </div>
                 </div>
-            </div>
-            @endforeach
+            </template>
         </div>
     </div>
 </div>

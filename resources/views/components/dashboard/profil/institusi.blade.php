@@ -16,8 +16,7 @@
         <div>
             <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">Nama Perguruan Tinggi</label>
             <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center">
-                {{-- ✏️ Ganti nama PT --}}
-                <p class="text-[13px] font-medium text-[#45556c] truncate">Universitas Pembangunan Nasional Veteran Jawa Timur</p>
+                <p class="text-[13px] font-medium text-[#45556c] truncate" x-text="profileData.institusi?.nama_institusi || '-'"></p>
             </div>
         </div>
 
@@ -25,8 +24,7 @@
         <div>
             <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">Jenis Perguruan Tinggi</label>
             <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center w-full md:w-1/2">
-                {{-- ✏️ Ganti jenis PT (Negeri/Swasta/dll) --}}
-                <p class="text-[13px] font-medium text-[#45556c]">Negeri</p>
+                <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.institusi?.jenis_institusi || '-'"></p>
             </div>
         </div>
 
@@ -35,17 +33,13 @@
             <div>
                 <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">Jumlah Fakultas</label>
                 <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
-                    <i data-lucide="building-2" class="w-[14px] h-[14px] text-[#90a1b9] shrink-0"></i>
-                    {{-- ✏️ Ganti jumlah fakultas --}}
-                    <p class="text-[13px] font-medium text-[#45556c]">7</p>
+                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.identitas?.jml_fakultas || '0'"></p>
                 </div>
             </div>
             <div>
                 <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">Jumlah Prodi</label>
                 <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
-                    <i data-lucide="star" class="w-[14px] h-[14px] text-[#90a1b9] shrink-0"></i>
-                    {{-- ✏️ Ganti jumlah prodi --}}
-                    <p class="text-[13px] font-medium text-[#45556c]">30</p>
+                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.identitas?.jml_prodi || '0'"></p>
                 </div>
             </div>
         </div>

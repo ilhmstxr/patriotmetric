@@ -13,6 +13,13 @@ class PengaturanCmsSeeder extends Seeder
      */
     public function run(): void
     {
-        PengaturanCms::factory(5)->create();
+        PengaturanCms::updateOrCreate(
+            ['key' => 'active_period'],
+            ['value' => date('Y')]
+        );
+        PengaturanCms::updateOrCreate(
+            ['key' => 'is_peserta_edit_enabled'],
+            ['value' => 'true']
+        );
     }
 }

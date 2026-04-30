@@ -2,7 +2,7 @@
 {{-- RUBRIK: Sticky Footer Simpan Draft                   --}}
 {{-- ✏️ Ganti teks label status atau action button        --}}
 {{-- ===================================================== --}}
-<div class="sticky bottom-0 bg-white border-t border-[#e0e0e0] px-4 md:px-8 py-3 flex items-center justify-between gap-4 z-10">
+<div x-show="!loading" class="sticky bottom-0 bg-white border-t border-[#e0e0e0] px-4 md:px-8 py-3 flex items-center justify-between gap-4 z-10" style="display: none;">
     <div class="flex items-center gap-2">
         <span class="w-2 h-2 rounded-full" :class="isSaving ? 'bg-orange-400 animate-pulse' : 'bg-[#c8e6c9]'"></span>
         <span class="text-[12px] font-medium text-[#62748e]">
@@ -12,12 +12,12 @@
         </span>
     </div>
     
-    <template x-if="status !== 'SUBMITTED' && status !== 'GRADED'">
+    <template x-if="status !== 'SUBMITTED' && status !== 'GRADED' && is_edit_enabled">
         <button 
             @click="saveDraft()"
             :disabled="isSaving"
             class="bg-[#1b5e20] hover:bg-[#15461c] text-white text-[13px] font-semibold px-5 h-[38px] rounded transition-colors shrink-0 disabled:opacity-50">
-            Simpan & Submit Pendaftaran
+            Simpan & Submit Jawaban
         </button>
     </template>
     

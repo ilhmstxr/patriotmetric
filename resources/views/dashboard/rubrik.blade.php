@@ -9,9 +9,21 @@
         isSaving: false,
         lastSaved: '',
         status: '',
+        is_edit_enabled: true,
 
         async init() {
             try {
+                const cacheKey = 'rubrik_data_cache';
+                const cachedData = sessionStorage.getItem(cacheKey);
+
+                if (cachedData) {
+                    const result = JSON.parse(cachedData);
+                    this.status = result.data.status;
+                    this.categories = this.groupByCategory(result.data.questions);
+                    this.loading = false;
+                    return;
+                }
+
                 // Panggil API untuk mengambil semua pertanyaan dan jawaban draft
                 const response = await fetch('/api/assessment/peserta/questions', {
                     headers: {
@@ -22,7 +34,9 @@
                 const result = await response.json();
 
                 if (result.success) {
+                    sessionStorage.setItem(cacheKey, JSON.stringify(result));
                     this.status = result.data.status;
+                    this.is_edit_enabled = result.data.is_edit_enabled;
                     this.categories = this.groupByCategory(result.data.questions);
                 }
             } catch (error) {
@@ -108,6 +122,8 @@
                 if (response.ok && result.success) {
                     let d = new Date();
                     this.lastSaved = d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+                    sessionStorage.removeItem('rubrik_data_cache'); // Invalidate cache
+                    sessionStorage.removeItem('hasil_data_cache'); // Invalidate hasil cache as well
                     alert('Draft berhasil disimpan dan di-submit!');
                     this.status = 'SUBMITTED';
                     window.location.href = '/dashboard/hasil';
@@ -184,6 +200,7 @@
                                                     <template x-for="(opt, oIdx) in q.options" :key="oIdx">
                                                         <button
                                                             type="button"
+                                                            :disabled="!is_edit_enabled || status === 'SUBMITTED' || status === 'GRADED'"
                                                             @click="answers[q.id] = opt.id"
                                                             :class="answers[q.id] === opt.id
                                                                 ? 'bg-[#e8f5e9] border-[#1b5e20] text-[#1b5e20] font-semibold'
@@ -201,7 +218,8 @@
                                                     <input
                                                         type="number"
                                                         placeholder="0"
-                                                        class="w-[100px] px-3.5 py-2.5 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9]"
+                                                        :disabled="!is_edit_enabled || status === 'SUBMITTED' || status === 'GRADED'"
+                                                        class="w-[100px] px-3.5 py-2.5 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
                                                         x-model="answers[q.id]"
                                                     />
                                                     {{-- Gunakan deskripsi sebagai unit (Cth: 10 skema KKN) --}}
@@ -235,7 +253,8 @@
                                                 <input
                                                     type="url"
                                                     placeholder="https://drive.google.com/..."
-                                                    class="w-full px-3.5 py-2.5 rounded border border-[#e0e0e0] text-[12px] font-medium focus:outline-none focus:border-[#1b5e20] bg-[#fafafa] text-[#1d293d] placeholder-[#90a1b9]"
+                                                    :disabled="!is_edit_enabled || status === 'SUBMITTED' || status === 'GRADED'"
+                                                    class="w-full px-3.5 py-2.5 rounded border border-[#e0e0e0] text-[12px] font-medium focus:outline-none focus:border-[#1b5e20] bg-[#fafafa] text-[#1d293d] placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
                                                     x-model="links[q.id]"
                                                 />
                                                 <p class="text-[10px] font-medium text-[#90a1b9] mt-1.5">* Pastikan tautan dapat diakses publik (Anyone with the link)</p>

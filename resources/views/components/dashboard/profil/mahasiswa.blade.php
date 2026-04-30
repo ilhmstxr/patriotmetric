@@ -15,9 +15,7 @@
         <div>
             <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">Jumlah Mahasiswa Aktif</label>
             <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
-                    <i data-lucide="users" class="w-[14px] h-[14px] text-[#90a1b9] shrink-0"></i>
-                {{-- ✏️ Ganti jumlah mahasiswa aktif --}}
-                <p class="text-[13px] font-medium text-[#45556c]">21000</p>
+                <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.identitas?.jml_mahasiswa || '0'"></p>
             </div>
         </div>
 
@@ -26,17 +24,13 @@
             <div>
                 <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">Jumlah Organisasi Mahasiswa</label>
                 <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
-                    <i data-lucide="users" class="w-[14px] h-[14px] text-[#90a1b9] shrink-0"></i>
-                    {{-- ✏️ Ganti jumlah organisasi --}}
-                    <p class="text-[13px] font-medium text-[#45556c]">45</p>
+                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.identitas?.jml_ormawa || '0'"></p>
                 </div>
             </div>
             <div>
                 <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">Jumlah UKM</label>
                 <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
-                    <i data-lucide="users" class="w-[14px] h-[14px] text-[#90a1b9] shrink-0"></i>
-                    {{-- ✏️ Ganti jumlah UKM --}}
-                    <p class="text-[13px] font-medium text-[#45556c]">28</p>
+                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.identitas?.jml_ukm || '0'"></p>
                 </div>
             </div>
         </div>

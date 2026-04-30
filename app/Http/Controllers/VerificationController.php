@@ -62,6 +62,7 @@ class VerificationController extends Controller
                 'agama_hindu' => 'required|integer|min:0',
                 'agama_buddha' => 'required|integer|min:0',
                 'agama_konghucu' => 'required|integer|min:0',
+                'agama_kepercayaan' => 'required|integer|min:0',
                 // PIC
                 'nama_pic' => 'required|string|max:255',
                 'jabatan_pic' => 'required|string|max:255',
@@ -86,12 +87,43 @@ class VerificationController extends Controller
                 }
             }
 
-            // Upload logo (image)
+            // Upload logo (image) and convert to WebP
             if ($request->hasFile('logo_pt')) {
                 $logo = $request->file('logo_pt');
-                $logoName = time() . '_logo.' . $logo->getClientOriginalExtension();
-                $logoPath = $logo->storeAs($directoryPath, $logoName, 'public');
-                $files['logo_pt'] = '/storage/' . $logoPath;
+                $extension = strtolower($logo->getClientOriginalExtension());
+                $logoName = time() . '_logo.webp';
+                
+                $sourcePath = $logo->getRealPath();
+                $image = null;
+                
+                if ($extension == 'jpeg' || $extension == 'jpg') {
+                    $image = @imagecreatefromjpeg($sourcePath);
+                } elseif ($extension == 'png') {
+                    $image = @imagecreatefrompng($sourcePath);
+                    if ($image) {
+                        imagepalettetotruecolor($image);
+                        imagealphablending($image, true);
+                        imagesavealpha($image, true);
+                    }
+                }
+                
+                $logoPath = $directoryPath . '/' . $logoName;
+                $absolutePath = storage_path('app/public/' . $directoryPath);
+                
+                if (!file_exists($absolutePath)) {
+                    mkdir($absolutePath, 0755, true);
+                }
+                
+                if ($image && function_exists('imagewebp')) {
+                    imagewebp($image, storage_path('app/public/' . $logoPath), 80);
+                    imagedestroy($image);
+                    $files['logo_pt'] = '/storage/' . $logoPath;
+                } else {
+                    // Fallback to original
+                    $fallbackName = time() . '_logo.' . $extension;
+                    $fallbackPath = $logo->storeAs($directoryPath, $fallbackName, 'public');
+                    $files['logo_pt'] = '/storage/' . $fallbackPath;
+                }
             }
 
             // Update or create Institusi
@@ -100,23 +132,27 @@ class VerificationController extends Controller
                 $institusi->update([
                     'nama_institusi' => $validated['nama_pt'],
                     'jenis_institusi' => $validated['jenis_pt'],
+                    'logo_url' => $files['logo_pt'] ?? $institusi->logo_url,
                 ]);
             }
 
-            // Update Pengumpulan with file paths and PIC data
+            // Cari ID reviewer tester
+            $testerReviewer = \App\Models\User::where('email', 'reviewer@admin.com')->first();
+            
+            // Update Pengumpulan with PIC data
             $pengumpulan->update([
                 'nama_pic' => $validated['nama_pic'],
                 'jabatan_pic' => $validated['jabatan_pic'],
                 'no_hp_pic' => $validated['no_hp_pic'],
-                'email_pic' => $validated['email_pic'],
-                'surat_pernyataan' => $files['surat_pernyataan'] ?? null,
-                'sk_pendirian' => $files['sk_pendirian'] ?? null,
-                'sk_akreditasi' => $files['sk_akreditasi'] ?? null,
-                'profil_pt' => $files['profil_pt'] ?? null,
-                'struktur_organisasi' => $files['struktur_organisasi'] ?? null,
-                'sk_tim' => $files['sk_tim'] ?? null,
                 'status' => 'IN_PROGRESS',
+                'reviewer_id' => $testerReviewer ? $testerReviewer->id : null,
             ]);
+
+            // Update User status to IN_PROGRESS
+            $user = \App\Models\User::find($userId);
+            if ($user) {
+                $user->update(['status' => 'IN_PROGRESS']);
+            }
 
             // Create or update Identitas
             $identitas = Identitas::updateOrCreate(
@@ -143,6 +179,7 @@ class VerificationController extends Controller
                 'hindu' => $validated['agama_hindu'],
                 'buddha' => $validated['agama_buddha'],
                 'konghucu' => $validated['agama_konghucu'],
+                'Kepercayaan Terhadap Tuhan Yang Maha Esa' => $validated['agama_kepercayaan'],
             ];
 
             foreach ($agamaData as $namaAgama => $jumlah) {
@@ -152,7 +189,7 @@ class VerificationController extends Controller
                 );
             }
 
-            return $this->successResponse(null, 'Verifikasi berhasil dikirim. Status Anda telah diperbarui.', 200);
+            return $this->successResponse(null, 'Verifikasi berhasil dikirim', 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return $this->errorResponse('Validasi gagal.', 422, $e->errors());
         } catch (\Throwable $th) {

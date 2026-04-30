@@ -85,7 +85,7 @@
                                     <td class="py-[16px] px-[24px] text-[14px] text-[#64748b]" x-text="formatDate(task.updated_at)"></td>
                                     <td class="py-[16px] px-[24px] text-right">
                                         <!-- Note: Sesuaikan Base URL detail submission Anda -->
-                                        <a :href="'/reviewer/detail/' + task.id" class="inline-flex items-center gap-[6px] bg-[#1b5e20] text-white px-[16px] py-[8px] rounded-[8px] text-[13px] font-semibold hover:bg-[#15461c] transition-colors">
+                                        <a :href="'/reviewer/peserta/' + task.id" class="inline-flex items-center gap-[6px] bg-[#1b5e20] text-white px-[16px] py-[8px] rounded-[8px] text-[13px] font-semibold hover:bg-[#15461c] transition-colors">
                                             <i data-lucide="edit" class="w-[14px] h-[14px]"></i> Nilai Sekarang
                                         </a>
                                     </td>
@@ -117,8 +117,10 @@
                         <!-- Mengikat select box ke variabel state 'filter' -->
                         <select x-model="filter" class="border border-[#cbd5e1] rounded-[8px] px-[12px] py-[8px] text-[13px] font-semibold text-[#45556c] focus:outline-none focus:border-[#1b5e20]">
                             <option value="all">Semua Status</option>
-                            <option value="pending">Belum Dinilai</option>
-                            <option value="done">Selesai Dinilai</option>
+                            <option value="active">Belum Mengisi</option>
+                            <option value="progress">Sedang Mengisi</option>
+                            <option value="pending">Belum Dinilai (Submitted)</option>
+                            <option value="done">Selesai Dinilai (Graded)</option>
                         </select>
                     </div>
                 </div>
@@ -151,6 +153,12 @@
                                     <td class="py-[16px] px-[24px] text-[14px] text-[#64748b]" x-text="formatDate(task.updated_at)"></td>
                                     <td class="py-[16px] px-[24px]">
                                         <!-- Badge Dinamis -->
+                                        <span x-show="task.status === 'ACTIVE'" class="inline-flex items-center gap-[4px] px-[10px] py-[4px] rounded-full bg-slate-100 text-slate-600 text-[12px] font-bold">
+                                            <i data-lucide="circle" class="w-[12px] h-[12px]"></i> Belum Mengisi
+                                        </span>
+                                        <span x-show="task.status === 'IN_PROGRESS'" class="inline-flex items-center gap-[4px] px-[10px] py-[4px] rounded-full bg-blue-100 text-blue-700 text-[12px] font-bold">
+                                            <i data-lucide="loader-2" class="w-[12px] h-[12px] animate-spin"></i> Sedang Mengisi
+                                        </span>
                                         <span x-show="task.status === 'SUBMITTED'" class="inline-flex items-center gap-[4px] px-[10px] py-[4px] rounded-full bg-amber-100 text-amber-700 text-[12px] font-bold">
                                             <i data-lucide="clock" class="w-[12px] h-[12px]"></i> Belum Dinilai
                                         </span>
@@ -159,7 +167,7 @@
                                         </span>
                                     </td>
                                     <td class="py-[16px] px-[24px] text-right">
-                                        <a :href="'/reviewer/detail/' + task.id" class="inline-flex items-center gap-[6px] bg-white border border-[#cbd5e1] text-[#45556c] px-[16px] py-[8px] rounded-[8px] text-[13px] font-semibold hover:bg-[#f1f5f9] transition-colors">
+                                        <a :href="'/reviewer/peserta/' + task.id" class="inline-flex items-center gap-[6px] bg-white border border-[#cbd5e1] text-[#45556c] px-[16px] py-[8px] rounded-[8px] text-[13px] font-semibold hover:bg-[#f1f5f9] transition-colors">
                                             <i data-lucide="eye" class="w-[14px] h-[14px]"></i> Lihat Detail
                                         </a>
                                     </td>
@@ -197,8 +205,8 @@
                     fetch('/api/assessment/reviewer/tasks', {
                         headers: {
                             'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                            // Jika API Anda pakai token spesifik, tambahkan Authorization Bearer di sini
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
                         }
                     })
                     .then(response => {
@@ -213,7 +221,12 @@
                     })
                     .catch(error => {
                         console.error('Error fetching tasks:', error);
-                        alert('Gagal mengambil data tugas dari server.');
+                        // Tampilkan pesan error yang lebih detail jika ada
+                        const msg = error.message === 'Network response was not ok' 
+                            ? 'Sesi berakhir atau akses ditolak. Silakan login ulang.' 
+                            : 'Gagal mengambil data tugas: ' + error.message;
+                        alert(msg);
+                        if (error.message.includes('401')) window.location.href = '/masuk';
                     })
                     .finally(() => {
                         this.isLoading = false;
@@ -231,6 +244,12 @@
 
                 // Computed Property untuk Table 2 (Berdasarkan Select Filter)
                 get filteredTasks() {
+                    if (this.filter === 'active') {
+                        return this.tasks.filter(t => t.status === 'ACTIVE');
+                    }
+                    if (this.filter === 'progress') {
+                        return this.tasks.filter(t => t.status === 'IN_PROGRESS');
+                    }
                     if (this.filter === 'pending') {
                         return this.tasks.filter(t => t.status === 'SUBMITTED');
                     }

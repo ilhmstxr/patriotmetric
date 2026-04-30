@@ -11,7 +11,8 @@ class PertanyaanSeeder extends Seeder
     public function run(): void
     {
         \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
-        pertanyaan::truncate(); // optional, but let's just create
+        OpsiJawaban::truncate();
+        pertanyaan::truncate();
         \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
 
 
@@ -751,6 +752,7 @@ class PertanyaanSeeder extends Seeder
                         'pertanyaan_id' => $createdPertanyaan->id,
                         'opsi_jawaban' => (string) $opsi['urutan'],
                         'keterangan' => $opsi['teks_jawaban'],
+                        'value' => isset($opsi['value']) && is_numeric(trim(str_replace(['<','>','%','='], '', $opsi['value']))) ? (int) preg_replace('/[^0-9]/', '', $opsi['value']) : null,
                     ]);
                 }
             }

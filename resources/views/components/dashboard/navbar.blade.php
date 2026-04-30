@@ -11,16 +11,15 @@
         <button @click="open = !open" @click.outside="open = false"
                 class="flex items-center gap-1.5 px-3 h-[48px] text-[13px] font-medium text-[#45556c] hover:text-[#1b5e20] transition-colors">
             <i data-lucide="calendar" class="w-[14px] h-[14px] text-[#62748e]"></i>
-            <span>Periode: 2024</span>
+            <span>Periode: 2026</span>
             <i data-lucide="chevron-down" class="w-[12px] h-[12px] transition-transform duration-150" :class="open ? 'rotate-180' : ''"></i>
         </button>
         {{-- ✏️ Tambah/hapus opsi periode di sini --}}
         <div x-show="open" x-transition
              class="absolute top-full left-0 mt-1 bg-white border border-[#e0e0e0] rounded-lg shadow-lg py-1 min-w-[140px] z-50"
              style="display:none;">
-            <a href="#" class="block px-4 py-2 text-[13px] font-medium text-[#1d293d] hover:bg-[#f5f5f5]">2024</a>
-            <a href="#" class="block px-4 py-2 text-[13px] font-medium text-[#1d293d] hover:bg-[#f5f5f5]">2023</a>
-            <a href="#" class="block px-4 py-2 text-[13px] font-medium text-[#1d293d] hover:bg-[#f5f5f5]">2022</a>
+            <a href="#" class="block px-4 py-2 text-[13px] font-medium text-[#1d293d] hover:bg-[#f5f5f5]">2026</a>
+            <a href="#" class="block px-4 py-2 text-[13px] font-medium text-[#1d293d] hover:bg-[#f5f5f5]">2025</a>
         </div>
     </div>
 

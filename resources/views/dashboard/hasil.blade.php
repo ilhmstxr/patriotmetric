@@ -7,7 +7,8 @@
         Setiap item: { no, title, score, max, jawaban, tautan, catatan }
     --}}
     <div x-data="{
-        openCategories: { 0: true, 1: true, 2: true },
+        loading: true,
+        openCategories: {},
         toggleCategory(idx) { this.openCategories[idx] = !this.openCategories[idx]; },
         categories: [],
         tahun_periode: new Date().getFullYear(),
@@ -18,6 +19,7 @@
         is_validated: false,
         
         async init() {
+            this.loading = true;
             try {
                 const response = await fetch('/api/assessment/peserta/hasil', {
                     headers: {
@@ -37,9 +39,9 @@
                     this.status = data.status;
                     this.is_validated = data.is_validated;
                     
-                    // Open all categories by default
-                    this.categories.forEach((_, idx) => {
-                        this.openCategories[idx] = true;
+                    // Re-init Lucide icons after DOM update
+                    this.$nextTick(() => {
+                        if (window.lucide) window.lucide.createIcons();
                     });
                 } else {
                     if (response.status === 401) {
@@ -48,21 +50,34 @@
                 }
             } catch (error) {
                 console.error('Failed to fetch results', error);
+            } finally {
+                this.loading = false;
             }
         }
     }" class="bg-[#f5f5f5] min-h-full py-5 px-4 md:px-8">
 
-        <div class="max-w-[860px] mx-auto space-y-5">
+        <div class="max-w-[860px] mx-auto">
+            {{-- Loading State --}}
+            <template x-if="loading">
+                <div class="flex flex-col items-center justify-center py-32 space-y-4">
+                    <div class="w-12 h-12 border-4 border-[#1b5e20] border-t-transparent rounded-full animate-spin"></div>
+                    <p class="text-[15px] font-bold text-[#1d293d] tracking-wide uppercase">Memuat Hasil Penilaian...</p>
+                    <p class="text-[13px] text-[#62748e]">Mohon tunggu sebentar, sistem sedang merekap data Anda.</p>
+                </div>
+            </template>
 
-            {{-- ✏️ Banner Hijau Total Penilaian → components/dashboard/hasil/banner.blade.php --}}
-            <x-dashboard.hasil.banner />
+            <template x-if="!loading">
+                <div class="space-y-5">
+                    {{-- ✏️ Banner Hijau Total Penilaian → components/dashboard/hasil/banner.blade.php --}}
+                    <x-dashboard.hasil.banner />
 
-            {{-- ✏️ Card Status Penilaian → components/dashboard/hasil/status.blade.php --}}
-            <x-dashboard.hasil.status />
+                    {{-- ✏️ Card Status Penilaian → components/dashboard/hasil/status.blade.php --}}
+                    <x-dashboard.hasil.status />
 
-            {{-- ✏️ Accordion Rincian Poin → components/dashboard/hasil/kategori.blade.php --}}
-            <x-dashboard.hasil.kategori />
-
+                    {{-- ✏️ Accordion Rincian Poin → components/dashboard/hasil/kategori.blade.php --}}
+                    <x-dashboard.hasil.kategori />
+                </div>
+            </template>
         </div>
     </div>
 </x-layouts.dashboard>

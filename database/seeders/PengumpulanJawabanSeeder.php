@@ -15,7 +15,11 @@ class PengumpulanJawabanSeeder extends Seeder
      */
     public function run(): void
     {
-        $submissionId = 2;
+        $user = \App\Models\User::where('email', 'peserta@test.com')->first();
+        if (!$user) return;
+        $submission = \App\Models\Pengumpulan::where('user_id', $user->id)->first();
+        if (!$submission) return;
+        $submissionId = $submission->id;
         $pertanyaans = Pertanyaan::all();
 
         foreach ($pertanyaans as $pertanyaan) {

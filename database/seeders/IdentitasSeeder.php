@@ -14,9 +14,7 @@ class IdentitasSeeder extends Seeder
     public function run(): void
     {
         $emails = [
-            'user1@admin.com',
-            'user2@admin.com',
-            'user3@admin.com',
+            'peserta@test.com',
         ];
 
         foreach ($emails as $email) {
@@ -43,7 +41,7 @@ class IdentitasSeeder extends Seeder
             );
 
             // Seed Agama
-            $agamas = ['islam', 'kristen', 'katolik', 'hindu', 'buddha', 'konghucu'];
+            $agamas = ['islam', 'kristen', 'katolik', 'hindu', 'buddha', 'konghucu', 'Kepercayaan Terhadap Tuhan Yang Maha Esa'];
             foreach ($agamas as $agama) {
                 \App\Models\Agama::updateOrCreate(
                     [

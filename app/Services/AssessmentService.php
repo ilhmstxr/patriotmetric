@@ -131,7 +131,7 @@ class AssessmentService extends BaseService
             if (!empty($dto->dataAgama)) {
                 foreach ($dto->dataAgama as $namaAgama => $jumlah) {
                     // Validasi Enum sebelum insert untuk mencegah SQL Error
-                    $allowedAgama = ['islam', 'kristen', 'katolik', 'hindu', 'buddha', 'konghucu'];
+                    $allowedAgama = ['islam', 'kristen', 'katolik', 'hindu', 'buddha', 'konghucu', 'kepercayaan terhadap tuhan yang maha esa'];
                     if (in_array(strtolower($namaAgama), $allowedAgama)) {
                         $this->repository->upsertAgama($identitas->id, strtolower($namaAgama), $jumlah);
                     }
@@ -171,10 +171,21 @@ class AssessmentService extends BaseService
             throw new Exception("Master data pertanyaan belum dikonfigurasi oleh Admin.", 404);
         }
 
+        $editSetting = \App\Models\PengaturanCms::where('key', 'is_peserta_edit_enabled')->first();
+        $isEditEnabled = $editSetting ? filter_var($editSetting->value, FILTER_VALIDATE_BOOLEAN) : true;
+
+        $activePeriodSetting = \App\Models\PengaturanCms::where('key', 'active_period')->first();
+        $activePeriod = $activePeriodSetting ? $activePeriodSetting->value : date('Y');
+
+        if ($assessment->tahun_periode != $activePeriod) {
+            $isEditEnabled = false;
+        }
+
         return [
-            'assessment_id' => $assessment->id,
-            'status'        => $assessment->status,
-            'questions'     => $questions
+            'assessment_id'   => $assessment->id,
+            'status'          => $assessment->status,
+            'is_edit_enabled' => $isEditEnabled,
+            'questions'       => $questions
         ];
     }
 
@@ -225,20 +236,20 @@ class AssessmentService extends BaseService
             $data['jawaban_id'] = $dto->jawabanId;
 
             $opsi = $this->pertanyaanRepository->findOpsiById($dto->jawabanId);
-            $data['jawaban_teks'] = $opsi ? $opsi->opsi_jawaban : null;
-            $data['skor_sistem']  = $opsi ? $opsi->value : 0;
+            $data['jawaban_teks'] = $opsi ? $opsi->keterangan : null; // Text in DB is stored in keterangan
+            $data['skor_sistem']  = $opsi ? (int) $opsi->opsi_jawaban : 0; // Score in DB is stored in opsi_jawaban
         } else {
             // KONDISI 2: User kirim Teks (Angka) -> Cari ID & Skor yang sesuai
-            $data['jawaban_teks'] = $dto->jawabanTeks;
+            $data['jawaban_teks'] = $dto->jawabanTeks ?? (string) $dto->jawabanId;
 
             $matchingOpsi = $this->pertanyaanRepository->findMatchingOpsiByValue(
                 $dto->pertanyaanId,
-                $dto->jawabanTeks
+                $data['jawaban_teks']
             );
 
             if ($matchingOpsi) {
                 $data['jawaban_id']  = $matchingOpsi->id;
-                $data['skor_sistem'] = $matchingOpsi->value;
+                $data['skor_sistem'] = (int) $matchingOpsi->opsi_jawaban; // Score is stored in opsi_jawaban
             } else {
                 $data['jawaban_id']  = null;
                 $data['skor_sistem'] = 0;
@@ -370,6 +381,12 @@ class AssessmentService extends BaseService
             }
         }
 
+
+        // Masking answers if assessment is still IN_PROGRESS
+        if ($assessment->status === 'IN_PROGRESS') {
+            $jawabanMap = [];
+        }
+
         // 5. Group pertanyaan by kategori with jawaban
         $rubrikData = [];
         foreach ($allPertanyaan as $pertanyaan) {
@@ -435,7 +452,7 @@ class AssessmentService extends BaseService
             'nama_pic' => $assessment->nama_pic,
             'jabatan_pic' => $assessment->jabatan_pic,
             'no_hp_pic' => $assessment->no_hp_pic,
-            'email_pic' => $assessment->email_pic ?? null,
+            'email_pic' => $assessment->user->email ?? null,
         ];
     }
 
@@ -449,42 +466,48 @@ class AssessmentService extends BaseService
             throw new Exception("Sesi asesmen aktif tidak ditemukan.", 404);
         }
 
-        // Get all answers with pertanyaan+kategori
-        $answers = $this->repository->getAnswersGroupedByCategory($assessment->id);
+        // Get all categories with their questions
+        $allCategories = \App\Models\Kategori::with('pertanyaans')->get();
+        
+        // Get all existing answers for this assessment
+        $answers = \App\Models\PengumpulanJawaban::where('submission_id', $assessment->id)
+            ->with(['jawabanOpsi'])
+            ->get()
+            ->keyBy('pertanyaan_id');
 
-        // Group by category
         $categories = [];
-        foreach ($answers as $answer) {
-            $pertanyaan = $answer->pertanyaan;
-            if (!$pertanyaan || !$pertanyaan->kategori) continue;
+        foreach ($allCategories as $cat) {
+            $catData = [
+                'name' => $cat->nama_kategori,
+                'score' => 0,
+                'max' => 0,
+                'items' => [],
+            ];
 
-            $kategoriName = $pertanyaan->kategori->nama_kategori;
+            foreach ($cat->pertanyaans as $pertanyaan) {
+                $answer = $answers->get($pertanyaan->id);
+                
+                $catData['max'] += 5; // Max score per question is 5
 
-            if (!isset($categories[$kategoriName])) {
-                $categories[$kategoriName] = [
-                    'name' => $kategoriName,
-                    'score' => 0,
-                    'max' => 0,
-                    'items' => [],
+                $displayScore = 0;
+                if ($answer) {
+                    $displayScore = $answer->skor_validasi_reviewer ?? $answer->skor_sistem ?? 0;
+                }
+                $catData['score'] += $displayScore;
+
+                $catData['items'][] = [
+                    'no' => $pertanyaan->kode_pertanyaan,
+                    'title' => $pertanyaan->teks_pertanyaan,
+                    'score' => $displayScore,
+                    'max' => 5,
+                    'jawaban' => $answer ? ($answer->jawaban_teks ?? ($answer->jawabanOpsi ? $answer->jawabanOpsi->keterangan : 'Belum diisi')) : 'Belum diisi',
+                    'tautan' => $answer ? $answer->tautan_bukti_drive : null,
+                    'catatan' => $answer ? $answer->note_reviewer : null,
+                    'is_validated' => $answer ? ($answer->skor_validasi_reviewer !== null) : false,
                 ];
             }
 
-            $categories[$kategoriName]['max'] += 5; // Max 5 per rubrik
-
-            // Use reviewer score if validated, otherwise use raw system score
-            $displayScore = $answer->skor_validasi_reviewer ?? $answer->skor_sistem ?? 0;
-            $categories[$kategoriName]['score'] += $displayScore;
-
-            $categories[$kategoriName]['items'][] = [
-                'no' => $pertanyaan->kode_pertanyaan,
-                'title' => $pertanyaan->teks_pertanyaan,
-                'score' => $displayScore,
-                'max' => 5,
-                'jawaban' => $answer->jawaban_teks ?? ($answer->jawabanOpsi ? $answer->jawabanOpsi->keterangan : 'Belum diisi'),
-                'tautan' => $answer->tautan_bukti_drive,
-                'catatan' => $answer->note_reviewer ?? null,
-                'is_validated' => $answer->skor_validasi_reviewer !== null,
-            ];
+            $categories[] = $catData;
         }
 
         // Calculate total

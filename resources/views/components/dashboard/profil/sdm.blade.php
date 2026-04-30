@@ -15,17 +15,13 @@
             <div>
                 <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">Jumlah Dosen</label>
                 <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
-                    <i data-lucide="user" class="w-[14px] h-[14px] text-[#90a1b9] shrink-0"></i>
-                    {{-- ✏️ Ganti jumlah dosen --}}
-                    <p class="text-[13px] font-medium text-[#45556c]">750</p>
+                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.identitas?.jml_dosen || '0'"></p>
                 </div>
             </div>
             <div>
                 <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">Jumlah Tendik</label>
                 <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
-                    <i data-lucide="briefcase" class="w-[14px] h-[14px] text-[#90a1b9] shrink-0"></i>
-                    {{-- ✏️ Ganti jumlah tendik --}}
-                    <p class="text-[13px] font-medium text-[#45556c]">420</p>
+                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.identitas?.jml_tendik || '0'"></p>
                 </div>
             </div>
         </div>

@@ -33,7 +33,7 @@ class UserService extends BaseService
                 'email' => $dto->email,
                 'password' => Hash::make($dto->password),
                 'role' => 'PESERTA',
-                'status' => 'PENDING',
+                'status' => 'ACTIVE',
             ]);
 
             // 2. Buat Institusi terkait
@@ -69,10 +69,6 @@ class UserService extends BaseService
             throw new Exception("Email atau password salah.", 401);
         }
 
-        // 2. Cek Status Akun (Keamanan Utama)
-        if ($user->status === 'BANNED' || $user->status === 'SUSPENDED') {
-            throw new Exception("Akun Anda telah ditangguhkan. Silakan hubungi admin.", 403);
-        }
 
         // 3. Invalidate Session Lama (Single Session Policy)
         // Jika menggunakan Sanctum:

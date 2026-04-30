@@ -110,9 +110,61 @@ class AuthController extends Controller
                 return $this->errorResponse('User tidak ditemukan.', 404);
             }
 
+            $activePeriodSetting = \App\Models\PengaturanCms::where('key', 'active_period')->first();
+            $activePeriod = $activePeriodSetting ? $activePeriodSetting->value : date('Y');
+
             $pengumpulan = Pengumpulan::where('user_id', $user->id)
-                ->with(['institusi'])
+                ->where('tahun_periode', $activePeriod)
+                ->with(['institusi', 'identitas.agamas'])
                 ->first();
+
+            if (!$pengumpulan) {
+                // Find previous pengumpulan
+                $prevPengumpulan = Pengumpulan::where('user_id', $user->id)
+                    ->orderBy('tahun_periode', 'desc')
+                    ->first();
+                
+                if ($prevPengumpulan) {
+                    // Create new pengumpulan bypassing verification
+                    $pengumpulan = Pengumpulan::create([
+                        'user_id' => $user->id,
+                        'institution_id' => $prevPengumpulan->institution_id,
+                        'tahun_periode' => $activePeriod,
+                        'status' => 'IN_PROGRESS', // bypass verifikasi
+                        'nama_pic' => $prevPengumpulan->nama_pic,
+                        'jabatan_pic' => $prevPengumpulan->jabatan_pic,
+                        'no_hp_pic' => $prevPengumpulan->no_hp_pic,
+                        'email_pic' => $prevPengumpulan->email_pic,
+                        'surat_pernyataan' => $prevPengumpulan->surat_pernyataan,
+                        'sk_pendirian' => $prevPengumpulan->sk_pendirian,
+                        'sk_akreditasi' => $prevPengumpulan->sk_akreditasi,
+                        'profil_pt' => $prevPengumpulan->profil_pt,
+                        'struktur_organisasi' => $prevPengumpulan->struktur_organisasi,
+                        'sk_tim' => $prevPengumpulan->sk_tim,
+                    ]);
+
+                    // Copy Identitas
+                    $prevIdentitas = \App\Models\Identitas::where('pengumpulan_id', $prevPengumpulan->id)->first();
+                    if ($prevIdentitas) {
+                        $newIdentitas = $prevIdentitas->replicate();
+                        $newIdentitas->pengumpulan_id = $pengumpulan->id;
+                        $newIdentitas->save();
+                        
+                        // Copy Agama
+                        foreach (\App\Models\Agama::where('identitas_id', $prevIdentitas->id)->get() as $agama) {
+                            $newAgama = $agama->replicate();
+                            $newAgama->identitas_id = $newIdentitas->id;
+                            $newAgama->save();
+                        }
+                    }
+                    $pengumpulan->load('institusi');
+                } else {
+                    $pengumpulan = Pengumpulan::where('user_id', $user->id)->with(['institusi'])->first();
+                }
+            }
+            
+            $editSetting = \App\Models\PengaturanCms::where('key', 'is_peserta_edit_enabled')->first();
+            $isEditEnabled = $editSetting ? filter_var($editSetting->value, FILTER_VALIDATE_BOOLEAN) : true;
 
             return $this->successResponse([
                 'user' => [
@@ -128,8 +180,13 @@ class AuthController extends Controller
                     'nama_pic' => $pengumpulan->nama_pic,
                     'jabatan_pic' => $pengumpulan->jabatan_pic,
                     'no_hp_pic' => $pengumpulan->no_hp_pic,
+                    'email_pic' => $user->email,
                     'institusi' => $pengumpulan->institusi,
+                    'identitas' => $pengumpulan->identitas,
+                    'agamas' => $pengumpulan->identitas?->agamas,
                 ] : null,
+                'is_edit_enabled' => $isEditEnabled,
+                'active_period' => $activePeriod,
             ], 'Data user berhasil diambil.', 200);
         } catch (\Throwable $th) {
             return $this->errorResponse($th->getMessage(), 500);
@@ -142,7 +199,7 @@ class AuthController extends Controller
      */
     public static function getAuthReviewer()
     {
-        return Auth::id() ?? 8;
+        return Auth::id();
     }
 
     /**
@@ -151,7 +208,7 @@ class AuthController extends Controller
      */
     public static function getAuthPeserta()
     {
-        return Auth::id() ?? 3;
+        return Auth::id();
     }
 
     public function getAuth()

@@ -17,6 +17,15 @@
       @scroll.window="showBar = (window.pageYOffset < lastPos - threshold || window.pageYOffset < 150); lastPos = window.pageYOffset"
       x-init="$nextTick(() => { lucide.createIcons() })">
 
+    {{-- ⚡ Immediate auth guard --}}
+    <script>
+        (function() {
+            if (!localStorage.getItem('auth_token')) {
+                window.location.replace('/masuk');
+            }
+        })();
+    </script>
+
     {{-- ============================================================ --}}
     {{-- HEADER (Bisa pakai header yang sama dengan dashboard)         --}}
     {{-- ============================================================ --}}

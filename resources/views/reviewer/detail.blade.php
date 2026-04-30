@@ -74,7 +74,7 @@
                     this.email_pic = data.email_pic;
                     this.no_hp_pic = data.no_hp_pic;
 
-                    this.isDone = ['GRADED', 'REJECTED'].includes(this.pengumpulan.status);
+                    this.isDone = ['GRADED', 'REJECTED', 'IN_PROGRESS'].includes(this.pengumpulan.status);
 
                     // Mapping answers, links, scores, notes
                     this.rubrikData.forEach(kategori => {
@@ -120,6 +120,11 @@
             } catch (e) {
                 return {};
             }
+        },
+
+        get logoUrl() {
+            const docs = this.dokumenPendukung;
+            return docs.logo_pt || docs.logo || null;
         }
     }" class="flex-1 flex flex-col h-full bg-[#f8fafc] font-['Plus_Jakarta_Sans',sans-serif]">
         
@@ -194,7 +199,14 @@
                 
                 {{-- Group A: Identitas Institusi --}}
                 <div class="bg-white p-[24px] rounded-[12px] border border-[#cbd5e1] mb-6">
-                  <h3 class="font-bold text-[#1b5e20] text-[15px] mb-4 border-b border-[#e2e8f0] pb-2">A. Identitas Institusi</h3>
+                  <div class="flex flex-col md:flex-row justify-between items-start gap-4 mb-4 border-b border-[#e2e8f0] pb-2">
+                    <h3 class="font-bold text-[#1b5e20] text-[15px]">A. Identitas Institusi</h3>
+                    <template x-if="logoUrl">
+                        <a :href="logoUrl" target="_blank" class="block w-16 h-16 overflow-hidden rounded-full bg-white border-2 border-slate-200 p-1 hover:border-[#1b5e20] transition-colors shadow-sm">
+                            <img :src="logoUrl" class="w-full h-full object-contain" alt="Logo Institusi">
+                        </a>
+                    </template>
+                  </div>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-[24px] mb-6">
                     <div>
                       <p class="text-[13px] font-bold text-[#64748b] uppercase tracking-wider mb-1">Nama Perguruan Tinggi</p>
@@ -215,7 +227,7 @@
                   </div>
                 </div>
 
-                {{-- Group B & C: Akademik & Mahasiswa --}}
+                {{-- Group B & C: Akademik & Kemahasiswaan --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div class="bg-white p-[24px] rounded-[12px] border border-[#cbd5e1]">
                         <h3 class="font-bold text-[#1b5e20] text-[15px] mb-4 border-b border-[#e2e8f0] pb-2">B. Akademik & SDM</h3>
@@ -240,54 +252,57 @@
                     </div>
                     
                     <div class="bg-white p-[24px] rounded-[12px] border border-[#cbd5e1]">
-                        <h3 class="font-bold text-[#1b5e20] text-[15px] mb-4 border-b border-[#e2e8f0] pb-2">C. Kemahasiswaan & PIC</h3>
+                        <h3 class="font-bold text-[#1b5e20] text-[15px] mb-4 border-b border-[#e2e8f0] pb-2">C. Data Kemahasiswaan</h3>
                         <div class="space-y-4">
                             <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
                                 <span class="text-[14px] text-[#64748b] font-medium">Mahasiswa Aktif</span>
                                 <span class="text-[15px] text-[#1d293d] font-bold" x-text="profil_peserta.jml_mhs || 0"></span>
                             </div>
                             <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
-                                <span class="text-[14px] text-[#64748b] font-medium">Ormawa / UKM</span>
-                                <span class="text-[15px] text-[#1d293d] font-bold" x-text="(profil_peserta.jml_ormawa || 0) + ' / ' + (profil_peserta.jml_ukm || 0)"></span>
+                                <span class="text-[14px] text-[#64748b] font-medium">Organisasi Mahasiswa (Ormawa)</span>
+                                <span class="text-[15px] text-[#1d293d] font-bold" x-text="profil_peserta.jml_ormawa || 0"></span>
                             </div>
-                            <div class="mt-4 pt-2">
-                                <span class="text-[12px] font-bold text-[#64748b] uppercase tracking-wider block mb-1">Kontak PIC</span>
-                                <p class="text-[14px] font-semibold text-[#1d293d]"><span x-text="nama_pic"></span> <span class="text-[#64748b] font-medium">(<span x-text="jabatan_pic"></span>)</span></p>
-                                <p class="text-[14px] text-blue-600 font-medium mt-0.5"><span x-text="email_pic"></span> | <span x-text="no_hp_pic"></span></p>
+                            <div class="flex justify-between items-center pb-2">
+                                <span class="text-[14px] text-[#64748b] font-medium">Unit Kegiatan Mahasiswa (UKM)</span>
+                                <span class="text-[15px] text-[#1d293d] font-bold" x-text="profil_peserta.jml_ukm || 0"></span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {{-- Group D & E: Demografi & Berkas --}}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div class="bg-white p-[24px] rounded-[12px] border border-[#cbd5e1]">
-                        <h3 class="font-bold text-[#1b5e20] text-[15px] mb-4 border-b border-[#e2e8f0] pb-2">D. Demografi Agama Mahasiswa</h3>
-                        <div class="space-y-4">
-                            <template x-for="(agama, i) in agamaData" :key="i">
-                                <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
-                                    <span class="text-[14px] text-[#64748b] font-medium" x-text="agama.name"></span>
-                                    <span class="text-[15px] text-[#1d293d] font-bold" x-text="agama.count"></span>
-                                </div>
-                            </template>
+                {{-- Group D: Kontak PIC --}}
+                <div class="bg-white p-[24px] rounded-[12px] border border-[#cbd5e1] mb-6">
+                    <h3 class="font-bold text-[#1b5e20] text-[15px] mb-4 border-b border-[#e2e8f0] pb-2">D. Kontak PIC</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-[13px] font-bold text-[#64748b] uppercase tracking-wider mb-1">Nama PIC</p>
+                            <p class="text-[15px] font-semibold text-[#1d293d]" x-text="nama_pic || '-'"></p>
+                        </div>
+                        <div>
+                            <p class="text-[13px] font-bold text-[#64748b] uppercase tracking-wider mb-1">Jabatan PIC</p>
+                            <p class="text-[15px] font-semibold text-[#1d293d]" x-text="jabatan_pic || '-'"></p>
+                        </div>
+                        <div>
+                            <p class="text-[13px] font-bold text-[#64748b] uppercase tracking-wider mb-1">Email Resmi</p>
+                            <p class="text-[15px] font-semibold text-blue-600" x-text="email_pic || '-'"></p>
+                        </div>
+                        <div>
+                            <p class="text-[13px] font-bold text-[#64748b] uppercase tracking-wider mb-1">No. WhatsApp</p>
+                            <p class="text-[15px] font-semibold text-[#1d293d]" x-text="no_hp_pic || '-'"></p>
                         </div>
                     </div>
-                    
-                    <div class="bg-white p-[24px] rounded-[12px] border border-[#cbd5e1]">
-                        <h3 class="font-bold text-[#1b5e20] text-[15px] mb-4 border-b border-[#e2e8f0] pb-2">E. Berkas Profil Pendukung</h3>
-                        <div class="space-y-4">
-                            <template x-for="(url, key) in dokumenPendukung" :key="key">
-                                <a :href="url" target="_blank" class="flex items-center justify-between p-3 border border-[#cbd5e1] rounded-lg hover:border-[#1b5e20] hover:bg-[#f2fcf3] transition-colors group">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                                            <i data-lucide="file-text" class="w-4 h-4"></i>
-                                        </div>
-                                        <span class="text-[14px] font-semibold text-[#1d293d] group-hover:text-[#1b5e20] uppercase" x-text="key.replace('_', ' ')"></span>
-                                    </div>
-                                    <i data-lucide="external-link" class="w-4 h-4 text-[#90a1b9] group-hover:text-[#1b5e20]"></i>
-                                </a>
-                            </template>
-                        </div>
+                </div>
+
+                {{-- Group E: Demografi --}}
+                <div class="bg-white p-[24px] rounded-[12px] border border-[#cbd5e1] mb-6">
+                    <h3 class="font-bold text-[#1b5e20] text-[15px] mb-4 border-b border-[#e2e8f0] pb-2">E. Demografi Agama Mahasiswa</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+                        <template x-for="(agama, i) in agamaData" :key="i">
+                            <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                                <span class="text-[14px] text-[#64748b] font-medium" x-text="agama.name"></span>
+                                <span class="text-[15px] text-[#1d293d] font-bold" x-text="agama.count"></span>
+                            </div>
+                        </template>
                     </div>
                 </div>
 

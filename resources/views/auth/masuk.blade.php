@@ -1,4 +1,24 @@
 <x-layouts.app :hideNav="true" :hideFooter="true">
+    {{-- Guard: jika sudah login, redirect sesuai status --}}
+    <script>
+        (function() {
+            const token = localStorage.getItem('auth_token');
+            if (token) {
+                const user = JSON.parse(localStorage.getItem('auth_user') || '{}');
+                if (user.role === 'reviewer' || user.role === 'REVIEWER') {
+                    window.location.replace('/reviewer');
+                    return;
+                }
+
+                const status = localStorage.getItem('pengumpulan_status') || 'ACTIVE';
+                if (status === 'ACTIVE') {
+                    window.location.replace('/verifikasi');
+                } else {
+                    window.location.replace('/dashboard');
+                }
+            }
+        })();
+    </script>
     <div class="min-h-screen flex">
         {{-- Left Panel --}}
         <div class="hidden lg:flex w-[45%] relative overflow-hidden items-center">
@@ -47,9 +67,16 @@
                     
                     if (response.ok && result.success) {
                         this.successMessage = result.message;
+                        
+                        // Clear old session/storage to prevent intermittent data leaks
+                        sessionStorage.clear();
+                        localStorage.removeItem('auth_user');
+                        localStorage.removeItem('auth_token');
+
                         // Simpan token untuk API calls selanjutnya
                         localStorage.setItem('auth_token', result.data.token);
                         localStorage.setItem('auth_user', JSON.stringify(result.data.user));
+                        localStorage.setItem('pengumpulan_status', result.data.pengumpulan_status || 'ACTIVE');
 
                         // Redirect berdasarkan status dari server
                         const redirectTo = result.data.redirect_to || '/verifikasi';

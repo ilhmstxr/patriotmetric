@@ -8,6 +8,7 @@
     <link rel="icon" type="image/png" href="{{ asset('assets/images/logo.png') }}" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="antialiased min-h-screen flex flex-col font-['Plus_Jakarta_Sans',sans-serif]"
       x-data="{ showBar: true, lastPos: 0, threshold: 25 }"

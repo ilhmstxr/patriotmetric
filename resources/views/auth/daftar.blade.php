@@ -1,4 +1,25 @@
 <x-layouts.app :hideNav="true" :hideFooter="true">
+    {{-- Guard: jika sudah login, redirect sesuai status --}}
+    <script>
+        (function() {
+            const token = localStorage.getItem('auth_token');
+            if (token) {
+                const user = JSON.parse(localStorage.getItem('auth_user') || '{}');
+                const role = (user.role || '').toLowerCase();
+                if (role === 'reviewer') {
+                    window.location.replace('/reviewer');
+                    return;
+                }
+
+                const status = localStorage.getItem('pengumpulan_status') || 'ACTIVE';
+                if (status === 'ACTIVE') {
+                    window.location.replace('/verifikasi');
+                } else {
+                    window.location.replace('/dashboard');
+                }
+            }
+        })();
+    </script>
     <div class="min-h-screen flex" x-data="{ 
         agree: false, 
         isFormValid: false,
@@ -122,7 +143,7 @@
                                     <option value="PTK">PTK</option>
                                 </select>
                                 <label class="absolute left-12 top-4 font-['Plus_Jakarta_Sans',sans-serif] font-medium transition-all pointer-events-none text-[14px] text-[#62748e] peer-valid:top-2 peer-valid:text-[12px] peer-invalid:top-5 peer-invalid:text-[14px] peer-focus:top-2 peer-focus:text-[12px]">
-                                    jenis Perguruan Tinggi
+                                    Jenis Perguruan Tinggi
                                 </label>
                             </div>
                         </div>

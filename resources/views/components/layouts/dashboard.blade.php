@@ -17,6 +17,40 @@
       @scroll.window="showBar = (window.pageYOffset < lastPos - threshold || window.pageYOffset < 150); lastPos = window.pageYOffset"
       x-init="$nextTick(() => { lucide.createIcons() })">
 
+    {{-- ⚡ Immediate auth guard — redirect sebelum halaman render --}}
+    <script>
+        (function() {
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                window.location.replace('/masuk');
+                return;
+            }
+            
+            // Sync check: Reviewer tidak boleh di dashboard peserta
+            const userStr = localStorage.getItem('auth_user');
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                if (user.role === 'REVIEWER' || user.role === 'reviewer') {
+                    window.location.replace('/reviewer');
+                    return;
+                }
+                
+                // Jika peserta tapi status masih ACTIVE (belum verifikasi), lempar ke /verifikasi
+                // Note: Kita cek status dari localStorage sebagai pertahanan pertama
+                // Sinkronisasi status yang lebih akurat dilakukan di header.blade.php via API
+                if (user.role === 'PESERTA' || user.role === 'peserta') {
+                    // Kita asumsikan jika tidak ada data pengumpulan di user object yang tersimpan, 
+                    // atau statusnya ACTIVE, maka harus verifikasi.
+                    const pengumpulanStatus = localStorage.getItem('pengumpulan_status');
+                    if (!pengumpulanStatus || pengumpulanStatus === 'ACTIVE') {
+                        window.location.replace('/verifikasi');
+                        return;
+                    }
+                }
+            }
+        })();
+    </script>
+
     {{-- ============================================================ --}}
     {{-- HEADER: Bisa diedit di components/dashboard/header.blade.php --}}
     {{-- ============================================================ --}}

@@ -29,45 +29,12 @@ class DatabaseSeeder extends Seeder
             'status' => 'ACTIVE',
         ]);
 
-        User::create([
-            'email' => "user1@admin.com",
-            'password' => bcrypt('user'),
-            'role' => 'PESERTA',
-            'status' => 'ACTIVE',
-        ]);
-
-        User::create([
-            'email' => "user2@admin.com",
-            'password' => bcrypt('user'),
-            'role' => 'PESERTA',
-            'status' => 'ACTIVE',
-        ]);
-        User::create([
-            'email' => "user3@admin.com",
-            'password' => bcrypt('user'),
-            'role' => 'PESERTA',
-            'status' => 'ACTIVE',
-        ]);
-
-        User::create([
-            'email' => "user4@admin.com",
-            'password' => bcrypt('user'),
-            'role' => 'PESERTA',
-            'status' => 'ACTIVE',
-        ]);
-        User::create([
-            'email' => "user5@admin.com",
-            'password' => bcrypt('user'),
-            'role' => 'PESERTA',
-            'status' => 'ACTIVE',
-        ]);
-
-        User::create([
-            'email' => "user6@admin.com",
-            'password' => bcrypt('user'),
-            'role' => 'PESERTA',
-            'status' => 'ACTIVE',
-        ]);
+        // User::create([
+        //     'email' => "peserta@test.com",
+        //     'password' => bcrypt('peserta123'),
+        //     'role' => 'PESERTA',
+        //     'status' => 'ACTIVE',
+        // ]);
 
         User::create([
             'email' => "reviewer@admin.com",
@@ -77,15 +44,14 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            InstitusiSeeder::class,
-            // AssessmentSeeder::class,
-            PengumpulanSeeder::class,
-            IdentitasSeeder::class,
-
             KategoriSeeder::class,
             PertanyaanSeeder::class,
-            PengumpulanJawabanSeeder::class,
             PengaturanCmsSeeder::class,
+            // InstitusiSeeder::class,
+            // PengumpulanSeeder::class,
+            // IdentitasSeeder::class,
+            // PengumpulanJawabanSeeder::class,
+            // ReviewerSeeder::class,
         ]);
 
 
