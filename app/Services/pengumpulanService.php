@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
-use App\Repositories\pengumpulanRepository;
+use App\Repositories\PengumpulanRepository;
 
-class pengumpulanService extends BaseService
+class PengumpulanService extends BaseService
 {
     /**
-     * pengumpulanService constructor.
+     * PengumpulanService constructor.
      * Otomatis melakukan injection Repository terkait.
      */
-    public function __construct(pengumpulanRepository $repository)
+    public function __construct(PengumpulanRepository $repository)
     {
         parent::__construct($repository);
     }

@@ -2,7 +2,7 @@
 
 namespace App\DTO\AuthDTO;
 
-readonly class registerDTO
+readonly class RegisterDTO
 {
     public string $namaPt;
     public string $jenisPt;

@@ -2,15 +2,15 @@
 
 namespace App\Repositories;
 
-use App\Models\institusi;
+use App\Models\Institusi;
 
-class institusiRepository extends BaseRepository
+class InstitusiRepository extends BaseRepository
 {
     /**
-     * institusiRepository constructor.
+     * InstitusiRepository constructor.
      * Mengikat Model terkait ke BaseRepository.
      */
-    public function __construct(institusi $model)
+    public function __construct(Institusi $model)
     {
         parent::__construct($model);
     }

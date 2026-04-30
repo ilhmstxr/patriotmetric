@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DTO\AssessmentDTO\AssessmentDTO;
 use App\DTO\AuthDTO\LoginDTO;
-use App\DTO\AuthDTO\registerDTO;
+use App\DTO\AuthDTO\RegisterDTO;
 use App\Models\Pengumpulan;
 use App\Models\User;
 use App\Services\UserService;
@@ -35,7 +35,7 @@ class AuthController extends Controller
                 'password' => 'required|string|min:8|confirmed',
             ]);
 
-            $dto = new registerDTO($validated);
+            $dto = new RegisterDTO($validated);
             $user = $this->userService->register($dto);
 
             return $this->successResponse($user, 'Registrasi berhasil. Silakan login untuk melanjutkan.', 201);

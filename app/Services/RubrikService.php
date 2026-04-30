@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\RubrikRepository;
-use App\Models\kategori;
+use App\Models\Kategori;
 use Exception;
 
 /**

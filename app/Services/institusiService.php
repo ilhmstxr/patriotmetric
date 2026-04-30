@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
-use App\Repositories\institusiRepository;
+use App\Repositories\InstitusiRepository;
 
-class institusiService extends BaseService
+class InstitusiService extends BaseService
 {
     /**
-     * institusiService constructor.
+     * InstitusiService constructor.
      * Otomatis melakukan injection Repository terkait.
      */
-    public function __construct(institusiRepository $repository)
+    public function __construct(InstitusiRepository $repository)
     {
         parent::__construct($repository);
     }

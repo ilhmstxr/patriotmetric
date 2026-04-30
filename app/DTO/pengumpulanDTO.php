@@ -1,8 +1,8 @@
 <?php
 
-namespace App\DTOs;
+namespace App\DTO;
 
-readonly class pengumpulanDTO
+readonly class PengumpulanDTO
 {
     /**
      * Data Transfer Object untuk pengumpulan.

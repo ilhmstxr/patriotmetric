@@ -1,8 +1,8 @@
 <?php
 
-namespace App\DTOs;
+namespace App\DTO;
 
-readonly class institusiDTO
+readonly class InstitusiDTO
 {
     /**
      * Data Transfer Object untuk institusi.

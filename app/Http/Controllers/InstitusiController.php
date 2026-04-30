@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\institusi;
+use App\Models\Institusi;
 use Illuminate\Http\Request;
 
 class InstitusiController extends Controller
@@ -34,7 +34,7 @@ class InstitusiController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(institusi $institusi)
+    public function show(Institusi $institusi)
     {
         //
     }
@@ -42,7 +42,7 @@ class InstitusiController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(institusi $institusi)
+    public function edit(Institusi $institusi)
     {
         //
     }
@@ -50,7 +50,7 @@ class InstitusiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, institusi $institusi)
+    public function update(Request $request, Institusi $institusi)
     {
         //
     }
@@ -58,7 +58,7 @@ class InstitusiController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(institusi $institusi)
+    public function destroy(Institusi $institusi)
     {
         //
     }

@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\DTO\AuthDTO\LoginDTO;
-use App\DTO\AuthDTO\registerDTO;
+use App\DTO\AuthDTO\RegisterDTO;
 use App\Models\Institusi;
 use App\Models\User;
 use App\Repositories\UserRepository;
@@ -25,7 +25,7 @@ class UserService extends BaseService
     {
         parent::__construct($repository);
     }
-    public function register(registerDTO $dto)
+    public function register(RegisterDTO $dto)
     {
         return DB::transaction(function () use ($dto) {
             // 1. Buat User (PIC) melalui Repository
