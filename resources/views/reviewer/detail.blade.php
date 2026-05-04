@@ -30,19 +30,26 @@
         reviewerNotes: {},
         
         async init() {
-            await this.fetchData();
+            const cacheKey = 'reviewer_detail_cache_' + this.pesertaId;
+            try {
+                const cached = sessionStorage.getItem(cacheKey);
+                if (cached) {
+                    this.applyData(JSON.parse(cached));
+                    this.loading = false;
+                    this.fetchData(); // background refresh
+                } else {
+                    await this.fetchData();
+                }
+            } catch(e) {
+                await this.fetchData();
+            }
 
             let timeout = null;
             const autoSave = () => {
-                // Hindari auto-save sebelum data selesai diload atau jika sudah divalidasi
                 if (this.loading || this.isDone) return;
-                
                 this.isSaving = true;
                 clearTimeout(timeout);
-                
-                // Debounce 1 Detik
                 timeout = setTimeout(async () => {
-                    // TODO: Implement actual save API here if needed for draft saving
                     this.isSaving = false;
                     let d = new Date();
                     this.lastSaved = d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
@@ -53,7 +60,33 @@
             this.$watch('reviewerNotes', value => autoSave(), { deep: true });
         },
 
+        applyData(data) {
+            this.pengumpulan    = data.pengumpulan    || {};
+            this.institusi      = data.institusi      || {};
+            this.profil_peserta = data.profil_peserta || {};
+            this.rubrikData     = data.rubrik         || [];
+            this.nama_pic       = data.nama_pic;
+            this.jabatan_pic    = data.jabatan_pic;
+            this.email_pic      = data.email_pic;
+            this.no_hp_pic      = data.no_hp_pic;
+            this.isDone = ['GRADED', 'REJECTED', 'IN_PROGRESS'].includes(this.pengumpulan.status);
+            this.rubrikData.forEach(kategori => {
+                kategori.pertanyaan.forEach(q => {
+                    if (q.jawaban_peserta) {
+                        this.answers[q.id] = q.jawaban_peserta.opsi_dipilih
+                            ? q.jawaban_peserta.opsi_dipilih.keterangan
+                            : q.jawaban_peserta.jawaban_teks;
+                        this.links[q.id] = q.jawaban_peserta.tautan_bukti_drive;
+                        if (q.jawaban_peserta.skor_validasi_reviewer !== null) {
+                            this.reviewerScores[q.id] = q.jawaban_peserta.skor_validasi_reviewer;
+                        }
+                    }
+                });
+            });
+        },
+
         async fetchData() {
+            const cacheKey = 'reviewer_detail_cache_' + this.pesertaId;
             try {
                 const response = await fetch(`/api/assessment/reviewer/tasks/detail/${this.pesertaId}`, {
                     headers: {
@@ -62,44 +95,15 @@
                     }
                 });
                 const result = await response.json();
-                
                 if (response.ok && result.success) {
-                    const data = result.data;
-                    this.pengumpulan = data.pengumpulan || {};
-                    this.institusi = data.institusi || {};
-                    this.profil_peserta = data.profil_peserta || {};
-                    this.rubrikData = data.rubrik || [];
-                    this.nama_pic = data.nama_pic;
-                    this.jabatan_pic = data.jabatan_pic;
-                    this.email_pic = data.email_pic;
-                    this.no_hp_pic = data.no_hp_pic;
-
-                    this.isDone = ['GRADED', 'REJECTED', 'IN_PROGRESS'].includes(this.pengumpulan.status);
-
-                    // Mapping answers, links, scores, notes
-                    this.rubrikData.forEach(kategori => {
-                        kategori.pertanyaan.forEach(q => {
-                            if (q.jawaban_peserta) {
-                                // Tentukan apakah teks atau opsi ID
-                                if (q.jawaban_peserta.opsi_dipilih) {
-                                    this.answers[q.id] = q.jawaban_peserta.opsi_dipilih.keterangan;
-                                } else {
-                                    this.answers[q.id] = q.jawaban_peserta.jawaban_teks;
-                                }
-                                this.links[q.id] = q.jawaban_peserta.tautan_bukti_drive;
-                                
-                                if (q.jawaban_peserta.skor_validasi_reviewer !== null) {
-                                    this.reviewerScores[q.id] = q.jawaban_peserta.skor_validasi_reviewer;
-                                }
-                                // Catatan tidak ada dari payload skrg tp bs ditambahkan
-                            }
-                        });
-                    });
+                    try { sessionStorage.setItem(cacheKey, JSON.stringify(result.data)); } catch(e) {}
+                    this.applyData(result.data);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
             } finally {
                 this.loading = false;
+                this.$nextTick(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); });
             }
         },
 
@@ -128,16 +132,15 @@
         }
     }" class="flex-1 flex flex-col h-full bg-[#f8fafc] font-['Plus_Jakarta_Sans',sans-serif]">
         
-      {{-- Loading State --}}
-      <template x-if="loading">
-        <div class="flex-1 flex flex-col items-center justify-center p-8 h-full min-h-[500px]">
-            <div class="w-10 h-10 border-4 border-[#1b5e20] border-t-transparent rounded-full animate-spin"></div>
-            <p class="text-[#64748b] mt-4 font-medium">Memuat data peserta...</p>
-        </div>
-      </template>
+      {{-- Loading State — konsisten dengan dashboard peserta --}}
+      <div x-show="loading">
+          <x-dashboard.loading
+              title="Memuat Data Peserta..."
+              caption="Sistem sedang menyiapkan data profil dan rubrik penilaian." />
+      </div>
 
-      <template x-if="!loading">
-      <div class="flex-1 flex flex-col h-full">
+      {{-- Konten — pakai x-show agar tab switch instan tanpa re-render DOM --}}
+      <div x-show="!loading" x-cloak class="flex-1 flex flex-col h-full">
       {{-- Page Header --}}
       <div class="bg-white border-b border-[#e2e8f0] px-[20px] md:px-[40px] pt-[20px] md:pt-[28px] shadow-sm">
         <a href="{{ route('reviewer.index') }}" class="inline-flex items-center gap-[6px] text-[#62748e] hover:text-[#1b5e20] text-[13px] font-semibold mb-[8px] transition-colors">
@@ -436,8 +439,7 @@
       </div>
 
       {{-- Footer sticky area --}}
-      <template x-if="!isDone">
-          <div class="bg-white border-t border-[#e2e8f0] px-[20px] md:px-[40px] py-[16px] flex flex-col sm:flex-row justify-between items-center gap-[16px] shrink-0 z-10 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+      <div x-show="!isDone" class="bg-white border-t border-[#e2e8f0] px-[20px] md:px-[40px] py-[16px] flex flex-col sm:flex-row justify-between items-center gap-[16px] shrink-0 z-10 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-[4px] sm:gap-[12px]">
                 <div class="flex items-center gap-[8px] text-[13px] font-bold text-[#1d293d]">
                   <span class="w-[8px] h-[8px] rounded-full bg-amber-400 animate-pulse shrink-0"></span>
@@ -445,13 +447,16 @@
                 </div>
                 <span class="text-[12px] font-medium text-[#64748b]">Sistem auto-save (debounce) berlaku. Draft tersimpan otomatis.</span>
             </div>
-            <button class="w-full sm:w-auto bg-[#1b5e20] hover:bg-[#15461c] text-white px-[32px] py-[12px] rounded-[8px] text-[14px] font-bold flex items-center justify-center gap-[8px] transition-colors shadow-sm focus:ring-4 focus:ring-[#1b5e20]/30 outline-none block">
+            <button
+              @click="
+                sessionStorage.removeItem('reviewer_detail_cache_' + pesertaId);
+                sessionStorage.removeItem('reviewer_tasks_cache');
+              "
+              class="w-full sm:w-auto bg-[#1b5e20] hover:bg-[#15461c] text-white px-[32px] py-[12px] rounded-[8px] text-[14px] font-bold flex items-center justify-center gap-[8px] transition-colors shadow-sm focus:ring-4 focus:ring-[#1b5e20]/30 outline-none block">
               <i data-lucide="check-circle" class="w-[18px] h-[18px]"></i>
               Selesaikan Penilaian
             </button>
-          </div>
-      </template>
       </div>
-      </template>
+      </div>{{-- end !loading --}}
     </div>
 </x-layouts.reviewer>

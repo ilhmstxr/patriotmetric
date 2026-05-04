@@ -164,6 +164,7 @@ class VerificationController extends Controller
                     'jml_dosen' => $validated['jumlah_dosen'],
                     'jml_tendik' => $validated['jumlah_tendik'],
                     'jml_prodi' => $validated['jumlah_prodi'],
+                    'jml_fakultas' => $validated['jumlah_fakultas'],
                     'jml_ukm' => $validated['jumlah_ukm'],
                     'jml_ormawa' => $validated['jumlah_ormawa'],
                     'legal_documents' => json_encode($files),

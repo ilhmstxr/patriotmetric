@@ -13,8 +13,14 @@
     <style>[x-cloak] { display: none !important; }</style>
 </head>
 <body class="antialiased bg-[#f5f5f5]" style="font-family: 'Plus Jakarta Sans', sans-serif;"
-      x-data="{ mobileMenuOpen: false, showBar: true, lastPos: 0, threshold: 25 }"
-      @scroll.window="showBar = (window.pageYOffset < lastPos - threshold || window.pageYOffset < 150); lastPos = window.pageYOffset"
+      x-data="{ mobileMenuOpen: false, showBar: true, lastPos: 0, threshold: 50 }"
+      @scroll.window="
+          const cur = window.pageYOffset;
+          if (cur < 10) { showBar = true; }
+          else if (cur < lastPos - threshold) { showBar = true; }
+          else if (cur > lastPos + 10) { showBar = false; }
+          lastPos = cur;
+      "
       x-init="$nextTick(() => { lucide.createIcons() })">
 
     {{-- ⚡ Immediate auth guard — redirect sebelum halaman render --}}

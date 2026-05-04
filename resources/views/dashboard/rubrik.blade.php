@@ -11,7 +11,56 @@
         status: '',
         is_edit_enabled: true,
 
+        {{-- Floating Drawer State --}}
+        drawerOpen: false,
+
+        {{-- Flag State (persisted in sessionStorage) --}}
+        flags: {},
+
+        toggleFlag(questionId) {
+            this.flags[questionId] = !this.flags[questionId];
+            try { sessionStorage.setItem('rubrik_flags', JSON.stringify(this.flags)); } catch(e) {}
+        },
+
+        isFlagged(questionId) {
+            return !!this.flags[questionId];
+        },
+
+        isAnswered(questionId) {
+            const ans = this.answers[questionId];
+            return ans !== null && ans !== undefined && ans !== '';
+        },
+
+        scrollToQuestion(qId) {
+            const el = document.getElementById('q-' + qId);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Briefly highlight
+                el.classList.add('ring-2', 'ring-[#1b5e20]', 'ring-offset-2');
+                setTimeout(() => el.classList.remove('ring-2', 'ring-[#1b5e20]', 'ring-offset-2'), 1500);
+            }
+            this.drawerOpen = false;
+        },
+
+        get allQuestions() {
+            return this.categories.flatMap(c => c.questions);
+        },
+
+        get totalAnswered() {
+            return this.allQuestions.filter(q => this.isAnswered(q.id)).length;
+        },
+
+        get totalFlagged() {
+            return this.allQuestions.filter(q => this.isFlagged(q.id)).length;
+        },
+
         async init() {
+            {{-- Restore flags from sessionStorage --}}
+            try {
+                const savedFlags = sessionStorage.getItem('rubrik_flags');
+                if (savedFlags) this.flags = JSON.parse(savedFlags);
+            } catch(e) {}
+
             try {
                 const cacheKey = 'rubrik_data_cache';
                 const cachedData = sessionStorage.getItem(cacheKey);
@@ -24,7 +73,6 @@
                     return;
                 }
 
-                // Panggil API untuk mengambil semua pertanyaan dan jawaban draft
                 const response = await fetch('/api/assessment/peserta/questions', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
@@ -60,7 +108,6 @@
                     };
                 }
 
-                // Map existing answers if any
                 const existingJawaban = item.jawaban && item.jawaban.length > 0 ? item.jawaban[0] : null;
                 if (existingJawaban) {
                     if (item.tipe === 'pilihan_ganda') {
@@ -71,7 +118,6 @@
                     this.links[item.id] = existingJawaban.tautan_bukti_drive || '';
                 }
 
-                // Map data API ke format UI
                 groups[catName].questions.push({
                     id: item.id,
                     code: item.kode_pertanyaan,
@@ -85,7 +131,6 @@
                     }))
                 });
                 
-                // Update bobot
                 groups[catName].weight += 5;
             });
 
@@ -95,7 +140,6 @@
         async saveDraft() {
             this.isSaving = true;
             
-            // Format payload to array of answers
             const answersPayload = [];
             for (const qId in this.answers) {
                 const isNumeric = !isNaN(this.answers[qId]) && this.answers[qId] !== '';
@@ -122,8 +166,9 @@
                 if (response.ok && result.success) {
                     let d = new Date();
                     this.lastSaved = d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
-                    sessionStorage.removeItem('rubrik_data_cache'); // Invalidate cache
-                    sessionStorage.removeItem('hasil_data_cache'); // Invalidate hasil cache as well
+                    sessionStorage.removeItem('rubrik_data_cache');
+                    sessionStorage.removeItem('hasil_data_cache');
+                    sessionStorage.removeItem('rubrik_flags'); {{-- Clear flags on submit --}}
                     alert('Draft berhasil disimpan dan di-submit!');
                     this.status = 'SUBMITTED';
                     window.location.href = '/dashboard/hasil';
@@ -146,11 +191,12 @@
                 <h1 class="font-bold text-[#1d293d] text-[18px] uppercase tracking-wide mb-5">Form Rubrik</h1>
 
                 <div class="space-y-6">
-                    {{-- Loading State --}}
+                    {{-- Loading State (konsisten) --}}
                     <template x-if="loading">
-                        <div class="flex flex-col items-center justify-center py-20 space-y-4">
-                            <div class="w-10 h-10 border-4 border-[#1b5e20] border-t-transparent rounded-full animate-spin"></div>
-                            <p class="text-[14px] font-medium text-[#62748e]">Memuat data pertanyaan...</p>
+                        <div>
+                            <x-dashboard.loading
+                                title="Memuat Form Rubrik..."
+                                caption="Mohon tunggu sebentar, sistem sedang menyiapkan pertanyaan rubrik Anda." />
                         </div>
                     </template>
 
@@ -166,7 +212,28 @@
 
                             {{-- Questions --}}
                             <template x-for="q in categoryData.questions" :key="q.id">
-                                <div class="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden">
+                                {{-- 🏷️ Question Card — id anchor for scroll targeting + relative for flag ribbon --}}
+                                <div :id="'q-' + q.id"
+                                     class="relative bg-white border border-[#e0e0e0] rounded-lg overflow-hidden transition-all duration-300"
+                                     :class="isFlagged(q.id) ? 'border-amber-400' : ''">
+
+                                    {{-- ===== 🚩 Ribbon Flag — swallow-tail (2 lance tips at bottom) ===== --}}
+                                    <button type="button"
+                                        @click.stop="toggleFlag(q.id)"
+                                        :title="isFlagged(q.id) ? 'Hapus flag' : 'Tandai pertanyaan ini'"
+                                        class="absolute top-0 right-5 z-10 focus:outline-none"
+                                        style="width: 26px;">
+                                        {{--
+                                            Swallow-tail clip-path: 2 downward lance points with V-notch in centre
+                                            polygon: top-left → top-right → right-side → right-tip → centre-notch → left-tip → left-side
+                                        --}}
+                                        <span class="block w-full transition-all duration-300"
+                                            :style="isFlagged(q.id)
+                                                ? 'height:46px; background:#fbbf24; clip-path:polygon(0 0,100% 0,100% 65%,60% 100%,50% 82%,40% 100%,0 65%); box-shadow:0 4px 10px rgba(251,191,36,0.5);'
+                                                : 'height:28px; background:#dde1e7; clip-path:polygon(0 0,100% 0,100% 65%,60% 100%,50% 82%,40% 100%,0 65%);'">
+                                        </span>
+                                    </button>
+
                                     <div class="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-[#e0e0e0]">
 
                                         {{-- LEFT: Question + Evidence --}}
@@ -175,7 +242,7 @@
                                             <div class="flex gap-3">
                                                 <div class="w-[28px] h-[28px] rounded bg-[#f5f5f5] border border-[#e0e0e0] flex items-center justify-center font-bold text-[#1d293d] text-[12px] shrink-0 mt-0.5"
                                                      x-text="q.code"></div>
-                                                <h3 class="font-bold text-[#1d293d] text-[13px] leading-snug" x-text="q.title"></h3>
+                                                <h3 class="font-bold text-[#1d293d] text-[13px] leading-snug pr-6" x-text="q.title"></h3>
                                             </div>
 
                                             {{-- Evidence requirements --}}
@@ -274,6 +341,138 @@
 
         {{-- ✏️ Sticky Footer → components/dashboard/rubrik/footer.blade.php --}}
         <x-dashboard.rubrik.footer />
+
+        {{-- ================================================================== --}}
+        {{-- 🧭 FLOATING QUIZ NAVIGATION DRAWER                                --}}
+        {{-- Tombol panah sticky di kanan layar, klik untuk toggle drawer panel --}}
+        {{-- ================================================================== --}}
+        <div x-show="!loading" style="display:none;">
+
+            {{-- Toggle Arrow Button — follows header show/hide via showBar from parent scope --}}
+            <button
+                type="button"
+                @click="drawerOpen = !drawerOpen"
+                class="fixed right-0 z-40 bg-[#1b5e20] text-white shadow-lg flex items-center justify-center"
+                :style="{
+                    top: showBar ? 'calc(120px + ((100vh - 120px) / 2) - 32px)' : 'calc(50vh - 32px)',
+                    width: '28px',
+                    height: '64px',
+                    borderRadius: '8px 0 0 8px',
+                    transition: 'top 0.3s ease'
+                }"
+                :title="drawerOpen ? 'Tutup Navigator' : 'Buka Navigator Soal'">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="w-4 h-4 transition-transform duration-300"
+                     :class="drawerOpen ? 'rotate-0' : 'rotate-0'"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"/>
+                </svg>
+            </button>
+
+            {{-- Drawer Backdrop (close on outside click) --}}
+            <div
+                x-show="drawerOpen"
+                x-transition:enter="transition-opacity ease-out duration-200"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition-opacity ease-in duration-150"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                @click="drawerOpen = false"
+                class="fixed inset-0 bg-black/20 z-30"
+                style="display:none;">
+            </div>
+
+            {{-- Drawer Panel — top/height react to showBar from parent body x-data --}}
+            <div
+                x-show="drawerOpen"
+                x-transition:enter="transition ease-out duration-250"
+                x-transition:enter-start="translate-x-full"
+                x-transition:enter-end="translate-x-0"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="translate-x-0"
+                x-transition:leave-end="translate-x-full"
+                class="fixed right-0 w-[280px] bg-white shadow-2xl z-40 flex flex-col"
+                :style="{
+                    top:        showBar ? '120px' : '0px',
+                    height:     showBar ? 'calc(100vh - 120px)' : '100vh',
+                    transition: 'top 0.3s ease, height 0.3s ease'
+                }">
+
+
+                {{-- Drawer Header --}}
+                <div class="px-4 py-4 border-b border-[#e0e0e0] flex items-center justify-between shrink-0">
+                    <div>
+                        <h3 class="font-bold text-[#1d293d] text-[13px] uppercase tracking-wide">Navigator Soal</h3>
+                        <p class="text-[11px] text-[#62748e] mt-0.5">
+                            <span class="font-semibold text-[#1b5e20]" x-text="totalAnswered"></span>
+                            / <span x-text="allQuestions.length"></span> terjawab
+                            <template x-if="totalFlagged > 0">
+                                <span class="ml-2 text-amber-600 font-semibold">
+                                    · <span x-text="totalFlagged"></span> diflag
+                                </span>
+                            </template>
+                        </p>
+                    </div>
+                    <button type="button" @click="drawerOpen = false"
+                        class="text-[#90a1b9] hover:text-[#45556c] p-1 rounded transition-colors focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+
+                {{-- Legend --}}
+                <div class="px-4 pt-3 pb-2 flex items-center gap-4 text-[10px] font-medium text-[#62748e] shrink-0">
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-3 h-3 rounded-sm bg-[#1b5e20]"></span> Terjawab
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-3 h-3 rounded-sm bg-[#e0e0e0]"></span> Kosong
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-3 h-3 rounded-sm bg-amber-400"></span> Diflag
+                    </span>
+                </div>
+
+                {{-- Question Grid (scrollable) --}}
+                <div class="flex-1 overflow-y-auto px-4 py-2 space-y-5">
+                    <template x-for="(catData, ci) in categories" :key="ci">
+                        <div>
+                            {{-- Category Label --}}
+                            <p class="text-[10px] font-bold text-[#62748e] uppercase tracking-wider mb-2" x-text="catData.category"></p>
+                            {{-- Grid of question blocks --}}
+                            <div class="flex flex-wrap gap-1.5">
+                                <template x-for="q in catData.questions" :key="q.id">
+                                    <button
+                                        type="button"
+                                        @click="scrollToQuestion(q.id)"
+                                        :title="'Soal ' + q.code + (isFlagged(q.id) ? ' (Diflag)' : '')"
+                                        class="relative w-9 h-9 rounded text-[11px] font-bold transition-all duration-150 focus:outline-none hover:scale-110 hover:shadow-md"
+                                        :class="isFlagged(q.id)
+                                            ? 'bg-amber-400 text-white'
+                                            : isAnswered(q.id)
+                                                ? 'bg-[#1b5e20] text-white'
+                                                : 'bg-[#e0e0e0] text-[#62748e]'"
+                                        x-text="q.code">
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                {{-- Drawer Footer --}}
+                <div class="px-4 py-3 border-t border-[#e0e0e0] shrink-0">
+                    <div class="flex items-center gap-2 text-[11px] text-[#90a1b9]">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        Klik nomor soal untuk loncat ke soal tersebut.
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
 </x-layouts.dashboard>

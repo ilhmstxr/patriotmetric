@@ -17,6 +17,8 @@ class Identitas extends Model
         'jml_tendik',
         'jml_prodi',
         'jml_ukm',
+        'jml_fakultas',
+        'jml_ormawa',
         'jml_agama',
         'visi',
         'misi',

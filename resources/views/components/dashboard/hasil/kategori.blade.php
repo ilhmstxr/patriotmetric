@@ -30,12 +30,24 @@
                 </div>
                 
                 <div class="flex items-center gap-6">
+                    {{-- Capaian Poin (mentah) --}}
                     <div class="text-right hidden sm:block border-r border-[#e2e8f0] pr-6">
-                        <p class="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest mb-1">Capaian Skor</p>
+                        <p class="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest mb-1">Capaian Poin</p>
                         <div class="flex items-center gap-1.5 justify-end">
                             <span class="text-[18px] font-extrabold text-[#1d293d]" x-text="cat.score"></span>
                             <span class="text-[13px] font-bold text-[#94a3b8]">/ <span x-text="cat.max"></span></span>
                         </div>
+                    </div>
+                    {{-- Capaian Skor (persen tertimbang) --}}
+                    <div class="text-right hidden md:block border-r border-[#e2e8f0] pr-6">
+                        <p class="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest mb-1">Capaian Skor</p>
+                        <div class="flex items-baseline gap-1 justify-end">
+                            <span class="text-[18px] font-extrabold text-[#1b5e20]"
+                                  x-text="Number(cat.capaian_skor || 0).toFixed(2).replace('.', ',') + '%'"></span>
+                        </div>
+                        <p class="text-[10px] text-[#64748b] font-medium mt-0.5">
+                            dari bobot <span x-text="Number(cat.bobot || 0).toFixed(0) + '%'"></span>
+                        </p>
                     </div>
                     {{-- Arrow Indicator --}}
                     <div class="w-9 h-9 rounded-full flex items-center justify-center bg-[#f1f5f9] border border-[#e2e8f0] group-hover:bg-[#e8f5e9] group-hover:border-[#c8e6c9] transition-all duration-300">

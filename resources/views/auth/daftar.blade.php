@@ -24,6 +24,7 @@
         agree: false, 
         isFormValid: false,
         isLoading: false,
+        showPassword: false,
         errorMessage: '',
         successMessage: '',
         formData: {
@@ -205,10 +206,15 @@
                                 <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                                     <i data-lucide="lock" class="w-5 h-5 text-[#90A1B9]"></i>
                                 </div>
-                                <input name="password" type="password" x-model="formData.password" required placeholder=" " class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
+                                <input name="password" :type="showPassword ? 'text' : 'password'" x-model="formData.password" required placeholder=" " class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-12 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
                                 <label class="absolute left-12 top-4 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#62748e] transition-all peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[12px] peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-[12px] pointer-events-none">
                                     Password
                                 </label>
+                                <button type="button" @click="showPassword = !showPassword"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-[#90A1B9] hover:text-[#45556c] transition-colors focus:outline-none">
+                                    <i :data-lucide="showPassword ? 'eye-off' : 'eye'" class="w-5 h-5"
+                                       x-effect="$nextTick(() => lucide.createIcons())"></i>
+                                </button>
                             </div>
                         </div>
                     </div>

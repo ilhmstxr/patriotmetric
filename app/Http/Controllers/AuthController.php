@@ -166,6 +166,9 @@ class AuthController extends Controller
             $editSetting = \App\Models\PengaturanCms::where('key', 'is_peserta_edit_enabled')->first();
             $isEditEnabled = $editSetting ? filter_var($editSetting->value, FILTER_VALIDATE_BOOLEAN) : true;
 
+            $profileEditSetting = \App\Models\PengaturanCms::where('key', 'is_peserta_profile_edit_enabled')->first();
+            $isProfileEditEnabled = $profileEditSetting ? filter_var($profileEditSetting->value, FILTER_VALIDATE_BOOLEAN) : true;
+
             return $this->successResponse([
                 'user' => [
                     'id' => $user->id,
@@ -186,6 +189,7 @@ class AuthController extends Controller
                     'agamas' => $pengumpulan->identitas?->agamas,
                 ] : null,
                 'is_edit_enabled' => $isEditEnabled,
+                'is_peserta_profile_edit_enabled' => $isProfileEditEnabled,
                 'active_period' => $activePeriod,
             ], 'Data user berhasil diambil.', 200);
         } catch (\Throwable $th) {
@@ -214,6 +218,99 @@ class AuthController extends Controller
     public function getAuth()
     {
         return self::getAuthReviewer();
+    }
+
+    /**
+     * PUT /api/auth/profile
+     * Update seluruh data profil peserta: data PIC, identitas (visi, misi, data numerik), dan demografi agama.
+     * Hanya dapat dilakukan jika CMS setting 'is_peserta_profile_edit_enabled' bernilai true.
+     */
+    public function updateProfile(Request $request)
+    {
+        try {
+            // Cek permission dari CMS
+            $profileEditSetting   = \App\Models\PengaturanCms::where('key', 'is_peserta_profile_edit_enabled')->first();
+            $isProfileEditEnabled = $profileEditSetting ? filter_var($profileEditSetting->value, FILTER_VALIDATE_BOOLEAN) : true;
+
+            if (!$isProfileEditEnabled) {
+                return $this->errorResponse('Fitur edit profil saat ini dinonaktifkan oleh admin.', 403);
+            }
+
+            $userId = self::getAuthPeserta();
+            if (!$userId) {
+                return $this->errorResponse('Unauthorized.', 401);
+            }
+
+            $validated = $request->validate([
+                'nama_pic'      => 'required|string|max:255',
+                'jabatan_pic'   => 'nullable|string|max:100',
+                'no_hp_pic'     => 'required|string|max:20',
+                'visi'          => 'nullable|string',
+                'misi'          => 'nullable|string',
+                'jml_fakultas'  => 'nullable|integer|min:0',
+                'jml_prodi'     => 'nullable|integer|min:0',
+                'jml_dosen'     => 'nullable|integer|min:0',
+                'jml_tendik'    => 'nullable|integer|min:0',
+                'jml_mahasiswa' => 'nullable|integer|min:0',
+                'jml_ormawa'    => 'nullable|integer|min:0',
+                'jml_ukm'       => 'nullable|integer|min:0',
+                'agamas'        => 'nullable|array',
+            ]);
+
+            // Ambil pengumpulan aktif milik peserta
+            $activePeriodSetting = \App\Models\PengaturanCms::where('key', 'active_period')->first();
+            $activePeriod        = $activePeriodSetting ? $activePeriodSetting->value : date('Y');
+
+            $pengumpulan = Pengumpulan::where('user_id', $userId)
+                ->where('tahun_periode', $activePeriod)
+                ->with(['identitas.agamas'])
+                ->first();
+
+            if (!$pengumpulan) {
+                return $this->errorResponse('Data pengumpulan tidak ditemukan.', 404);
+            }
+
+            // 1. Update data PIC di pengumpulan
+            $pengumpulan->update([
+                'nama_pic'    => $validated['nama_pic'],
+                'jabatan_pic' => $validated['jabatan_pic'] ?? $pengumpulan->jabatan_pic,
+                'no_hp_pic'   => $validated['no_hp_pic'],
+            ]);
+
+            // 2. Update data Identitas
+            if ($pengumpulan->identitas) {
+                $pengumpulan->identitas->update([
+                    'visi'          => $validated['visi']          ?? $pengumpulan->identitas->visi,
+                    'misi'          => $validated['misi']          ?? $pengumpulan->identitas->misi,
+                    'jml_fakultas'  => $validated['jml_fakultas']  ?? $pengumpulan->identitas->jml_fakultas,
+                    'jml_prodi'     => $validated['jml_prodi']     ?? $pengumpulan->identitas->jml_prodi,
+                    'jml_dosen'     => $validated['jml_dosen']     ?? $pengumpulan->identitas->jml_dosen,
+                    'jml_tendik'    => $validated['jml_tendik']    ?? $pengumpulan->identitas->jml_tendik,
+                    'jml_mahasiswa' => $validated['jml_mahasiswa'] ?? $pengumpulan->identitas->jml_mahasiswa,
+                    'jml_ormawa'    => $validated['jml_ormawa']    ?? $pengumpulan->identitas->jml_ormawa,
+                    'jml_ukm'       => $validated['jml_ukm']       ?? $pengumpulan->identitas->jml_ukm,
+                ]);
+
+                // 3. Update demografi agama (upsert per agama)
+                if (!empty($validated['agamas']) && is_array($validated['agamas'])) {
+                    foreach ($validated['agamas'] as $agamaKey => $jumlah) {
+                        \App\Models\Agama::updateOrCreate(
+                            ['identitas_id' => $pengumpulan->identitas->id, 'agama' => $agamaKey],
+                            ['jumlah' => (int) ($jumlah ?: 0)]
+                        );
+                    }
+                }
+            }
+
+            return $this->successResponse([
+                'nama_pic'    => $pengumpulan->fresh()->nama_pic,
+                'jabatan_pic' => $pengumpulan->fresh()->jabatan_pic,
+                'no_hp_pic'   => $pengumpulan->fresh()->no_hp_pic,
+            ], 'Profil berhasil diperbarui.', 200);
+        } catch (\Throwable $th) {
+            $code = (is_numeric($th->getCode()) && $th->getCode() >= 400 && $th->getCode() < 600) ? $th->getCode() : 500;
+            return $this->errorResponse($th->getMessage(), $code);
+        }
     }
 
     /**

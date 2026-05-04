@@ -15,6 +15,7 @@
         institusi: 'Loading...',
         total_score: 0,
         total_max: 0,
+        total_capaian_skor: 0,
         status: 'Loading...',
         is_validated: false,
         
@@ -36,6 +37,7 @@
                     this.institusi = data.institusi;
                     this.total_score = data.total_score;
                     this.total_max = data.total_max;
+                    this.total_capaian_skor = data.total_capaian_skor;
                     this.status = data.status;
                     this.is_validated = data.is_validated;
                     
@@ -57,12 +59,12 @@
     }" class="bg-[#f5f5f5] min-h-full py-5 px-4 md:px-8">
 
         <div class="max-w-[860px] mx-auto">
-            {{-- Loading State --}}
+            {{-- Loading State (konsisten) --}}
             <template x-if="loading">
-                <div class="flex flex-col items-center justify-center py-32 space-y-4">
-                    <div class="w-12 h-12 border-4 border-[#1b5e20] border-t-transparent rounded-full animate-spin"></div>
-                    <p class="text-[15px] font-bold text-[#1d293d] tracking-wide uppercase">Memuat Hasil Penilaian...</p>
-                    <p class="text-[13px] text-[#62748e]">Mohon tunggu sebentar, sistem sedang merekap data Anda.</p>
+                <div>
+                    <x-dashboard.loading
+                        title="Memuat Hasil Penilaian..."
+                        caption="Mohon tunggu sebentar, sistem sedang merekap data Anda." />
                 </div>
             </template>
 

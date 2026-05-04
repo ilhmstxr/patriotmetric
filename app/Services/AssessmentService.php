@@ -477,10 +477,13 @@ class AssessmentService extends BaseService
 
         $categories = [];
         foreach ($allCategories as $cat) {
+            $bobot = $this->getBobotKategori($cat->nama_kategori);
             $catData = [
                 'name' => $cat->nama_kategori,
+                'bobot' => $bobot,
                 'score' => 0,
                 'max' => 0,
+                'capaian_skor' => 0,
                 'items' => [],
             ];
 
@@ -507,22 +510,44 @@ class AssessmentService extends BaseService
                 ];
             }
 
+            // Capaian skor tertimbang = (skor / max) * bobot, 2 desimal
+            if ($catData['max'] > 0) {
+                $catData['capaian_skor'] = round(($catData['score'] / $catData['max']) * $bobot, 2);
+            }
+
             $categories[] = $catData;
         }
 
         // Calculate total
         $totalScore = array_sum(array_column($categories, 'score'));
         $totalMax = array_sum(array_column($categories, 'max'));
+        $totalCapaianSkor = round(array_sum(array_column($categories, 'capaian_skor')), 2);
 
         return [
             'status' => $assessment->status,
             'is_validated' => $assessment->status === 'GRADED',
             'total_score' => $totalScore,
             'total_max' => $totalMax,
+            'total_capaian_skor' => $totalCapaianSkor,
             'tahun_periode' => $assessment->tahun_periode,
             'institusi' => $assessment->institusi?->nama_institusi ?? '-',
             'categories' => array_values($categories),
         ];
+    }
+
+    /**
+     * Bobot kategori (hardcoded sementara berdasarkan prefix nama kategori).
+     * A. = 20%, B. = 30%, C. = 50%
+     */
+    private function getBobotKategori(string $namaKategori): float
+    {
+        $prefix = strtoupper(substr(trim($namaKategori), 0, 2));
+        return match ($prefix) {
+            'A.' => 20.0,
+            'B.' => 30.0,
+            'C.' => 50.0,
+            default => 0.0,
+        };
     }
 
     /**

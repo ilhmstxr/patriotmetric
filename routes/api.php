@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('api.auth.logout');
         Route::get('/me', [AuthController::class, 'me'])->name('api.auth.me');
         Route::post('/verification', [VerificationController::class, 'submit'])->name('api.auth.verification');
+        Route::put('/profile', [AuthController::class, 'updateProfile'])->name('api.auth.profile.update');
     });
 
     // User Profile
