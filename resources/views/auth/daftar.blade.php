@@ -212,8 +212,8 @@
                                 </label>
                                 <button type="button" @click="showPassword = !showPassword"
                                     class="absolute right-4 top-1/2 -translate-y-1/2 text-[#90A1B9] hover:text-[#45556c] transition-colors focus:outline-none">
-                                    <i :data-lucide="showPassword ? 'eye-off' : 'eye'" class="w-5 h-5"
-                                       x-effect="$nextTick(() => lucide.createIcons())"></i>
+                                    <i x-show="!showPassword" data-lucide="eye-closed" class="w-5 h-5"></i>
+                                    <i x-show="showPassword" style="display: none;" data-lucide="eye" class="w-5 h-5"></i>
                                 </button>
                             </div>
                         </div>

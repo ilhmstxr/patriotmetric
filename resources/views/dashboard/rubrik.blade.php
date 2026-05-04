@@ -217,20 +217,17 @@
                                      class="relative bg-white border border-[#e0e0e0] rounded-lg overflow-hidden transition-all duration-300"
                                      :class="isFlagged(q.id) ? 'border-amber-400' : ''">
 
-                                    {{-- ===== 🚩 Ribbon Flag — swallow-tail (2 lance tips at bottom) ===== --}}
+                                    {{-- ===== 🔖 Bookmark Flag ===== --}}
                                     <button type="button"
                                         @click.stop="toggleFlag(q.id)"
                                         :title="isFlagged(q.id) ? 'Hapus flag' : 'Tandai pertanyaan ini'"
-                                        class="absolute top-0 right-5 z-10 focus:outline-none"
-                                        style="width: 26px;">
-                                        {{--
-                                            Swallow-tail clip-path: 2 downward lance points with V-notch in centre
-                                            polygon: top-left → top-right → right-side → right-tip → centre-notch → left-tip → left-side
-                                        --}}
+                                        class="absolute top-0 right-4 z-10 focus:outline-none"
+                                        style="width: 24px;">
+                                        {{-- Classic bookmark: rectangle + single V-notch at bottom --}}
                                         <span class="block w-full transition-all duration-300"
                                             :style="isFlagged(q.id)
-                                                ? 'height:46px; background:#fbbf24; clip-path:polygon(0 0,100% 0,100% 65%,60% 100%,50% 82%,40% 100%,0 65%); box-shadow:0 4px 10px rgba(251,191,36,0.5);'
-                                                : 'height:28px; background:#dde1e7; clip-path:polygon(0 0,100% 0,100% 65%,60% 100%,50% 82%,40% 100%,0 65%);'">
+                                                ? 'height:45px; background:#f59e0b; clip-path:polygon(0 0,100% 0,100% 100%,50% 80%,0 100%); box-shadow:0 6px 14px rgba(245,158,11,0.45);'
+                                                : 'height:25px; background:#cbd5e1; clip-path:polygon(0 0,100% 0,100% 100%,50% 75%,0 100%); box-shadow:none;'">
                                         </span>
                                     </button>
 
