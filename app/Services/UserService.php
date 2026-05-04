@@ -29,9 +29,10 @@ class UserService extends BaseService
     {
         return DB::transaction(function () use ($dto) {
             // 1. Buat User (PIC) melalui Repository
+            // Password tidak perlu di-hash manual karena Model User memiliki cast 'hashed'
             $user = $this->repository->createUser([
                 'email' => $dto->email,
-                'password' => Hash::make($dto->password),
+                'password' => $dto->password,
                 'role' => 'PESERTA',
                 'status' => 'ACTIVE',
             ]);

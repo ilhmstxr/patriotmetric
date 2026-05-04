@@ -9,7 +9,7 @@ a. untuk admin itu untuk mengisi isian statis di submitter, reviewer, dan compro
 7. untuk masalah di sisi reviewer dalam verifikasi skor. mengisi / memilih (dibebaskan programmernya enaknya bagaimana. tapi dari bu sri merekomendasikan mengisi) DONE AMAN INTINE NGISI AE
 8. didiskusikan untuk ketika akses linknya ketika privat apakah diberi kesempatan di sisi peserta untuk membuka akses dan dinilai ulang(?), ataukah konsekuensi peserta jika linkya berupa privat (sudah diingatkan oleh alert akses harus public!)
 9. untuk pengembangannya di superadminnya bisa grant access detail apa permission yang diberikan user DONE SEMENTARA DAN SELAMANYA HARDCODE SAJA (BISA DIKEMBANGIN NANTI)
-10. untuk penilaian, kategori a (hanya diakui 20%, 5 indikator, max point 25), kategori b (hanya diakui 30%, 20 indikator, max point 100), kategori (hanya diakui 50%, 15 indikator, 75 max point )
+10. untuk penilaian, kategori a (hanya diakui 20%, 5 indikator, max point 25), kategori b (hanya diakui 30%, 20 indikator, max point 100), kategori (hanya diakui 50%, 15 indikator, 75 max point)
 11. capaian poin (sisi peserta/yang 5 poin per rubrik) & capaian skor (persen (%)) (capaian nilai tampil setelah submitted (preview / blm fix) ,dan fix (setelah graded))
 12. untuk presentase (2 angka dibelakang koma (contoh: 88,88%)), nanti setelah dari presentasi, dapat berapa tetap masih range
 13. role sementara: peserta, reviewer, admin, superadmin. masih belum dibedah permissionnya antara admin & superadmin
