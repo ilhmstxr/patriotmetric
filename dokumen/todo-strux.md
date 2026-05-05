@@ -237,3 +237,8 @@ tahun_periode maka otomatis masukkan tahun sekarang
 
 dikarenakan tabel user juga wajib ada
 role => PESERTA, jika registrasi otomatis ke role peserta
+
+1. Up pdf
+2. Perhitungan rumus rubrik
+3. Preview setelah submit (presentase) 
+4.

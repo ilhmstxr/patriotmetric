@@ -15,7 +15,6 @@ return new class extends Migration {
             $table->string('kode_pertanyaan')->nullable(); 
             $table->foreignId('category_id')->constrained('kategoris')->onDelete('cascade');
             $table->text('teks_pertanyaan');
-            $table->text('deskripsi')->nullable(); 
             $table->text('kebutuhan_bukti')->nullable(); 
             $table->enum('tipe', ['pilihan_ganda', 'isian_singkat','otomatis_sistem']);
             $table->integer('skor_maksimal')->default(0); 

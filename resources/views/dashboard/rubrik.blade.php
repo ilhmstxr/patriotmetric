@@ -122,7 +122,6 @@
                     id: item.id,
                     code: item.kode_pertanyaan,
                     title: item.teks_pertanyaan,
-                    description: item.deskripsi,
                     evidenceRequirements: Array.isArray(item.kebutuhan_bukti) ? item.kebutuhan_bukti : (item.kebutuhan_bukti ? [item.kebutuhan_bukti] : []),
                     type: item.tipe,
                     options: (item.OpsiJawaban || item.opsi_jawaban || []).map(opt => ({
@@ -286,8 +285,6 @@
                                                         class="w-[100px] px-3.5 py-2.5 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
                                                         x-model="answers[q.id]"
                                                     />
-                                                    {{-- Gunakan deskripsi sebagai unit (Cth: 10 skema KKN) --}}
-                                                    <span class="text-[12px] font-semibold text-[#45556c]" x-text="q.description"></span>
                                                 </div>
                                             </template>
  

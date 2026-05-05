@@ -408,7 +408,6 @@ class AssessmentService extends BaseService
                 'id' => $pertanyaan->id,
                 'kode_pertanyaan' => $pertanyaan->kode_pertanyaan,
                 'teks_pertanyaan' => $pertanyaan->teks_pertanyaan,
-                'deskripsi' => $pertanyaan->deskripsi,
                 'kebutuhan_bukti' => $pertanyaan->kebutuhan_bukti,
                 'tipe' => $pertanyaan->tipe,
                 'skor_maksimal' => $pertanyaan->skor_maksimal,

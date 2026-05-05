@@ -43,6 +43,13 @@ class DatabaseSeeder extends Seeder
             'status' => 'ACTIVE',
         ]);
 
+        User::create([
+            'email' => "upn@pic.com",
+            'password' => bcrypt('upn123'),
+            'role' => 'PESERTA',
+            'status' => 'ACTIVE',
+        ]);
+
         $this->call([
             KategoriSeeder::class,
             PertanyaanSeeder::class,
