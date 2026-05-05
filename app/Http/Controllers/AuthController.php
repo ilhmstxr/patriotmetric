@@ -58,7 +58,7 @@ class AuthController extends Controller
 
             // Determine redirect path based on user status
             $user = $result['user'];
-            $pengumpulan = Pengumpulan::where('user_id', $user->id)->first();
+            $pengumpulan = Pengumpulan::where('user_id', $user->id)->with('institusi')->first();
             
             $redirectTo = '/verifikasi'; // Default: needs verification
             if ($pengumpulan && in_array($pengumpulan->status, ['IN_PROGRESS', 'SUBMITTED', 'GRADED'])) {
@@ -71,7 +71,9 @@ class AuthController extends Controller
             }
 
             return $this->successResponse([
-                'user' => $user,
+                'user' => array_merge($user->toArray(), [
+                    'nama_institusi' => $pengumpulan?->institusi?->nama_institusi
+                ]),
                 'token' => $result['token'],
                 'redirect_to' => $redirectTo,
                 'pengumpulan_status' => $pengumpulan?->status,
@@ -175,6 +177,7 @@ class AuthController extends Controller
                     'email' => $user->email,
                     'role' => $user->role,
                     'status' => $user->status,
+                    'nama_institusi' => $pengumpulan?->institusi?->nama_institusi,
                 ],
                 'pengumpulan' => $pengumpulan ? [
                     'id' => $pengumpulan->id,
