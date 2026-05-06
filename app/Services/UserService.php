@@ -37,10 +37,12 @@ class UserService extends BaseService
                 'status' => 'ACTIVE',
             ]);
 
-            // 2. Buat Institusi terkait
+            // 2. Buat Institusi terkait (simpan domain email untuk enforcement 1-instansi-1-akun)
+            $domain = strtolower(substr(strrchr($dto->email, '@') ?: '@', 1));
             $institusi = $this->repository->createInstitusi([
                 'nama_institusi' => $dto->namaPt,
                 'jenis_institusi' => $dto->jenisPt,
+                'domain_email' => $domain ?: null,
             ]);
 
             // 3. Buat Data Pengumpulan (Assessment Record) wajib untuk tahun ini
@@ -59,9 +61,12 @@ class UserService extends BaseService
     }
 
     /**
-     * LOGIN: Pengecekan Status & Kredensial
+     * LOGIN: Pengecekan Status & Kredensial.
+     *
+     * Single-session tetap dijaga: semua token lama dihapus sebelum membuat token baru.
+     * Param $remember hanya mempengaruhi durasi token (8 jam vs 30 hari).
      */
-    public function login(LoginDTO $dto)
+    public function login(LoginDTO $dto, bool $remember = false)
     {
         // 1. Cek User berdasarkan email
         $user = $this->repository->findByEmail($dto->email);
@@ -70,17 +75,17 @@ class UserService extends BaseService
             throw new Exception("Email atau password salah.", 401);
         }
 
-
-        // 3. Invalidate Session Lama (Single Session Policy)
-        // Jika menggunakan Sanctum:
+        // 3. Invalidate Session Lama (Single Session Policy) — TIDAK DIUBAH
         $user->tokens()->delete();
 
-        // 4. Generate Token / Login Session
-        $token = $user->createToken('auth_token')->plainTextToken;
+        // 4. Generate Token dengan masa berlaku berbeda berdasarkan flag "Ingat saya"
+        $expiresAt = $remember ? now()->addDays(30) : now()->addHours(8);
+        $token = $user->createToken('auth_token', ['*'], $expiresAt)->plainTextToken;
 
         return [
             'user' => $user,
-            'token' => $token
+            'token' => $token,
+            'expires_at' => $expiresAt->toIso8601String(),
         ];
     }
 

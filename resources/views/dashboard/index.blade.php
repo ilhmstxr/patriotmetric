@@ -22,6 +22,7 @@
                 nama_pic: '',
                 jabatan_pic: '',
                 no_hp_pic: '',
+                email: '',
                 visi: '',
                 misi: '',
                 jml_fakultas: '',
@@ -85,6 +86,7 @@
                     nama_pic:      p?.nama_pic      || '',
                     jabatan_pic:   p?.jabatan_pic   || '',
                     no_hp_pic:     p?.no_hp_pic     || '',
+                    email:         p?.email_pic     || '',
                     visi:          id?.visi          || '',
                     misi:          id?.misi          || '',
                     jml_fakultas:  id?.jml_fakultas  || '',
@@ -119,6 +121,13 @@
                     this.saveProfileError = 'Nama PIC dan No HP wajib diisi.';
                     return;
                 }
+                if (this.editForm.email) {
+                    const re = /@[a-z0-9.-]+\.ac\.id$/i;
+                    if (!re.test(this.editForm.email)) {
+                        this.saveProfileError = 'Email harus menggunakan domain institusi resmi (.ac.id).';
+                        return;
+                    }
+                }
                 this.isSavingProfile  = true;
                 this.saveProfileError = '';
 
@@ -140,6 +149,15 @@
                             this.profileData.pengumpulan.nama_pic    = this.editForm.nama_pic;
                             this.profileData.pengumpulan.jabatan_pic = this.editForm.jabatan_pic;
                             this.profileData.pengumpulan.no_hp_pic   = this.editForm.no_hp_pic;
+                            if (this.editForm.email) {
+                                this.profileData.pengumpulan.email_pic = this.editForm.email;
+                                {{-- Sync localStorage auth_user --}}
+                                try {
+                                    const u = JSON.parse(localStorage.getItem('auth_user') || '{}');
+                                    u.email = this.editForm.email;
+                                    localStorage.setItem('auth_user', JSON.stringify(u));
+                                } catch (e) {}
+                            }
                         }
                         if (this.profileData.identitas) {
                             this.profileData.identitas.visi          = this.editForm.visi;

@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\DTO\AssessmentDTO\AssessmentDTO;
 use App\DTO\AuthDTO\LoginDTO;
 use App\DTO\AuthDTO\RegisterDTO;
+use App\Models\Institusi;
 use App\Models\Pengumpulan;
 use App\Models\User;
 use App\Services\UserService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
@@ -31,9 +34,25 @@ class AuthController extends Controller
                 'nama_pic' => 'required|string|max:255',
                 'no_hp_pic' => 'required|string|max:20',
                 'jabatan_pic' => 'required|string|max:100',
-                'email' => 'required|email|unique:users,email',
+                'email' => ['required', 'email', 'regex:/@[a-z0-9.-]+\.ac\.id$/i', 'unique:users,email'],
                 'password' => 'required|string|min:8|confirmed',
+            ], [
+                'email.regex' => 'Email harus menggunakan domain institusi resmi (.ac.id).',
+                'email.unique' => 'Email ini sudah terdaftar. Silakan masuk atau gunakan email lain.',
             ]);
+
+            // 1 instansi 1 akun: cek nama_institusi & domain email
+            $domain = strtolower(substr(strrchr($validated['email'], '@'), 1));
+
+            $existsByName = Institusi::whereRaw('LOWER(nama_institusi) = ?', [strtolower($validated['nama_pt'])])->exists();
+            if ($existsByName) {
+                return $this->errorResponse('Institusi dengan nama tersebut sudah memiliki akun terdaftar. Silakan masuk atau hubungi admin.', 422);
+            }
+
+            $existsByDomain = Institusi::where('domain_email', $domain)->exists();
+            if ($existsByDomain) {
+                return $this->errorResponse('Domain email institusi ini sudah memiliki akun terdaftar. Satu institusi hanya boleh memiliki satu akun.', 422);
+            }
 
             $dto = new RegisterDTO($validated);
             $user = $this->userService->register($dto);
@@ -45,16 +64,55 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * GET /api/auth/check-institusi?nama=...&email=...
+     * Public endpoint untuk cek ketersediaan saat user mengisi form daftar.
+     */
+    public function checkInstitusi(Request $request)
+    {
+        $nama = trim((string) $request->query('nama', ''));
+        $email = trim((string) $request->query('email', ''));
+
+        $reasons = [];
+
+        if ($nama !== '') {
+            $existsByName = Institusi::whereRaw('LOWER(nama_institusi) = ?', [strtolower($nama)])->exists();
+            if ($existsByName) $reasons[] = 'Nama institusi sudah terdaftar.';
+        }
+
+        if ($email !== '' && str_contains($email, '@')) {
+            if (!preg_match('/@[a-z0-9.-]+\.ac\.id$/i', $email)) {
+                $reasons[] = 'Email harus berdomain .ac.id.';
+            } else {
+                $domain = strtolower(substr(strrchr($email, '@'), 1));
+                $existsByDomain = Institusi::where('domain_email', $domain)->exists();
+                if ($existsByDomain) $reasons[] = 'Domain email sudah digunakan institusi lain.';
+
+                if (User::where('email', $email)->exists()) {
+                    $reasons[] = 'Email PIC sudah digunakan akun lain.';
+                }
+            }
+        }
+
+        return $this->successResponse([
+            'exists' => count($reasons) > 0,
+            'message' => count($reasons) > 0 ? implode(' ', $reasons) : 'Tersedia.',
+        ], 'OK', 200);
+    }
+
     public function login(Request $request)
     {
         try {
             $validated = $request->validate([
                 'email' => 'required|email',
                 'password' => 'required|string',
+                'remember' => 'sometimes|boolean',
             ]);
 
+            $remember = (bool) ($validated['remember'] ?? false);
+
             $dto = new LoginDTO($validated);
-            $result = $this->userService->login($dto);
+            $result = $this->userService->login($dto, $remember);
 
             // Determine redirect path based on user status
             $user = $result['user'];
@@ -75,11 +133,52 @@ class AuthController extends Controller
                     'nama_institusi' => $pengumpulan?->institusi?->nama_institusi
                 ]),
                 'token' => $result['token'],
+                'token_expires_at' => $result['expires_at'] ?? null,
+                'remember' => $remember,
                 'redirect_to' => $redirectTo,
                 'pengumpulan_status' => $pengumpulan?->status,
             ], 'Login berhasil.', 200);
         } catch (\Throwable $th) {
             $code = (is_numeric($th->getCode()) && $th->getCode() >= 400 && $th->getCode() < 600) ? $th->getCode() : 401;
+            return $this->errorResponse($th->getMessage(), $code);
+        }
+    }
+
+    /**
+     * POST /api/auth/change-password
+     * Mengubah kata sandi user yang sedang login. Token aktif lain dihapus
+     * (single-session policy tetap dijaga: token saat ini dipertahankan).
+     */
+    public function changePassword(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'current_password' => 'required|string',
+                'new_password' => 'required|string|min:8|confirmed',
+            ], [
+                'new_password.min' => 'Kata sandi baru minimal 8 karakter.',
+                'new_password.confirmed' => 'Konfirmasi kata sandi baru tidak cocok.',
+            ]);
+
+            $user = $request->user();
+            if (!$user) return $this->errorResponse('Unauthorized.', 401);
+
+            if (!Hash::check($validated['current_password'], $user->password)) {
+                return $this->errorResponse('Kata sandi lama tidak sesuai.', 422);
+            }
+
+            $user->password = Hash::make($validated['new_password']);
+            $user->save();
+
+            // Cabut token lain (selain yang aktif sekarang) untuk keamanan.
+            $currentTokenId = optional($request->user()->currentAccessToken())->id;
+            if ($currentTokenId) {
+                $user->tokens()->where('id', '!=', $currentTokenId)->delete();
+            }
+
+            return $this->successResponse(null, 'Kata sandi berhasil diperbarui.', 200);
+        } catch (\Throwable $th) {
+            $code = (is_numeric($th->getCode()) && $th->getCode() >= 400 && $th->getCode() < 600) ? $th->getCode() : 500;
             return $this->errorResponse($th->getMessage(), $code);
         }
     }
@@ -248,6 +347,7 @@ class AuthController extends Controller
                 'nama_pic'      => 'required|string|max:255',
                 'jabatan_pic'   => 'nullable|string|max:100',
                 'no_hp_pic'     => 'required|string|max:20',
+                'email'         => ['nullable', 'email', 'regex:/@[a-z0-9.-]+\.ac\.id$/i', Rule::unique('users', 'email')->ignore($userId)],
                 'visi'          => 'nullable|string',
                 'misi'          => 'nullable|string',
                 'jml_fakultas'  => 'nullable|integer|min:0',
@@ -258,6 +358,9 @@ class AuthController extends Controller
                 'jml_ormawa'    => 'nullable|integer|min:0',
                 'jml_ukm'       => 'nullable|integer|min:0',
                 'agamas'        => 'nullable|array',
+            ], [
+                'email.regex' => 'Email harus menggunakan domain institusi resmi (.ac.id).',
+                'email.unique' => 'Email tersebut sudah digunakan akun lain.',
             ]);
 
             // Ambil pengumpulan aktif milik peserta
@@ -279,6 +382,15 @@ class AuthController extends Controller
                 'jabatan_pic' => $validated['jabatan_pic'] ?? $pengumpulan->jabatan_pic,
                 'no_hp_pic'   => $validated['no_hp_pic'],
             ]);
+
+            // 1b. Update email user (akun) jika dikirim & berbeda
+            if (!empty($validated['email'])) {
+                $user = User::find($userId);
+                if ($user && $user->email !== $validated['email']) {
+                    $user->email = $validated['email'];
+                    $user->save();
+                }
+            }
 
             // 2. Update data Identitas
             if ($pengumpulan->identitas) {
@@ -309,6 +421,7 @@ class AuthController extends Controller
                 'nama_pic'    => $pengumpulan->fresh()->nama_pic,
                 'jabatan_pic' => $pengumpulan->fresh()->jabatan_pic,
                 'no_hp_pic'   => $pengumpulan->fresh()->no_hp_pic,
+                'email'       => User::find($userId)?->email,
             ], 'Profil berhasil diperbarui.', 200);
         } catch (\Throwable $th) {
             $code = (is_numeric($th->getCode()) && $th->getCode() >= 400 && $th->getCode() < 600) ? $th->getCode() : 500;

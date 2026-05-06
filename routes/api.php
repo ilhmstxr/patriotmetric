@@ -11,6 +11,7 @@ use App\Http\Controllers\VerificationController;
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('api.auth.register');
     Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');
+    Route::get('/check-institusi', [AuthController::class, 'checkInstitusi'])->name('api.auth.check-institusi');
 });
 
 // --- Protected Routes ---
@@ -22,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me', [AuthController::class, 'me'])->name('api.auth.me');
         Route::post('/verification', [VerificationController::class, 'submit'])->name('api.auth.verification');
         Route::put('/profile', [AuthController::class, 'updateProfile'])->name('api.auth.profile.update');
+        Route::post('/change-password', [AuthController::class, 'changePassword'])->name('api.auth.change-password');
     });
 
     // User Profile
@@ -37,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Tahap 3: Assessment (Single Form & Auto-Save)
     Route::prefix('assessment/peserta')->group(function () {
         Route::get('/questions', [AssessmentController::class, 'getAllQuestions'])->name('api.peserta.questions');
+        Route::get('/questions/version', [AssessmentController::class, 'getQuestionsVersion'])->name('api.peserta.questions.version');
         Route::post('/finalize', [AssessmentController::class, 'finalize'])->name('api.peserta.finalize');
         Route::get('/preview-results', [AssessmentController::class, 'previewResults'])->name('api.peserta.preview-results');
         Route::post('/save-answer', [AssessmentController::class, 'saveJawaban'])->name('api.peserta.save-answer');

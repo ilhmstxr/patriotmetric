@@ -62,14 +62,27 @@
                 </div>
             </div>
 
-            {{-- Email — selalu read-only --}}
+            {{-- Email — editable saat mode edit (validasi .ac.id, terikat akun) --}}
             <div>
                 <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">Alamat Email</label>
-                <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
+                {{-- VIEW --}}
+                <div x-show="!isEditMode" class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
                     <i data-lucide="mail" class="w-[14px] h-[14px] text-[#90a1b9] shrink-0"></i>
                     <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.pengumpulan?.email_pic || '-'"></p>
                 </div>
-                <p x-show="isEditMode" style="display:none;" class="text-[10px] text-[#90a1b9] mt-1">* Email terikat pada akun dan tidak dapat diubah di sini.</p>
+                {{-- EDIT --}}
+                <div x-show="isEditMode" style="display:none;" class="relative">
+                    <div class="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <i data-lucide="mail" class="w-[14px] h-[14px] text-[#90a1b9]"></i>
+                    </div>
+                    <input type="email"
+                        x-model="editForm.email"
+                        pattern="^[^@\s]+@[A-Za-z0-9.-]+\.ac\.id$"
+                        title="Gunakan email berdomain .ac.id"
+                        placeholder="dosen@institusi.ac.id"
+                        class="w-full bg-white border border-[#1b5e20]/40 rounded pl-9 pr-4 h-[42px] text-[13px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
+                </div>
+                <p x-show="isEditMode" style="display:none;" class="text-[10px] text-[#90a1b9] mt-1">* Email harus berdomain institusi resmi (.ac.id) dan akan menjadi alamat login akun Anda.</p>
             </div>
         </div>
     </div>
