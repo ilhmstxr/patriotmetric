@@ -26,7 +26,7 @@ return new class extends Migration {
             $table->unique(['institution_id', 'tahun_periode']);
             
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('reviewer_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('reviewer_id')->nullable()->constrained('reviewers')->onDelete('set null');
             $table->decimal('total_skor_sistem', 8, 2)->default(0);
             $table->decimal('total_skor_akhir', 8, 2)->default(0);
             $table->timestamps();

@@ -19,7 +19,7 @@ class Pengumpulan extends Model
 
     public function reviewer()
     {
-        return $this->belongsTo(User::class, 'reviewer_id');
+        return $this->belongsTo(Reviewer::class, 'reviewer_id');
     }
 
     public function jawabans()

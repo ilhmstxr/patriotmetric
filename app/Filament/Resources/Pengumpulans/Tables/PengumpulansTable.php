@@ -47,7 +47,7 @@ class PengumpulansTable
                     ->form([
                         \Filament\Forms\Components\Select::make('reviewer_id')
                             ->label('Pilih Reviewer')
-                            ->options(\App\Models\User::where('role', 'reviewer')->pluck('name', 'id'))
+                            ->options(\App\Models\User::where('role', 'REVIEWER')->pluck('name', 'id'))
                             ->default(fn(\Illuminate\Database\Eloquent\Model $record) => $record->reviewer_id)
                             ->required(),
                     ])
