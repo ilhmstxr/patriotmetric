@@ -14,7 +14,6 @@ class Pertanyaan extends Model
         'category_id',
         'kode_pertanyaan',
         'teks_pertanyaan',
-        'deskripsi',
         'kebutuhan_bukti',
         'tipe',
         'skor_maksimal'

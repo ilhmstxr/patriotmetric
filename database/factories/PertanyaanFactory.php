@@ -24,7 +24,6 @@ class PertanyaanFactory extends Factory
             'kode_pertanyaan' => $this->faker->unique()->regexify('[A-Z]{3}-[0-9]{4}'),
             'category_id' => Kategori::factory(),
             'teks_pertanyaan' => $this->faker->sentence(),
-            'deskripsi' => $this->faker->sentence(),
             'kebutuhan_bukti' => $this->faker->sentence(),
             'tipe' => $this->faker->randomElement(['pilihan_ganda', 'essay', 'file']),
             'skor_maksimal' => $this->faker->numberBetween(1, 100),

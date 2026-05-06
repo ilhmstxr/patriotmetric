@@ -25,9 +25,6 @@ class PertanyaanForm
                     ->label('Teks Pertanyaan')
                     ->required()
                     ->columnSpanFull(),
-                Textarea::make('deskripsi')
-                    ->label('Deskripsi Penjelasan')
-                    ->columnSpanFull(),
                 RichEditor::make('kebutuhan_bukti')
                     ->label('Kebutuhan Bukti (Evidence)')
                     ->columnSpanFull(),

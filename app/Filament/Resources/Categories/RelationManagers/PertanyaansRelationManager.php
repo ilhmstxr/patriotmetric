@@ -30,9 +30,6 @@ class PertanyaansRelationManager extends RelationManager
                     ->label('Teks Pertanyaan')
                     ->required()
                     ->columnSpanFull(),
-                \Filament\Forms\Components\Textarea::make('deskripsi')
-                    ->label('Deskripsi Penjelasan')
-                    ->columnSpanFull(),
                 \Filament\Forms\Components\RichEditor::make('kebutuhan_bukti')
                     ->label('Kebutuhan Bukti (Evidence)')
                     ->columnSpanFull(),

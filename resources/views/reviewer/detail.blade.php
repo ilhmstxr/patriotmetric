@@ -332,7 +332,6 @@
                           </div>
                           <div>
                             <h3 class="font-bold text-[#1d293d] text-[16px] leading-[24px]" x-text="q.teks_pertanyaan"></h3>
-                            <p class="text-[14px] font-medium text-[#45556c] mt-[6px] leading-[22px]" x-text="q.deskripsi"></p>
                           </div>
                         </div>
 

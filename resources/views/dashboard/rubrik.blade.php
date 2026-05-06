@@ -215,7 +215,6 @@
                     id: item.id,
                     code: item.kode_pertanyaan,
                     title: item.teks_pertanyaan,
-                    description: item.deskripsi,
                     evidenceRequirements: Array.isArray(item.kebutuhan_bukti) ? item.kebutuhan_bukti : (item.kebutuhan_bukti ? [item.kebutuhan_bukti] : []),
                     type: item.tipe,
                     options: (item.OpsiJawaban || item.opsi_jawaban || []).map(opt => ({
