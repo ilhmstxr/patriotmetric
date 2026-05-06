@@ -16,6 +16,11 @@ class CreateReviewer extends CreateRecord
 {
     protected static string $resource = ReviewerResource::class;
 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
     protected function handleRecordCreation(array $data): Model
     {
         return DB::transaction(function () use ($data): Reviewer {

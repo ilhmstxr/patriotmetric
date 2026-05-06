@@ -8,6 +8,8 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
 
 class PengumpulansTable
 {
@@ -15,22 +17,22 @@ class PengumpulansTable
     {
         return $table
             ->columns([
-                \Filament\Tables\Columns\TextColumn::make('user.name')
+                TextColumn::make('institusi.nama_institusi')
                     ->label('Peserta')
                     ->searchable()
                     ->sortable(),
-                \Filament\Tables\Columns\TextColumn::make('status')
+                TextColumn::make('status')
                     ->badge()
                     ->sortable(),
-                \Filament\Tables\Columns\TextColumn::make('total_skor_sistem')
+                TextColumn::make('total_skor_sistem')
                     ->sortable(),
-                \Filament\Tables\Columns\TextColumn::make('total_skor_akhir')
+                TextColumn::make('total_skor_akhir')
                     ->sortable(),
-                \Filament\Tables\Columns\TextColumn::make('reviewer.name')
+                TextColumn::make('reviewer.nama_lengkap')
                     ->label('Reviewer')
                     ->searchable()
                     ->sortable(),
-                \Filament\Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -45,9 +47,9 @@ class PengumpulansTable
                     ->label('Tugaskan Reviewer')
                     ->icon('heroicon-o-user-plus')
                     ->form([
-                        \Filament\Forms\Components\Select::make('reviewer_id')
+                        Select::make('reviewer_id')
                             ->label('Pilih Reviewer')
-                            ->options(\App\Models\User::where('role', 'REVIEWER')->pluck('name', 'id'))
+                            ->options(\App\Models\Reviewer::pluck('nama_lengkap', 'id'))
                             ->default(fn(\Illuminate\Database\Eloquent\Model $record) => $record->reviewer_id)
                             ->required(),
                     ])

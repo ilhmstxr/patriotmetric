@@ -36,19 +36,27 @@ class PertanyaanForm
                     ])
                     ->live()
                     ->required(),
-                TextInput::make('skor_maksimal')
+                /* TextInput::make('skor_maksimal')
                     ->label('Skor Maksimal')
                     ->numeric()
                     ->default(0)
-                    ->required(),
+                    ->required(), */
                 Repeater::make('OpsiJawaban')
                     ->label('Opsi Pilihan')
                     ->schema([
-                        TextInput::make('teks')
-                            ->label('Teks Opsi')
-                            ->placeholder('Cth: Sangat Baik')
+                        Select::make('opsi_jawaban')
+                            ->label('Label')
+                            ->options(['0'=>'0','1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5'])
+                            ->required(),
+                        TextInput::make('value')
+                            ->label('Skor')
+                            ->numeric()
+                            ->required(),
+                        TextInput::make('keterangan')
+                            ->label('Keterangan')
                             ->required(),
                     ])
+                    ->columns(3)
                     // Hanya muncul jika tipe yang dipilih adalah 'pilihan_ganda'
                     ->visible(fn ($get): bool => $get('tipe') === 'pilihan_ganda')
                     ->columnSpanFull(),

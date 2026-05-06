@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateSubmissionTimeline extends CreateRecord
 {
     protected static string $resource = SubmissionTimelineResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

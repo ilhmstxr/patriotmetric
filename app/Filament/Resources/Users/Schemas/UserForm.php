@@ -13,12 +13,10 @@ class UserForm
     {
         return $schema
             ->components([
-                TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
                 TextInput::make('email')
                     ->email()
                     ->required()
+                    ->unique(ignoreRecord: true)
                     ->maxLength(255),
                 TextInput::make('password')
                     ->password()
@@ -28,18 +26,18 @@ class UserForm
                     ->maxLength(255),
                 Select::make('role')
                     ->options([
-                        'admin' => 'Admin',
-                        'reviewer' => 'Reviewer',
-                        'peserta' => 'Peserta',
+                        'ADMIN' => 'Admin',
+                        'REVIEWER' => 'Reviewer',
+                        'PESERTA' => 'Peserta',
                     ])
                     ->required(),
-                TextInput::make('nama_institusi')
-                    ->maxLength(255),
-                TextInput::make('telepon')
-                    ->tel()
-                    ->maxLength(255),
-                Textarea::make('alamat')
-                    ->columnSpanFull(),
+                Select::make('status')
+                    ->options([
+                        'PENDING' => 'Pending',
+                        'ACTIVE' => 'Active',
+                        'SUSPENDED' => 'Suspended',
+                    ])
+                    ->required(),
             ]);
     }
 }

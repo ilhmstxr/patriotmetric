@@ -16,11 +16,11 @@ class Pertanyaan extends Model
         'teks_pertanyaan',
         'kebutuhan_bukti',
         'tipe',
-        'skor_maksimal'
+        // 'skor_maksimal'
     ];
 
     protected $casts = [
-        'kebutuhan_bukti' => 'json',
+        // 'kebutuhan_bukti' => 'json',
     ];
 
     public function kategori()

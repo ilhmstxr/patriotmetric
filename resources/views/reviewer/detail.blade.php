@@ -400,14 +400,14 @@
                                     <input
                                       type="number"
                                       min="0"
-                                      :max="q.skor_maksimal || 5"
+                                      :max="5"
                                       placeholder="0-5"
                                       class="w-[80px] px-[12px] py-[10px] rounded-[8px] border-2 text-[18px] font-bold focus:outline-none focus:border-[#1b5e20] hover:border-[#1b5e20]/60 transition-colors text-center"
                                       :class="isDone ? 'bg-[#f1f5f9] border-[#cbd5e1] text-[#94a3b8]' : 'border-[#cbd5e1] text-[#1b5e20] bg-white'"
                                       :disabled="isDone"
                                       x-model="reviewerScores[q.id]"
                                     />
-                                    <span class="text-[13px] text-[#64748b] font-medium leading-tight max-w-[200px]">Maks <span x-text="q.skor_maksimal || 5"></span>. Ketik 0 jika bukti tidak valid.</span>
+                                    <span class="text-[13px] text-[#64748b] font-medium leading-tight max-w-[200px]">Maks 5. Ketik 0 jika bukti tidak valid.</span>
                                 </div>
                             </div>
 

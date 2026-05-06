@@ -465,7 +465,7 @@ class AssessmentService extends BaseService
                 'teks_pertanyaan' => $pertanyaan->teks_pertanyaan,
                 'kebutuhan_bukti' => $pertanyaan->kebutuhan_bukti,
                 'tipe' => $pertanyaan->tipe,
-                'skor_maksimal' => $pertanyaan->skor_maksimal,
+                // 'skor_maksimal' => $pertanyaan->skor_maksimal,
                 'opsi_jawaban' => $pertanyaan->OpsiJawaban->map(function ($opsi) {
                     return [
                         'id' => $opsi->id,

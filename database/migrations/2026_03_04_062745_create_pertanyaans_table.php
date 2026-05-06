@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->text('teks_pertanyaan');
             $table->text('kebutuhan_bukti')->nullable(); 
             $table->enum('tipe', ['pilihan_ganda', 'isian_singkat','otomatis_sistem']);
-            $table->integer('skor_maksimal')->default(0); 
+            // $table->integer('skor_maksimal')->default(0); 
             // $table->json('opsi_jawaban')->nullable();
             $table->timestamps();
         });

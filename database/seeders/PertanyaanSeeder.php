@@ -21,7 +21,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'A.1',
                 'category_id' => 1,
                 'kebutuhan_bukti' => ['SK rektor', 'ST', 'laporan kegiatan', 'dokumentasi'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Kebijakan tentang Implementasi Nilai-Nilai Bela Negara dalam Kegiatan Tridharma dan Penunjang',
                 'tipe' => 'pilihan_ganda',
                 'opsi_jawaban' => [
@@ -37,7 +37,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'A.2',
                 'category_id' => 1,
                 'kebutuhan_bukti' => ['Dokumen SK/ST', 'laporan kegiatan'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Kebijakan tentang Pencegahan dan Penanganan Kekerasan',
                 'tipe' => 'pilihan_ganda',
                 'opsi_jawaban' => [
@@ -53,7 +53,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'A.3',
                 'category_id' => 1,
                 'kebutuhan_bukti' => ['Dokumen laporan kegiatan', 'Surat tugas'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Kebijakan tentang Pencegahan dan Pemberantasan Penyalahgunaan dan Peredaran Gelap Narkotika dan Prekursor Narkotika',
                 'tipe' => 'pilihan_ganda',
                 'opsi_jawaban' => [
@@ -69,7 +69,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'A.4',
                 'category_id' => 1,
                 'kebutuhan_bukti' => ['Dokumen: SOP', 'SK/ST', 'laporan kegiatan', 'dokumentasi (foto dan video kegiatan)'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Kebijakan tentang mitigasi bencana serta satgas yang aktif dalam penanggulangan dan kesiapsiagaan bencana',
                 'tipe' => 'pilihan_ganda',
                 'opsi_jawaban' => [
@@ -85,7 +85,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'A.5',
                 'category_id' => 1,
                 'kebutuhan_bukti' => ['Surat Edaran', 'SK'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Kebijakan tentang Penggunaan Produk Dalam Negeri oleh Civitas Akademika',
                 'tipe' => 'pilihan_ganda',
                 'opsi_jawaban' => [
@@ -101,7 +101,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.1',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['SK', 'ST', 'Laporan kegiatan', 'sertifikat'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Unit kerja yang berfokus pada pengembangan karakter bela negara (leadership, patriotisme, dsb) dan sudah beroperasi',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -117,7 +117,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.2',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['RPS', 'Portofolio mata kuliah'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Implementasi penyelenggaraan MKWK (Mata Kuliah Wajib Kurikulum : Pancasila, Agama, Bahasa Indonesia, Kewarganegaraan)',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -133,7 +133,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.3',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['RPS', 'Portofolio mata kuliah'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah mata kuliah wajib institusi berkarakter bela negara (contoh: mata kuliah olahraga/kesehatan mental, bahasa inggris, bela negara, dsb)',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -149,7 +149,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.4',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['Surat Keputusan (SK)', 'Proposal dan Laporan Penelitian Terkait Bela Negara', 'Publikasi Ilmiah Hasil Riset Bela Negara', 'Dokumen Kerja Sama (MoU/MoA)', 'Alokasi Anggaran Riset'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah kelompok riset berkarakter bela negara',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -165,7 +165,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.5',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['SK', 'Laporan Kegiatan dan Dokumentasi'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Pelaksanaan skema Kuliah Kerja Nyata (KKN)',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -181,7 +181,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.6',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['ST Pengabdian Masyarakat', 'Daftar karya dan produk inovasi yang dihasilkan', 'Laporan Kegiatan', 'Dokumentasi'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Persentase jumlah luaran pengabdian masyarakat berupa karya inovatif, seperti pengembangan teknologi atau prototipe, desain produk terhadap jumlah dosen',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -197,7 +197,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.7',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['MoU/PKS/IA', 'Laporan kegiatan', 'Publikasi kegiatan di media'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Persentase jumlah kolaborasi dengan UMKM atau pelaku usaha lokal untuk mendukung program tridharma terhadap jumlah prodi',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -213,7 +213,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.8',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['Laporan Kegiatan', 'Sertifikat'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Keikutsertaan dosen dan atau tenaga kependidikan dalam pelatihan bela negara',
                 'tipe' => 'pilihan_ganda',
                 'opsi_jawaban' => [
@@ -225,7 +225,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.9',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['SK', 'ST', 'Laporan kegiatan', 'sertifikat'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Pusat konseling bagi sivitas akademik',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -241,7 +241,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.10',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['Dokumen: SK/ST', 'kartu anggota KOMCAD', 'dokumen identas sivitas akademika (kartu tanda mahasiswa', 'kartu pegawai)'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah pegawai institusi sebagai anggota komponen cadangan (KOMCAD)',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -257,7 +257,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.11',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['Surat Edaran', 'Dokumentasi Kegiatan'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Penyelenggaraan Upacara Hari Besar Nasional.',
                 'tipe' => 'pilihan_ganda',
                 'opsi_jawaban' => [
@@ -273,7 +273,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.12',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['laporan atau publikasi di web/media sosial terkait pelaksanaan  sosialisasi/seminar/workshop'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah kegiatan sosialisasi/seminar/workshop tentang langkah-langkah menjaga kebersihan, keamanan dan pengelolaan lingkungan, serta anti-radikalisme, seperti pelatihan deteksi dini risiko keamanan atau mitigasi bencana',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -289,7 +289,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.13',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['Dokumen laporan kegiatan', 'terpublikasi di media massa (cetak', 'online)/website kampus'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Skor jumlah penyelenggaraan kompetisi yang bertema nilai-nilai bela negara',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -305,7 +305,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.14',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['SK', 'sertifikat', 'dokumentasi kegiatan'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah penghargaan atau insentif atas prestasi sivitas akademika dari perguruan tinggi',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -321,7 +321,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.15',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['Dokumen SK/ST/PERTOR', 'foto/video', 'laporan'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Fasilitas akomodasi yang layak untuk peserta didik penyandang disabilitas di lingkungan pendidikan tinggi',
                 'tipe' => 'pilihan_ganda',
                 'opsi_jawaban' => [
@@ -386,7 +386,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.16',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['Poster', 'video', 'atau infografis'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah ragam dan variasi media kampanye nilai-nilai cinta tanah air (termasuk pentingnya menjaga kebersihan, keamanan lingkungan, penggunaan produk lokal) yang disebarluaskan di area kampus',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -402,7 +402,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.17',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['Denah ruang', 'video lokasi', 'daftar inventaris'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Fasilitas yang disediakan universitas seperti ruang atau galeri yang digunakan untuk menampilkan karya seni atau hasil kreatifitas mahasiswa dan kegiatan kebudayaan, seperti: museum mini, galeri seni, studio, ruang latihan musik dan tari, atau ruang pertunjukan tradisional',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -418,7 +418,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.18',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['SK Penetapan Ruang', 'Dokumentasi'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Persentase ruang (sekretariat) untuk organisasi mahasiswa seperti Himpunan Mahasiswa dan UKM terhadap jumlah oganisasi mahasiswa',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -434,7 +434,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.19',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['SK', 'Dokumentasi'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Monumen tentang pahlawan nasional di area perguruan tinggi',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -450,7 +450,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'B.20',
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['SK', 'laporan', 'data identitas agama mahasiswa', 'dan Dokumentasi'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Persentase jumlah UKM Keagamaan terhadap jumlah agama dan aliran kepercayaan yang dianut oleh mahasiswa',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -466,7 +466,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'C.1',
                 'category_id' => 3,
                 'kebutuhan_bukti' => ['Dokumen: SK/ST', 'kartu anggota KOMCAD', 'dokumen identas (kartu tanda mahasiswa)'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah mahasiswa aktif sebagai anggota komponen cadangan (KOMCAD)',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -482,7 +482,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'C.2',
                 'category_id' => 3,
                 'kebutuhan_bukti' => ['Dokumen SK/ST', 'laporan kegiatan'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah mahasiswa yang terlibat aktif dalam pencegahan kekerasan di perguruan tinggi',
                 'tipe' => 'pilihan_ganda',
                 'opsi_jawaban' => [
@@ -498,7 +498,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'C.3',
                 'category_id' => 3,
                 'kebutuhan_bukti' => ['Dokumen: SK/ST', 'laporan kegiatan', 'dokumentasi (foto dan video kegiatan)'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Keterlibatan mahasiswa pada upaya mitigasi bencana dan atau dalam penanggulangan dan atau kesiapsiagaan bencana (non KKN)',
                 'tipe' => 'pilihan_ganda',
                 'opsi_jawaban' => [
@@ -513,7 +513,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'C.4',
                 'category_id' => 3,
                 'kebutuhan_bukti' => ['Laporan Kegiatan dan Dokumentasi'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Mahasiswa yang terlibat pada Kuliah Kerja Nyata (KKN) di daerah 3T/ bencana/ konflik',
                 'tipe' => 'pilihan_ganda',
                 'opsi_jawaban' => [
@@ -525,7 +525,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'C.5',
                 'category_id' => 3,
                 'kebutuhan_bukti' => ['Daftar pengabdian masyarakat', 'Laporan Kegiatan', 'berita/publikasi online'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Persentase jumlah mahasiswa yang terlibat dalam pengabdian masyarakat di luar Kuliah Kerja Nyata (KKN) oleh mahasiswa terhadap jumlah mahasiswa aktif',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -541,7 +541,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'C.6',
                 'category_id' => 3,
                 'kebutuhan_bukti' => ['SK REKTOR / PERTOR / SURAT TUGAS --> SK Rektor dan LPJ Terbaru'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah Unit Kegiatan Mahasiswa (UKM)',
                 'tipe' => 'otomatis_sistem',
                 'opsi_jawaban' => [
@@ -557,7 +557,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'C.7',
                 'category_id' => 3,
                 'kebutuhan_bukti' => ['Daftar Nama Mahasiswa Peserta UKM yang di tandatangani oleh Pembina UKM dan disahkan oleh Rektor/Wakil Rektor'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Persentase mahasiswa yang mengikuti UKM terhadap jumlah mahasiswa',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -573,7 +573,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'C.8',
                 'category_id' => 3,
                 'kebutuhan_bukti' => ['Dokumen: SK/ST', 'laporan kegiatan', 'dokumentasi (foto dan video kegiatan)'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah mahasiswa yang mengikuti UKM resimen mahasiswa (MENWA)',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -589,7 +589,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'C.9',
                 'category_id' => 3,
                 'kebutuhan_bukti' => ['Kartu Anggota yang Masih Aktif'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Persentase mahasiswa yang mengikuti organisasi (sesuai bidang keilmuan masing-masing) diluar kampus terhadap jumlah mahasiswa',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -605,7 +605,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'C.10',
                 'category_id' => 3,
                 'kebutuhan_bukti' => ['SK', 'sertifikat', 'dokumentasi kegiatan'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah prestasi mahasiswa dalam kompetisi atau perlombaan',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -621,7 +621,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'C.11',
                 'category_id' => 3,
                 'kebutuhan_bukti' => ['SK/ & LPJ Kegiatan'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah mahasiswa yang mendirikan startup yang tergubung dalam inkubator bisnis Perguruan Tinggi',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -637,7 +637,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'C.12',
                 'category_id' => 3,
                 'kebutuhan_bukti' => ['Daftar kegiatan dan link bukti dokumentasi di Media Massa'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Penyelenggaraan kegiatan yang berkaitan dengan seni budaya oleh mahasiswa',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -653,7 +653,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'C.13',
                 'category_id' => 3,
                 'kebutuhan_bukti' => ['Publikasi karya di media massa'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah karya (seni, desain, dan tulis) mahasiswa yang menyuarakan nilai-nilai kebangsaan dan toleransi di media massa (website kampus, berita online, koran, majalah, TV) dan atau jurnal penelitian/pengabdian',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -669,7 +669,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'C.14',
                 'category_id' => 3,
                 'kebutuhan_bukti' => ['Publikasi kegiatan di media massa  (website kampus', 'berita online', 'koran', 'majalah', 'TV)'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah kegiatan mahasiswa dalam menjaga lingkungan di dalam kampus dan terprogram',
                 'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
@@ -685,7 +685,7 @@ class PertanyaanSeeder extends Seeder
                 'kode_pertanyaan' => 'C.15',
                 'category_id' => 3,
                 'kebutuhan_bukti' => ['Dokumentasi'],
-                'skor_maksimal' => 0,
+                // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Keterlibatan mahasiswa dalam Upacara Hari Besar Nasional.',
                 'tipe' => 'pilihan_ganda',
                 'opsi_jawaban' => [
@@ -703,6 +703,11 @@ class PertanyaanSeeder extends Seeder
         foreach ($pertanyaan as $p) {
             $opsiJawabanData = $p['opsi_jawaban'] ?? null;
             unset($p['opsi_jawaban'], $p['deskripsi']);
+
+            // Konversi array kebutuhan_bukti menjadi string karena cast json sudah dilepas
+            if (isset($p['kebutuhan_bukti']) && is_array($p['kebutuhan_bukti'])) {
+                $p['kebutuhan_bukti'] = implode(', ', $p['kebutuhan_bukti']);
+            }
 
             $createdPertanyaan = Pertanyaan::create($p);
 

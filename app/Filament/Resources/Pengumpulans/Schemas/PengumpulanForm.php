@@ -13,10 +13,10 @@ class PengumpulanForm
         return $schema
             ->components([
                 Select::make('user_id')
-                    ->relationship('user', 'name')
+                    ->relationship('user', 'email')
                     ->required(),
                 Select::make('reviewer_id')
-                    ->relationship('reviewer', 'name'),
+                    ->relationship('reviewer', 'nama_lengkap'),
                 Select::make('status')
                     ->options([
                         'pending' => 'Pending',

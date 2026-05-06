@@ -247,7 +247,7 @@ DONE 1 instansi 1 akun aktif email pic per tahun
 DONE Api buat nembak opsi jawaban (get per rubrik)
 Ngitung biar masuk value yang mana di jawaban_teks / yang mengisi
 
-- Plotting akun reviewer n peserta
-- Timeline lock submission
-- bikin akun reviewer
-- pemetaan fix status pengerjaan
+- CHECK Plotting akun reviewer n peserta
+- CHECK Timeline lock submission
+- CHECK bikin akun reviewer
+- DONE pemetaan fix status pengerjaan

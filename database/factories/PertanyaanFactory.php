@@ -26,7 +26,7 @@ class PertanyaanFactory extends Factory
             'teks_pertanyaan' => $this->faker->sentence(),
             'kebutuhan_bukti' => $this->faker->sentence(),
             'tipe' => $this->faker->randomElement(['pilihan_ganda', 'essay', 'file']),
-            'skor_maksimal' => $this->faker->numberBetween(1, 100),
+            // 'skor_maksimal' => $this->faker->numberBetween(1, 100),
             'opsi_jawaban' => $this->faker->randomElements(['A', 'B', 'C', 'D'], 4),
         ];
     }
