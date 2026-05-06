@@ -185,7 +185,33 @@ class AssessmentService extends BaseService
             'assessment_id'   => $assessment->id,
             'status'          => $assessment->status,
             'is_edit_enabled' => $isEditEnabled,
-            'questions'       => $questions
+            'questions'       => $questions,
+            'profil'          => $this->getProfilData($assessment),
+        ];
+    }
+
+    /**
+     * Mengambil data profil identitas peserta beserta jumlah agama aktif.
+     * Digunakan untuk kalkulasi formula preview di sisi frontend.
+     */
+    private function getProfilData($assessment): array
+    {
+        $identitas = \App\Models\Identitas::with('agamas')
+            ->where('pengumpulan_id', $assessment->id)
+            ->first();
+
+        return [
+            'jml_mahasiswa'   => $identitas?->jml_mahasiswa ?? 0,
+            'jml_dosen'       => $identitas?->jml_dosen ?? 0,
+            'jml_tendik'      => $identitas?->jml_tendik ?? 0,
+            'jml_prodi'       => $identitas?->jml_prodi ?? 0,
+            'jml_ukm'         => $identitas?->jml_ukm ?? 0,
+            'jml_fakultas'    => $identitas?->jml_fakultas ?? 0,
+            'jml_ormawa'      => $identitas?->jml_ormawa ?? 0,
+            // Jumlah jenis agama/kepercayaan yang memiliki penganut > 0 (untuk B.20)
+            'jml_agama_aktif' => $identitas
+                ? $identitas->agamas->where('jumlah', '>', 0)->count()
+                : 0,
         ];
     }
 

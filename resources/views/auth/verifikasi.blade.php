@@ -171,6 +171,10 @@
             });
             const result = await response.json();
             if (response.ok && result.success) {
+                // Sync user data to local state & storage
+                this.user = { ...this.user, ...result.data.user };
+                localStorage.setItem('auth_user', JSON.stringify(this.user));
+
                 if (result.data.pengumpulan) {
                     const p = result.data.pengumpulan;
                     if (['IN_PROGRESS', 'SUBMITTED', 'GRADED'].includes(p.status)) {
@@ -404,7 +408,7 @@
         <div class="max-w-[800px] mx-auto">
           <div class="text-center mb-[40px]">
             <h1 class="text-[28px] md:text-[32px] font-bold text-[#1d293d] tracking-tight mb-[12px]">
-              Selamat Datang, <span x-text="formData.nama_pt || user.email || 'Peserta'"></span>
+              Selamat Datang, <span x-text="formData.nama_pt || user.nama_institusi || user.email || 'Peserta'"></span>
             </h1>
             <p class="text-[#64748b] text-[15px] md:text-[16px] max-w-[600px] mx-auto">
               Lengkapi formulir di bawah ini untuk mengonfirmasi partisipasi institusi Anda dalam kegiatan 
