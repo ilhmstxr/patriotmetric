@@ -24,11 +24,9 @@ return new class extends Migration {
             $table->enum(
                 'status',
                 [
-                    "UNVERIFIED",
                     "PENDING",
                     "ACTIVE",
                     "SUSPENDED",
-                    "BANNED",
                 ]
             );
             $table->rememberToken();

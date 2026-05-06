@@ -242,3 +242,12 @@ role => PESERTA, jika registrasi otomatis ke role peserta
 2. Perhitungan rumus rubrik
 3. Preview setelah submit (presentase) 
 4.
+
+DONE 1 instansi 1 akun aktif email pic per tahun
+DONE Api buat nembak opsi jawaban (get per rubrik)
+Ngitung biar masuk value yang mana di jawaban_teks / yang mengisi
+
+- Plotting akun reviewer n peserta
+- Timeline lock submission
+- bikin akun reviewer
+- pemetaan fix status pengerjaan
