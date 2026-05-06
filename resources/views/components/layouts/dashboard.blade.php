@@ -31,6 +31,20 @@
                 window.location.replace('/masuk');
                 return;
             }
+
+            // Cek expiry token (dari "Ingat saya" / default)
+            const expiresAt = localStorage.getItem('token_expires_at');
+            if (expiresAt && Date.now() > new Date(expiresAt).getTime()) {
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('auth_user');
+                localStorage.removeItem('pengumpulan_status');
+                localStorage.removeItem('profile_data_cache');
+                localStorage.removeItem('rubrik_questions_cache');
+                localStorage.removeItem('token_expires_at');
+                sessionStorage.clear();
+                window.location.replace('/masuk');
+                return;
+            }
             
             // Sync check: Reviewer tidak boleh di dashboard peserta
             const userStr = localStorage.getItem('auth_user');

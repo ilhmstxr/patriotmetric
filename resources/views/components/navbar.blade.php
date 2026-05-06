@@ -1,4 +1,28 @@
-<nav class="z-50 bg-[rgba(255,255,255,0.85)] backdrop-blur-md border-b border-[rgba(255,255,255,0.2)] shadow-[0px_4px_30px_0px_rgba(27,94,32,0.05)]" x-data="{ mobileMenuOpen: false }">
+<nav class="z-50 bg-[rgba(255,255,255,0.85)] backdrop-blur-md border-b border-[rgba(255,255,255,0.2)] shadow-[0px_4px_30px_0px_rgba(27,94,32,0.05)]"
+     x-data="{
+        mobileMenuOpen: false,
+        isAuth: !!localStorage.getItem('auth_token'),
+        userRole: ((JSON.parse(localStorage.getItem('auth_user') || '{}')).role || '').toLowerCase(),
+        get dashboardUrl() { return this.userRole === 'reviewer' ? '/reviewer' : '/dashboard'; },
+        async logout() {
+            try {
+                await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('auth_token'), 'Accept': 'application/json' }
+                });
+            } catch (e) {}
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('auth_user');
+            localStorage.removeItem('pengumpulan_status');
+            localStorage.removeItem('profile_data_cache');
+            localStorage.removeItem('rubrik_questions_cache');
+            localStorage.removeItem('rubrik_data_cache');
+            localStorage.removeItem('hasil_data_cache');
+            localStorage.removeItem('token_expires_at');
+            sessionStorage.clear();
+            window.location.href = '/';
+        }
+     }">
     <div class="flex h-[65px] items-center justify-between px-4 lg:px-8 max-w-[1536px] mx-auto">
         {{-- Logo --}}
         <a href="{{ url('/') }}" class="flex gap-[7px] items-center shrink-0">
@@ -69,12 +93,31 @@
 
         {{-- Desktop Auth Buttons --}}
         <div class="hidden lg:flex gap-3 items-center">
-            <a href="{{ url('/masuk') }}" class="h-[38px] rounded-[20px] border border-[rgba(27,94,32,0.2)] flex items-center justify-center px-5 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#1b5e20] hover:bg-[rgba(27,94,32,0.05)] transition-colors">
-                Masuk
-            </a>
-            <a href="{{ url('/daftar') }}" class="h-[36px] rounded-[20px] bg-[#1b5e20] shadow-[0px_10px_15px_0px_rgba(27,94,32,0.25),0px_4px_6px_0px_rgba(27,94,32,0.25)] flex items-center justify-center px-5 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-white hover:bg-[#174d1a] transition-colors">
-                Daftar
-            </a>
+            {{-- Saat BELUM login --}}
+            <template x-if="!isAuth">
+                <div class="flex gap-3 items-center">
+                    <a href="{{ url('/masuk') }}" class="h-[38px] rounded-[20px] border border-[rgba(27,94,32,0.2)] flex items-center justify-center px-5 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#1b5e20] hover:bg-[rgba(27,94,32,0.05)] transition-colors">
+                        Masuk
+                    </a>
+                    <a href="{{ url('/daftar') }}" class="h-[36px] rounded-[20px] bg-[#1b5e20] shadow-[0px_10px_15px_0px_rgba(27,94,32,0.25),0px_4px_6px_0px_rgba(27,94,32,0.25)] flex items-center justify-center px-5 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-white hover:bg-[#174d1a] transition-colors">
+                        Daftar
+                    </a>
+                </div>
+            </template>
+            {{-- Saat SUDAH login --}}
+            <template x-if="isAuth">
+                <div class="flex gap-2 items-center">
+                    <a :href="dashboardUrl" class="h-[36px] rounded-[20px] bg-[#1b5e20] shadow-[0px_10px_15px_0px_rgba(27,94,32,0.25),0px_4px_6px_0px_rgba(27,94,32,0.25)] flex items-center justify-center gap-2 px-5 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-white hover:bg-[#174d1a] transition-colors">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                        Dashboard
+                    </a>
+                    <button type="button" @click="logout()"
+                        title="Keluar"
+                        class="h-[38px] w-[38px] rounded-full border border-[rgba(229,57,53,0.25)] text-[#e53935] hover:bg-red-50 transition-colors flex items-center justify-center focus:outline-none">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </template>
         </div>
 
         {{-- Mobile Hamburger --}}
@@ -115,8 +158,24 @@
         </div>
         
         <div class="flex flex-col gap-3 pt-4 px-2 border-t border-[#f1f5f9]">
-            <a href="{{ url('/masuk') }}" class="w-full h-[40px] rounded-[20px] border border-[rgba(27,94,32,0.2)] flex items-center justify-center font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#1b5e20]">Masuk</a>
-            <a href="{{ url('/daftar') }}" class="w-full h-[40px] rounded-[20px] bg-[#1b5e20] flex items-center justify-center font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-white">Daftar</a>
+            <template x-if="!isAuth">
+                <div class="flex flex-col gap-3">
+                    <a href="{{ url('/masuk') }}" class="w-full h-[40px] rounded-[20px] border border-[rgba(27,94,32,0.2)] flex items-center justify-center font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#1b5e20]">Masuk</a>
+                    <a href="{{ url('/daftar') }}" class="w-full h-[40px] rounded-[20px] bg-[#1b5e20] flex items-center justify-center font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-white">Daftar</a>
+                </div>
+            </template>
+            <template x-if="isAuth">
+                <div class="flex flex-col gap-3">
+                    <a :href="dashboardUrl" class="w-full h-[40px] rounded-[20px] bg-[#1b5e20] flex items-center justify-center gap-2 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-white">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                        Dashboard
+                    </a>
+                    <button type="button" @click="logout()" class="w-full h-[40px] rounded-[20px] border border-[rgba(229,57,53,0.25)] flex items-center justify-center gap-2 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#e53935] hover:bg-red-50">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                        Keluar
+                    </button>
+                </div>
+            </template>
         </div>
     </div>
 </nav>

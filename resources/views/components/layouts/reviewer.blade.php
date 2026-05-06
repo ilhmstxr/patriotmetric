@@ -20,7 +20,17 @@
     {{-- ⚡ Immediate auth guard --}}
     <script>
         (function() {
-            if (!localStorage.getItem('auth_token')) {
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                window.location.replace('/masuk');
+                return;
+            }
+            const expiresAt = localStorage.getItem('token_expires_at');
+            if (expiresAt && Date.now() > new Date(expiresAt).getTime()) {
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('auth_user');
+                localStorage.removeItem('token_expires_at');
+                sessionStorage.clear();
                 window.location.replace('/masuk');
             }
         })();

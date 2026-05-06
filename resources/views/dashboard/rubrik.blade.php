@@ -14,6 +14,20 @@
         saveTimers: {},
         saveStatus: {},
 
+        {{-- Cache key untuk lazy loading --}}
+        cacheKey: 'rubrik_questions_cache',
+
+        {{-- Toast global state --}}
+        toast: { show: false, type: 'info', title: '', message: '' },
+        toastTimer: null,
+        showToast(type, title, message, duration = 3000) {
+            this.toast = { show: true, type, title, message };
+            clearTimeout(this.toastTimer);
+            if (type !== 'error' && duration > 0) {
+                this.toastTimer = setTimeout(() => this.toast.show = false, duration);
+            }
+        },
+
         {{-- Floating Drawer State --}}
         drawerOpen: false,
 
@@ -64,43 +78,112 @@
                 if (savedFlags) this.flags = JSON.parse(savedFlags);
             } catch(e) {}
 
+            {{-- Load cache jika ada → render LANGSUNG tanpa loading --}}
+            const cached = this.readCache();
+            if (cached && cached.data) {
+                this.applyData(cached.data);
+                this.loading = false;
+
+                {{-- Silent version check di background --}}
+                this.checkVersionAndRefresh(cached.version);
+            } else {
+                {{-- Akses pertama: tampilkan loading + fetch full --}}
+                this.loading = true;
+                await this.fetchAndCache(true);
+            }
+        },
+
+        readCache() {
             try {
-                {{-- Selalu ambil fresh dari API (tidak pakai cache) agar profil selalu up-to-date --}}
+                const raw = localStorage.getItem(this.cacheKey);
+                return raw ? JSON.parse(raw) : null;
+            } catch (e) { return null; }
+        },
+
+        writeCache(data, version) {
+            try {
+                localStorage.setItem(this.cacheKey, JSON.stringify({
+                    data, version, savedAt: Date.now()
+                }));
+            } catch (e) {}
+        },
+
+        applyData(data) {
+            this.status = data.status;
+            this.is_edit_enabled = data.is_edit_enabled;
+            this.profil = data.profil || {};
+            this.answers = {};
+            this.links = {};
+            this.categories = this.groupByCategory(data.questions);
+
+            this.$nextTick(() => {
+                this.allQuestions
+                    .filter(q => q.type === 'otomatis_sistem')
+                    .forEach(q => {
+                        const val = this.computeAutomatic(q);
+                        if (val !== null && (this.answers[q.id] === undefined || this.answers[q.id] === null || this.answers[q.id] === '')) {
+                            this.answers[q.id] = val;
+                            this.scheduleAutoSave(q.id);
+                        }
+                    });
+                if (window.lucide) window.lucide.createIcons();
+            });
+        },
+
+        async checkVersionAndRefresh(currentVersion) {
+            try {
+                const res = await fetch('/api/assessment/peserta/questions/version', {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!res.ok) return;
+                const result = await res.json();
+                if (result.success && result.data.version && result.data.version !== currentVersion) {
+                    {{-- Versi berbeda → fetch silent (tanpa loading spinner) --}}
+                    await this.fetchAndCache(false);
+                }
+            } catch (e) { /* silent */ }
+        },
+
+        async fetchAndCache(showLoading) {
+            if (showLoading) this.loading = true;
+            try {
                 const response = await fetch('/api/assessment/peserta/questions', {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
                         'Accept': 'application/json'
                     }
                 });
-                const result = await response.json();
 
-                if (result.success) {
-                    this.status = result.data.status;
-                    this.is_edit_enabled = result.data.is_edit_enabled;
-                    this.profil = result.data.profil || {};
-                    this.categories = this.groupByCategory(result.data.questions);
-
-                    {{-- Auto-fill untuk soal tipe otomatis_sistem --}}
-                    this.$nextTick(() => {
-                        this.allQuestions
-                            .filter(q => q.type === 'otomatis_sistem')
-                            .forEach(q => {
-                                const val = this.computeAutomatic(q);
-                                if (val !== null && (this.answers[q.id] === undefined || this.answers[q.id] === null || this.answers[q.id] === '')) {
-                                    this.answers[q.id] = val;
-                                    {{-- Auto-save nilai otomatis ke DB --}}
-                                    this.scheduleAutoSave(q.id);
-                                }
-                            });
-                        if (window.lucide) window.lucide.createIcons();
-                    });
-                } else if (response.status === 401) {
+                if (response.status === 401) {
+                    localStorage.removeItem(this.cacheKey);
                     window.location.href = '/masuk';
+                    return;
+                }
+
+                const result = await response.json();
+                if (result.success) {
+                    this.applyData(result.data);
+
+                    {{-- Ambil versi terbaru lalu simpan cache --}}
+                    let version = null;
+                    try {
+                        const v = await fetch('/api/assessment/peserta/questions/version', {
+                            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('auth_token'), 'Accept': 'application/json' }
+                        });
+                        const vr = await v.json();
+                        if (vr.success) version = vr.data.version;
+                    } catch (e) {}
+
+                    this.writeCache(result.data, version);
                 }
             } catch (error) {
                 console.error('Gagal mengambil data pertanyaan:', error);
+                if (showLoading) this.showToast('error', 'Gagal memuat rubrik', 'Periksa koneksi internet Anda.');
             } finally {
-                this.loading = false;
+                if (showLoading) this.loading = false;
             }
         },
 
@@ -170,6 +253,7 @@
             const url = this.links[qId];
             if (url && url.trim() !== '' && !this.isValidDriveLink(url)) {
                 this.saveStatus[qId] = 'invalid_link';
+                this.showToast('warning', 'Tautan tidak valid', 'Gunakan tautan Google Drive yang dapat diakses publik.');
                 return;
             }
 
@@ -203,13 +287,21 @@
                     body: JSON.stringify(payload)
                 });
                 const result = await res.json();
-                this.saveStatus[qId] = (res.ok && result.success) ? 'saved' : 'error';
-                {{-- Reset status 'saved' setelah 2 detik agar tidak terlalu mencolok --}}
+                if (res.ok && result.success) {
+                    this.saveStatus[qId] = 'saved';
+                    this.showToast('success', 'Tersimpan', 'Jawaban soal ' + (question.code || '') + ' berhasil direkam.');
+                    {{-- Invalidate cache agar version check selanjutnya sinkron --}}
+                    localStorage.removeItem(this.cacheKey);
+                } else {
+                    this.saveStatus[qId] = 'error';
+                    this.showToast('error', 'Gagal menyimpan', result.message || 'Periksa koneksi dan coba lagi.');
+                }
                 if (this.saveStatus[qId] === 'saved') {
                     setTimeout(() => { if (this.saveStatus[qId] === 'saved') this.saveStatus[qId] = ''; }, 2000);
                 }
             } catch(e) {
                 this.saveStatus[qId] = 'error';
+                this.showToast('error', 'Gagal menyimpan', 'Tidak dapat terhubung ke server.');
             }
         },
 
@@ -286,14 +378,15 @@
                     sessionStorage.removeItem('rubrik_data_cache');
                     sessionStorage.removeItem('hasil_data_cache');
                     sessionStorage.removeItem('rubrik_flags'); {{-- Clear flags on submit --}}
-                    alert('Draft berhasil disimpan dan di-submit!');
+                    localStorage.removeItem(this.cacheKey); {{-- Invalidate cache pertanyaan --}}
+                    this.showToast('success', 'Draft tersubmit', 'Seluruh jawaban berhasil dikirim untuk direview.');
                     this.status = 'SUBMITTED';
-                    window.location.href = '/dashboard/hasil';
+                    setTimeout(() => { window.location.href = '/dashboard/hasil'; }, 1200);
                 } else {
-                    alert(result.message || 'Gagal menyimpan draft.');
+                    this.showToast('error', 'Gagal submit', result.message || 'Periksa kembali jawaban Anda.');
                 }
             } catch (error) {
-                alert('Terjadi kesalahan jaringan.');
+                this.showToast('error', 'Kesalahan jaringan', 'Tidak dapat terhubung ke server.');
             } finally {
                 this.isSaving = false;
             }
@@ -375,11 +468,13 @@
                                         <div class="flex-1 p-5 space-y-4">
                                             <div class="flex items-center justify-between mb-1">
                                                 <p class="text-[10px] font-bold text-[#62748e] uppercase tracking-wider">Jawaban:</p>
-                                                {{-- Save Status Badge --}}
-                                                <span x-show="saveStatus[q.id] === 'invalid_link'" class="text-[10px] text-red-500 font-bold flex items-center gap-1" style="display:none;">✗ Bukan Link Google Drive</span>
-                                                <span x-show="saveStatus[q.id] === 'saving'" class="text-[10px] text-amber-500 font-medium flex items-center gap-1" style="display:none;">⏳ Menyimpan...</span>
-                                                <span x-show="saveStatus[q.id] === 'saved'" class="text-[10px] text-emerald-600 font-semibold flex items-center gap-1" style="display:none;">✓ Tersimpan</span>
-                                                <span x-show="saveStatus[q.id] === 'error'" class="text-[10px] text-red-500 font-semibold flex items-center gap-1" style="display:none;">✗ Gagal simpan</span>
+                                                {{-- Inline indicator kecil (toast global menangani notifikasi besar) --}}
+                                                <span x-show="saveStatus[q.id] === 'saving'" style="display:none;" class="text-[10px] text-amber-500 font-medium inline-flex items-center gap-1">
+                                                    <i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Menyimpan
+                                                </span>
+                                                <span x-show="saveStatus[q.id] === 'saved'" style="display:none;" class="text-[10px] text-[#1b5e20] font-semibold inline-flex items-center gap-1">
+                                                    <i data-lucide="check" class="w-3 h-3"></i> Tersimpan
+                                                </span>
                                             </div>
 
                                             {{-- Pilihan Ganda --}}
@@ -612,6 +707,46 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        {{-- ================================================================== --}}
+        {{-- 🔔 TOAST NOTIFIKASI GLOBAL — pojok kanan atas, tema-konsisten      --}}
+        {{-- ================================================================== --}}
+        <div x-show="toast.show"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 translate-y-[-8px]"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed top-[136px] right-4 z-[60] max-w-[340px] shadow-2xl rounded-xl border overflow-hidden flex items-start gap-3 p-3.5 bg-white"
+             :class="{
+                'border-[#1b5e20]/30': toast.type === 'success',
+                'border-amber-300': toast.type === 'warning',
+                'border-red-300': toast.type === 'error',
+                'border-blue-300': toast.type === 'info'
+             }"
+             style="display:none; font-family:'Plus Jakarta Sans',sans-serif;">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                 :class="{
+                    'bg-[#e8f5e9] text-[#1b5e20]': toast.type === 'success',
+                    'bg-amber-50 text-amber-600': toast.type === 'warning',
+                    'bg-red-50 text-red-600': toast.type === 'error',
+                    'bg-blue-50 text-blue-600': toast.type === 'info'
+                 }">
+                <i x-show="toast.type === 'success'" data-lucide="check-circle-2" class="w-[18px] h-[18px]"></i>
+                <i x-show="toast.type === 'warning'" data-lucide="alert-triangle" class="w-[18px] h-[18px]" style="display:none;"></i>
+                <i x-show="toast.type === 'error'" data-lucide="alert-circle" class="w-[18px] h-[18px]" style="display:none;"></i>
+                <i x-show="toast.type === 'info'" data-lucide="info" class="w-[18px] h-[18px]" style="display:none;"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-[13px] font-bold text-[#1d293d] leading-tight" x-text="toast.title"></p>
+                <p class="text-[12px] text-[#62748e] mt-0.5 leading-snug" x-text="toast.message"></p>
+            </div>
+            <button type="button" @click="toast.show = false"
+                class="text-[#90a1b9] hover:text-[#45556c] transition-colors p-0.5 -mt-1 -mr-1 focus:outline-none">
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+            </button>
         </div>
 
     </div>

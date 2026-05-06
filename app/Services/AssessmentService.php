@@ -246,8 +246,37 @@ class AssessmentService extends BaseService
         $payload['tautan_bukti_drive'] = $dto->tautanBukti;
         $payload['note_reviewer']      = $dto->noteReviewer;
 
-        // 5. Delegasi ke Repository (Upsert)
+        // 5. Aturan skor: hanya dihitung saat jawaban DAN tautan bukti keduanya terisi.
+        //    Soal otomatis_sistem dikecualikan karena tidak butuh tautan bukti.
+        $hasJawaban = !empty($payload['jawaban_id']) || (isset($payload['jawaban_teks']) && trim((string) $payload['jawaban_teks']) !== '');
+        $hasTautan = !empty($payload['tautan_bukti_drive']) && trim((string) $payload['tautan_bukti_drive']) !== '';
+        $isOtomatis = ($pertanyaan->tipe ?? null) === 'otomatis_sistem';
+        if (!$isOtomatis && (!$hasJawaban || !$hasTautan)) {
+            $payload['skor_sistem'] = 0;
+        }
+
+        // 6. Delegasi ke Repository (Upsert)
         return $this->repository->upsertJawaban($payload);
+    }
+
+    /**
+     * Mengembalikan token versi (timestamp ISO) untuk validasi cache rubrik di frontend.
+     * Frontend melakukan stale-while-revalidate: jika versi sama, tidak perlu refetch full data.
+     */
+    public function getQuestionsVersion($assessment): array
+    {
+        $latestPertanyaan = \App\Models\Pertanyaan::max('updated_at');
+        $latestJawaban = \App\Models\PengumpulanJawaban::where('submission_id', $assessment->id)->max('updated_at');
+
+        $components = array_filter([$latestPertanyaan, $latestJawaban, $assessment->updated_at]);
+        $version = $components ? max($components) : null;
+
+        return [
+            'version' => $version ? (string) $version : null,
+            'pertanyaan_updated_at' => $latestPertanyaan ? (string) $latestPertanyaan : null,
+            'jawaban_updated_at' => $latestJawaban ? (string) $latestJawaban : null,
+            'assessment_status' => $assessment->status,
+        ];
     }
 
     /**
@@ -596,6 +625,14 @@ class AssessmentService extends BaseService
                 $syncData = $this->jawabanAutoSync($dto, $pertanyaan);
                 $payload = array_merge($payload, $syncData);
                 $payload['tautan_bukti_drive'] = $dto->tautanBukti;
+
+                // Aturan skor: hanya dihitung saat jawaban DAN tautan bukti keduanya terisi.
+                $hasJawaban = !empty($payload['jawaban_id']) || (isset($payload['jawaban_teks']) && trim((string) $payload['jawaban_teks']) !== '');
+                $hasTautan = !empty($payload['tautan_bukti_drive']) && trim((string) $payload['tautan_bukti_drive']) !== '';
+                $isOtomatis = ($pertanyaan->tipe ?? null) === 'otomatis_sistem';
+                if (!$isOtomatis && (!$hasJawaban || !$hasTautan)) {
+                    $payload['skor_sistem'] = 0;
+                }
 
                 $this->repository->upsertJawaban($payload);
             }

@@ -43,6 +43,7 @@
         <div class="flex-1 flex items-center justify-center px-6 md:px-8 py-10 md:py-16 bg-white" x-data="{ 
             email: '', 
             password: '', 
+            remember: false,
             showPassword: false,
             isLoading: false, 
             errorMessage: '',
@@ -60,7 +61,8 @@
                         },
                         body: JSON.stringify({
                             email: this.email,
-                            password: this.password
+                            password: this.password,
+                            remember: this.remember
                         })
                     });
                     
@@ -73,11 +75,18 @@
                         sessionStorage.clear();
                         localStorage.removeItem('auth_user');
                         localStorage.removeItem('auth_token');
+                        localStorage.removeItem('token_expires_at');
 
                         // Simpan token untuk API calls selanjutnya
                         localStorage.setItem('auth_token', result.data.token);
                         localStorage.setItem('auth_user', JSON.stringify(result.data.user));
                         localStorage.setItem('pengumpulan_status', result.data.pengumpulan_status || 'ACTIVE');
+                        if (result.data.token_expires_at) {
+                            localStorage.setItem('token_expires_at', result.data.token_expires_at);
+                        }
+                        if (typeof result.data.remember !== 'undefined') {
+                            localStorage.setItem('auth_remember', result.data.remember ? '1' : '0');
+                        }
 
                         // Redirect berdasarkan status dari server
                         const redirectTo = result.data.redirect_to || '/verifikasi';
@@ -147,13 +156,14 @@
                     {{-- Remember & Forgot --}}
                     <div class="flex items-center justify-between">
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input name="remember" type="checkbox" class="size-4 rounded accent-[#1b5e20]" />
+                            <input name="remember" type="checkbox" x-model="remember" class="size-4 rounded accent-[#1b5e20]" />
                             <span class="font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#45556c]">Ingat saya</span>
                         </label>
                         <a href="#" class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] text-[#1b5e20] hover:underline">
                             Lupa sandi?
                         </a>
                     </div>
+                    <p class="text-[11px] text-[#90a1b9] -mt-3">Centang "Ingat saya" untuk tetap login selama 30 hari (default 8 jam).</p>
 
                     {{-- Submit --}}
                     <button

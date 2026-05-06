@@ -19,6 +19,7 @@ class Institusi extends Model
         'id',
         'nama_institusi',
         'jenis_institusi',
+        'domain_email',
     ];
 
     protected static function boot()

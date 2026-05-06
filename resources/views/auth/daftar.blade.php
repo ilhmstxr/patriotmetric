@@ -27,6 +27,10 @@
         showPassword: false,
         errorMessage: '',
         successMessage: '',
+        emailDomainError: '',
+        institusiCheckMessage: '',
+        institusiCheckExists: false,
+        institusiCheckTimer: null,
         formData: {
             nama_pt: '',
             jenis_pt: '',
@@ -37,9 +41,52 @@
             password: '',
             password_confirmation: ''
         },
+        validateEmailDomain() {
+            const re = /@[a-z0-9.-]+\.ac\.id$/i;
+            if (this.formData.email && !re.test(this.formData.email)) {
+                this.emailDomainError = 'Email harus menggunakan domain institusi resmi (.ac.id).';
+            } else {
+                this.emailDomainError = '';
+            }
+        },
+        scheduleInstitusiCheck() {
+            this.validateEmailDomain();
+            clearTimeout(this.institusiCheckTimer);
+            this.institusiCheckTimer = setTimeout(() => this.checkInstitusi(), 600);
+        },
+        async checkInstitusi() {
+            const nama = (this.formData.nama_pt || '').trim();
+            const email = (this.formData.email || '').trim();
+            if (!nama && !email) {
+                this.institusiCheckMessage = '';
+                this.institusiCheckExists = false;
+                return;
+            }
+            try {
+                const params = new URLSearchParams({ nama, email });
+                const res = await fetch('/api/auth/check-institusi?' + params.toString(), {
+                    headers: { 'Accept': 'application/json' }
+                });
+                const result = await res.json();
+                if (res.ok && result.success) {
+                    this.institusiCheckExists = !!result.data.exists;
+                    this.institusiCheckMessage = this.institusiCheckExists ? result.data.message : '';
+                }
+            } catch (e) { /* silent */ }
+        },
         async register() {
             if (!this.agree || !this.$refs.form.checkValidity()) return;
-            
+
+            this.validateEmailDomain();
+            if (this.emailDomainError) {
+                this.errorMessage = this.emailDomainError;
+                return;
+            }
+            if (this.institusiCheckExists) {
+                this.errorMessage = this.institusiCheckMessage || 'Institusi atau email sudah terdaftar.';
+                return;
+            }
+
             // Bypass confirmasi password jika form tidak memiliki field tersebut
             this.formData.password_confirmation = this.formData.password;
 
@@ -126,7 +173,7 @@
                                 <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                                     <i data-lucide="building-2" class="w-5 h-5 text-[#90A1B9]"></i>
                                 </div>
-                                <input name="nama_institusi" type="text" x-model="formData.nama_pt" required placeholder=" " class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
+                                <input name="nama_institusi" type="text" x-model="formData.nama_pt" @input.debounce.600ms="scheduleInstitusiCheck()" required placeholder=" " class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
                                 <label class="absolute left-12 top-4 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#62748e] transition-all peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[12px] peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-[12px] pointer-events-none">
                                     Nama Perguruan Tinggi
                                 </label>
@@ -195,11 +242,19 @@
                                 <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                                     <i data-lucide="mail" class="w-5 h-5 text-[#90A1B9]"></i>
                                 </div>
-                                <input name="email" type="email" x-model="formData.email" required placeholder="dosen@upnjatim.ac.id" class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] placeholder-hide-on-blur transition" />
+                                <input name="email" type="email" x-model="formData.email"
+                                    @input="scheduleInstitusiCheck()"
+                                    pattern="^[^@\s]+@[A-Za-z0-9.-]+\.ac\.id$"
+                                    title="Gunakan email berdomain .ac.id"
+                                    required placeholder="dosen@upnjatim.ac.id" class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] placeholder-hide-on-blur transition" />
                                 <label class="absolute left-12 top-4 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#62748e] transition-all peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[12px] peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-[12px] pointer-events-none">
-                                    Email PIC
+                                    Email PIC (institusi .ac.id)
                                 </label>
                             </div>
+                            {{-- Inline warning email & institusi --}}
+                            <p x-show="emailDomainError" style="display:none;" x-text="emailDomainError" class="text-[12px] text-red-500 font-medium -mt-2 ml-2"></p>
+                            <p x-show="institusiCheckExists && institusiCheckMessage" style="display:none;" x-text="institusiCheckMessage" class="text-[12px] text-amber-600 font-medium -mt-2 ml-2 flex items-center gap-1.5">
+                            </p>
 
                             {{-- Field Password --}}
                             <div class="relative">

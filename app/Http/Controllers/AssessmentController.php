@@ -173,6 +173,21 @@ class AssessmentController extends Controller
     }
 
     /**
+     * GET /api/assessment/peserta/questions/version
+     * Lightweight endpoint untuk validasi cache rubrik di frontend (stale-while-revalidate).
+     */
+    public function getQuestionsVersion(Request $request)
+    {
+        try {
+            $assessment = $this->getValidatedAssessment(AssessmentService::MODE_ANY);
+            $data = $this->AssessmentService->getQuestionsVersion($assessment);
+            return $this->successResponse($data, 'OK', 200);
+        } catch (\Throwable $e) {
+            return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
+        }
+    }
+
+    /**
      * GET /api/assessment/peserta/hasil
      * Returns hasil (results) data for the dashboard with raw/validated scores
      */
