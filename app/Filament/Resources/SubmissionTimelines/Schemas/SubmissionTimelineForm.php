@@ -28,25 +28,20 @@ class SubmissionTimelineForm
                             ->ignore($record?->id);
                     })
                     ->helperText('Satu baris timeline per tahun periode (unik).'),
-                DateTimePicker::make('opens_at')
-                    ->label('Dibuka Mulai')
-                    ->seconds(false)
-                    ->helperText('Kosongkan jika ingin selalu terbuka sejak awal.'),
+                // DateTimePicker::make('opens_at')
+                //     ->label('Dibuka Mulai')
+                //     ->seconds(false)
+                //     ->helperText('Kosongkan jika ingin selalu terbuka sejak awal.'),
                 DateTimePicker::make('closes_at')
                     ->label('Ditutup Pada')
                     ->seconds(false)
                     ->after('opens_at')
                     ->helperText('Kosongkan jika tidak ada deadline.'),
-                Toggle::make('is_locked')
-                    ->label('Kunci Manual (Force Lock)')
-                    ->helperText('Aktifkan untuk segera mengunci submission tanpa menunggu deadline.')
-                    ->default(false),
-                Textarea::make('note')
-                    ->label('Catatan / Pesan untuk Peserta')
-                    ->rows(3)
-                    ->maxLength(500)
-                    ->helperText('Pesan ini akan ditampilkan ke peserta saat submission ditolak.')
-                    ->columnSpanFull(),
+                // Toggle::make('is_locked')
+                //     ->label('Kunci Manual (Force Lock)')
+                //     ->helperText('Aktifkan untuk segera mengunci submission tanpa menunggu deadline.')
+                //     ->default(false),
+
             ]);
     }
 }

@@ -251,3 +251,5 @@ Ngitung biar masuk value yang mana di jawaban_teks / yang mengisi
 - CHECK Timeline lock submission
 - CHECK bikin akun reviewer
 - DONE pemetaan fix status pengerjaan
+
+rumus perhitungan masuk ke skor mana ditaruh sekalian di service 
