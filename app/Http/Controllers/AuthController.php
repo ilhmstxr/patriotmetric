@@ -240,9 +240,9 @@ class AuthController extends Controller
                             $newAgama->save();
                         }
                     }
-                    $pengumpulan->load('institusi');
+                    $pengumpulan->load(['institusi', 'identitas.agamas']);
                 } else {
-                    $pengumpulan = Pengumpulan::where('user_id', $user->id)->with(['institusi'])->first();
+                    $pengumpulan = Pengumpulan::where('user_id', $user->id)->with(['institusi', 'identitas.agamas'])->first();
                 }
             }
             

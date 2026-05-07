@@ -206,7 +206,21 @@
                     if (item.tipe === 'pilihan_ganda') {
                         this.answers[item.id] = existingJawaban.jawaban_id;
                     } else {
-                        this.answers[item.id] = existingJawaban.jawaban_teks;
+                        {{-- jawaban_teks dari API bisa berupa object/array (karena cast 'array' di model Laravel) --}}
+                        {{-- Ekstrak raw_input jika object, agar input tidak menampilkan "[object Object]" --}}
+                        const jt = existingJawaban.jawaban_teks;
+                        if (jt && typeof jt === 'object' && jt.raw_input !== undefined) {
+                            this.answers[item.id] = jt.raw_input;
+                        } else if (typeof jt === 'string') {
+                            try {
+                                const parsed = JSON.parse(jt);
+                                this.answers[item.id] = parsed.raw_input !== undefined ? parsed.raw_input : jt;
+                            } catch(e) {
+                                this.answers[item.id] = jt;
+                            }
+                        } else {
+                            this.answers[item.id] = jt;
+                        }
                     }
                     this.links[item.id] = existingJawaban.tautan_bukti_drive || '';
                 }
@@ -277,7 +291,14 @@
                         calculated_percentage: formula.persen,
                         label: formula.label
                     });
+                } else {
+                    {{-- isian_singkat tanpa formula: simpan nilai mentah saja sebagai JSON minimal --}}
+                    textAns = JSON.stringify({ raw_input: rawAns, calculated_percentage: null });
                 }
+            }
+            {{-- otomatis_sistem: simpan sebagai JSON minimal agar konsisten dengan parsing di atas --}}
+            if (!isMulti && question.type === 'otomatis_sistem') {
+                textAns = JSON.stringify({ raw_input: rawAns, calculated_percentage: null });
             }
 
             const payload = {
@@ -372,7 +393,12 @@
                             calculated_percentage: formula.persen,
                             label: formula.label
                         });
+                    } else {
+                        textAns = JSON.stringify({ raw_input: rawAns, calculated_percentage: null });
                     }
+                }
+                if (question && question.type === 'otomatis_sistem') {
+                    textAns = JSON.stringify({ raw_input: rawAns, calculated_percentage: null });
                 }
 
                 answersPayload.push({

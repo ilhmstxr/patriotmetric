@@ -129,13 +129,10 @@
             {{-- Avatar Dropdown Trigger --}}
             <div class="relative">
                 <button @click="userMenuOpen = !userMenuOpen"
-                        class="w-[40px] h-[40px] bg-[#1b5e20] rounded-full flex items-center justify-center shrink-0 hover:bg-[#155017] transition-colors ring-2 ring-transparent hover:ring-[#1b5e20]/20 focus:outline-none overflow-hidden">
-                    <template x-if="userData.logo_url">
-                        <img :src="userData.logo_url" alt="Logo" class="w-full h-full object-cover">
-                    </template>
-                    <template x-if="!userData.logo_url">
-                        <span class="text-white font-bold text-[13px] tracking-wide" x-text="userData.avatar"></span>
-                    </template>
+                        class="w-[40px] h-[40px] bg-[#e8f5e9] rounded-full flex items-center justify-center shrink-0 hover:opacity-80 transition-opacity ring-2 ring-[#1b5e20]/20 focus:outline-none overflow-hidden">
+                    <img :src="userData.logo_url || '{{ asset('assets/images/blank-profile-picture-973460_1280.webp') }}'"
+                         alt="Logo Instansi"
+                         class="w-full h-full object-cover">
                 </button>
 
                 {{-- Dropdown Menu --}}

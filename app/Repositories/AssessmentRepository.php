@@ -22,9 +22,13 @@ class AssessmentRepository extends BaseRepository
 
     public function findActiveAssessmentByUserId($userId)
     {
+        // Gunakan active_period dari CMS agar konsisten dengan AuthController@me
+        $activePeriodSetting = \App\Models\PengaturanCms::where('key', 'active_period')->first();
+        $activePeriod = $activePeriodSetting ? $activePeriodSetting->value : date('Y');
+
         return $this->model
             ->where('user_id', $userId)
-            ->where('tahun_periode', date('Y')) // Opsional: Filter tahun
+            ->where('tahun_periode', $activePeriod)
             ->first();
     }
 
