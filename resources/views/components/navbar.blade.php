@@ -27,14 +27,14 @@
         {{-- Logo --}}
         <a href="{{ url('/') }}" class="flex gap-[7px] items-center shrink-0">
             <div class="h-[48px] lg:h-[73px] w-[81px] lg:w-[124px] relative shrink-0">
-                <img alt="Patriot Metric" class="absolute inset-0 max-w-none object-cover lg:object-contain pointer-events-none size-full" src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.png') }}" />
+                <img alt="Patriot Metric" class="absolute inset-0 max-w-none object-cover lg:object-contain pointer-events-none size-full" src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.webp') }}" />
             </div>
             <div class="hidden lg:flex flex-col h-[32px] items-start px-2">
                 <div class="bg-[#cbd5e1] h-[32px] w-px"></div>
             </div>
             <div class="hidden lg:flex gap-[10px] items-center">
                 <div class="relative size-[44px] shrink-0">
-                    <img alt="UPN Veteran Jatim" class="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src="{{ asset('assets/images/199dc2ebf1e9cecf5218f4b20951209708831231.png') }}" />
+                    <img alt="UPN Veteran Jatim" class="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src="{{ asset('assets/images/199dc2ebf1e9cecf5218f4b20951209708831231.webp') }}" />
                 </div>
                 <div class="flex flex-col font-['Plus_Jakarta_Sans',sans-serif] font-bold h-[25px] justify-center leading-[12.5px] text-[#64748b] text-[10px] uppercase w-[237px]">
                     <p>Universitas Pembangunan nasional "veteran" jawa timur</p>

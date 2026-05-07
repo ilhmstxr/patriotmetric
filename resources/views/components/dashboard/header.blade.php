@@ -14,7 +14,7 @@
         @endphp
         <a href="{{ $logoLink }}" class="flex items-center shrink-0">
             <div class="h-[48px] lg:h-[73px] w-[81px] lg:w-[124px] relative shrink-0">
-                <img alt="Patriot Metric" class="absolute inset-0 max-w-none object-cover lg:object-contain pointer-events-none size-full" src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.png') }}" />
+                <img alt="Patriot Metric" class="absolute inset-0 max-w-none object-cover lg:object-contain pointer-events-none size-full" src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.webp') }}" />
             </div>
         </a>
 

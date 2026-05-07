@@ -3,7 +3,7 @@
         {{-- Hero --}}
         <section class="relative overflow-hidden">
             <div class="absolute inset-0">
-                <img src="{{ asset('assets/images/b4f942a6770a3928dc2f82d398369a3d39ba1fde.png') }}" alt="" class="w-full h-full object-cover" />
+                <img src="{{ asset('assets/images/b4f942a6770a3928dc2f82d398369a3d39ba1fde.webp') }}" alt="" class="w-full h-full object-cover" />
                 <div class="absolute inset-0 bg-[#1B5E20] opacity-80"></div>
                 <div class="absolute bottom-0 w-full h-[100px] bg-gradient-to-t from-[#f8fafc] to-transparent"></div>
             </div>
@@ -41,7 +41,7 @@
                     @foreach($winners as $winner)
                     <div class="bg-white rounded-[24px] p-8 flex flex-col items-center border border-[#e2e8f0] hover:shadow-lg transition-shadow duration-300">
                         <div class="bg-[#f8fafc] rounded-2xl border border-[#f1f5f9] size-24 flex items-center justify-center mb-6">
-                            <img src="{{ asset('assets/images/199dc2ebf1e9cecf5218f4b20951209708831231.png') }}" alt="" class="w-16 h-16 object-contain" />
+                            <img src="{{ asset('assets/images/199dc2ebf1e9cecf5218f4b20951209708831231.webp') }}" alt="" class="w-16 h-16 object-contain" />
                         </div>
                         
                         <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[20px] leading-[28px] text-[#1e293b] text-center mb-4 min-h-[56px]">{{ $winner['name'] }}</h3>

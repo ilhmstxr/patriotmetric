@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Patriot Metric</title>
-    <link rel="icon" type="image/png" href="{{ asset('assets/images/logo.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/logo.webp') }}" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -3,7 +3,7 @@
         {{-- Hero Section --}}
         <section class="relative bg-[#0f172b] overflow-hidden">
             <div class="absolute inset-0">
-                <img src="{{ asset('assets/images/46257018a5d0ac00852b82184ae3ed30ef9a74e4.png') }}" alt="" class="w-full h-full object-cover opacity-30" />
+                <img src="{{ asset('assets/images/46257018a5d0ac00852b82184ae3ed30ef9a74e4.webp') }}" alt="" class="w-full h-full object-cover opacity-30" />
                 <div class="absolute inset-0 bg-gradient-to-r from-[rgba(27,94,32,0.9)] via-[rgba(27,94,32,0.2)] to-transparent"></div>
             </div>
             <div class="relative max-w-[1536px] mx-auto px-6 md:px-8 py-24 md:py-44">

@@ -40,13 +40,6 @@
         @endif
     </a>
 
-    {{-- Riwayat Penilaian --}}
-    <a href="#"
-        class="flex items-center gap-2 px-4 h-[48px] text-[13px] font-medium transition-colors relative text-[#45556c] hover:text-[#1b5e20]">
-        <i data-lucide="history" class="w-[15px] h-[15px]"></i>
-        Riwayat Penilaian
-    </a>
-
     <div class="flex-1"></div>
 </nav>
 
@@ -80,11 +73,6 @@
                   {{ $isPanduan ? 'bg-[#e8f5e9] text-[#1b5e20] font-semibold' : 'text-[#45556c] hover:bg-[#f5f5f5]' }}">
             <i data-lucide="help-circle" class="w-4 h-4"></i>
             Panduan Penilaian
-        </a>
-        <a href="#"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors text-[#45556c] hover:bg-[#f5f5f5]">
-            <i data-lucide="history" class="w-4 h-4"></i>
-            Riwayat Penilaian
         </a>
     </div>
 </div>

@@ -297,9 +297,20 @@ class AssessmentService extends BaseService
             // KONDISI 2: User kirim Teks (Angka) -> Cari ID & Skor yang sesuai
             $data['jawaban_teks'] = $dto->jawabanTeks ?? (string) $dto->jawabanId;
 
+            // Cek jika jawaban_teks adalah JSON (menyimpan raw_input & calculated_percentage)
+            $calculatedValue = $data['jawaban_teks'];
+            $decoded = json_decode($data['jawaban_teks'], true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                if (isset($decoded['calculated_percentage'])) {
+                    $calculatedValue = $decoded['calculated_percentage'];
+                } elseif (isset($decoded['calculated'])) {
+                    $calculatedValue = $decoded['calculated'];
+                }
+            }
+
             $matchingOpsi = $this->pertanyaanRepository->findMatchingOpsiByValue(
                 $dto->pertanyaanId,
-                $data['jawaban_teks']
+                $calculatedValue
             );
 
             if ($matchingOpsi) {
@@ -422,7 +433,7 @@ class AssessmentService extends BaseService
             foreach ($assessment->jawabans as $jawaban) {
                 $jawabanMap[$jawaban->pertanyaan_id] = [
                     'jawaban_id' => $jawaban->jawaban_id,
-                    'jawaban_teks' => $jawaban->jawaban_teks,
+                    'jawaban_teks' => $this->formatJawabanTeksDisplay($jawaban->jawaban_teks),
                     'tautan_bukti_drive' => $jawaban->tautan_bukti_drive,
                     'skor_sistem' => $jawaban->skor_sistem,
                     'skor_validasi_reviewer' => $jawaban->skor_validasi_reviewer,
@@ -557,7 +568,7 @@ class AssessmentService extends BaseService
                     'title' => $pertanyaan->teks_pertanyaan,
                     'score' => $displayScore,
                     'max' => 5,
-                    'jawaban' => $answer ? ($answer->jawaban_teks ?? ($answer->jawabanOpsi ? $answer->jawabanOpsi->keterangan : 'Belum diisi')) : 'Belum diisi',
+                    'jawaban' => $answer ? ($this->formatJawabanTeksDisplay($answer->jawaban_teks) ?? ($answer->jawabanOpsi ? $answer->jawabanOpsi->keterangan : 'Belum diisi')) : 'Belum diisi',
                     'tautan' => $answer ? $answer->tautan_bukti_drive : null,
                     'catatan' => $answer ? $answer->note_reviewer : null,
                     'is_validated' => $answer ? ($answer->skor_validasi_reviewer !== null) : false,
@@ -641,6 +652,26 @@ class AssessmentService extends BaseService
 
             return ['saved_count' => count($answers)];
         });
+    }
+
+    /**
+     * Helper to safely format JSON jawaban_teks for display (Reviewer & Dashboard)
+     */
+    private function formatJawabanTeksDisplay(?string $teks): ?string
+    {
+        if (!$teks) return $teks;
+        $decoded = json_decode($teks, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            $raw = $decoded['raw_input'] ?? '';
+            $calc = $decoded['calculated_percentage'] ?? $decoded['calculated'] ?? '';
+            
+            if ($raw !== '' && $calc !== '') {
+                return "{$raw} (Kalkulasi: {$calc}%)";
+            }
+            if ($raw !== '') return (string)$raw;
+            if ($calc !== '') return (string)$calc;
+        }
+        return $teks;
     }
 }
 

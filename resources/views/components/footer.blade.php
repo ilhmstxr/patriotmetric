@@ -6,7 +6,7 @@
             <div class="flex flex-col items-start">
                 <div class="h-[81px] w-[322px] relative">
                     <div class="absolute inset-0 overflow-hidden pointer-events-none">
-                        <img alt="Patriot Metric" class="absolute h-[236.75%] left-[-0.11%] max-w-none top-[-58.29%] w-full" src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.png') }}" />
+                        <img alt="Patriot Metric" class="absolute h-[236.75%] left-[-0.11%] max-w-none top-[-58.29%] w-full" src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.webp') }}" />
                     </div>
                 </div>
             </div>

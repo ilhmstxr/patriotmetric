@@ -144,13 +144,13 @@
     }">
         {{-- Left Panel --}}
         <div class="hidden lg:flex w-[45%] relative sticky top-0 h-screen overflow-hidden items-center">
-            <img src="{{ asset('assets/images/IMG_0940.JPG') }}" class="absolute inset-0 w-full h-full object-cover" alt="Background" />
+            <img src="{{ asset('assets/images/IMG_0940.webp') }}" class="absolute inset-0 w-full h-full object-cover" alt="Background" />
             <div class="absolute inset-0 bg-[#1b5e20] opacity-80"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-[#0a230c] to-transparent opacity-50"></div>
             <div class="absolute -top-48 right-[-100px] bg-[rgba(212,175,55,0.3)] blur-[100px] rounded-full size-96"></div>
             <div class="relative px-16 py-16 z-10 w-full">
                 <div class="-mb-12 mt-4">
-                    <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.png') }}" alt="Logo Patriot Metric" class="h-100 w-auto object-contain object-left" />
+                    <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.webp') }}" alt="Logo Patriot Metric" class="h-100 w-auto object-contain object-left" />
                 </div>
                 <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[50px] leading-[45px] text-white max-w-[500px]">
                     Jadilah Bagian dari Perubahan
