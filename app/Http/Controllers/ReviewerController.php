@@ -37,7 +37,12 @@ class ReviewerController extends Controller
             if (!$user || strtolower($user->role) !== 'reviewer') {
                 throw new \Exception("Unauthorized: Akses khusus untuk Reviewer.", 403);
             }
-            $reviewerId = $user->id;
+            
+            $reviewer = \App\Models\Reviewer::where('user_id', $user->id)->first();
+            if (!$reviewer) {
+                throw new \Exception("Profil Reviewer tidak ditemukan.", 404);
+            }
+            $reviewerId = $reviewer->id;
 
             // Eksekusi Service
             $result = $this->assessmentService->getAssignedReviews($reviewerId);
@@ -55,7 +60,12 @@ class ReviewerController extends Controller
             if (!$user || strtolower($user->role) !== 'reviewer') {
                 throw new \Exception("Unauthorized: Akses khusus untuk Reviewer.", 403);
             }
-            $reviewerId = $user->id;
+            
+            $reviewer = \App\Models\Reviewer::where('user_id', $user->id)->first();
+            if (!$reviewer) {
+                throw new \Exception("Profil Reviewer tidak ditemukan.", 404);
+            }
+            $reviewerId = $reviewer->id;
 
             // Eksekusi Service
             $result = $this->assessmentService->getDetailReviewTasks($reviewerId, $pesertaId);

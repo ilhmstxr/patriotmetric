@@ -253,3 +253,132 @@ Ngitung biar masuk value yang mana di jawaban_teks / yang mengisi
 - DONE pemetaan fix status pengerjaan
 
 rumus perhitungan masuk ke skor mana ditaruh sekalian di service 
+
+
+jika isian singkat + rumus = jawaban teks + calculated precentage
+jika isian singkat = jawaban teks 
+
+
+
+rumus, hardcode disimpan berdasarkan calculated presentage 
+contoh output jsonnya
+// Contoh format payload yang harus dikirim ke API
+const payload = {
+    pertanyaanId: 10,
+    jawabanTeks: JSON.stringify({
+        raw_input: 15000000,
+        calculated_percentage: 85.5
+    }),
+    tautanBukti: "https://drive.google.com/..."
+};
+
+
+1. File Migrasi (Mengubah Kolom ke JSON)
+Jika tabel sudah ada, buat file migrasi baru untuk memodifikasi tipe kolom. Jalankan perintah ini di terminal:
+php artisan make:migration change_jawaban_teks_to_json_on_jawabans_table
+
+Isi file migrasi tersebut dengan kode berikut:
+
+PHP
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('jawabans', function (Blueprint $table) {
+            // Ubah tipe data menjadi JSON. 
+            // Pastikan Anda menggunakan Laravel versi modern atau memiliki doctrine/dbal terinstal jika versi lama.
+            $table->json('jawaban_teks')->nullable()->change();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('jawabans', function (Blueprint $table) {
+            $table->text('jawaban_teks')->nullable()->change();
+        });
+    }
+};
+2. Model (Konfigurasi Casting)
+Pastikan Model Anda secara otomatis melakukan serialisasi/deserialisasi array ke JSON.
+
+PHP
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Jawaban extends Model
+{
+    protected $fillable = [
+        'pertanyaan_id',
+        'jawaban_teks',
+        'tautan_bukti'
+    ];
+
+    // Memicu konversi otomatis: Array (PHP) <-> JSON (Database)
+    protected $casts = [
+        'jawaban_teks' => 'array',
+    ];
+}
+3. Layer Service (Defensive Parsing & Normalization)
+Karena Frontend Anda menggunakan JSON.stringify(), payload yang ditangkap oleh Laravel untuk jawabanTeks akan berupa tipe String. Kita harus mengekstraknya menggunakan json_decode() secara aman, lalu menormalisasinya agar struktur tabel selalu konsisten.
+
+PHP
+namespace App\Services;
+
+use App\Models\Jawaban;
+
+class EvaluasiService
+{
+    public function simpanJawaban(array $payload)
+    {
+        $rawJawabanTeks = $payload['jawabanTeks'] ?? null;
+        $decodedJawaban = null;
+
+        // 1. Defensive Parsing: Coba decode stringified JSON dari FE
+        if (is_string($rawJawabanTeks)) {
+            $decoded = json_decode($rawJawabanTeks, true);
+            
+            // Periksa apakah decoding sukses (misal FE kirim JSON.stringify) 
+            // atau gagal (misal FE kirim string teks murni untuk isian singkat tunggal)
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $decodedJawaban = $decoded;
+            } else {
+                $decodedJawaban = $rawJawabanTeks; // Fallback ke string murni
+            }
+        } elseif (is_array($rawJawabanTeks)) {
+            // Antisipasi jika payload sudah berupa array dari HTTP Request (FE tidak memakai stringify)
+            $decodedJawaban = $rawJawabanTeks;
+        }
+
+        // 2. Normalisasi Struktur: Paksa masuk ke kerangka baku
+        $normalizedJawaban = [
+            'raw_input' => is_array($decodedJawaban) 
+                ? ($decodedJawaban['raw_input'] ?? null) 
+                : $decodedJawaban, // Jika isian tunggal (string murni), taruh di sini
+                
+            'calculated_percentage' => is_array($decodedJawaban) 
+                ? ($decodedJawaban['calculated_percentage'] ?? null) 
+                : null,
+        ];
+
+        // 3. Eksekusi Penyimpanan
+        // Menggunakan updateOrCreate untuk mencegah duplikasi data jika 1 pertanyaan = 1 jawaban per sesi
+        return Jawaban::updateOrCreate(
+            ['pertanyaan_id' => $payload['pertanyaanId']],
+            [
+                'jawaban_teks' => $normalizedJawaban, // Model cast akan otomatis menjadikannya JSON
+                'tautan_bukti' => $payload['tautanBukti'] ?? null
+            ]
+        );
+    }
+}
+Analisis Trade-off Logika di Atas:
+Plus: Sangat tangguh (robust). Logika json_last_error() memastikan bahwa jika suatu saat Frontend lupa melakukan JSON.stringify() atau mengirim isian teks biasa secara langsung (misal: "Ini adalah jawaban teks saja"), sistem tidak akan crash dan tetap akan menyimpannya ke dalam struktur {"raw_input": "Ini adalah jawaban teks saja", "calculated_percentage": null}.
+
+Minus: Terdapat sedikit overhead pada proses komputasi saat evaluasi is_string dan json_decode, namun sangat dapat diabaikan di level aplikasi modern demi tercapainya integritas data 100%.
+
+Pastikan naming convention nama tabel (jawabans atau jawaban) disesuaikan dengan skema database asli Anda saat menjalankan migrasi.

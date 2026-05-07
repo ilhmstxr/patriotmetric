@@ -2,50 +2,43 @@
 
 namespace App\Filament\Resources\Reviewers\Tables;
 
-use App\Models\Reviewer;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ReviewersTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->query(\App\Models\Pengumpulan::query())
             ->columns([
-                TextColumn::make('nama_lengkap')
-                    ->label('Nama Lengkap')
+                TextColumn::make('rowIndex')
+                    ->rowIndex()
+                    ->label('No'),
+                TextColumn::make('tahun_periode')
+                    ->label('Periode')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('user.email')
-                    ->label('Email')
-                    ->searchable(),
-                TextColumn::make('nip')
-                    ->label('NIP / NIDN')
+                TextColumn::make('institusi.nama_institusi')
+                    ->label('Nama Instansi')
                     ->searchable()
-                    ->toggleable(),
-                TextColumn::make('plotting_count')
-                    ->label('Jumlah Plotting')
-                    ->state(fn (Reviewer $record): int => $record->user?->reviews()->count() ?? 0)
+                    ->sortable(),
+                TextColumn::make('nama_pic')
+                    ->label('Nama PIC')
+                    ->searchable(),
+                SelectColumn::make('reviewer_id')
+                    ->label('Reviewer')
+                    ->options(\App\Models\Reviewer::pluck('nama_lengkap', 'id'))
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('status')
+                    ->label('Status')
                     ->badge()
-                    ->color('info'),
-                TextColumn::make('created_at')
-                    ->label('Dibuat')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
             ])
-            ->recordActions([
-                EditAction::make()->label('Ubah'),
-                DeleteAction::make()->label('Hapus'),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make()->label('Hapus Terpilih'),
-                ]),
-            ]);
+            ->recordActions([])
+            ->toolbarActions([]);
     }
 }

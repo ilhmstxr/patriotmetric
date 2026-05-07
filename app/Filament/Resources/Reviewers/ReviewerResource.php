@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ReviewerResource extends Resource
 {
-    protected static ?string $model = Reviewer::class;
+    protected static ?string $model = \App\Models\Pengumpulan::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
@@ -29,27 +29,15 @@ class ReviewerResource extends Resource
 
     protected static ?int $navigationSort = 20;
 
-    public static function form(Schema $schema): Schema
-    {
-        return ReviewerForm::configure($schema);
-    }
-
     public static function table(Table $table): Table
     {
         return ReviewersTable::configure($table);
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->with('user');
     }
 
     public static function getPages(): array
     {
         return [
             'index' => ListReviewers::route('/'),
-            'create' => CreateReviewer::route('/create'),
-            'edit' => EditReviewer::route('/{record}/edit'),
         ];
     }
 }

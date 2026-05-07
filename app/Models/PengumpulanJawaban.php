@@ -21,6 +21,13 @@ class PengumpulanJawaban extends Model
         'skor_validasi_reviewer'
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'jawaban_teks' => 'array',
+        ];
+    }
+
     public function pengumpulan()
     {
         return $this->belongsTo(Pengumpulan::class, 'submission_id');
