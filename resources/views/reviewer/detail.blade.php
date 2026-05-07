@@ -35,6 +35,7 @@
         drawerOpen: false,
         flags: {},
         toggleFlag(questionId) {
+            if (this.isDone) return;
             this.flags[questionId] = !this.flags[questionId];
             try { sessionStorage.setItem('reviewer_flags_' + this.pesertaId, JSON.stringify(this.flags)); } catch(e) {}
         },
@@ -437,8 +438,10 @@
                       {{-- ===== 🔖 Bookmark Flag ===== --}}
                       <button type="button"
                           @click.stop="toggleFlag(q.id)"
-                          :title="isFlagged(q.id) ? 'Hapus flag' : 'Tandai pertanyaan ini'"
+                          :disabled="isDone"
+                          :title="isDone ? 'Tidak dapat diubah' : (isFlagged(q.id) ? 'Hapus flag' : 'Tandai pertanyaan ini')"
                           class="absolute top-0 right-4 z-10 focus:outline-none"
+                          :class="isDone ? 'cursor-not-allowed opacity-60' : ''"
                           style="width: 24px;">
                           <span class="block w-full transition-all duration-300"
                               :style="isFlagged(q.id)
