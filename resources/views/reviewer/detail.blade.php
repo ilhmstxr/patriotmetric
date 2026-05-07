@@ -481,7 +481,11 @@
                                 <h4 class="text-[12px] font-bold text-amber-800 mb-[8px] uppercase tracking-[0.4px]">Daftar Panduan / Skor:</h4>
                                 <ul class="text-[13px] font-medium text-amber-900/80 space-y-[4px]">
                                   <template x-for="(opt, oIdx) in q.opsi_jawaban" :key="oIdx">
-                                    <li class="leading-[18px]" x-text="opt.value + ' Poin: ' + (opt.keterangan || opt.opsi_jawaban)"></li>
+                                    <li class="leading-[18px] flex gap-[6px] items-start">
+                                      <span class="shrink-0 mt-[2px] inline-flex items-center justify-center min-w-[44px] px-[6px] py-[1px] rounded-full text-[11px] font-bold bg-amber-200 text-amber-900"
+                                            x-text="(opt.value !== null && opt.value !== undefined ? opt.value : opt.opsi_jawaban) + ' Poin'"></span>
+                                      <span x-text="opt.keterangan || opt.opsi_jawaban || '-'"></span>
+                                    </li>
                                   </template>
                                 </ul>
                             </div>
@@ -504,9 +508,13 @@
                         {{-- Peserta's Link Evidence --}}
                         <div>
                             <h4 class="text-[12px] font-bold text-[#64748b] uppercase tracking-[0.5px] mb-[6px]">Tautan BUKTI / Dokumen:</h4>
-                            <a :href="links[q.id] || '#'" target="_blank" class="inline-flex items-center justify-between w-full bg-white border border-[#cbd5e1] text-[#1b5e20] hover:border-[#1b5e20] hover:bg-[#f2fcf3] px-[16px] py-[12px] rounded-[8px] transition-colors group shadow-sm">
-                                <span class="text-[14px] font-bold truncate flex-1" x-text="links[q.id] || 'Tidak ada tautan'"></span>
-                                <i data-lucide="external-link" class="w-[16px] h-[16px] text-[#90a1b9] group-hover:text-[#1b5e20] shrink-0 ml-[12px]"></i>
+                            <a :href="links[q.id] || '#'" target="_blank"
+                               :title="links[q.id] || 'Tidak ada tautan'"
+                               class="inline-flex items-center gap-[10px] w-full min-w-0 bg-white border border-[#cbd5e1] text-[#1b5e20] hover:border-[#1b5e20] hover:bg-[#f2fcf3] px-[16px] py-[12px] rounded-[8px] transition-colors group shadow-sm overflow-hidden">
+                                <i data-lucide="link-2" class="w-[15px] h-[15px] text-[#90a1b9] group-hover:text-[#1b5e20] shrink-0"></i>
+                                <span class="text-[13px] font-semibold truncate flex-1 min-w-0"
+                                      x-text="links[q.id] ? (links[q.id].length > 55 ? links[q.id].substring(0, 55) + '...' : links[q.id]) : 'Tidak ada tautan'"></span>
+                                <i data-lucide="external-link" class="w-[14px] h-[14px] text-[#90a1b9] group-hover:text-[#1b5e20] shrink-0"></i>
                             </a>
                         </div>
 
