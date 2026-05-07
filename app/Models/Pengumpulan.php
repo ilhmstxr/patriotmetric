@@ -10,7 +10,11 @@ class Pengumpulan extends Model
     /** @use HasFactory<\Database\Factories\PengumpulanFactory> */
     use HasFactory;
 
-    protected $fillable = ['user_id', 'reviewer_id', 'institution_id', 'tahun_periode', 'status', 'total_skor_sistem', 'total_skor_akhir', 'nama_pic', 'jabatan_pic', 'no_hp_pic'];
+    protected $fillable = ['user_id', 'reviewer_id', 'institution_id', 'tahun_periode', 'status', 'total_skor_sistem', 'total_skor_akhir', 'skor_rekap_json', 'nama_pic', 'jabatan_pic', 'no_hp_pic'];
+
+    protected $casts = [
+        'skor_rekap_json' => 'array',
+    ];
 
     public function user()
     {
