@@ -22,13 +22,6 @@
                 {{-- Track --}}
                 <circle cx="60" cy="60" r="52" fill="none"
                         stroke="rgba(255,255,255,0.15)" stroke-width="10" />
-                {{-- Progress --}}
-                <circle cx="60" cy="60" r="52" fill="none"
-                        stroke="#ffffff" stroke-width="10" stroke-linecap="round"
-                        pathLength="100"
-                        :stroke-dasharray="'100 100'"
-                        :stroke-dashoffset="100 - Math.min(Math.max(Number(total_capaian_skor || 0), 0), 100)"
-                        style="transition: stroke-dashoffset 1s ease-out;" />
             </svg>
             {{-- Center Text --}}
             <div class="absolute inset-0 flex flex-col items-center justify-center">

@@ -142,7 +142,7 @@
             const file = await this.getFileFromDB(field);
             if (file) {
                 this.files[field] = file;
-                if (file.type.startsWith('image/')) {
+                if (file.type.startsWith('image/') || file.type === 'application/pdf') {
                     this.previews[field] = URL.createObjectURL(file);
                 } else {
                     this.previews[field] = file.name;
@@ -248,7 +248,7 @@
         this.saveFileToDB(field, file); // SAVE TO DRAFT
 
         // Preview
-        if (file.type.startsWith('image/')) {
+        if (file.type.startsWith('image/') || file.type === 'application/pdf') {
             this.previews[field] = URL.createObjectURL(file);
         } else {
             this.previews[field] = file.name;
@@ -390,15 +390,20 @@
               <div :class="activeSection === 1 ? 'border-[#1b5e20] bg-[#f2fcf3]' : 'border-[#e2e8f0]'" class="w-[28px] h-[28px] rounded-full flex items-center justify-center font-bold text-[13px] border-2 transition-colors">1</div>
               <span class="font-semibold text-[14px]">Dokumen Legal</span>
             </div>
-            <div class="w-[32px] h-[2px] bg-[#e2e8f0]"></div>
+            <div class="w-[24px] h-[2px] bg-[#e2e8f0]"></div>
             <div :class="activeSection === 2 ? 'text-[#1b5e20]' : 'text-[#94a3b8]'" class="flex items-center gap-[8px] transition-colors">
               <div :class="activeSection === 2 ? 'border-[#1b5e20] bg-[#f2fcf3]' : 'border-[#e2e8f0]'" class="w-[28px] h-[28px] rounded-full flex items-center justify-center font-bold text-[13px] border-2 transition-colors">2</div>
               <span class="font-semibold text-[14px]">Berkas Profil</span>
             </div>
-            <div class="w-[32px] h-[2px] bg-[#e2e8f0]"></div>
+            <div class="w-[24px] h-[2px] bg-[#e2e8f0]"></div>
             <div :class="activeSection === 3 ? 'text-[#1b5e20]' : 'text-[#94a3b8]'" class="flex items-center gap-[8px] transition-colors">
               <div :class="activeSection === 3 ? 'border-[#1b5e20] bg-[#f2fcf3]' : 'border-[#e2e8f0]'" class="w-[28px] h-[28px] rounded-full flex items-center justify-center font-bold text-[13px] border-2 transition-colors">3</div>
               <span class="font-semibold text-[14px]">Data Profil</span>
+            </div>
+            <div class="w-[24px] h-[2px] bg-[#e2e8f0]"></div>
+            <div :class="activeSection === 4 ? 'text-[#1b5e20]' : 'text-[#94a3b8]'" class="flex items-center gap-[8px] transition-colors">
+              <div :class="activeSection === 4 ? 'border-[#1b5e20] bg-[#f2fcf3]' : 'border-[#e2e8f0]'" class="w-[28px] h-[28px] rounded-full flex items-center justify-center font-bold text-[13px] border-2 transition-colors">4</div>
+              <span class="font-semibold text-[14px]">Pratinjau</span>
             </div>
           </div>
         </div>
@@ -429,9 +434,10 @@
           <form @submit.prevent="submitForm" class="bg-white rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#e2e8f0] overflow-hidden">
             {{-- Progress Bar Mobile --}}
             <div class="md:hidden flex bg-[#f8fafc] border-b border-[#e2e8f0]">
-              <button type="button" @click="activeSection = 1" :class="activeSection === 1 ? 'text-[#1b5e20] border-b-2 border-[#1b5e20]' : 'text-[#94a3b8]'" class="flex-1 py-[16px] text-center font-semibold text-[13px] transition-colors">1. Dokumen Legal</button>
+              <button type="button" @click="activeSection = 1" :class="activeSection === 1 ? 'text-[#1b5e20] border-b-2 border-[#1b5e20]' : 'text-[#94a3b8]'" class="flex-1 py-[16px] text-center font-semibold text-[13px] transition-colors">1. Legal</button>
               <button type="button" @click="activeSection = 2" :class="activeSection === 2 ? 'text-[#1b5e20] border-b-2 border-[#1b5e20]' : 'text-[#94a3b8]'" class="flex-1 py-[16px] text-center font-semibold text-[13px] transition-colors">2. Berkas</button>
               <button type="button" @click="activeSection = 3" :class="activeSection === 3 ? 'text-[#1b5e20] border-b-2 border-[#1b5e20]' : 'text-[#94a3b8]'" class="flex-1 py-[16px] text-center font-semibold text-[13px] transition-colors">3. Data</button>
+              <button type="button" @click="activeSection = 4" :class="activeSection === 4 ? 'text-[#1b5e20] border-b-2 border-[#1b5e20]' : 'text-[#94a3b8]'" class="flex-1 py-[16px] text-center font-semibold text-[13px] transition-colors">4. Cek</button>
             </div>
 
           <div class="p-[32px] md:p-[48px]">
@@ -466,7 +472,7 @@
                                   <i data-lucide="file-text" class="w-6 h-6"></i>
                               </div>
                               <div class="truncate">
-                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="previews.surat_pernyataan"></p>
+                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="files.surat_pernyataan ? files.surat_pernyataan.name : ''"></p>
                                   <p class="text-[12px] text-[#64748b]" x-text="files.surat_pernyataan ? (files.surat_pernyataan.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
                               </div>
                           </div>
@@ -499,7 +505,7 @@
                                   <i data-lucide="file-text" class="w-6 h-6"></i>
                               </div>
                               <div class="truncate">
-                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="previews.sk_pendirian"></p>
+                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="files.sk_pendirian ? files.sk_pendirian.name : ''"></p>
                                   <p class="text-[12px] text-[#64748b]" x-text="files.sk_pendirian ? (files.sk_pendirian.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
                               </div>
                           </div>
@@ -533,7 +539,7 @@
                                   <i data-lucide="file-text" class="w-6 h-6"></i>
                               </div>
                               <div class="truncate">
-                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="previews.sk_akreditasi"></p>
+                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="files.sk_akreditasi ? files.sk_akreditasi.name : ''"></p>
                                   <p class="text-[12px] text-[#64748b]" x-text="files.sk_akreditasi ? (files.sk_akreditasi.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
                               </div>
                           </div>
@@ -583,7 +589,7 @@
                                   <i data-lucide="file-text" class="w-6 h-6"></i>
                               </div>
                               <div class="truncate">
-                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="previews.profil_pt"></p>
+                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="files.profil_pt ? files.profil_pt.name : ''"></p>
                                   <p class="text-[12px] text-[#64748b]" x-text="files.profil_pt ? (files.profil_pt.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
                               </div>
                           </div>
@@ -645,7 +651,7 @@
                                   <i data-lucide="file-text" class="w-6 h-6"></i>
                               </div>
                               <div class="truncate">
-                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="previews.struktur_organisasi"></p>
+                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="files.struktur_organisasi ? files.struktur_organisasi.name : ''"></p>
                                   <p class="text-[12px] text-[#64748b]" x-text="files.struktur_organisasi ? (files.struktur_organisasi.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
                               </div>
                           </div>
@@ -676,7 +682,7 @@
                                   <i data-lucide="file-text" class="w-6 h-6"></i>
                               </div>
                               <div class="truncate">
-                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="previews.sk_tim"></p>
+                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="files.sk_tim ? files.sk_tim.name : ''"></p>
                                   <p class="text-[12px] text-[#64748b]" x-text="files.sk_tim ? (files.sk_tim.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
                               </div>
                           </div>
@@ -834,6 +840,147 @@
                 <div class="pt-[32px] mt-[16px] border-t border-[#e2e8f0] flex flex-col md:flex-row gap-[16px] items-center justify-between">
                   <button type="button" @click="activeSection = 2" class="w-full md:w-auto text-[#64748b] hover:text-[#1d293d] px-[24px] py-[12px] rounded-[10px] font-semibold transition-colors flex items-center justify-center">Kembali</button>
                   <button 
+                    type="button" 
+                    @click="activeSection = 4"
+                    :disabled="!isFormComplete"
+                    class="w-full md:w-auto bg-[#1b5e20] hover:bg-[#15461c] text-white px-[32px] py-[14px] rounded-[10px] font-bold flex items-center justify-center gap-[10px] transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Lanjut ke Pratinjau <i data-lucide="arrow-right" class="w-[18px] h-[18px]"></i>
+                  </button>
+                </div>
+              </div>
+
+              {{-- SECTION 4: Pratinjau --}}
+              <div x-show="activeSection === 4" style="display: none;" x-transition.opacity.duration.500ms class="space-y-[32px]">
+                <div class="pb-[16px] border-b border-[#e2e8f0] mb-[32px]">
+                  <h2 class="text-[22px] font-bold text-[#1d293d]">Bagian 4: Pratinjau Pendaftaran</h2>
+                  <p class="text-[#64748b] text-[15px] mt-[4px]">Periksa kembali semua data dan dokumen sebelum melakukan submit final.</p>
+                </div>
+
+                {{-- Preview Data --}}
+                <div class="bg-[#f8fafc] p-6 rounded-xl border border-[#cbd5e1] space-y-6">
+                  <h3 class="font-bold text-[#1b5e20] text-[16px] mb-2 border-b border-[#e2e8f0] pb-2">Ringkasan Data Profil</h3>
+                  
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-[14px]">
+                    <div class="space-y-1">
+                      <p class="text-[#64748b] font-medium">Nama Perguruan Tinggi</p>
+                      <p class="text-[#1d293d] font-semibold" x-text="formData.nama_pt || '-'"></p>
+                    </div>
+                    <div class="space-y-1">
+                      <p class="text-[#64748b] font-medium">Jenis Perguruan Tinggi</p>
+                      <p class="text-[#1d293d] font-semibold" x-text="formData.jenis_pt || '-'"></p>
+                    </div>
+                    <div class="space-y-1 md:col-span-2">
+                      <p class="text-[#64748b] font-medium">Visi</p>
+                      <p class="text-[#1d293d] font-semibold whitespace-pre-wrap" x-text="formData.visi || '-'"></p>
+                    </div>
+                    <div class="space-y-1 md:col-span-2">
+                      <p class="text-[#64748b] font-medium">Misi</p>
+                      <p class="text-[#1d293d] font-semibold whitespace-pre-wrap" x-text="formData.misi || '-'"></p>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-[14px] mt-4 pt-4 border-t border-[#e2e8f0]">
+                    <div class="space-y-1">
+                      <p class="text-[#64748b] font-medium">Jumlah Fakultas</p>
+                      <p class="text-[#1d293d] font-semibold" x-text="formData.jumlah_fakultas"></p>
+                    </div>
+                    <div class="space-y-1">
+                      <p class="text-[#64748b] font-medium">Jumlah Prodi</p>
+                      <p class="text-[#1d293d] font-semibold" x-text="formData.jumlah_prodi"></p>
+                    </div>
+                    <div class="space-y-1">
+                      <p class="text-[#64748b] font-medium">Jumlah Dosen</p>
+                      <p class="text-[#1d293d] font-semibold" x-text="formData.jumlah_dosen"></p>
+                    </div>
+                    <div class="space-y-1">
+                      <p class="text-[#64748b] font-medium">Jumlah Tendik</p>
+                      <p class="text-[#1d293d] font-semibold" x-text="formData.jumlah_tendik"></p>
+                    </div>
+                    <div class="space-y-1">
+                      <p class="text-[#64748b] font-medium">Jml Mahasiswa</p>
+                      <p class="text-[#1d293d] font-semibold" x-text="formData.jumlah_mahasiswa"></p>
+                    </div>
+                    <div class="space-y-1">
+                      <p class="text-[#64748b] font-medium">Jml Ormawa</p>
+                      <p class="text-[#1d293d] font-semibold" x-text="formData.jumlah_ormawa"></p>
+                    </div>
+                    <div class="space-y-1">
+                      <p class="text-[#64748b] font-medium">Jml UKM</p>
+                      <p class="text-[#1d293d] font-semibold" x-text="formData.jumlah_ukm"></p>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-[14px] mt-4 pt-4 border-t border-[#e2e8f0]">
+                    <div class="space-y-1">
+                      <p class="text-[#64748b] font-medium">Kontak PIC</p>
+                      <p class="text-[#1d293d] font-semibold" x-text="formData.nama_pic + ' (' + formData.jabatan_pic + ')'"></p>
+                      <p class="text-[#1d293d] font-semibold" x-text="formData.no_hp_pic + ' | ' + formData.email_pic"></p>
+                    </div>
+                  </div>
+                </div>
+
+                {{-- Preview Dokumen --}}
+                <div class="bg-[#f8fafc] p-6 rounded-xl border border-[#cbd5e1] space-y-6">
+                  <h3 class="font-bold text-[#1b5e20] text-[16px] mb-2 border-b border-[#e2e8f0] pb-2">Pratinjau Dokumen</h3>
+                  
+                  <div class="space-y-8">
+                    <!-- Logo -->
+                    <div class="flex flex-col gap-2">
+                      <p class="font-semibold text-[#1d293d]">Logo Instansi</p>
+                      <div class="border border-[#e2e8f0] rounded-xl bg-white p-4 flex items-center justify-center min-h-[150px]">
+                        <template x-if="previews.logo_pt">
+                          <img :src="previews.logo_pt" class="max-w-[200px] max-h-[200px] object-contain" />
+                        </template>
+                        <template x-if="!previews.logo_pt">
+                          <p class="text-[#94a3b8] italic text-sm">Belum diunggah</p>
+                        </template>
+                      </div>
+                    </div>
+
+                    <!-- PDF Previews -->
+                    <template x-for="(label, key) in {
+                      surat_pernyataan: 'Surat Pernyataan',
+                      sk_pendirian: 'SK Pendirian',
+                      sk_akreditasi: 'SK Akreditasi',
+                      profil_pt: 'Profil Perguruan Tinggi',
+                      struktur_organisasi: 'Struktur Organisasi',
+                      sk_tim: 'SK Tim Pemeringkatan'
+                    }" :key="key">
+                      <div class="flex flex-col gap-2">
+                        <p class="font-semibold text-[#1d293d]" x-text="label"></p>
+                        <div class="border border-[#e2e8f0] rounded-xl bg-white overflow-hidden h-[400px] flex flex-col relative group">
+                            <template x-if="previews[key] && previews[key].startsWith('blob:')">
+                              <iframe :src="previews[key] + '#toolbar=0&navpanes=0&scrollbar=0'" class="w-full h-full border-none"></iframe>
+                            </template>
+                            <template x-if="previews[key] && !previews[key].startsWith('blob:')">
+                              <!-- Fallback if not blob url -->
+                              <div class="w-full h-full flex flex-col items-center justify-center bg-gray-50 text-gray-400">
+                                <i data-lucide="file-text" class="w-12 h-12 mb-2 text-gray-300"></i>
+                                <span class="text-sm font-medium" x-text="previews[key]"></span>
+                              </div>
+                            </template>
+                            <template x-if="!previews[key]">
+                              <div class="w-full h-full flex items-center justify-center bg-gray-50 text-gray-400">
+                                <p class="text-[#94a3b8] italic text-sm">Belum diunggah</p>
+                              </div>
+                            </template>
+                            
+                            <!-- Overlay actions (optional, like open in new tab) -->
+                            <template x-if="previews[key] && previews[key].startsWith('blob:')">
+                              <a :href="previews[key]" target="_blank" class="absolute top-4 right-4 bg-white/90 backdrop-blur shadow-sm p-2 rounded-lg text-gray-600 hover:text-[#1b5e20] hover:bg-white transition-colors opacity-0 group-hover:opacity-100" title="Buka di tab baru">
+                                <i data-lucide="external-link" class="w-5 h-5"></i>
+                              </a>
+                            </template>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+
+                <div class="pt-[32px] mt-[16px] border-t border-[#e2e8f0] flex flex-col md:flex-row gap-[16px] items-center justify-between">
+                  <button type="button" @click="activeSection = 3" class="w-full md:w-auto text-[#64748b] hover:text-[#1d293d] px-[24px] py-[12px] rounded-[10px] font-semibold transition-colors flex items-center justify-center">Kembali</button>
+                  <button 
                     type="submit" 
                     :disabled="isSubmitting || !isFormComplete"
                     class="w-full md:w-auto bg-[#1b5e20] hover:bg-[#15461c] text-white px-[32px] py-[14px] rounded-[10px] font-bold flex items-center justify-center gap-[10px] transition-all shadow-[0_4px_14px_rgba(27,94,32,0.3)] hover:shadow-[0_6px_20px_rgba(27,94,32,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
@@ -844,7 +991,7 @@
                     </div>
                     <div x-show="!isSubmitting" class="flex items-center gap-2">
                       <i data-lucide="send" class="w-[18px] h-[18px]"></i>
-                      Submit Pendaftaran
+                      Kirim Verifikasi
                     </div>
                   </button>
                 </div>

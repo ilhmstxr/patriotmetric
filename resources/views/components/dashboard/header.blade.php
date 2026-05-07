@@ -52,9 +52,15 @@
                             
                             // Try to get logo from identitas.legal_documents (New Schema) or institusi (Old Fallback)
                             let logo = null;
-                            if (p.identitas && p.identitas.legal_documents && p.identitas.legal_documents.logo_pt) {
-                                logo = p.identitas.legal_documents.logo_pt;
-                            } else if (p.institusi && p.institusi.logo_url) {
+                            if (p.identitas && p.identitas.legal_documents) {
+                                let docs = p.identitas.legal_documents;
+                                if (typeof docs === 'string') {
+                                    try { docs = JSON.parse(docs); } catch(e) {}
+                                }
+                                if (docs && docs.logo_pt) logo = docs.logo_pt;
+                            }
+                            
+                            if (!logo && p.institusi && p.institusi.logo_url) {
                                 logo = p.institusi.logo_url;
                             }
                             

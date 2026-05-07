@@ -108,7 +108,6 @@
             <template x-if="isAuth">
                 <div class="flex gap-2 items-center">
                     <a :href="dashboardUrl" class="h-[36px] rounded-[20px] bg-[#1b5e20] shadow-[0px_10px_15px_0px_rgba(27,94,32,0.25),0px_4px_6px_0px_rgba(27,94,32,0.25)] flex items-center justify-center gap-2 px-5 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-white hover:bg-[#174d1a] transition-colors">
-                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
                         Dashboard
                     </a>
                     <button type="button" @click="logout()"
@@ -167,7 +166,6 @@
             <template x-if="isAuth">
                 <div class="flex flex-col gap-3">
                     <a :href="dashboardUrl" class="w-full h-[40px] rounded-[20px] bg-[#1b5e20] flex items-center justify-center gap-2 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-white">
-                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
                         Dashboard
                     </a>
                     <button type="button" @click="logout()" class="w-full h-[40px] rounded-[20px] border border-[rgba(229,57,53,0.25)] flex items-center justify-center gap-2 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#e53935] hover:bg-red-50">

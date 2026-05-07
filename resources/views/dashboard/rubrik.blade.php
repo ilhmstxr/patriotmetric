@@ -288,19 +288,16 @@
                 const result = await res.json();
                 if (res.ok && result.success) {
                     this.saveStatus[qId] = 'saved';
-                    this.showToast('success', 'Tersimpan', 'Jawaban soal ' + (question.code || '') + ' berhasil direkam.');
                     {{-- Invalidate cache agar version check selanjutnya sinkron --}}
                     localStorage.removeItem(this.cacheKey);
                 } else {
                     this.saveStatus[qId] = 'error';
-                    this.showToast('error', 'Gagal menyimpan', result.message || 'Periksa koneksi dan coba lagi.');
                 }
                 if (this.saveStatus[qId] === 'saved') {
                     setTimeout(() => { if (this.saveStatus[qId] === 'saved') this.saveStatus[qId] = ''; }, 2000);
                 }
             } catch(e) {
                 this.saveStatus[qId] = 'error';
-                this.showToast('error', 'Gagal menyimpan', 'Tidak dapat terhubung ke server.');
             }
         },
 

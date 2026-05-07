@@ -36,12 +36,12 @@ class DatabaseSeeder extends Seeder
         //     'status' => 'ACTIVE',
         // ]);
 
-        User::create([
-            'email' => "reviewer@admin.com",
-            'password' => bcrypt('reviewer'),
-            'role' => 'REVIEWER',
-            'status' => 'ACTIVE',
-        ]);
+        // User::create([
+        //     'email' => "reviewer@admin.com",
+        //     'password' => bcrypt('reviewer'),
+        //     'role' => 'REVIEWER',
+        //     'status' => 'ACTIVE',
+        // ]);
 
         User::create([
             'email' => "upn@pic.com",

@@ -108,18 +108,35 @@
 
                 if (response.ok && result.success) {
                     this.successMessage = result.message;
-                    setTimeout(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Registrasi Berhasil!',
+                        text: result.message || 'Akun institusi Anda telah terdaftar. Silakan login untuk melanjutkan.',
+                        confirmButtonColor: '#1b5e20'
+                    }).then(() => {
                         window.location.href = '/masuk';
-                    }, 2000);
+                    });
                 } else {
                     if (result.errors) {
                         this.errorMessage = Object.values(result.errors)[0][0];
                     } else {
                         this.errorMessage = result.message || 'Registrasi gagal. Periksa kembali data Anda.';
                     }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Registrasi Gagal',
+                        text: this.errorMessage,
+                        confirmButtonColor: '#1b5e20'
+                    });
                 }
             } catch (error) {
                 this.errorMessage = 'Terjadi kesalahan jaringan. Silakan coba lagi.';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan Jaringan',
+                    text: this.errorMessage,
+                    confirmButtonColor: '#1b5e20'
+                });
             } finally {
                 this.isLoading = false;
             }
@@ -156,10 +173,6 @@
                     Lengkapi data berikut untuk membuat akun institusi.
                 </p>
 
-                <!-- Notifikasi Status -->
-                <div x-show="errorMessage" style="display: none;" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-[14px] text-red-600 font-medium" x-text="errorMessage"></div>
-                <div x-show="successMessage" style="display: none;" class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-[14px] text-green-600 font-medium" x-text="successMessage"></div>
-
                 <form class="mt-8 space-y-8" @submit.prevent="register" x-ref="form" @input="isFormValid = $refs.form.checkValidity()" @change="isFormValid = $refs.form.checkValidity()">
                     {{-- Data Institusi --}}
                     <div>
@@ -178,6 +191,9 @@
                                     Nama Perguruan Tinggi
                                 </label>
                             </div>
+                            {{-- Inline warning institusi --}}
+                            <p x-show="institusiCheckExists && institusiCheckMessage" style="display:none;" x-text="institusiCheckMessage" class="text-[12px] text-amber-600 font-medium mt-1 ml-2 flex items-center gap-1.5">
+                            </p>
                             
                             {{-- Field Jenis Institusi --}}
                             <div class="relative">
@@ -251,10 +267,8 @@
                                     Email PIC (institusi .ac.id)
                                 </label>
                             </div>
-                            {{-- Inline warning email & institusi --}}
-                            <p x-show="emailDomainError" style="display:none;" x-text="emailDomainError" class="text-[12px] text-red-500 font-medium -mt-2 ml-2"></p>
-                            <p x-show="institusiCheckExists && institusiCheckMessage" style="display:none;" x-text="institusiCheckMessage" class="text-[12px] text-amber-600 font-medium -mt-2 ml-2 flex items-center gap-1.5">
-                            </p>
+                            {{-- Inline warning email --}}
+                            <p x-show="emailDomainError" style="display:none;" x-text="emailDomainError" class="text-[12px] text-red-500 font-medium mt-1 ml-2"></p>
 
                             {{-- Field Password --}}
                             <div class="relative">
@@ -299,7 +313,7 @@
                     <button
                         type="submit"
                         class="w-full bg-[#1b5e20] text-white font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[18px] leading-[28px] py-4 rounded-[20px] shadow-[0px_20px_25px_0px_rgba(27,94,32,0.2)] hover:bg-[#174d1a] transition flex items-center justify-center gap-2 disabled:opacity-50"
-                        x-bind:disabled="!agree || !isFormValid || isLoading"
+                        x-bind:disabled="!agree || !isFormValid || isLoading || institusiCheckExists || emailDomainError !== ''"
                     >
                         <span x-show="!isLoading">Kirim Pendaftaran</span>
                         <span x-show="isLoading" style="display: none;">Memproses...</span>

@@ -98,7 +98,7 @@ class AssessmentService extends BaseService
             ]);
 
             // 3. Proses File Upload (HANYA KETIKA CREATE)
-            $finalDocumentsJson = $existingIdentitas?->legal_documents ?? json_encode([]);
+            $finalDocumentsJson = $existingIdentitas?->legal_documents ?? [];
 
             // ZERO-GAP LOGIC: 
             // Hanya jalankan processLegalDocuments JIKA $existingIdentitas kosong (Create)
@@ -106,7 +106,7 @@ class AssessmentService extends BaseService
             if (!$existingIdentitas && !empty($dto->legalDocuments)) {
                 // Eksekusi pemindahan file ke Storage
                 $documentPaths = $this->processLegalDocuments($dto->legalDocuments, $assessment);
-                $finalDocumentsJson = json_encode($documentPaths);
+                $finalDocumentsJson = $documentPaths;
             }
 
             // 4. Update Identitas (Gunakan Null-safe operator secara ketat)

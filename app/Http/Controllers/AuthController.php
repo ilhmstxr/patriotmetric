@@ -80,20 +80,6 @@ class AuthController extends Controller
             if ($existsByName) $reasons[] = 'Nama institusi sudah terdaftar.';
         }
 
-        if ($email !== '' && str_contains($email, '@')) {
-            if (!preg_match('/@[a-z0-9.-]+\.ac\.id$/i', $email)) {
-                $reasons[] = 'Email harus berdomain .ac.id.';
-            } else {
-                $domain = strtolower(substr(strrchr($email, '@'), 1));
-                $existsByDomain = Institusi::where('domain_email', $domain)->exists();
-                if ($existsByDomain) $reasons[] = 'Domain email sudah digunakan institusi lain.';
-
-                if (User::where('email', $email)->exists()) {
-                    $reasons[] = 'Email PIC sudah digunakan akun lain.';
-                }
-            }
-        }
-
         return $this->successResponse([
             'exists' => count($reasons) > 0,
             'message' => count($reasons) > 0 ? implode(' ', $reasons) : 'Tersedia.',
@@ -106,13 +92,10 @@ class AuthController extends Controller
             $validated = $request->validate([
                 'email' => 'required|email',
                 'password' => 'required|string',
-                'remember' => 'sometimes|boolean',
             ]);
 
-            $remember = (bool) ($validated['remember'] ?? false);
-
             $dto = new LoginDTO($validated);
-            $result = $this->userService->login($dto, $remember);
+            $result = $this->userService->login($dto, false);
 
             // Determine redirect path based on user status
             $user = $result['user'];
@@ -134,7 +117,6 @@ class AuthController extends Controller
                 ]),
                 'token' => $result['token'],
                 'token_expires_at' => $result['expires_at'] ?? null,
-                'remember' => $remember,
                 'redirect_to' => $redirectTo,
                 'pengumpulan_status' => $pengumpulan?->status,
             ], 'Login berhasil.', 200);

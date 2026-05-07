@@ -43,7 +43,6 @@
         <div class="flex-1 flex items-center justify-center px-6 md:px-8 py-10 md:py-16 bg-white" x-data="{ 
             email: '', 
             password: '', 
-            remember: false,
             showPassword: false,
             isLoading: false, 
             errorMessage: '',
@@ -61,8 +60,7 @@
                         },
                         body: JSON.stringify({
                             email: this.email,
-                            password: this.password,
-                            remember: this.remember
+                            password: this.password
                         })
                     });
                     
@@ -84,20 +82,35 @@
                         if (result.data.token_expires_at) {
                             localStorage.setItem('token_expires_at', result.data.token_expires_at);
                         }
-                        if (typeof result.data.remember !== 'undefined') {
-                            localStorage.setItem('auth_remember', result.data.remember ? '1' : '0');
-                        }
 
                         // Redirect berdasarkan status dari server
                         const redirectTo = result.data.redirect_to || '/verifikasi';
-                        setTimeout(() => {
+                        
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Berhasil!',
+                            text: result.message || 'Selamat datang kembali.',
+                            confirmButtonColor: '#1b5e20'
+                        }).then(() => {
                             window.location.href = redirectTo;
-                        }, 1000);
+                        });
                     } else {
                         this.errorMessage = result.message || 'Login gagal. Periksa kembali kredensial Anda.';
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Login Gagal',
+                            text: this.errorMessage,
+                            confirmButtonColor: '#1b5e20'
+                        });
                     }
                 } catch (error) {
                     this.errorMessage = 'Terjadi kesalahan jaringan. Silakan coba lagi.';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Kesalahan Jaringan',
+                        text: this.errorMessage,
+                        confirmButtonColor: '#1b5e20'
+                    });
                 } finally {
                     this.isLoading = false;
                 }
@@ -108,11 +121,7 @@
                 <p class="mt-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] leading-[24px] text-[#62748e]">
                     Silakan masukkan kredensial institusi Anda.
                 </p>
-
-                <!-- Notifikasi Status -->
-                <div x-show="errorMessage" style="display: none;" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-[14px] text-red-600 font-medium" x-text="errorMessage"></div>
-                <div x-show="successMessage" style="display: none;" class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-[14px] text-green-600 font-medium" x-text="successMessage"></div>
-
+ 
                 <form class="mt-8 space-y-6" @submit.prevent="login">
                     {{-- Email --}}
                     <div class="relative">
@@ -130,7 +139,7 @@
                             Email Resmi Institusi / PIC
                         </label>
                     </div>
-
+ 
                     {{-- Password --}}
                     <div class="relative">
                         <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -152,18 +161,13 @@
                             <i x-show="showPassword" style="display: none;" data-lucide="eye" class="w-5 h-5"></i>
                         </button>
                     </div>
-
-                    {{-- Remember & Forgot --}}
-                    <div class="flex items-center justify-between">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input name="remember" type="checkbox" x-model="remember" class="size-4 rounded accent-[#1b5e20]" />
-                            <span class="font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#45556c]">Ingat saya</span>
-                        </label>
+ 
+                    {{-- Forgot Password --}}
+                    <div class="flex items-center justify-end">
                         <a href="#" class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] text-[#1b5e20] hover:underline">
                             Lupa sandi?
                         </a>
                     </div>
-                    <p class="text-[11px] text-[#90a1b9] -mt-3">Centang "Ingat saya" untuk tetap login selama 30 hari (default 8 jam).</p>
 
                     {{-- Submit --}}
                     <button

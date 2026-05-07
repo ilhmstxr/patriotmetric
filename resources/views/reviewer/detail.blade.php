@@ -128,7 +128,7 @@
 
         get logoUrl() {
             const docs = this.dokumenPendukung;
-            return docs.logo_pt || docs.logo || null;
+            return docs.logo_pt || docs.logo || this.institusi.logo_url || null;
         }
     }" class="flex-1 flex flex-col h-full bg-[#f8fafc] font-['Plus_Jakarta_Sans',sans-serif]">
         
