@@ -9,6 +9,8 @@
         lastSaved: '',
         isDone: false,
         loading: true,
+        isLocking: false,
+        showLockConfirm: false,
         pesertaId: {{ $reqId }},
         
         // Data dari API
@@ -60,6 +62,71 @@
             this.$watch('reviewerNotes', value => autoSave(), { deep: true });
         },
 
+        async saveScores() {
+            const scores = {};
+            const notes  = {};
+            for (const [qId, skor] of Object.entries(this.reviewerScores)) {
+                if (skor !== null && skor !== '') scores[qId] = skor;
+            }
+            for (const [qId, note] of Object.entries(this.reviewerNotes)) {
+                if (note && note.trim() !== '') notes[qId] = note;
+            }
+            try {
+                await fetch(`/api/assessment/reviewer/tasks/${this.pesertaId}/save-scores`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ scores, notes })
+                });
+            } catch (e) {
+                console.error('Gagal menyimpan skor reviewer:', e);
+            }
+        },
+
+        get submissionStatus() {
+            const s = this.pengumpulan.status;
+            const map = {
+                'ACTIVE'      : { label: 'Belum Submit',     color: 'bg-slate-100 text-slate-600',  icon: 'clock' },
+                'IN_PROGRESS' : { label: 'Dalam Pengerjaan', color: 'bg-blue-100 text-blue-700',    icon: 'pen-line' },
+                'SUBMITTED'   : { label: 'Menunggu Review',  color: 'bg-amber-100 text-amber-700',  icon: 'hourglass' },
+                'GRADED'      : { label: 'Sudah Dinilai',    color: 'bg-green-100 text-green-700',  icon: 'check-circle-2' },
+                'REJECTED'    : { label: 'Ditolak',          color: 'bg-red-100 text-red-700',      icon: 'x-circle' },
+            };
+            return map[s] || { label: s || '...', color: 'bg-slate-100 text-slate-500', icon: 'info' };
+        },
+
+        async lockReview() {
+            this.isLocking = true;
+            this.showLockConfirm = false;
+            try {
+                await this.saveScores();
+                const res = await fetch(`/api/assessment/reviewer/tasks/${this.pesertaId}/finalize`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+                const result = await res.json();
+                if (res.ok && result.success) {
+                    sessionStorage.removeItem('reviewer_detail_cache_' + this.pesertaId);
+                    sessionStorage.removeItem('reviewer_tasks_cache');
+                    await this.fetchData();
+                } else {
+                    alert(result.message || 'Gagal memfinalisasi penilaian.');
+                }
+            } catch(e) {
+                console.error(e);
+                alert('Terjadi kesalahan jaringan.');
+            } finally {
+                this.isLocking = false;
+            }
+        },
+
         applyData(data) {
             this.pengumpulan    = data.pengumpulan    || {};
             this.institusi      = data.institusi      || {};
@@ -69,7 +136,8 @@
             this.jabatan_pic    = data.jabatan_pic;
             this.email_pic      = data.email_pic;
             this.no_hp_pic      = data.no_hp_pic;
-            this.isDone = ['GRADED', 'REJECTED', 'IN_PROGRESS'].includes(this.pengumpulan.status);
+            // isDone = true hanya jika sudah di-GRADED (reviewer sudah finalisasi)
+            this.isDone = ['GRADED', 'REJECTED'].includes(this.pengumpulan.status);
             this.rubrikData.forEach(kategori => {
                 kategori.pertanyaan.forEach(q => {
                     if (q.jawaban_peserta) {
@@ -151,11 +219,13 @@
             <div>
                 <h1 class="font-bold text-[#1d293d] text-[20px] md:text-[26px] tracking-tight flex flex-col md:flex-row items-start md:items-center gap-[8px] md:gap-[12px]">
                     Menu Penilaian - <span x-text="institusi.nama_institusi"></span>
-                    <template x-if="isDone">
-                        <span class="inline-flex items-center gap-[6px] bg-green-100 text-green-700 px-[12px] py-[4px] rounded-full text-[13px] md:text-[14px] font-bold mt-1 md:mt-0">
-                            <i data-lucide="check-circle-2" class="w-[16px] h-[16px]"></i> Selesai Dinilai
-                        </span>
-                    </template>
+                    {{-- Dynamic Status Badge --}}
+                    <span class="inline-flex items-center gap-[6px] px-[12px] py-[4px] rounded-full text-[13px] md:text-[14px] font-bold mt-1 md:mt-0"
+                          :class="submissionStatus.color">
+                        <i :data-lucide="submissionStatus.icon" class="w-[16px] h-[16px]"
+                           x-init="$watch('submissionStatus', () => $nextTick(() => { if(typeof lucide !== 'undefined') lucide.createIcons(); }))"></i>
+                        <span x-text="submissionStatus.label"></span>
+                    </span>
                 </h1>
                 <p class="text-[#62748e] text-[13px] md:text-[15px] mt-[6px]">Review isian data, periksa dokumen, dan berikan skor final (1-5).</p>
             </div>
@@ -354,12 +424,12 @@
                             </template>
                           </ul>
                           
-                          <template x-if="q.tipe === 'pilihan_ganda'">
+                          <template x-if="q.opsi_jawaban && q.opsi_jawaban.length > 0">
                             <div class="mt-[16px] pt-[12px] border-t border-amber-200/50">
-                                <h4 class="text-[12px] font-bold text-amber-800 mb-[8px] uppercase tracking-[0.4px]">Daftar Pilihan Jawaban yang Tersedia:</h4>
-                                <ul class="text-[13px] font-medium text-amber-900/80 space-y-[4px] list-decimal pl-[16px]">
-                                  <template x-for="(opt, oIdx) in q.opsi_jawaban" :key="opt.id">
-                                    <li class="leading-[18px]" x-text="opt.keterangan || opt.opsi_jawaban"></li>
+                                <h4 class="text-[12px] font-bold text-amber-800 mb-[8px] uppercase tracking-[0.4px]">Daftar Panduan / Skor:</h4>
+                                <ul class="text-[13px] font-medium text-amber-900/80 space-y-[4px]">
+                                  <template x-for="(opt, oIdx) in q.opsi_jawaban" :key="oIdx">
+                                    <li class="leading-[18px]" x-text="opt.value + ' Poin: ' + (opt.keterangan || opt.opsi_jawaban)"></li>
                                   </template>
                                 </ul>
                             </div>
@@ -406,6 +476,7 @@
                                       :class="isDone ? 'bg-[#f1f5f9] border-[#cbd5e1] text-[#94a3b8]' : 'border-[#cbd5e1] text-[#1b5e20] bg-white'"
                                       :disabled="isDone"
                                       x-model="reviewerScores[q.id]"
+                                      @input="if(reviewerScores[q.id] < 0) reviewerScores[q.id] = 0; if(reviewerScores[q.id] > 5) reviewerScores[q.id] = 5;"
                                     />
                                     <span class="text-[13px] text-[#64748b] font-medium leading-tight max-w-[200px]">Maks 5. Ketik 0 jika bukti tidak valid.</span>
                                 </div>
@@ -442,19 +513,63 @@
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-[4px] sm:gap-[12px]">
                 <div class="flex items-center gap-[8px] text-[13px] font-bold text-[#1d293d]">
                   <span class="w-[8px] h-[8px] rounded-full bg-amber-400 animate-pulse shrink-0"></span>
-                  Pastikan Seluruh Nilai Sudah Terisi
+                  Pastikan Seluruh Nilai Sudah Terisi Sebelum Finalisasi
                 </div>
-                <span class="text-[12px] font-medium text-[#64748b]">Sistem auto-save (debounce) berlaku. Draft tersimpan otomatis.</span>
+                <span class="text-[12px] font-medium text-[#64748b]">Klik Simpan Draft dulu, lalu Finalisasi jika sudah yakin.</span>
             </div>
-            <button
-              @click="
-                sessionStorage.removeItem('reviewer_detail_cache_' + pesertaId);
-                sessionStorage.removeItem('reviewer_tasks_cache');
-              "
-              class="w-full sm:w-auto bg-[#1b5e20] hover:bg-[#15461c] text-white px-[32px] py-[12px] rounded-[8px] text-[14px] font-bold flex items-center justify-center gap-[8px] transition-colors shadow-sm focus:ring-4 focus:ring-[#1b5e20]/30 outline-none block">
-              <i data-lucide="check-circle" class="w-[18px] h-[18px]"></i>
-              Selesaikan Penilaian
-            </button>
+            <div class="flex items-center gap-[10px]">
+                {{-- Simpan Draft --}}
+                <button
+                  @click="await saveScores(); lastSaved = (new Date()).getHours().toString().padStart(2,'0') + ':' + (new Date()).getMinutes().toString().padStart(2,'0');"
+                  class="w-full sm:w-auto border-2 border-[#1b5e20] text-[#1b5e20] hover:bg-[#f0fdf4] px-[20px] py-[10px] rounded-[8px] text-[14px] font-bold flex items-center justify-center gap-[8px] transition-colors focus:outline-none">
+                  <i data-lucide="save" class="w-[16px] h-[16px]"></i>
+                  Simpan Draft
+                </button>
+                {{-- Finalisasi Penilaian --}}
+                <button
+                  @click="showLockConfirm = true"
+                  :disabled="isLocking"
+                  class="w-full sm:w-auto bg-[#1b5e20] hover:bg-[#15461c] disabled:opacity-60 text-white px-[24px] py-[10px] rounded-[8px] text-[14px] font-bold flex items-center justify-center gap-[8px] transition-colors shadow-sm focus:ring-4 focus:ring-[#1b5e20]/30 outline-none">
+                  <i data-lucide="lock" class="w-[16px] h-[16px]"></i>
+                  <span x-text="isLocking ? 'Menyimpan...' : 'Finalisasi Penilaian'"></span>
+                </button>
+            </div>
+      </div>
+
+      {{-- Lock Confirmation Modal --}}
+      <div x-show="showLockConfirm" x-cloak
+           class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 px-4"
+           x-transition:enter="transition ease-out duration-200"
+           x-transition:enter-start="opacity-0"
+           x-transition:enter-end="opacity-100"
+           x-transition:leave="transition ease-in duration-150"
+           x-transition:leave-start="opacity-100"
+           x-transition:leave-end="opacity-0">
+          <div class="bg-white rounded-[16px] shadow-2xl w-full max-w-[420px] p-[28px] border border-[#e2e8f0]">
+              <div class="flex items-center gap-3 mb-[16px]">
+                  <div class="w-[44px] h-[44px] rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                      <i data-lucide="alert-triangle" class="w-[22px] h-[22px] text-amber-600"></i>
+                  </div>
+                  <div>
+                      <h3 class="font-bold text-[#1d293d] text-[16px]">Finalisasi Penilaian?</h3>
+                      <p class="text-[13px] text-[#64748b] mt-[2px]">Tindakan ini tidak dapat dibatalkan.</p>
+                  </div>
+              </div>
+              <p class="text-[14px] text-[#45556c] leading-relaxed mb-[20px]">
+                  Setelah Anda mengkonfirmasi, status peserta akan berubah menjadi <strong class="text-green-700">GRADED</strong> dan peserta dapat melihat hasil penilaian final dari Anda. Pastikan semua skor sudah benar.
+              </p>
+              <div class="flex gap-[10px] justify-end">
+                  <button @click="showLockConfirm = false"
+                          class="px-[20px] py-[10px] rounded-[8px] border-2 border-slate-200 text-[14px] font-semibold text-slate-600 hover:border-slate-300 transition-colors">
+                      Batal
+                  </button>
+                  <button @click="lockReview()"
+                          class="px-[20px] py-[10px] rounded-[8px] bg-[#1b5e20] text-white text-[14px] font-bold hover:bg-[#15461c] transition-colors flex items-center gap-2">
+                      <i data-lucide="check" class="w-[16px] h-[16px]"></i>
+                      Ya, Finalisasi
+                  </button>
+              </div>
+          </div>
       </div>
       </div>{{-- end !loading --}}
     </div>

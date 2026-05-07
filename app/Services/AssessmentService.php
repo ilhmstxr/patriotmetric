@@ -66,6 +66,12 @@ class AssessmentService extends BaseService
         if (!in_array($assessment->status, ['ACTIVE', 'IN_PROGRESS'])) {
             throw new Exception("Gagal: Asesmen berstatus {$assessment->status} tidak dapat diubah.", 403);
         }
+
+        $timelineCheck = \App\Models\SubmissionTimeline::canSubmit($assessment->tahun_periode);
+        if (!$timelineCheck['allowed']) {
+            throw new Exception("Gagal: " . $timelineCheck['reason'], 403);
+        }
+
         return $assessment;
     }
 
@@ -181,10 +187,16 @@ class AssessmentService extends BaseService
             $isEditEnabled = false;
         }
 
+        $timelineCheck = \App\Models\SubmissionTimeline::canSubmit($assessment->tahun_periode);
+        if (!$timelineCheck['allowed']) {
+            $isEditEnabled = false;
+        }
+
         return [
             'assessment_id'   => $assessment->id,
             'status'          => $assessment->status,
             'is_edit_enabled' => $isEditEnabled,
+            'lock_reason'     => $timelineCheck['reason'] ?? null,
             'questions'       => $questions,
             'profil'          => $this->getProfilData($assessment),
         ];
@@ -453,6 +465,13 @@ class AssessmentService extends BaseService
             $jawabanMap = [];
         }
 
+        // Load JSON for isian_singkat bobot
+        $isianSingkatGuides = [];
+        $jsonPath = storage_path('app/isian_singkat_bobot.json');
+        if (file_exists($jsonPath)) {
+            $isianSingkatGuides = json_decode(file_get_contents($jsonPath), true) ?? [];
+        }
+
         // 5. Group pertanyaan by kategori with jawaban
         $rubrikData = [];
         foreach ($allPertanyaan as $pertanyaan) {
@@ -477,14 +496,45 @@ class AssessmentService extends BaseService
                 'kebutuhan_bukti' => $pertanyaan->kebutuhan_bukti,
                 'tipe' => $pertanyaan->tipe,
                 // 'skor_maksimal' => $pertanyaan->skor_maksimal,
-                'opsi_jawaban' => $pertanyaan->OpsiJawaban->map(function ($opsi) {
-                    return [
-                        'id' => $opsi->id,
-                        'opsi_jawaban' => $opsi->opsi_jawaban,
-                        'keterangan' => $opsi->keterangan,
-                        'value' => $opsi->value,
-                    ];
-                }),
+                'opsi_jawaban' => (function () use ($pertanyaan, $isianSingkatGuides) {
+                    // Cek jika ini isian singkat, dan kita punya json guide
+                    if ($pertanyaan->tipe === 'isian_singkat' && !empty($isianSingkatGuides)) {
+                        $teks = strtolower(trim($pertanyaan->teks_pertanyaan));
+                        $bestMatch = null;
+                        $highestPercent = 0;
+                        
+                        foreach ($isianSingkatGuides as $guide) {
+                            if ($teks === strtolower(trim($guide['indikator_implementasi']))) {
+                                $bestMatch = $guide;
+                                break;
+                            }
+                        }
+                        
+                        // Jika match persis (hardcode/exact match)
+                        if ($bestMatch) {
+                            $mappedOpsi = [];
+                            foreach ($bestMatch['skor_bobot'] as $skor => $ket) {
+                                $mappedOpsi[] = [
+                                    'id' => null, // no db id
+                                    'opsi_jawaban' => (string) $skor,
+                                    'keterangan' => $ket,
+                                    'value' => (int) $skor,
+                                ];
+                            }
+                            return $mappedOpsi;
+                        }
+                    }
+
+                    // Default behaviour: ambil dari database opsi_jawaban
+                    return $pertanyaan->OpsiJawaban->map(function ($opsi) {
+                        return [
+                            'id' => $opsi->id,
+                            'opsi_jawaban' => $opsi->opsi_jawaban,
+                            'keterangan' => $opsi->keterangan,
+                            'value' => $opsi->value,
+                        ];
+                    })->toArray();
+                })(),
                 'jawaban_peserta' => $jawabanMap[$pertanyaan->id] ?? null,
             ];
         }
@@ -650,6 +700,9 @@ class AssessmentService extends BaseService
             // Update status to SUBMITTED
             $this->repository->updateStatusAssessment($assessment->id, 'SUBMITTED');
 
+            // Simpan rekap skor persen ke pengumpulan
+            $this->recapAndSaveSkor($assessment);
+
             return ['saved_count' => count($answers)];
         });
     }
@@ -673,5 +726,77 @@ class AssessmentService extends BaseService
         }
         return $teks;
     }
-}
+
+    /**
+     * Menghitung dan menyimpan rekap skor persen total & per-kategori ke kolom skor_rekap_json.
+     * Bisa dipanggil setelah peserta submit atau setelah reviewer finalisasi.
+     *
+     * Struktur JSON yang disimpan:
+     * {
+     *   "total_persen": 78.50,
+     *   "per_kategori": {
+     *     "A.": { "nama": "A. ...", "skor": 17, "max": 20, "bobot": 20, "persen_mentah": 85.0, "persen_tertimbang": 17.0 },
+     *     ...
+     *   },
+     *   "updated_at": "2026-05-07T10:00:00+07:00"
+     * }
+     */
+    public function recapAndSaveSkor($assessment): void
+    {
+        $assessment->refresh();
+
+        $allCategories = \App\Models\Kategori::with(['pertanyaans'])->get();
+
+        $answers = \App\Models\PengumpulanJawaban::where('submission_id', $assessment->id)
+            ->get()
+            ->keyBy('pertanyaan_id');
+
+        $perKategori = [];
+        $totalSkor = 0;
+        $totalMax  = 0;
+
+        foreach ($allCategories as $cat) {
+            $bobot = $this->getBobotKategori($cat->nama_kategori);
+            $catSkor = 0;
+            $catMax  = 0;
+
+            foreach ($cat->pertanyaans as $pertanyaan) {
+                $catMax += 5;
+                $answer = $answers->get($pertanyaan->id);
+                if ($answer) {
+                    $catSkor += $answer->skor_validasi_reviewer ?? $answer->skor_sistem ?? 0;
+                }
+            }
+
+            $totalSkor += $catSkor;
+            $totalMax  += $catMax;
+
+            $prefix = strtoupper(substr(trim($cat->nama_kategori), 0, 2));
+            $persenMentah    = $catMax > 0 ? round(($catSkor / $catMax) * 100, 2) : 0;
+            $persenTertimbang = round(($persenMentah / 100) * $bobot, 2);
+
+            $perKategori[$prefix] = [
+                'nama'              => $cat->nama_kategori,
+                'skor'              => $catSkor,
+                'max'               => $catMax,
+                'bobot'             => $bobot,
+                'persen_mentah'     => $persenMentah,
+                'persen_tertimbang' => $persenTertimbang,
+            ];
+        }
+
+        $totalPersen = $totalMax > 0 ? round(($totalSkor / $totalMax) * 100, 2) : 0;
+
+        $rekap = [
+            'total_persen'  => $totalPersen,
+            'total_skor'    => $totalSkor,
+            'total_max'     => $totalMax,
+            'per_kategori'  => $perKategori,
+            'updated_at'    => now()->toIso8601String(),
+        ];
+
+        \App\Models\Pengumpulan::where('id', $assessment->id)->update([
+            'skor_rekap_json' => json_encode($rekap),
+        ]);
+    }
 

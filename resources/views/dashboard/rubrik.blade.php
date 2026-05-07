@@ -268,10 +268,22 @@
             const isMulti = question.type === 'pilihan_ganda';
             const rawAns  = this.answers[qId];
 
+            let textAns = !isMulti ? (rawAns != null ? String(rawAns) : null) : null;
+            if (!isMulti && question.type === 'isian_singkat') {
+                const formula = this.computeFormula(question);
+                if (formula) {
+                    textAns = JSON.stringify({
+                        raw_input: rawAns,
+                        calculated_percentage: formula.persen,
+                        label: formula.label
+                    });
+                }
+            }
+
             const payload = {
                 pertanyaan_id: parseInt(qId),
                 jawaban_id:    isMulti ? (rawAns != null && rawAns !== '' ? parseInt(rawAns) : null) : null,
-                jawaban_teks:  !isMulti ? (rawAns != null ? String(rawAns) : null) : null,
+                jawaban_teks:  textAns,
                 tautan_bukti:  this.links[qId] && String(this.links[qId]).trim() !== '' ? this.links[qId] : null,
             };
 
@@ -347,11 +359,26 @@
             
             const answersPayload = [];
             for (const qId in this.answers) {
-                const isNumeric = !isNaN(this.answers[qId]) && this.answers[qId] !== '';
+                const question = this.allQuestions.find(q => q.id == qId);
+                const isMulti = question && question.type === 'pilihan_ganda';
+                const rawAns = this.answers[qId];
+                
+                let textAns = !isMulti ? (rawAns != null ? String(rawAns) : null) : null;
+                if (question && question.type === 'isian_singkat') {
+                    const formula = this.computeFormula(question);
+                    if (formula) {
+                        textAns = JSON.stringify({
+                            raw_input: rawAns,
+                            calculated_percentage: formula.persen,
+                            label: formula.label
+                        });
+                    }
+                }
+
                 answersPayload.push({
                     pertanyaan_id: parseInt(qId),
-                    jawaban_id: isNumeric ? parseInt(this.answers[qId]) : null,
-                    jawaban_teks: isNumeric ? null : String(this.answers[qId] || ''),
+                    jawaban_id: isMulti && rawAns != null && rawAns !== '' ? parseInt(rawAns) : null,
+                    jawaban_teks: textAns,
                     tautan_bukti: this.links[qId] || null
                 });
             }
@@ -497,11 +524,12 @@
                                                     <div class="flex items-center gap-3">
                                                         <input
                                                             type="number"
+                                                            min="0"
                                                             placeholder="0"
                                                             :disabled="!is_edit_enabled || status === 'SUBMITTED' || status === 'GRADED'"
                                                             class="w-[100px] px-3.5 py-2.5 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
                                                             x-model="answers[q.id]"
-                                                            @input="scheduleAutoSave(q.id)"
+                                                            @input="if(answers[q.id] < 0) answers[q.id] = 0; scheduleAutoSave(q.id)"
                                                         />
                                                         {{-- Gunakan deskripsi sebagai unit (Cth: 10 skema KKN) --}}
                                                         <span class="text-[12px] font-semibold text-[#45556c]" x-text="q.description"></span>

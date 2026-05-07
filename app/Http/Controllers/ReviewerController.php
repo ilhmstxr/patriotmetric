@@ -65,4 +65,93 @@ class ReviewerController extends Controller
             return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
         }
     }
+
+    /**
+     * Endpoint: POST /api/assessment/reviewer/tasks/{pesertaId}/save-scores
+     * Menyimpan skor validasi reviewer per indikator dan mengupdate rekap skor JSON.
+     * Body: { scores: { pertanyaan_id: skor, ... }, notes: { pertanyaan_id: catatan, ... } }
+     */
+    public function saveScores(Request $request, $pesertaId)
+    {
+        try {
+            $user = $request->user();
+            if (!$user || strtolower($user->role) !== 'reviewer') {
+                throw new \Exception("Unauthorized: Akses khusus untuk Reviewer.", 403);
+            }
+
+            $assessment = \App\Models\Pengumpulan::where('user_id', $pesertaId)
+                ->whereIn('status', ['SUBMITTED', 'IN_PROGRESS', 'GRADED'])
+                ->latest()
+                ->firstOrFail();
+
+            $scores = $request->input('scores', []);
+            $notes  = $request->input('notes', []);
+
+            \Illuminate\Support\Facades\DB::transaction(function () use ($assessment, $scores, $notes) {
+                foreach ($scores as $pertanyaanId => $skor) {
+                    if ($skor === null || $skor === '') continue;
+
+                    $skor = min(5, max(0, (int) $skor));
+
+                    \App\Models\PengumpulanJawaban::updateOrCreate(
+                        [
+                            'submission_id' => $assessment->id,
+                            'pertanyaan_id' => (int) $pertanyaanId,
+                        ],
+                        [
+                            'skor_validasi_reviewer' => $skor,
+                            'note_reviewer'          => $notes[$pertanyaanId] ?? null,
+                        ]
+                    );
+                }
+            });
+
+            // Perbarui rekap skor JSON setelah skor reviewer disimpan
+            $this->assessmentService->recapAndSaveSkor($assessment);
+
+            return $this->successResponse([], 'Skor berhasil disimpan dan rekap diperbarui.');
+        } catch (\Throwable $e) {
+            return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
+        }
+    }
+
+    /**
+     * Endpoint: POST /api/assessment/reviewer/tasks/{pesertaId}/finalize
+     * Memfinalisasi penilaian: set status GRADED dan lock rekap skor akhir.
+     */
+    public function finalizeReview(Request $request, $pesertaId)
+    {
+        try {
+            $user = $request->user();
+            if (!$user || strtolower($user->role) !== 'reviewer') {
+                throw new \Exception("Unauthorized: Akses khusus untuk Reviewer.", 403);
+            }
+
+            $assessment = \App\Models\Pengumpulan::where('user_id', $pesertaId)
+                ->whereIn('status', ['SUBMITTED', 'IN_PROGRESS'])
+                ->latest()
+                ->firstOrFail();
+
+            // Cek semua pertanyaan sudah ada skor dari reviewer
+            $totalPertanyaan = \App\Models\Pertanyaan::count();
+            $totalDinilai = \App\Models\PengumpulanJawaban::where('submission_id', $assessment->id)
+                ->whereNotNull('skor_validasi_reviewer')
+                ->count();
+
+            if ($totalDinilai < $totalPertanyaan) {
+                $belum = $totalPertanyaan - $totalDinilai;
+                throw new \Exception("Finalisasi gagal: Masih ada {$belum} indikator yang belum diberi skor.", 422);
+            }
+
+            // Update status ke GRADED
+            $assessment->update(['status' => 'GRADED']);
+
+            // Update rekap skor final
+            $this->assessmentService->recapAndSaveSkor($assessment);
+
+            return $this->successResponse([], 'Penilaian berhasil difinalisasi. Status peserta berubah menjadi GRADED.');
+        } catch (\Throwable $e) {
+            return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
+        }
+    }
 }

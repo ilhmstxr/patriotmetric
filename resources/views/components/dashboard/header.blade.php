@@ -68,10 +68,10 @@
                                 this.userData.logo_url = logo.startsWith('/') ? logo : '/' + logo;
                             }
                         } else {
-                           this.userData.nama_pic = user.email;
+                           this.userData.nama_pic = user.name || user.email;
                            if (role === 'reviewer') {
                                this.userData.nama_pt = 'Reviewer Patriot Metric';
-                               this.userData.avatar = 'REV';
+                               this.userData.avatar = (user.name || 'REV').substring(0, 3).toUpperCase();
                            }
                         }
                      return false;
