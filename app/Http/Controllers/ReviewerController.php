@@ -89,7 +89,7 @@ class ReviewerController extends Controller
                 throw new \Exception("Unauthorized: Akses khusus untuk Reviewer.", 403);
             }
 
-            $assessment = \App\Models\Pengumpulan::where('user_id', $pesertaId)
+            $assessment = \App\Models\Pengumpulan::where('id', $pesertaId)
                 ->whereIn('status', ['SUBMITTED', 'IN_PROGRESS', 'GRADED'])
                 ->latest()
                 ->firstOrFail();
@@ -137,7 +137,7 @@ class ReviewerController extends Controller
                 throw new \Exception("Unauthorized: Akses khusus untuk Reviewer.", 403);
             }
 
-            $assessment = \App\Models\Pengumpulan::where('user_id', $pesertaId)
+            $assessment = \App\Models\Pengumpulan::where('id', $pesertaId)
                 ->whereIn('status', ['SUBMITTED', 'IN_PROGRESS'])
                 ->latest()
                 ->firstOrFail();

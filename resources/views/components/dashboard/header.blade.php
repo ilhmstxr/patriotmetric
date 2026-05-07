@@ -72,6 +72,7 @@
                            if (role === 'reviewer') {
                                this.userData.nama_pt = 'Reviewer Patriot Metric';
                                this.userData.avatar = (user.name || 'REV').substring(0, 3).toUpperCase();
+                               this.userData.logo_url = '{{ asset('assets/images/blank-profile-picture-973460_1280.webp') }}';
                            }
                         }
                      return false;

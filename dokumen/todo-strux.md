@@ -382,3 +382,8 @@ Plus: Sangat tangguh (robust). Logika json_last_error() memastikan bahwa jika su
 Minus: Terdapat sedikit overhead pada proses komputasi saat evaluasi is_string dan json_decode, namun sangat dapat diabaikan di level aplikasi modern demi tercapainya integritas data 100%.
 
 Pastikan naming convention nama tabel (jawabans atau jawaban) disesuaikan dengan skema database asli Anda saat menjalankan migrasi.
+
+
+
+untuk verifikasi masih nyantol kalau pakai seeder
+datanya masih kesimpen di local storage
