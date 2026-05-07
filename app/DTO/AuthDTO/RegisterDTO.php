@@ -11,6 +11,7 @@ readonly class RegisterDTO
     public string $jabatanPic;
     public string $email;
     public string $password;
+    public ?string $logoUrl;
 
     public function __construct(array $validated)
     {
@@ -21,5 +22,6 @@ readonly class RegisterDTO
         $this->jabatanPic = $validated['jabatan_pic'];
         $this->email = $validated['email'];
         $this->password = $validated['password']; // Password mentah untuk hashing di Service
+        $this->logoUrl = $validated['logo_url'] ?? null;
     }
 }

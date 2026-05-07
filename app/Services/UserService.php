@@ -43,6 +43,7 @@ class UserService extends BaseService
                 'nama_institusi' => $dto->namaPt,
                 'jenis_institusi' => $dto->jenisPt,
                 'domain_email' => $domain ?: null,
+                'logo_url' => $dto->logoUrl ?: 'assets/images/blank-profile-picture-973460_1280.webp',
             ]);
 
             // 3. Buat Data Pengumpulan (Assessment Record) wajib untuk tahun ini

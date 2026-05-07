@@ -15,6 +15,7 @@ return new class extends Migration {
             // $table->foreignId('user_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
             $table->uuid('id')->primary();
             $table->string('nama_institusi');
+            $table->string('logo_url')->nullable();
             $table->enum('jenis_institusi', ['PTN', 'PTS', 'PTK']);
             $table->timestamps();
         });
