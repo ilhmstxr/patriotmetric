@@ -231,6 +231,7 @@
                     title: item.teks_pertanyaan,
                     evidenceRequirements: Array.isArray(item.kebutuhan_bukti) ? item.kebutuhan_bukti : (item.kebutuhan_bukti ? [item.kebutuhan_bukti] : []),
                     type: item.tipe,
+                    keterangan: item.keterangan || '',
                     options: (item.OpsiJawaban || item.opsi_jawaban || []).map(opt => ({
                         id: opt.id,
                         text: opt.keterangan || opt.opsi_jawaban || opt.OpsiJawaban
@@ -557,8 +558,8 @@
                                                             x-model="answers[q.id]"
                                                             @input="if(answers[q.id] < 0) answers[q.id] = 0; scheduleAutoSave(q.id)"
                                                         />
-                                                        {{-- Gunakan deskripsi sebagai unit (Cth: 10 skema KKN) --}}
-                                                        <span class="text-[12px] font-semibold text-[#45556c]" x-text="q.description"></span>
+                                                        {{-- Gunakan keterangan sebagai unit (Cth: 10 skema KKN) --}}
+                                                        <span class="text-[12px] font-semibold text-[#45556c] shrink-0" x-text="q.keterangan" x-show="q.keterangan"></span>
                                                     </div>
                                                     {{-- Formula Preview % --}}
                                                     <template x-if="computeFormula(q) !== null">
@@ -575,13 +576,16 @@
                                             {{-- Otomatis Sistem --}}
                                             <template x-if="q.type === 'otomatis_sistem'">
                                                 <div class="relative">
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Akan dihitung otomatis oleh sistem"
-                                                        disabled
-                                                        class="w-full px-3.5 py-2.5 rounded border border-[#e0e0e0] text-[12px] font-bold text-[#62748e] bg-[#f8f9fa] cursor-not-allowed"
-                                                        x-model="answers[q.id]"
-                                                    />
+                                                    <div class="flex items-center gap-3">
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Akan dihitung otomatis oleh sistem"
+                                                            disabled
+                                                            class="w-full px-3.5 py-2.5 rounded border border-[#e0e0e0] text-[12px] font-bold text-[#62748e] bg-[#f8f9fa] cursor-not-allowed"
+                                                            x-model="answers[q.id]"
+                                                        />
+                                                        <span class="text-[12px] font-semibold text-[#45556c] shrink-0" x-text="q.keterangan" x-show="q.keterangan"></span>
+                                                    </div>
                                                     <div class="mt-2 flex items-center gap-1.5 text-[10px] text-[#2e7d32] font-semibold">
                                                         <i data-lucide="cpu" class="w-3 h-3"></i>
                                                         Data diproses otomatis oleh sistem berdasarkan profil institusi

@@ -60,7 +60,7 @@
         sk_pendirian: null,
         sk_akreditasi: null,
         profil_pt: null,
-        logo_pt: null,
+        logo_url: null,
         struktur_organisasi: null,
         sk_tim: null
     },
@@ -71,7 +71,7 @@
         sk_pendirian: '',
         sk_akreditasi: '',
         profil_pt: '',
-        logo_pt: '',
+        logo_url: '',
         struktur_organisasi: '',
         sk_tim: ''
     },
@@ -265,7 +265,7 @@
     },
 
     get isFormComplete() {
-        const requiredFiles = ['surat_pernyataan', 'sk_pendirian', 'sk_akreditasi', 'profil_pt', 'logo_pt', 'struktur_organisasi', 'sk_tim'];
+        const requiredFiles = ['surat_pernyataan', 'sk_pendirian', 'sk_akreditasi', 'profil_pt', 'logo_url', 'struktur_organisasi', 'sk_tim'];
         const requiredData = ['nama_pt', 'jenis_pt', 'visi', 'misi', 'jumlah_fakultas', 'jumlah_prodi', 'jumlah_dosen', 'jumlah_tendik', 'jumlah_mahasiswa', 'jumlah_ormawa', 'jumlah_ukm', 'nama_pic', 'jabatan_pic', 'no_hp_pic', 'email_pic'];
         
         const filesComplete = requiredFiles.every(f => this.files[f] !== null);
@@ -606,8 +606,8 @@
                     5. Logo Instansi <span class="text-red-500">*</span>
                   </label>
                   <div class="mt-[4px] relative">
-                      <div x-show="!previews.logo_pt" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
-                        <input type="file" accept="image/png, image/jpeg, image/jpg" x-ref="logo_pt" @change="handleFileChange($event, 'logo_pt', '.png,.jpeg,.jpg')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                      <div x-show="!previews.logo_url" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
+                        <input type="file" accept="image/png, image/jpeg, image/jpg" x-ref="logo_url" @change="handleFileChange($event, 'logo_url', '.png,.jpeg,.jpg')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
                         <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
                           <i data-lucide="image" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#0ea5e9]"></i>
                         </div>
@@ -616,15 +616,15 @@
                       </div>
                       
                       <!-- Preview Image -->
-                      <div x-show="previews.logo_pt" style="display: none;" class="border border-[#cbd5e1] rounded-[12px] p-[16px] bg-white flex items-center justify-between">
+                      <div x-show="previews.logo_url" style="display: none;" class="border border-[#cbd5e1] rounded-[12px] p-[16px] bg-white flex items-center justify-between">
                           <div class="flex items-center gap-4 overflow-hidden">
-                              <img :src="previews.logo_pt" alt="Preview Logo" class="w-16 h-16 object-contain rounded-lg border border-[#e2e8f0] bg-[#f8fafc]" />
+                              <img :src="previews.logo_url" alt="Preview Logo" class="w-16 h-16 object-contain rounded-lg border border-[#e2e8f0] bg-[#f8fafc]" />
                               <div class="truncate">
-                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="files.logo_pt ? files.logo_pt.name : ''"></p>
-                                  <p class="text-[12px] text-[#64748b]" x-text="files.logo_pt ? (files.logo_pt.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
+                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="files.logo_url ? files.logo_url.name : ''"></p>
+                                  <p class="text-[12px] text-[#64748b]" x-text="files.logo_url ? (files.logo_url.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
                               </div>
                           </div>
-                          <button type="button" @click="removeFile('logo_pt')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors shrink-0">
+                          <button type="button" @click="removeFile('logo_url')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors shrink-0">
                               <i data-lucide="trash-2" class="w-5 h-5"></i>
                           </button>
                       </div>
@@ -929,10 +929,10 @@
                     <div class="flex flex-col gap-2">
                       <p class="font-semibold text-[#1d293d]">Logo Instansi</p>
                       <div class="border border-[#e2e8f0] rounded-xl bg-white p-4 flex items-center justify-center min-h-[150px]">
-                        <template x-if="previews.logo_pt">
-                          <img :src="previews.logo_pt" class="max-w-[200px] max-h-[200px] object-contain" />
+                        <template x-if="previews.logo_url">
+                          <img :src="previews.logo_url" class="max-w-[200px] max-h-[200px] object-contain" />
                         </template>
-                        <template x-if="!previews.logo_pt">
+                        <template x-if="!previews.logo_url">
                           <p class="text-[#94a3b8] italic text-sm">Belum diunggah</p>
                         </template>
                       </div>

@@ -20,7 +20,30 @@ class Institusi extends Model
         'nama_institusi',
         'jenis_institusi',
         'domain_email',
+        'logo_url'
     ];
+
+    protected $appends = ['logo_url_full'];
+
+    public function getLogoUrlFullAttribute(): ?string
+    {
+        if (empty($this->logo_url)) {
+            return null;
+        }
+
+        // Jika sudah berupa URL lengkap
+        if (str_starts_with($this->logo_url, 'http://') || str_starts_with($this->logo_url, 'https://')) {
+            return $this->logo_url;
+        }
+
+        // Jika sudah berupa path storage, gunakan langsung
+        if (str_starts_with($this->logo_url, '/storage/') || str_starts_with($this->logo_url, 'storage/')) {
+            return asset($this->logo_url);
+        }
+
+        // Default: prefix dengan assets/images/
+        return asset('assets/images/' . $this->logo_url);
+    }
 
     protected static function boot()
     {

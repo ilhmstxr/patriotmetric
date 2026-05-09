@@ -40,7 +40,7 @@ class VerificationController extends Controller
                 'sk_akreditasi' => 'required|file|mimes:pdf|max:5120',
                 // Files — Section 2: Berkas Profil
                 'profil_pt' => 'required|file|mimes:pdf|max:5120',
-                'logo_pt' => 'required|file|mimes:jpeg,jpg,png|max:5120',
+                'logo_url' => 'required|file|mimes:jpeg,jpg,png|max:5120',
                 'struktur_organisasi' => 'required|file|mimes:pdf|max:5120',
                 'sk_tim' => 'required|file|mimes:pdf|max:5120',
                 // Data Institusi — Section 3
@@ -88,8 +88,8 @@ class VerificationController extends Controller
             }
 
             // Upload logo (image) and convert to WebP
-            if ($request->hasFile('logo_pt')) {
-                $logo = $request->file('logo_pt');
+            if ($request->hasFile('logo_url')) {
+                $logo = $request->file('logo_url');
                 $extension = strtolower($logo->getClientOriginalExtension());
                 $logoName = time() . '_logo.webp';
                 
@@ -117,12 +117,12 @@ class VerificationController extends Controller
                 if ($image && function_exists('imagewebp')) {
                     imagewebp($image, storage_path('app/public/' . $logoPath), 80);
                     imagedestroy($image);
-                    $files['logo_pt'] = '/storage/' . $logoPath;
+                    $files['logo_url'] = '/storage/' . $logoPath;
                 } else {
                     // Fallback to original
                     $fallbackName = time() . '_logo.' . $extension;
                     $fallbackPath = $logo->storeAs($directoryPath, $fallbackName, 'public');
-                    $files['logo_pt'] = '/storage/' . $fallbackPath;
+                    $files['logo_url'] = '/storage/' . $fallbackPath;
                 }
             }
 
@@ -132,7 +132,7 @@ class VerificationController extends Controller
                 $institusi->update([
                     'nama_institusi' => $validated['nama_pt'],
                     'jenis_institusi' => $validated['jenis_pt'],
-                    'logo_url' => $files['logo_pt'] ?? $institusi->logo_url,
+                    'logo_url' => $files['logo_url'] ?? $institusi->logo_url,
                 ]);
             }
 

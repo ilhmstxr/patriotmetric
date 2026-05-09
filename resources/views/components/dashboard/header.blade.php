@@ -50,23 +50,10 @@
                             this.userData.nama_pt = p.institusi ? p.institusi.nama_institusi : 'Institusi Terdaftar';
                             this.userData.avatar = this.userData.nama_pt.substring(0, 3).toUpperCase();
                             
-                            // Try to get logo from identitas.legal_documents (New Schema) or institusi (Old Fallback)
-                            let logo = null;
-                            if (p.identitas && p.identitas.legal_documents) {
-                                let docs = p.identitas.legal_documents;
-                                if (typeof docs === 'string') {
-                                    try { docs = JSON.parse(docs); } catch(e) {}
-                                }
-                                if (docs && docs.logo_pt) logo = docs.logo_pt;
-                            }
-                            
-                            if (!logo && p.institusi && p.institusi.logo_url) {
-                                logo = p.institusi.logo_url;
-                            }
-                            
-                            if (logo) {
-                                this.userData.logo_url = logo.startsWith('/') ? logo : '/' + logo;
-                            }
+                            // 3. Set logo from institusi
+                            this.userData.logo_url = (p.institusi && p.institusi.logo_url_full) ? p.institusi.logo_url_full : null;
+                            console.log('[Header Debug] institusi:', p.institusi);
+                            console.log('[Header Debug] logo_url set to:', this.userData.logo_url);
                         } else {
                            this.userData.nama_pic = user.name || user.email;
                            if (role === 'reviewer') {
@@ -93,17 +80,22 @@
                          if (cached) {
                              try {
                                  const result = JSON.parse(cached);
+                                 console.log('[Header Debug] Cached data:', result);
                                  this.processUserData(result.user, result.pengumpulan);
                              } catch (e) { console.error('Cache parse error', e); }
                          }
+
+                         console.log('[Header Debug] Fetching from API...');
 
                          const res = await fetch('/api/auth/me', {
                              headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' }
                          });
                          const result = await res.json();
+                         console.log('[Header Debug] API response:', result);
                          if (res.ok && result.success) {
                              // Store to cache
                              localStorage.setItem('profile_data_cache', JSON.stringify(result.data));
+                             console.log('[Header Debug] pengumpulan from API:', result.data.pengumpulan);
 
                              const p = result.data.pengumpulan;
                              const user = result.data.user;

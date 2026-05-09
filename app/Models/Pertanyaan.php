@@ -16,6 +16,7 @@ class Pertanyaan extends Model
         'teks_pertanyaan',
         'kebutuhan_bukti',
         'tipe',
+        'keterangan',
         // 'skor_maksimal'
     ];
 
