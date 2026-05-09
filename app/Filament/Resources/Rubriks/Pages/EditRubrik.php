@@ -9,6 +9,11 @@ use Filament\Resources\Pages\EditRecord;
 class EditRubrik extends EditRecord
 {
     protected static string $resource = RubrikResource::class;
+ 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 
     protected function getHeaderActions(): array
     {

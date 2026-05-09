@@ -21,11 +21,11 @@ class ReviewerResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
-    protected static ?string $navigationLabel = 'Reviewer';
+    protected static ?string $navigationLabel = 'Plotting Reviewer';
 
-    protected static ?string $modelLabel = 'Reviewer';
+    protected static ?string $modelLabel = 'Plotting Reviewer';
 
-    protected static ?string $pluralModelLabel = 'Reviewer';
+    protected static ?string $pluralModelLabel = 'Plotting Reviewer';
 
     protected static ?int $navigationSort = 20;
 

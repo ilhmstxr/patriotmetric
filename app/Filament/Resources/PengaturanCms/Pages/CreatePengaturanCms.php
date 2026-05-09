@@ -8,6 +8,11 @@ use Filament\Resources\Pages\CreateRecord;
 class CreatePengaturanCms extends CreateRecord
 {
     protected static string $resource = PengaturanCmsResource::class;
+ 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 
     protected function handleRecordCreation(array $data): \Illuminate\Database\Eloquent\Model
     {
