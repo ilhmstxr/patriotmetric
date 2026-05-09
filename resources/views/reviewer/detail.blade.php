@@ -237,6 +237,12 @@
         get logoUrl() {
             const docs = this.dokumenPendukung;
             return docs.logo_pt || docs.logo || this.institusi.logo_url || null;
+        },
+
+        parseEvidence(val) {
+            if (Array.isArray(val)) return val;
+            if (typeof val === 'string') return val.split(',').map(s => s.trim()).filter(s => s !== '');
+            return val ? [val] : [];
         }
     }" class="flex-1 flex flex-col h-full bg-[#f8fafc] font-['Plus_Jakarta_Sans',sans-serif]">
         
@@ -433,7 +439,7 @@
 
                   {{-- Questions --}}
                   <template x-for="q in categoryData.pertanyaan" :key="q.id">
-                    <div :id="'q-' + q.id" class="relative bg-white border rounded-[12px] p-[20px] md:p-[28px] flex flex-col md:flex-row gap-[20px] md:gap-[32px] overflow-hidden mb-[16px] transition-all duration-300" :class="isFlagged(q.id) ? 'border-amber-400' : 'border-[#cbd5e1]'">
+                    <div :id="'q-' + q.id" class="relative bg-white border rounded-[12px] p-[20px] md:p-[28px] flex flex-col md:flex-row gap-[20px] md:gap-[32px] overflow-hidden mb-[16px] transition-all duration-300" :class="isFlagged(q.id) ? 'border-red-500 ring-1 ring-red-100' : 'border-[#cbd5e1]'">
                       
                       {{-- ===== 🔖 Bookmark Flag ===== --}}
                       <button type="button"
@@ -445,7 +451,7 @@
                           style="width: 24px;">
                           <span class="block w-full transition-all duration-300"
                               :style="isFlagged(q.id)
-                                  ? 'height:35px; background:#f59e0b; clip-path:polygon(0 0,100% 0,100% 100%,50% 80%,0 100%); box-shadow:0 6px 14px rgba(245,158,11,0.45);'
+                                  ? 'height:35px; background:#ef4444; clip-path:polygon(0 0,100% 0,100% 100%,50% 80%,0 100%); box-shadow:0 6px 14px rgba(239,68,68,0.45);'
                                   : 'height:20px; background:#cbd5e1; clip-path:polygon(0 0,100% 0,100% 100%,50% 75%,0 100%); box-shadow:none;'">
                           </span>
                       </button>
@@ -463,19 +469,11 @@
                         <div class="bg-amber-50 border border-amber-200 rounded-[8px] p-[16px] ml-[52px]">
                           <h4 class="text-[12px] font-bold text-amber-800 mb-[8px] uppercase tracking-[0.4px]">Syarat Bukti Valid:</h4>
                           <ul class="text-[13px] font-semibold text-amber-900/80 space-y-[6px]">
-                            <template x-if="Array.isArray(q.kebutuhan_bukti)">
-                                <template x-for="(req, rIdx) in q.kebutuhan_bukti" :key="rIdx">
-                                  <li class="flex gap-[6px] items-start">
-                                    <span class="mt-[2px] w-[4px] h-[4px] bg-amber-500 rounded-full shrink-0"></span>
-                                    <span class="leading-[18px]" x-text="req"></span>
-                                  </li>
-                                </template>
-                            </template>
-                            <template x-if="!Array.isArray(q.kebutuhan_bukti) && q.kebutuhan_bukti">
-                                <li class="flex gap-[6px] items-start">
-                                    <span class="mt-[2px] w-[4px] h-[4px] bg-amber-500 rounded-full shrink-0"></span>
-                                    <span class="leading-[18px]" x-text="q.kebutuhan_bukti"></span>
-                                </li>
+                            <template x-for="(req, rIdx) in parseEvidence(q.kebutuhan_bukti)" :key="rIdx">
+                              <li class="flex gap-[6px] items-start">
+                                <span class="mt-[2px] w-[4px] h-[4px] bg-amber-500 rounded-full shrink-0"></span>
+                                <span class="leading-[18px]" x-text="req"></span>
+                              </li>
                             </template>
                           </ul>
                           
@@ -692,7 +690,7 @@
                           <span class="font-semibold text-[#1b5e20]" x-text="totalAnswered"></span>
                           / <span x-text="allQuestions.length"></span> dinilai
                           <template x-if="totalFlagged > 0">
-                              <span class="ml-2 text-amber-600 font-semibold">
+                              <span class="ml-2 text-red-500 font-semibold">
                                   · <span x-text="totalFlagged"></span> flag
                               </span>
                           </template>
@@ -709,7 +707,7 @@
               <div class="px-4 pt-3 pb-2 flex flex-wrap items-center gap-3 text-[10px] font-medium text-[#62748e] shrink-0">
                   <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-[#1b5e20]"></span> Dinilai</span>
                   <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-[#e0e0e0]"></span> Kosong</span>
-                  <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-amber-400"></span> Flag</span>
+                  <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-red-500"></span> Flag</span>
               </div>
 
               {{-- Question Grid --}}
@@ -724,8 +722,8 @@
                                       @click="scrollToQuestion(q.id)"
                                       :title="'Indikator ' + q.kode_pertanyaan + (isFlagged(q.id) ? ' (Flag)' : '') + (fillStatus(q.id) === 2 ? ' ✓' : '')"
                                       class="relative w-9 h-9 rounded text-[11px] font-bold transition-all duration-150 focus:outline-none hover:scale-110 hover:shadow-md overflow-hidden"
-                                      :class="isFlagged(q.id) ? 'text-white' : fillStatus(q.id) === 2 ? 'text-white' : 'text-[#62748e]'"
-                                      :style="isFlagged(q.id) ? 'background:#f59e0b;' : fillStatus(q.id) === 2 ? 'background:#1b5e20;' : 'background:#e0e0e0;'"
+                                       :class="isFlagged(q.id) ? 'text-white' : fillStatus(q.id) === 2 ? 'text-white' : 'text-[#62748e]'"
+                                      :style="isFlagged(q.id) ? 'background:#ef4444;' : fillStatus(q.id) === 2 ? 'background:#1b5e20;' : 'background:#e0e0e0;'"
                                       x-text="q.kode_pertanyaan">
                                   </button>
                               </template>

@@ -229,7 +229,11 @@
                     id: item.id,
                     code: item.kode_pertanyaan,
                     title: item.teks_pertanyaan,
-                    evidenceRequirements: Array.isArray(item.kebutuhan_bukti) ? item.kebutuhan_bukti : (item.kebutuhan_bukti ? [item.kebutuhan_bukti] : []),
+                    evidenceRequirements: (function(val) {
+                        if (Array.isArray(val)) return val;
+                        if (typeof val === 'string') return val.split(',').map(s => s.trim()).filter(s => s !== '');
+                        return val ? [val] : [];
+                    })(item.kebutuhan_bukti),
                     type: item.tipe,
                     keterangan: item.keterangan || '',
                     options: (item.OpsiJawaban || item.opsi_jawaban || []).map(opt => ({
@@ -475,7 +479,7 @@
                                 {{-- 🏷️ Question Card — id anchor for scroll targeting + relative for flag ribbon --}}
                                 <div :id="'q-' + q.id"
                                      class="relative bg-white border border-[#e0e0e0] rounded-lg overflow-hidden transition-all duration-300"
-                                     :class="isFlagged(q.id) ? 'border-amber-400' : ''">
+                                     :class="isFlagged(q.id) ? 'border-red-500 ring-1 ring-red-200' : ''">
 
                                     {{-- ===== 🔖 Bookmark Flag ===== --}}
                                     <button type="button"
@@ -486,7 +490,7 @@
                                         {{-- Classic bookmark: rectangle + single V-notch at bottom --}}
                                         <span class="block w-full transition-all duration-300"
                                             :style="isFlagged(q.id)
-                                                ? 'height:35px; background:#f59e0b; clip-path:polygon(0 0,100% 0,100% 100%,50% 80%,0 100%); box-shadow:0 6px 14px rgba(245,158,11,0.45);'
+                                                ? 'height:35px; background:#ef4444; clip-path:polygon(0 0,100% 0,100% 100%,50% 80%,0 100%); box-shadow:0 6px 14px rgba(239,68,68,0.45);'
                                                 : 'height:20px; background:#cbd5e1; clip-path:polygon(0 0,100% 0,100% 100%,50% 75%,0 100%); box-shadow:none;'">
                                         </span>
                                     </button>
@@ -711,13 +715,13 @@
                         <span class="w-3 h-3 rounded-sm bg-[#1b5e20]"></span> Lengkap
                     </span>
                     <span class="flex items-center gap-1.5">
-                        <span class="w-3 h-3 rounded-sm" style="background:linear-gradient(to right,#1b5e20 50%,#e0e0e0 50%)"></span> Sebagian
+                        <span class="w-3 h-3 rounded-sm bg-yellow-400"></span> Sebagian
                     </span>
                     <span class="flex items-center gap-1.5">
                         <span class="w-3 h-3 rounded-sm bg-[#e0e0e0]"></span> Kosong
                     </span>
                     <span class="flex items-center gap-1.5">
-                        <span class="w-3 h-3 rounded-sm bg-amber-400"></span> Flag
+                        <span class="w-3 h-3 rounded-sm bg-red-500"></span> Flag
                     </span>
                 </div>
 
@@ -737,11 +741,11 @@
                                         class="relative w-9 h-9 rounded text-[11px] font-bold transition-all duration-150 focus:outline-none hover:scale-110 hover:shadow-md overflow-hidden"
                                         :class="isFlagged(q.id) ? 'text-white' : fillStatus(q.id) === 2 ? 'text-white' : fillStatus(q.id) === 1 ? 'text-white' : 'text-[#62748e]'"
                                         :style="isFlagged(q.id)
-                                            ? 'background:#f59e0b;'
+                                            ? 'background:#ef4444;'
                                             : fillStatus(q.id) === 2
                                                 ? 'background:#1b5e20;'
                                                 : fillStatus(q.id) === 1
-                                                    ? 'background:linear-gradient(to right,#1b5e20 50%,#e0e0e0 50%);'
+                                                    ? 'background:#facc15;'
                                                     : 'background:#e0e0e0;'"
                                         x-text="q.code">
                                     </button>
