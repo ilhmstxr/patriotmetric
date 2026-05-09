@@ -3,8 +3,13 @@
 namespace App\Filament\Resources\Users\Pages;
 
 use App\Filament\Resources\Users\UserResource;
+use App\Models\Pengumpulan;
+use App\Models\Reviewer;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class EditUser extends EditRecord
 {
@@ -27,13 +32,13 @@ class EditUser extends EditRecord
         $user = $this->getRecord();
         
         if ($user->role === 'REVIEWER') {
-            $reviewer = \App\Models\Reviewer::where('user_id', $user->id)->first();
+            $reviewer = Reviewer::where('user_id', $user->id)->first();
             if ($reviewer) {
                 $data['nama_lengkap'] = $reviewer->nama_lengkap;
                 $data['nip'] = $reviewer->nip;
             }
         } elseif ($user->role === 'PESERTA') {
-            $pengumpulan = \App\Models\Pengumpulan::with('institusi')->where('user_id', $user->id)->first();
+            $pengumpulan = Pengumpulan::with('institusi')->where('user_id', $user->id)->first();
             if ($pengumpulan) {
                 $data['nama_pic'] = $pengumpulan->nama_pic;
                 $data['jabatan_pic'] = $pengumpulan->jabatan_pic;
@@ -48,9 +53,9 @@ class EditUser extends EditRecord
         return $data;
     }
 
-    protected function handleRecordUpdate(\Illuminate\Database\Eloquent\Model $record, array $data): \Illuminate\Database\Eloquent\Model
+    protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($record, $data) {
+        return DB::transaction(function () use ($record, $data) {
             $userData = [
                 'email' => $data['email'],
                 'role' => $data['role'],
@@ -58,19 +63,19 @@ class EditUser extends EditRecord
             ];
             
             if (!empty($data['password'])) {
-                $userData['password'] = \Illuminate\Support\Facades\Hash::make($data['password']);
+                $userData['password'] = Hash::make($data['password']);
             }
 
             $record->update($userData);
 
             if ($data['role'] === 'REVIEWER') {
-                $reviewer = \App\Models\Reviewer::firstOrCreate(['user_id' => $record->id]);
+                $reviewer = Reviewer::firstOrCreate(['user_id' => $record->id]);
                 $reviewer->update([
                     'nama_lengkap' => $data['nama_lengkap'] ?? $reviewer->nama_lengkap,
                     'nip' => $data['nip'] ?? $reviewer->nip,
                 ]);
             } elseif ($data['role'] === 'PESERTA') {
-                $pengumpulan = \App\Models\Pengumpulan::where('user_id', $record->id)->first();
+                $pengumpulan = Pengumpulan::where('user_id', $record->id)->first();
                 
                 if ($pengumpulan) {
                     $pengumpulan->update([

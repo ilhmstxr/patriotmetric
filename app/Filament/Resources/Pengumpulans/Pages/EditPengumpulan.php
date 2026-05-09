@@ -2,9 +2,12 @@
 
 namespace App\Filament\Resources\Pengumpulans\Pages;
 
+use App\DTO\PengumpulanDTO;
 use App\Filament\Resources\Pengumpulans\PengumpulanResource;
+use App\Services\PengumpulanService;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
 
 class EditPengumpulan extends EditRecord
 {
@@ -22,10 +25,10 @@ class EditPengumpulan extends EditRecord
         ];
     }
 
-    protected function handleRecordUpdate(\Illuminate\Database\Eloquent\Model $record, array $data): \Illuminate\Database\Eloquent\Model
+    protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        $dto = new \App\DTO\PengumpulanDTO($data);
-        app(\App\Services\PengumpulanService::class)->update($record->getKey(), $dto);
+        $dto = new PengumpulanDTO($data);
+        app(PengumpulanService::class)->update($record->getKey(), $dto);
 
         return $record->refresh();
     }
