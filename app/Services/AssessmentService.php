@@ -330,7 +330,15 @@ class AssessmentService extends BaseService
                 $decodedJawaban = $rawJawabanTeks;
             }
 
-            // 2. Normalisasi Struktur: Paksa masuk ke kerangka baku
+            // 2. Normalisasi Struktur & Kalkulasi Skor
+            if ($pertanyaan->code === 'B.13') {
+                // KHUSUS B.13: Payload berisi rincian 4 skala + total_poin
+                $data['jawaban_teks'] = is_array($decodedJawaban) ? $decodedJawaban : ['raw_input' => $decodedJawaban];
+                $data['skor_sistem'] = is_array($decodedJawaban) ? (float) ($decodedJawaban['total_poin'] ?? 0) : 0;
+                $data['jawaban_id'] = null;
+                return $data;
+            }
+
             $normalizedJawaban = [
                 'raw_input' => is_array($decodedJawaban) 
                     ? ($decodedJawaban['raw_input'] ?? null) 
@@ -343,7 +351,7 @@ class AssessmentService extends BaseService
 
             $data['jawaban_teks'] = $normalizedJawaban;
 
-            // Cek untuk kalkulasi skor otomatis
+            // Cek untuk kalkulasi skor otomatis (Gunakan calculated_percentage jika ada)
             $calculatedValue = $normalizedJawaban['calculated_percentage'] ?? $normalizedJawaban['raw_input'];
 
             $matchingOpsi = $this->pertanyaanRepository->findMatchingOpsiByValue(

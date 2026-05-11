@@ -387,3 +387,24 @@ Pastikan naming convention nama tabel (jawabans atau jawaban) disesuaikan dengan
 
 untuk verifikasi masih nyantol kalau pakai seeder
 datanya masih kesimpen di local storage
+
+
+```json
+{
+  "pertanyaan_id": 42,
+  "jawaban_id": null,
+  "jawaban_teks": "{
+  \"lokal\":2,
+  \"regional\":1,
+  \"nasional\":0,
+  \"internasional\":1,
+  
+  \"poin_lokal\":2,
+  \"poin_regional\":2,
+  \"poin_nasional\":0,
+  \"poin_internasional\":4,
+
+  \"total_poin\":8}",
+  "tautan_bukti": "https://drive.google.com/..."
+}
+```
