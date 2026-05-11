@@ -10,13 +10,14 @@
 - FE mengisi satuan disemua indikator yang mengisi
 - FE B9 lama beroperasi pusat konseling berapa bulan
 - FE B10 tenaga kependidikan bukan
-- ilham B13 ada 4 untuk kolom field untuk membedah "Skor = (Jumlah kegiatan kompetisi/lomba) x (skala kegiatan). 1: untuk skala lokal / kota kabupaten/ internal institusi. 2: skala regional / provinsi. 3: skala nasional. 4: skala internasional."
+- FE B13 ada 4 untuk kolom field untuk membedah "Skor = (Jumlah kegiatan kompetisi/lomba) x (skala kegiatan). 1: untuk skala lokal / kota kabupaten/ internal institusi. 2: skala regional / provinsi. 3: skala nasional. 4: skala internasional."
 - FE semua yang persentase diubah menjadi jumlah
-- ilham informasi semua ada ditulis jumlah
+- DONE ilham informasi semua ada ditulis jumlah
 - FE dikasih disclaimer poin draft belum final "hasil penilaian sementara, nilai akhir ditentukan oleh reviewer"
 - ilham edit tidak bisa jika sudah tutup dan status pengumpulannya sedang di review nyangkut 
 - ilham minimal 20 karakter dan wajib diisi untuk catatan penilaian spasi dihitung
-- ilham super admin ajah
-- ilham foto diganti
+- DONE ilham super admin ajah
+- DONE ilham foto diganti
 - ilham pedoman peserta dan pedoman reviewer
 - USECASE dan CDM PDM
+- ilham timeline untuk permission edit di sisi peserta, serta timeline peserta dapat melihat hasilnya di menggunakkan model submission_timeline
