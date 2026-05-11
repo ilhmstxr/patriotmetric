@@ -16,13 +16,13 @@ Berikut adalah dokumentasi skema database berdasarkan ERD dan analisis penggunaa
    - Menyimpan profil spesifik untuk pengguna dengan role Reviewer.
    - Kolom yang aktif digunakan: `id`, `user_id`, `nama_lengkap`, `nip`.
 
-4. **`pengumpulans`**
+4. **`Assessments`**
    - Tabel sentral yang menyimpan status asesmen tiap institusi per tahun periode.
    - Kolom yang aktif digunakan: `id`, `institution_id`, `nama_pic`, `jabatan_pic`, `no_hp_pic`, `tahun_periode`, `status` (ACTIVE, IN_PROGRESS, SUBMITTED, GRADED, PUBLISHED), `user_id`, `reviewer_id`, `total_skor_sistem`, `total_skor_akhir`, `skor_rekap_json`.
 
 5. **`identitas`**
    - Menyimpan data profil/demografi dasar institusi untuk suatu periode asesmen.
-   - Kolom yang aktif digunakan: `id`, `pengumpulan_id`, `jml_mahasiswa`, `jml_dosen`, `jml_tendik`, `jml_prodi`, `jml_ukm`, `jml_ormawa`, `jml_fakultas`, `visi`, `misi`, `legal_documents`, `is_verified`.
+   - Kolom yang aktif digunakan: `id`, `Assessment_id`, `jml_mahasiswa`, `jml_dosen`, `jml_tendik`, `jml_prodi`, `jml_ukm`, `jml_ormawa`, `jml_fakultas`, `visi`, `misi`, `legal_documents`, `is_verified`.
 
 6. **`agama`**
    - Menyimpan data sebaran/demografi agama mahasiswa terkait identitas institusi.
@@ -40,9 +40,9 @@ Berikut adalah dokumentasi skema database berdasarkan ERD dan analisis penggunaa
    - Menyimpan pilihan ganda dan bobot/nilai (value) dari masing-masing opsi pertanyaan.
    - Kolom yang aktif digunakan: `id`, `pertanyaan_id`, `opsi_jawaban`, `value`, `keterangan`.
 
-10. **`pengumpulan_jawabans`**
+10. **`respon_assessments`**
     - Menyimpan jawaban riil dari peserta (baik berupa ID opsi yang dipilih maupun teks/angka isian singkat) beserta tautan bukti dan hasil penilaian reviewer.
-    - Kolom yang aktif digunakan: `id`, `submission_id`, `pertanyaan_id`, `jawaban_id`, `jawaban_teks`, `tautan_bukti_drive`, `skor_sistem`, `skor_validasi_reviewer`, `note_reviewer`.
+    - Kolom yang aktif digunakan: `id`, `assessment_id`, `pertanyaan_id`, `jawaban_id`, `jawaban_teks`, `tautan_bukti_drive`, `skor_sistem`, `skor_validasi_reviewer`, `note_reviewer`.
 
 11. **`submission_timelines`** *(Baru ditambahkan)*
     - Menyimpan jadwal kapan form rubrik dibuka, ditutup, dikunci manual, dan kapan hasil penilaian dipublikasikan ke peserta.

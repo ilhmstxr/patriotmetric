@@ -89,7 +89,7 @@ class ReviewerController extends Controller
                 throw new \Exception("Unauthorized: Akses khusus untuk Reviewer.", 403);
             }
 
-            $assessment = \App\Models\Pengumpulan::where('id', $pesertaId)
+            $assessment = \App\Models\Assessment::where('id', $pesertaId)
                 ->whereIn('status', ['SUBMITTED', 'IN_PROGRESS', 'GRADED'])
                 ->latest()
                 ->firstOrFail();
@@ -103,9 +103,9 @@ class ReviewerController extends Controller
 
                     $skor = min(5, max(0, (int) $skor));
 
-                    \App\Models\PengumpulanJawaban::updateOrCreate(
+                    \App\Models\ResponAssessment::updateOrCreate(
                         [
-                            'submission_id' => $assessment->id,
+                            'assessment_id' => $assessment->id,
                             'pertanyaan_id' => (int) $pertanyaanId,
                         ],
                         [
@@ -137,14 +137,14 @@ class ReviewerController extends Controller
                 throw new \Exception("Unauthorized: Akses khusus untuk Reviewer.", 403);
             }
 
-            $assessment = \App\Models\Pengumpulan::where('id', $pesertaId)
+            $assessment = \App\Models\Assessment::where('id', $pesertaId)
                 ->whereIn('status', ['SUBMITTED', 'IN_PROGRESS'])
                 ->latest()
                 ->firstOrFail();
 
             // Cek semua pertanyaan sudah ada skor dari reviewer
             $totalPertanyaan = \App\Models\Pertanyaan::count();
-            $totalDinilai = \App\Models\PengumpulanJawaban::where('submission_id', $assessment->id)
+            $totalDinilai = \App\Models\ResponAssessment::where('assessment_id', $assessment->id)
                 ->whereNotNull('skor_validasi_reviewer')
                 ->count();
 

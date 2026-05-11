@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('pengumpulans', function (Blueprint $table) {
+        Schema::create('Assessments', function (Blueprint $table) {
             $table->id()->primary();
             $table->foreignUuid('institution_id')->constrained('institusis')->onUpdate('cascade')->onDelete('cascade');
 
@@ -38,6 +38,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('pengumpulans');
+        Schema::dropIfExists('Assessments');
     }
 };

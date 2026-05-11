@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Pengumpulans\Tables;
+namespace App\Filament\Resources\Assessments\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -11,7 +11,7 @@ use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 
-class PengumpulansTable
+class AssessmentsTable
 {
     public static function configure(Table $table): Table
     {
@@ -54,7 +54,7 @@ class PengumpulansTable
                             ->required(),
                     ])
                     ->action(function (\Illuminate\Database\Eloquent\Model $record, array $data) {
-                        app(\App\Services\PengumpulanService::class)->assignReviewer($record->id, $data['reviewer_id']);
+                        app(\App\Services\AssessmentService::class)->assignReviewer($record->id, $data['reviewer_id']);
                     })
             ])
             ->toolbarActions([

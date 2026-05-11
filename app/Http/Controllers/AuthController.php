@@ -6,7 +6,7 @@ use App\DTO\AssessmentDTO\AssessmentDTO;
 use App\DTO\AuthDTO\LoginDTO;
 use App\DTO\AuthDTO\RegisterDTO;
 use App\Models\Institusi;
-use App\Models\Pengumpulan;
+use App\Models\Assessment;
 use App\Models\User;
 use App\Services\UserService;
 use App\Traits\ApiResponse;
@@ -99,10 +99,10 @@ class AuthController extends Controller
 
             // Determine redirect path based on user status
             $user = $result['user'];
-            $pengumpulan = Pengumpulan::where('user_id', $user->id)->with('institusi')->first();
+            $Assessment = Assessment::where('user_id', $user->id)->with('institusi')->first();
             
             $redirectTo = '/verifikasi'; // Default: needs verification
-            if ($pengumpulan && in_array($pengumpulan->status, ['IN_PROGRESS', 'SUBMITTED', 'GRADED'])) {
+            if ($Assessment && in_array($Assessment->status, ['IN_PROGRESS', 'SUBMITTED', 'GRADED'])) {
                 $redirectTo = '/dashboard';
             }
 
@@ -113,12 +113,12 @@ class AuthController extends Controller
 
             return $this->successResponse([
                 'user' => array_merge($user->toArray(), [
-                    'nama_institusi' => $pengumpulan?->institusi?->nama_institusi
+                    'nama_institusi' => $Assessment?->institusi?->nama_institusi
                 ]),
                 'token' => $result['token'],
                 'token_expires_at' => $result['expires_at'] ?? null,
                 'redirect_to' => $redirectTo,
-                'pengumpulan_status' => $pengumpulan?->status,
+                'Assessment_status' => $Assessment?->status,
             ], 'Login berhasil.', 200);
         } catch (\Throwable $th) {
             $code = (is_numeric($th->getCode()) && $th->getCode() >= 400 && $th->getCode() < 600) ? $th->getCode() : 401;
@@ -180,7 +180,7 @@ class AuthController extends Controller
     }
 
     /**
-     * GET /api/auth/me — Return current user info + pengumpulan status
+     * GET /api/auth/me — Return current user info + Assessment status
      * Used by frontend to determine redirect after login
      */
     public function me(Request $request)
@@ -196,41 +196,41 @@ class AuthController extends Controller
             $activePeriodSetting = \App\Models\PengaturanCms::where('key', 'active_period')->first();
             $activePeriod = $activePeriodSetting ? $activePeriodSetting->value : date('Y');
 
-            $pengumpulan = Pengumpulan::where('user_id', $user->id)
+            $Assessment = Assessment::where('user_id', $user->id)
                 ->where('tahun_periode', $activePeriod)
                 ->with(['institusi', 'identitas.agamas'])
                 ->first();
 
-            if (!$pengumpulan) {
-                // Find previous pengumpulan
-                $prevPengumpulan = Pengumpulan::where('user_id', $user->id)
+            if (!$Assessment) {
+                // Find previous Assessment
+                $prevAssessment = Assessment::where('user_id', $user->id)
                     ->orderBy('tahun_periode', 'desc')
                     ->first();
                 
-                if ($prevPengumpulan) {
-                    // Create new pengumpulan bypassing verification
-                    $pengumpulan = Pengumpulan::create([
+                if ($prevAssessment) {
+                    // Create new Assessment bypassing verification
+                    $Assessment = Assessment::create([
                         'user_id' => $user->id,
-                        'institution_id' => $prevPengumpulan->institution_id,
+                        'institution_id' => $prevAssessment->institution_id,
                         'tahun_periode' => $activePeriod,
                         'status' => 'IN_PROGRESS', // bypass verifikasi
-                        'nama_pic' => $prevPengumpulan->nama_pic,
-                        'jabatan_pic' => $prevPengumpulan->jabatan_pic,
-                        'no_hp_pic' => $prevPengumpulan->no_hp_pic,
-                        'email_pic' => $prevPengumpulan->email_pic,
-                        'surat_pernyataan' => $prevPengumpulan->surat_pernyataan,
-                        'sk_pendirian' => $prevPengumpulan->sk_pendirian,
-                        'sk_akreditasi' => $prevPengumpulan->sk_akreditasi,
-                        'profil_pt' => $prevPengumpulan->profil_pt,
-                        'struktur_organisasi' => $prevPengumpulan->struktur_organisasi,
-                        'sk_tim' => $prevPengumpulan->sk_tim,
+                        'nama_pic' => $prevAssessment->nama_pic,
+                        'jabatan_pic' => $prevAssessment->jabatan_pic,
+                        'no_hp_pic' => $prevAssessment->no_hp_pic,
+                        'email_pic' => $prevAssessment->email_pic,
+                        'surat_pernyataan' => $prevAssessment->surat_pernyataan,
+                        'sk_pendirian' => $prevAssessment->sk_pendirian,
+                        'sk_akreditasi' => $prevAssessment->sk_akreditasi,
+                        'profil_pt' => $prevAssessment->profil_pt,
+                        'struktur_organisasi' => $prevAssessment->struktur_organisasi,
+                        'sk_tim' => $prevAssessment->sk_tim,
                     ]);
 
                     // Copy Identitas
-                    $prevIdentitas = \App\Models\Identitas::where('pengumpulan_id', $prevPengumpulan->id)->first();
+                    $prevIdentitas = \App\Models\Identitas::where('Assessment_id', $prevAssessment->id)->first();
                     if ($prevIdentitas) {
                         $newIdentitas = $prevIdentitas->replicate();
-                        $newIdentitas->pengumpulan_id = $pengumpulan->id;
+                        $newIdentitas->Assessment_id = $Assessment->id;
                         $newIdentitas->save();
                         
                         // Copy Agama
@@ -240,9 +240,9 @@ class AuthController extends Controller
                             $newAgama->save();
                         }
                     }
-                    $pengumpulan->load(['institusi', 'identitas.agamas']);
+                    $Assessment->load(['institusi', 'identitas.agamas']);
                 } else {
-                    $pengumpulan = Pengumpulan::where('user_id', $user->id)->with(['institusi', 'identitas.agamas'])->first();
+                    $Assessment = Assessment::where('user_id', $user->id)->with(['institusi', 'identitas.agamas'])->first();
                 }
             }
             
@@ -258,19 +258,19 @@ class AuthController extends Controller
                     'email' => $user->email,
                     'role' => $user->role,
                     'status' => $user->status,
-                    'nama_institusi' => $pengumpulan?->institusi?->nama_institusi,
+                    'nama_institusi' => $Assessment?->institusi?->nama_institusi,
                 ],
-                'pengumpulan' => $pengumpulan ? [
-                    'id' => $pengumpulan->id,
-                    'status' => $pengumpulan->status,
-                    'tahun_periode' => $pengumpulan->tahun_periode,
-                    'nama_pic' => $pengumpulan->nama_pic,
-                    'jabatan_pic' => $pengumpulan->jabatan_pic,
-                    'no_hp_pic' => $pengumpulan->no_hp_pic,
+                'Assessment' => $Assessment ? [
+                    'id' => $Assessment->id,
+                    'status' => $Assessment->status,
+                    'tahun_periode' => $Assessment->tahun_periode,
+                    'nama_pic' => $Assessment->nama_pic,
+                    'jabatan_pic' => $Assessment->jabatan_pic,
+                    'no_hp_pic' => $Assessment->no_hp_pic,
                     'email_pic' => $user->email,
-                    'institusi' => $pengumpulan->institusi,
-                    'identitas' => $pengumpulan->identitas,
-                    'agamas' => $pengumpulan->identitas?->agamas,
+                    'institusi' => $Assessment->institusi,
+                    'identitas' => $Assessment->identitas,
+                    'agamas' => $Assessment->identitas?->agamas,
                 ] : null,
                 'is_edit_enabled' => $isEditEnabled,
                 'is_peserta_profile_edit_enabled' => $isProfileEditEnabled,
@@ -345,23 +345,23 @@ class AuthController extends Controller
                 'email.unique' => 'Email tersebut sudah digunakan akun lain.',
             ]);
 
-            // Ambil pengumpulan aktif milik peserta
+            // Ambil Assessment aktif milik peserta
             $activePeriodSetting = \App\Models\PengaturanCms::where('key', 'active_period')->first();
             $activePeriod        = $activePeriodSetting ? $activePeriodSetting->value : date('Y');
 
-            $pengumpulan = Pengumpulan::where('user_id', $userId)
+            $Assessment = Assessment::where('user_id', $userId)
                 ->where('tahun_periode', $activePeriod)
                 ->with(['identitas.agamas'])
                 ->first();
 
-            if (!$pengumpulan) {
-                return $this->errorResponse('Data pengumpulan tidak ditemukan.', 404);
+            if (!$Assessment) {
+                return $this->errorResponse('Data Assessment tidak ditemukan.', 404);
             }
 
-            // 1. Update data PIC di pengumpulan
-            $pengumpulan->update([
+            // 1. Update data PIC di Assessment
+            $Assessment->update([
                 'nama_pic'    => $validated['nama_pic'],
-                'jabatan_pic' => $validated['jabatan_pic'] ?? $pengumpulan->jabatan_pic,
+                'jabatan_pic' => $validated['jabatan_pic'] ?? $Assessment->jabatan_pic,
                 'no_hp_pic'   => $validated['no_hp_pic'],
             ]);
 
@@ -375,24 +375,24 @@ class AuthController extends Controller
             }
 
             // 2. Update data Identitas
-            if ($pengumpulan->identitas) {
-                $pengumpulan->identitas->update([
-                    'visi'          => $validated['visi']          ?? $pengumpulan->identitas->visi,
-                    'misi'          => $validated['misi']          ?? $pengumpulan->identitas->misi,
-                    'jml_fakultas'  => $validated['jml_fakultas']  ?? $pengumpulan->identitas->jml_fakultas,
-                    'jml_prodi'     => $validated['jml_prodi']     ?? $pengumpulan->identitas->jml_prodi,
-                    'jml_dosen'     => $validated['jml_dosen']     ?? $pengumpulan->identitas->jml_dosen,
-                    'jml_tendik'    => $validated['jml_tendik']    ?? $pengumpulan->identitas->jml_tendik,
-                    'jml_mahasiswa' => $validated['jml_mahasiswa'] ?? $pengumpulan->identitas->jml_mahasiswa,
-                    'jml_ormawa'    => $validated['jml_ormawa']    ?? $pengumpulan->identitas->jml_ormawa,
-                    'jml_ukm'       => $validated['jml_ukm']       ?? $pengumpulan->identitas->jml_ukm,
+            if ($Assessment->identitas) {
+                $Assessment->identitas->update([
+                    'visi'          => $validated['visi']          ?? $Assessment->identitas->visi,
+                    'misi'          => $validated['misi']          ?? $Assessment->identitas->misi,
+                    'jml_fakultas'  => $validated['jml_fakultas']  ?? $Assessment->identitas->jml_fakultas,
+                    'jml_prodi'     => $validated['jml_prodi']     ?? $Assessment->identitas->jml_prodi,
+                    'jml_dosen'     => $validated['jml_dosen']     ?? $Assessment->identitas->jml_dosen,
+                    'jml_tendik'    => $validated['jml_tendik']    ?? $Assessment->identitas->jml_tendik,
+                    'jml_mahasiswa' => $validated['jml_mahasiswa'] ?? $Assessment->identitas->jml_mahasiswa,
+                    'jml_ormawa'    => $validated['jml_ormawa']    ?? $Assessment->identitas->jml_ormawa,
+                    'jml_ukm'       => $validated['jml_ukm']       ?? $Assessment->identitas->jml_ukm,
                 ]);
 
                 // 3. Update demografi agama (upsert per agama)
                 if (!empty($validated['agamas']) && is_array($validated['agamas'])) {
                     foreach ($validated['agamas'] as $agamaKey => $jumlah) {
                         \App\Models\Agama::updateOrCreate(
-                            ['identitas_id' => $pengumpulan->identitas->id, 'agama' => $agamaKey],
+                            ['identitas_id' => $Assessment->identitas->id, 'agama' => $agamaKey],
                             ['jumlah' => (int) ($jumlah ?: 0)]
                         );
                     }
@@ -400,9 +400,9 @@ class AuthController extends Controller
             }
 
             return $this->successResponse([
-                'nama_pic'    => $pengumpulan->fresh()->nama_pic,
-                'jabatan_pic' => $pengumpulan->fresh()->jabatan_pic,
-                'no_hp_pic'   => $pengumpulan->fresh()->no_hp_pic,
+                'nama_pic'    => $Assessment->fresh()->nama_pic,
+                'jabatan_pic' => $Assessment->fresh()->jabatan_pic,
+                'no_hp_pic'   => $Assessment->fresh()->no_hp_pic,
                 'email'       => User::find($userId)?->email,
             ], 'Profil berhasil diperbarui.', 200);
         } catch (\Throwable $th) {

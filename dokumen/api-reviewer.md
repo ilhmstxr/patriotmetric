@@ -45,7 +45,7 @@ CHECK
 ### Route -> Controller
 
 - Mengarah ke `ReviewerController@getQuestionsByCategory`.
-- Menerima `submission_id` (ID Assessment) dan `category_id`.
+- Menerima `assessment_id` (ID Assessment) dan `category_id`.
 
 ### Controller -> DTO
 

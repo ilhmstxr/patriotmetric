@@ -55,9 +55,9 @@ class DatabaseSeeder extends Seeder
             PertanyaanSeeder::class,
             PengaturanCmsSeeder::class,
             // InstitusiSeeder::class,
-            // PengumpulanSeeder::class,
+            // AssessmentSeeder::class,
             // IdentitasSeeder::class,
-            // PengumpulanJawabanSeeder::class,
+            // ResponAssessmentSeeder::class,
             // ReviewerSeeder::class,
         ]);
 
@@ -67,8 +67,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // KategoriSeeder::class,
             // PertanyaanSeeder::class,
-            // PengumpulanSeeder::class,
-            // PengumpulanJawabanSeeder::class,
+            // AssessmentSeeder::class,
+            // ResponAssessmentSeeder::class,
             // PengaturanCmsSeeder::class,
 
         ]);

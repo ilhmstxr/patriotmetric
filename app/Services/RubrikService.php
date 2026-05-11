@@ -47,7 +47,7 @@ class RubrikService extends BaseService
     }
 
     /**
-     * Memastikan total bobot seluruh kategori mencapai 100% sebelum sistem dibuka untuk pengumpulan.
+     * Memastikan total bobot seluruh kategori mencapai 100% sebelum sistem dibuka untuk Assessment.
      */
     public function validateRubrikConsistency()
     {

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Identitas;
-use App\Models\Pengumpulan;
+use App\Models\Assessment;
 use Illuminate\Database\Seeder;
 
 class IdentitasSeeder extends Seeder
@@ -21,12 +21,12 @@ class IdentitasSeeder extends Seeder
             $user = \App\Models\User::where('email', $email)->first();
             if (!$user) continue;
 
-            $pengumpulan = \App\Models\Pengumpulan::where('user_id', $user->id)->first();
-            if (!$pengumpulan) continue;
+            $Assessment = \App\Models\Assessment::where('user_id', $user->id)->first();
+            if (!$Assessment) continue;
 
             // Seed Identitas
             $identitas = \App\Models\Identitas::updateOrCreate(
-                ['pengumpulan_id' => $pengumpulan->id],
+                ['Assessment_id' => $Assessment->id],
                 [
                     'jml_mahasiswa' => rand(5000, 20000),
                     'jml_dosen' => rand(200, 1000),

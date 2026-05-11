@@ -159,7 +159,7 @@ class ReviewService extends BaseService
             // if ($scaleChoice && ($manualScore > ($scaleChoice * 20))) throw Exception...
 
             $sanitizedVerifications[] = [
-                'id' => $ver['id'], // ID dari pengumpulan_jawaban
+                'id' => $ver['id'], // ID dari respon_assessment
                 'scale_choice' => $scaleChoice,
                 'manual_score' => $manualScore,
             ];

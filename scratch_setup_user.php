@@ -1,7 +1,7 @@
 <?php
 use App\Models\User;
 use App\Models\Institusi;
-use App\Models\Pengumpulan;
+use App\Models\Assessment;
 use App\Models\Identitas;
 use Illuminate\Support\Facades\Hash;
 
@@ -20,7 +20,7 @@ $institusi = Institusi::firstOrCreate(
     ['jenis_institusi' => 'PTN']
 );
 
-$pengumpulan = Pengumpulan::updateOrCreate(
+$Assessment = Assessment::updateOrCreate(
     ['user_id' => $user->id],
     [
         'institution_id' => $institusi->id,
@@ -34,7 +34,7 @@ $pengumpulan = Pengumpulan::updateOrCreate(
 );
 
 Identitas::updateOrCreate(
-    ['pengumpulan_id' => $pengumpulan->id],
+    ['Assessment_id' => $Assessment->id],
     [
         'visi' => 'Visi test',
         'misi' => 'Misi test',

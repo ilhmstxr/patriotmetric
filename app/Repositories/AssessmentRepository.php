@@ -5,8 +5,8 @@ namespace App\Repositories;
 use App\Models\Agama;
 use App\Models\Identitas;
 use App\Models\Institusi;
-use App\Models\Pengumpulan; // Gunakan PascalCase
-use App\Models\PengumpulanJawaban;
+use App\Models\Assessment; // Gunakan PascalCase
+use App\Models\ResponAssessment;
 use App\Models\Kategori;
 use App\Models\OpsiJawaban;
 use App\Models\Pertanyaan;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 
 class AssessmentRepository extends BaseRepository
 {
-    public function __construct(Pengumpulan $model)
+    public function __construct(Assessment $model)
     {
         parent::__construct($model);
     }
@@ -41,9 +41,9 @@ class AssessmentRepository extends BaseRepository
         // Set default 0 hanya jika skor_sistem tidak dikirim dari service
         $payload['skor_sistem'] = $payload['skor_sistem'] ?? 0;
 
-        return PengumpulanJawaban::updateOrCreate(
+        return ResponAssessment::updateOrCreate(
             [
-                'submission_id' => $payload['submission_id'],
+                'assessment_id' => $payload['assessment_id'],
                 'pertanyaan_id' => $payload['pertanyaan_id']
             ],
             $payload
@@ -66,7 +66,7 @@ class AssessmentRepository extends BaseRepository
      */
     public function countValidAnswers($assessment)
     {
-        return PengumpulanJawaban::where('submission_id', $assessment->id)
+        return ResponAssessment::where('assessment_id', $assessment->id)
             ->whereNotNull('jawaban_id')
             // ->whereNotNull('evidence_url') // Aktifkan jika URL wajib
             ->count();
@@ -77,15 +77,15 @@ class AssessmentRepository extends BaseRepository
      */
     public function getAllAnswersByAssessment($assessmentId)
     {
-        return PengumpulanJawaban::where('submission_id', $assessmentId)->get();
+        return ResponAssessment::where('assessment_id', $assessmentId)->get();
     }
 
     /**
-     * Mencari record identitas berdasarkan pengumpulan_id.
+     * Mencari record identitas berdasarkan Assessment_id.
      */
-    public function findIdentitasByPengumpulanId(int $pengumpulanId)
+    public function findIdentitasByAssessmentId(int $AssessmentId)
     {
-        return Identitas::where('pengumpulan_id', $pengumpulanId)->first();
+        return Identitas::where('Assessment_id', $AssessmentId)->first();
     }
 
     public function findInstitusiById(string $id)
@@ -100,10 +100,10 @@ class AssessmentRepository extends BaseRepository
     /**
      * Logic Create or Update (Upsert) untuk tabel Identitas.
      */
-    public function upsertIdentitas(int $pengumpulanId, array $data)
+    public function upsertIdentitas(int $AssessmentId, array $data)
     {
         return Identitas::updateOrCreate(
-            ['pengumpulan_id' => $pengumpulanId],
+            ['Assessment_id' => $AssessmentId],
             $data
         );
     }
@@ -169,7 +169,7 @@ class AssessmentRepository extends BaseRepository
      */
     public function getAnswersGroupedByCategory(int $assessmentId)
     {
-        return PengumpulanJawaban::where('submission_id', $assessmentId)
+        return ResponAssessment::where('assessment_id', $assessmentId)
             ->with([
                 'pertanyaan.kategori',
                 'pertanyaan.OpsiJawaban',
@@ -194,13 +194,13 @@ class AssessmentRepository extends BaseRepository
     public function getIdentitasWithAgama(int $assessmentId)
     {
         return Identitas::with('agamas')
-            ->where('pengumpulan_id', $assessmentId)
+            ->where('Assessment_id', $assessmentId)
             ->first();
     }
 
     public function getLatestJawabanUpdate(int $assessmentId)
     {
-        return PengumpulanJawaban::where('submission_id', $assessmentId)->max('updated_at');
+        return ResponAssessment::where('assessment_id', $assessmentId)->max('updated_at');
     }
 
     public function updateRekapSkor(int $assessmentId, array $rekap)

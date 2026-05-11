@@ -71,7 +71,7 @@ Berdasarkan pengecekan antara `dokumen/api.md` dengan `routes/api.php` dan `Asse
         - `GET /api/review/submissions/{id}`
         - `PATCH /api/review/answers/{id}`
         - `POST /api/review/publish/{id}`
-    - Namun di `api.php`, justru berisi `final-score`, `assign`, `assigned`, `calculate`, `finalize`, `verify-indicator`. Method di controller-nya masih membaca ID dari request (`$request->submission_id`), bukan dari _route parameter_ `{id}`.
+    - Namun di `api.php`, justru berisi `final-score`, `assign`, `assigned`, `calculate`, `finalize`, `verify-indicator`. Method di controller-nya masih membaca ID dari request (`$request->assessment_id`), bukan dari _route parameter_ `{id}`.
 
 5. **Route Tidak Terdokumentasi:**
     - Ada banyak rute untuk pengolahan rubrik (contoh: `/assessment/rubrik/structure`, `/assessment/rubrik/validate`) dan tambahan fungsi submission (contoh: `/assessment/draft`, `/assessment/details`, `/assessment/preview-score`) di `routes/api.php` yang **belum dicatat** di `dokumen/api.md`. Sebaiknya dokumentasi dilengkapi atau rute disesuaikan.
@@ -247,20 +247,20 @@ RESPONSE
 
 - status flag message ok tersimpan
 
-| **POST** | `/api/assessment/submit` | Final Lock/Submit untuk mengakhiri edit _Assessment_ | `submission_id` | `200 OK` (Pesan info locked) |
+| **POST** | `/api/assessment/submit` | Final Lock/Submit untuk mengakhiri edit _Assessment_ | `assessment_id` | `200 OK` (Pesan info locked) |
 REQUEST
 
-- submission_id (unik identifikasi form yg dikerjakan)
+- assessment_id (unik identifikasi form yg dikerjakan)
 
 RESPONSE
 
 - status kunci form
 - merubah step verifikasi
 
-| **GET** | `/api/assessment/preview` | Mengambil hitungan poin (ranged score) kasar | `submission_id` | `200 OK` (Preview nilai kasar) |
+| **GET** | `/api/assessment/preview` | Mengambil hitungan poin (ranged score) kasar | `assessment_id` | `200 OK` (Preview nilai kasar) |
 REQUEST
 
-- submission_id
+- assessment_id
 
 RESPONSE
 
@@ -294,19 +294,19 @@ RESPONSE
 - boolean isValid
 - logs pesan validasi rubrik sehat (%)
 
-| **GET** | `/api/assessment/details` | _Service:_ Detail Task lengkap per `submission_id` | `submission_id` | `200 OK` (Data submission complete) |
+| **GET** | `/api/assessment/details` | _Service:_ Detail Task lengkap per `assessment_id` | `assessment_id` | `200 OK` (Data submission complete) |
 REQUEST
 
-- submission_id
+- assessment_id
 
 RESPONSE
 
 - seluruh json row object submission
 
-| **GET** | `/api/assessment/preview-score` | _Service:_ Detail Preview Ranged Score secara detail | `submission_id` | `200 OK` (Score Preview Lengkap) |
+| **GET** | `/api/assessment/preview-score` | _Service:_ Detail Preview Ranged Score secara detail | `assessment_id` | `200 OK` (Score Preview Lengkap) |
 REQUEST
 
-- submission_id
+- assessment_id
 
 RESPONSE
 
@@ -366,20 +366,20 @@ RESPONSE
 - publish status string
 - pesan "published to users"
 
-| **GET** | `/api/review/final-score` | _Legacy:_ Mengambil score yg telah selesai terverifikasi total | `submission_id` | `200 OK` (Pesan detail nilai verified total) |
+| **GET** | `/api/review/final-score` | _Legacy:_ Mengambil score yg telah selesai terverifikasi total | `assessment_id` | `200 OK` (Pesan detail nilai verified total) |
 REQUEST
 
-- submission_id di query get params
+- assessment_id di query get params
 
 RESPONSE
 
 - point object total / skor review admin
 
-| **POST** | `/api/review/assign` | _Legacy:_ Pendelegasian (_Assignment_) reviewer untuk submission ini | `reviewer_id`, `submission_ids` array | `200 OK` (Pesan info assignment berhasil) |
+| **POST** | `/api/review/assign` | _Legacy:_ Pendelegasian (_Assignment_) reviewer untuk submission ini | `reviewer_id`, `assessment_ids` array | `200 OK` (Pesan info assignment berhasil) |
 REQUEST
 
 - reviewer_id -> id pengawas / staff
-- arrays submission_ids -> beberapa target universitas yang dinilainya
+- arrays assessment_ids -> beberapa target universitas yang dinilainya
 
 RESPONSE
 
@@ -405,19 +405,19 @@ RESPONSE
 
 - raw point calculation
 
-| **POST** | `/api/review/finalize` | _Legacy:_ Menyatakan bahwa tahap Review final 100% dan dinonaktifkan proses edit review-nya | `submission_id` | `200 OK` (Review dikunci & dinyatakan rampung final) |
+| **POST** | `/api/review/finalize` | _Legacy:_ Menyatakan bahwa tahap Review final 100% dan dinonaktifkan proses edit review-nya | `assessment_id` | `200 OK` (Review dikunci & dinyatakan rampung final) |
 REQUEST
 
-- target submission_id
+- target assessment_id
 
 RESPONSE
 
 - locked status "telah selesai direview sepenuhnya"
 
-| **PATCH** | `/api/review/verify-indicator`| _Legacy:_ Verifikasi klaim per-1 indikator detail soal tunggal | `submission_id`, `indicator_id`, `verified_score`, opsi `notes` | `200 OK` (Sukses Verifikasi Single Indicator) |
+| **PATCH** | `/api/review/verify-indicator`| _Legacy:_ Verifikasi klaim per-1 indikator detail soal tunggal | `assessment_id`, `indicator_id`, `verified_score`, opsi `notes` | `200 OK` (Sukses Verifikasi Single Indicator) |
 REQUEST
 
-- submission_id spesifik
+- assessment_id spesifik
 - target indicator_id
 - poin terverifikasi (verified_score)
 - komentar notes reviewer (opsional)
@@ -600,7 +600,7 @@ POST /api/reviewer/save-verification
 REQUEST:
 
 {
-"submission_id": "sub-001",
+"assessment_id": "sub-001",
 "category_id": 1,
 "verifications": [
 {

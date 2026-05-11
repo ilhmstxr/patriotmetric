@@ -9,8 +9,8 @@ Berdasarkan pengecekan pada `routes/web.php` dan direktori `app/Http/Controllers
 Namun, ditemukan beberapa **Controller lama yang sudah tidak terpakai** (tidak direferensikan di *route* manapun):
 1. `KategoriController.php` => Tergantikan oleh `AssessmentController`. Pengambilan hierarki soal dan kategori kini kemungkinan besar disatukan dalam satu endpoint _assessment questions_ agar lebih efisien.
 2. `PengaturanCmsController.php` => role:admin, tetap diperlukan karena mengatur bagaimana cara kerja cms didepannya.
-3. `PengumpulanController.php` => Tergantikan oleh `AssessmentController` (untuk fitur *Final Submit* oleh Institusi) dan `ReviewController` (untuk fitur melihat daftar *submissions* oleh Reviewer).
-4. `PengumpulanJawabanController.php` => Tergantikan oleh `AssessmentController` (untuk fitur menyimpan jawaban/klaim oleh Institusi) dan `ReviewController` (untuk fitur *verdict*/penjurian jawaban).
+3. `AssessmentController.php` => Tergantikan oleh `AssessmentController` (untuk fitur *Final Submit* oleh Institusi) dan `ReviewController` (untuk fitur melihat daftar *submissions* oleh Reviewer).
+4. `ResponAssessmentController.php` => Tergantikan oleh `AssessmentController` (untuk fitur menyimpan jawaban/klaim oleh Institusi) dan `ReviewController` (untuk fitur *verdict*/penjurian jawaban).
 5. `PertanyaanController.php` => Tergantikan oleh `AssessmentController` karena logika penarikan daftar pertanyaan ujian difokuskan pada controller untuk asesmen.
 
 ## Best Practice Pemanfaatan Controller

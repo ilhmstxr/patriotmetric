@@ -41,7 +41,7 @@ class SubmissionService extends BaseService
     {
         foreach ($answers as $answer) {
             $this->repository->updateOrCreateAnswer(
-                $answer['submission_id'],
+                $answer['assessment_id'],
                 $answer['question_id'],
                 [
                     'jawaban_teks' => $answer['jawaban_teks'] ?? null,

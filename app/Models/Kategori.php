@@ -19,6 +19,6 @@ class Kategori extends Model
 
     public function jawabans()
     {
-        return $this->hasManyThrough(PengumpulanJawaban::class, Pertanyaan::class, 'category_id', 'question_id');
+        return $this->hasManyThrough(ResponAssessment::class, Pertanyaan::class, 'category_id', 'question_id');
     }
 }

@@ -90,7 +90,7 @@ Semua endpoint mengembalikan format JSON yang konsisten:
         },
         "token": "1|xxxxxxxxxxx",
         "redirect_to": "/dashboard",
-        "pengumpulan_status": "IN_PROGRESS"
+        "Assessment_status": "IN_PROGRESS"
     }
 }
 ```
@@ -126,7 +126,7 @@ Semua endpoint mengembalikan format JSON yang konsisten:
 
 ### GET `/api/auth/me`
 **Auth**: Bearer Token (Required)  
-**Deskripsi**: Mengambil data lengkap user yang sedang login, termasuk pengumpulan aktif dan pengaturan CMS.
+**Deskripsi**: Mengambil data lengkap user yang sedang login, termasuk Assessment aktif dan pengaturan CMS.
 
 **Request Body**: *(kosong)*
 
@@ -142,7 +142,7 @@ Semua endpoint mengembalikan format JSON yang konsisten:
             "role": "peserta",
             "status": "IN_PROGRESS"
         },
-        "pengumpulan": {
+        "Assessment": {
             "id": 5,
             "status": "IN_PROGRESS",
             "tahun_periode": 2026,
@@ -199,11 +199,11 @@ Semua endpoint mengembalikan format JSON yang konsisten:
 }
 ```
 
-**Error 404** (data pengumpulan tidak ditemukan):
+**Error 404** (data Assessment tidak ditemukan):
 ```json
 {
     "success": false,
-    "message": "Data pengumpulan tidak ditemukan."
+    "message": "Data Assessment tidak ditemukan."
 }
 ```
 
@@ -257,7 +257,7 @@ Semua endpoint mengembalikan format JSON yang konsisten:
 ---
 
 ### POST `/api/assessment/peserta/save-draft`
-**Deskripsi**: Menyimpan semua jawaban secara batch dan mengubah status pengumpulan menjadi `SUBMITTED`.
+**Deskripsi**: Menyimpan semua jawaban secara batch dan mengubah status Assessment menjadi `SUBMITTED`.
 
 **Request Body**:
 ```json
@@ -387,7 +387,7 @@ Semua endpoint mengembalikan format JSON yang konsisten:
 ### GET `/api/assessment/reviewer/tasks/detail/{pesertaId}`
 **Deskripsi**: Mengambil detail pertanyaan dan jawaban peserta tertentu untuk proses review.
 
-**Path Parameter**: `pesertaId` — ID `pengumpulan` milik peserta.
+**Path Parameter**: `pesertaId` — ID `Assessment` milik peserta.
 
 **Response 200**:
 ```json

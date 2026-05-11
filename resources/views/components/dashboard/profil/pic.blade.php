@@ -19,7 +19,7 @@
                 <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">Nama PIC</label>
                 {{-- VIEW --}}
                 <div x-show="!isEditMode" class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center">
-                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.pengumpulan?.nama_pic || '-'"></p>
+                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.Assessment?.nama_pic || '-'"></p>
                 </div>
                 {{-- EDIT --}}
                 <input x-show="isEditMode" style="display:none;" type="text"
@@ -33,7 +33,7 @@
                 <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block">Jabatan PIC</label>
                 {{-- VIEW --}}
                 <div x-show="!isEditMode" class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center">
-                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.pengumpulan?.jabatan_pic || '-'"></p>
+                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.Assessment?.jabatan_pic || '-'"></p>
                 </div>
                 {{-- EDIT --}}
                 <input x-show="isEditMode" style="display:none;" type="text"
@@ -48,7 +48,7 @@
                 {{-- VIEW --}}
                 <div x-show="!isEditMode" class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
                     <i data-lucide="phone" class="w-[14px] h-[14px] text-[#90a1b9] shrink-0"></i>
-                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.pengumpulan?.no_hp_pic || '-'"></p>
+                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.Assessment?.no_hp_pic || '-'"></p>
                 </div>
                 {{-- EDIT --}}
                 <div x-show="isEditMode" style="display:none;" class="relative">
@@ -68,7 +68,7 @@
                 {{-- VIEW --}}
                 <div x-show="!isEditMode" class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
                     <i data-lucide="mail" class="w-[14px] h-[14px] text-[#90a1b9] shrink-0"></i>
-                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.pengumpulan?.email_pic || '-'"></p>
+                    <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.Assessment?.email_pic || '-'"></p>
                 </div>
                 {{-- EDIT --}}
                 <div x-show="isEditMode" style="display:none;" class="relative">

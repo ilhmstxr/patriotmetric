@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Filament\Resources\Pengumpulans\Pages;
+namespace App\Filament\Resources\Assessments\Pages;
 
-use App\DTO\PengumpulanDTO;
-use App\Filament\Resources\Pengumpulans\PengumpulanResource;
-use App\Services\PengumpulanService;
+use App\DTO\AssessmentDTO;
+use App\Filament\Resources\Assessments\AssessmentResource;
+use App\Services\AssessmentService;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
 
-class EditPengumpulan extends EditRecord
+class EditAssessment extends EditRecord
 {
-    protected static string $resource = PengumpulanResource::class;
+    protected static string $resource = AssessmentResource::class;
  
     protected function getRedirectUrl(): string
     {
@@ -27,8 +27,8 @@ class EditPengumpulan extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        $dto = new PengumpulanDTO($data);
-        app(PengumpulanService::class)->update($record->getKey(), $dto);
+        $dto = new AssessmentDTO($data);
+        app(AssessmentService::class)->update($record->getKey(), $dto);
 
         return $record->refresh();
     }

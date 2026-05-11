@@ -81,7 +81,7 @@
                              try {
                                  const result = JSON.parse(cached);
                                  console.log('[Header Debug] Cached data:', result);
-                                 this.processUserData(result.user, result.pengumpulan);
+                                 this.processUserData(result.user, result.Assessment);
                              } catch (e) { console.error('Cache parse error', e); }
                          }
 
@@ -95,9 +95,9 @@
                          if (res.ok && result.success) {
                              // Store to cache
                              localStorage.setItem('profile_data_cache', JSON.stringify(result.data));
-                             console.log('[Header Debug] pengumpulan from API:', result.data.pengumpulan);
+                             console.log('[Header Debug] Assessment from API:', result.data.Assessment);
 
-                             const p = result.data.pengumpulan;
+                             const p = result.data.Assessment;
                              const user = result.data.user;
                              this.processUserData(user, p);
                          } else {
@@ -159,7 +159,7 @@
                             fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + localStorage.getItem('auth_token'), 'Accept': 'application/json' } }).finally(() => {
                                 localStorage.removeItem('auth_token');
                                 localStorage.removeItem('auth_user');
-                                localStorage.removeItem('pengumpulan_status');
+                                localStorage.removeItem('Assessment_status');
                                 localStorage.removeItem('rubrik_data_cache');
                                 localStorage.removeItem('profile_data_cache');
                                 sessionStorage.clear();

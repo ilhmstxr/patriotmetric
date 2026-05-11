@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Institusi;
 use App\Models\Identitas;
-use App\Models\Pengumpulan;
+use App\Models\Assessment;
 use App\Models\Agama;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
@@ -26,10 +26,10 @@ class VerificationController extends Controller
         try {
             // Get user from token or fallback
             $userId = AuthController::getAuthPeserta();
-            $pengumpulan = Pengumpulan::where('user_id', $userId)->first();
+            $Assessment = Assessment::where('user_id', $userId)->first();
 
-            if (!$pengumpulan) {
-                return $this->errorResponse('Data pengumpulan tidak ditemukan. Silakan register terlebih dahulu.', 404);
+            if (!$Assessment) {
+                return $this->errorResponse('Data Assessment tidak ditemukan. Silakan register terlebih dahulu.', 404);
             }
 
             // Validate all inputs — max 5MB (5120 KB) per file
@@ -127,7 +127,7 @@ class VerificationController extends Controller
             }
 
             // Update or create Institusi
-            $institusi = Institusi::find($pengumpulan->institution_id);
+            $institusi = Institusi::find($Assessment->institution_id);
             if ($institusi) {
                 $institusi->update([
                     'nama_institusi' => $validated['nama_pt'],
@@ -139,8 +139,8 @@ class VerificationController extends Controller
             // Cari ID reviewer tester
             $testerReviewer = \App\Models\User::where('email', 'reviewer@admin.com')->first();
             
-            // Update Pengumpulan with PIC data
-            $pengumpulan->update([
+            // Update Assessment with PIC data
+            $Assessment->update([
                 'nama_pic' => $validated['nama_pic'],
                 'jabatan_pic' => $validated['jabatan_pic'],
                 'no_hp_pic' => $validated['no_hp_pic'],
@@ -156,7 +156,7 @@ class VerificationController extends Controller
 
             // Create or update Identitas
             $identitas = Identitas::updateOrCreate(
-                ['pengumpulan_id' => $pengumpulan->id],
+                ['Assessment_id' => $Assessment->id],
                 [
                     'visi' => $validated['visi'],
                     'misi' => $validated['misi'],

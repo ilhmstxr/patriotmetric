@@ -13,7 +13,7 @@
                 window.location.replace('/reviewer');
                 return;
             }
-            const status = localStorage.getItem('pengumpulan_status') || 'ACTIVE';
+            const status = localStorage.getItem('Assessment_status') || 'ACTIVE';
             if (status !== 'ACTIVE') {
                 window.location.replace('/dashboard');
             }
@@ -173,10 +173,10 @@
                 this.user = { ...this.user, ...result.data.user };
                 localStorage.setItem('auth_user', JSON.stringify(this.user));
 
-                if (result.data.pengumpulan) {
-                    const p = result.data.pengumpulan;
+                if (result.data.Assessment) {
+                    const p = result.data.Assessment;
                     if (['IN_PROGRESS', 'SUBMITTED', 'GRADED'].includes(p.status)) {
-                        localStorage.setItem('pengumpulan_status', p.status);
+                        localStorage.setItem('Assessment_status', p.status);
                         window.location.href = '/dashboard';
                     }
                     // Only fill from server if local draft is empty for these specific fields
@@ -322,7 +322,7 @@
                 this.clearDB();
                 
                 // UPDATE STATUS IN LOCAL STORAGE TO PREVENT REDIRECT LOOP
-                localStorage.setItem('pengumpulan_status', 'IN_PROGRESS');
+                localStorage.setItem('Assessment_status', 'IN_PROGRESS');
 
                 Swal.fire({
                     icon: 'success',

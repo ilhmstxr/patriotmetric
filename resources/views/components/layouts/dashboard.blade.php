@@ -37,7 +37,7 @@
             if (expiresAt && Date.now() > new Date(expiresAt).getTime()) {
                 localStorage.removeItem('auth_token');
                 localStorage.removeItem('auth_user');
-                localStorage.removeItem('pengumpulan_status');
+                localStorage.removeItem('Assessment_status');
                 localStorage.removeItem('profile_data_cache');
                 localStorage.removeItem('rubrik_questions_cache');
                 localStorage.removeItem('token_expires_at');
@@ -59,10 +59,10 @@
                 // Note: Kita cek status dari localStorage sebagai pertahanan pertama
                 // Sinkronisasi status yang lebih akurat dilakukan di header.blade.php via API
                 if (user.role === 'PESERTA' || user.role === 'peserta') {
-                    // Kita asumsikan jika tidak ada data pengumpulan di user object yang tersimpan, 
+                    // Kita asumsikan jika tidak ada data Assessment di user object yang tersimpan, 
                     // atau statusnya ACTIVE, maka harus verifikasi.
-                    const pengumpulanStatus = localStorage.getItem('pengumpulan_status');
-                    if (!pengumpulanStatus || pengumpulanStatus === 'ACTIVE') {
+                    const AssessmentStatus = localStorage.getItem('Assessment_status');
+                    if (!AssessmentStatus || AssessmentStatus === 'ACTIVE') {
                         window.location.replace('/verifikasi');
                         return;
                     }

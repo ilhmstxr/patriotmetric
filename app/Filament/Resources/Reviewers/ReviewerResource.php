@@ -4,7 +4,7 @@ namespace App\Filament\Resources\Reviewers;
 
 use App\Filament\Resources\Reviewers\Pages\ListReviewers;
 use App\Filament\Resources\Reviewers\Tables\ReviewersTable;
-use App\Models\Pengumpulan;
+use App\Models\Assessment;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
@@ -12,7 +12,7 @@ use Filament\Tables\Table;
 
 class ReviewerResource extends Resource
 {
-    protected static ?string $model = Pengumpulan::class;
+    protected static ?string $model = Assessment::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 

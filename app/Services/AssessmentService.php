@@ -98,7 +98,7 @@ class AssessmentService extends BaseService
         return DB::transaction(function () use ($dto, $assessment) {
 
             // 1. DATA HYDRATION: Ambil data lama
-            $existingIdentitas = $this->repository->findIdentitasByPengumpulanId($assessment->id);
+            $existingIdentitas = $this->repository->findIdentitasByAssessmentId($assessment->id);
             $existingInstitusi = $this->repository->findInstitusiById($assessment->institution_id);
 
             // 2. Update Institusi (Gunakan Null-safe operator ?-> untuk mencegah crash)
@@ -121,7 +121,7 @@ class AssessmentService extends BaseService
 
             // 4. Update Identitas (Gunakan Null-safe operator secara ketat)
             $identitasData = [
-                'pengumpulan_id' => $assessment->id,
+                'Assessment_id' => $assessment->id,
                 'jml_mahasiswa' => $dto->jmlMhs ?? $existingIdentitas?->jml_mahasiswa ?? 0,
                 'jml_dosen' => $dto->jmlDosen ?? $existingIdentitas?->jml_dosen ?? 0,
                 'jml_tendik' => $dto->jmlTendik ?? $existingIdentitas?->jml_tendik ?? 0,
@@ -238,7 +238,7 @@ class AssessmentService extends BaseService
 
         // 2. Build Payload Dasar
         $payload = [
-            'submission_id' => $dto->submissionId,
+            'assessment_id' => $dto->submissionId,
             'pertanyaan_id' => $dto->pertanyaanId,
         ];
 
@@ -576,7 +576,7 @@ class AssessmentService extends BaseService
         }
 
         return [
-            'pengumpulan' => [
+            'Assessment' => [
                 'id' => $assessment->id,
                 'status' => $assessment->status,
                 'total_skor_sistem' => $assessment->total_skor_sistem,
@@ -722,7 +722,7 @@ class AssessmentService extends BaseService
                     continue;
 
                 $payload = [
-                    'submission_id' => $dto->submissionId,
+                    'assessment_id' => $dto->submissionId,
                     'pertanyaan_id' => $dto->pertanyaanId,
                 ];
 
@@ -755,7 +755,7 @@ class AssessmentService extends BaseService
             // Update status to SUBMITTED
             $this->repository->updateStatusAssessment($assessment->id, 'SUBMITTED');
 
-            // Simpan rekap skor persen ke pengumpulan
+            // Simpan rekap skor persen ke Assessment
             $this->recapAndSaveSkor($assessment);
 
             return ['saved_count' => count($answers)];

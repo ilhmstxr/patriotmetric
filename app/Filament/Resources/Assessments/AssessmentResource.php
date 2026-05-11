@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Filament\Resources\Pengumpulans;
+namespace App\Filament\Resources\Assessments;
 
-use App\Filament\Resources\Pengumpulans\Pages\CreatePengumpulan;
-use App\Filament\Resources\Pengumpulans\Pages\EditPengumpulan;
-use App\Filament\Resources\Pengumpulans\Pages\ListPengumpulans;
-use App\Filament\Resources\Pengumpulans\Schemas\PengumpulanForm;
-use App\Filament\Resources\Pengumpulans\Tables\PengumpulansTable;
-use App\Models\Pengumpulan;
+use App\Filament\Resources\Assessments\Pages\CreateAssessment;
+use App\Filament\Resources\Assessments\Pages\EditAssessment;
+use App\Filament\Resources\Assessments\Pages\ListAssessments;
+use App\Filament\Resources\Assessments\Schemas\AssessmentForm;
+use App\Filament\Resources\Assessments\Tables\AssessmentsTable;
+use App\Models\Assessment;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -16,20 +16,20 @@ use Filament\Tables\Table;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\RepeatableEntry;
 
-class PengumpulanResource extends Resource
+class AssessmentResource extends Resource
 {
-    protected static ?string $model = Pengumpulan::class;
+    protected static ?string $model = Assessment::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     public static function form(Schema $schema): Schema
     {
-        return PengumpulanForm::configure($schema);
+        return AssessmentForm::configure($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return PengumpulansTable::configure($table);
+        return AssessmentsTable::configure($table);
     }
 
     public static function infolist(Schema $schema): Schema
@@ -62,10 +62,10 @@ class PengumpulanResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListPengumpulans::route('/'),
-            'create' => CreatePengumpulan::route('/create'),
-            'view' => \App\Filament\Resources\Pengumpulans\Pages\ViewPengumpulan::route('/{record}'),
-            'edit' => EditPengumpulan::route('/{record}/edit'),
+            'index' => ListAssessments::route('/'),
+            'create' => CreateAssessment::route('/create'),
+            'view' => \App\Filament\Resources\Assessments\Pages\ViewAssessment::route('/{record}'),
+            'edit' => EditAssessment::route('/{record}/edit'),
         ];
     }
 }

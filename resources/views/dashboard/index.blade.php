@@ -11,7 +11,7 @@
             saveProfileSuccess: '',
 
             profileData: {
-                pengumpulan: null,
+                Assessment: null,
                 institusi: null,
                 identitas: null,
                 agamas: {}
@@ -52,14 +52,14 @@
             },
 
             applyProfileData(data) {
-                this.profileData.pengumpulan = data.pengumpulan;
-                this.profileData.institusi   = data.pengumpulan?.institusi;
-                this.profileData.identitas   = data.pengumpulan?.identitas;
+                this.profileData.Assessment = data.Assessment;
+                this.profileData.institusi   = data.Assessment?.institusi;
+                this.profileData.identitas   = data.Assessment?.identitas;
                 this.is_peserta_profile_edit_enabled = data.is_peserta_profile_edit_enabled ?? false;
 
                 this.profileData.agamas = {};
-                if (data.pengumpulan?.agamas) {
-                    data.pengumpulan.agamas.forEach(a => {
+                if (data.Assessment?.agamas) {
+                    data.Assessment.agamas.forEach(a => {
                         this.profileData.agamas[a.agama.toLowerCase()] = a.jumlah;
                     });
                 }
@@ -80,7 +80,7 @@
             },
 
             enterEditMode() {
-                const p  = this.profileData.pengumpulan;
+                const p  = this.profileData.Assessment;
                 const id = this.profileData.identitas;
                 this.editForm = {
                     nama_pic:      p?.nama_pic      || '',
@@ -145,12 +145,12 @@
 
                     if (res.ok && result.success) {
                         {{-- Update local reactive data immediately --}}
-                        if (this.profileData.pengumpulan) {
-                            this.profileData.pengumpulan.nama_pic    = this.editForm.nama_pic;
-                            this.profileData.pengumpulan.jabatan_pic = this.editForm.jabatan_pic;
-                            this.profileData.pengumpulan.no_hp_pic   = this.editForm.no_hp_pic;
+                        if (this.profileData.Assessment) {
+                            this.profileData.Assessment.nama_pic    = this.editForm.nama_pic;
+                            this.profileData.Assessment.jabatan_pic = this.editForm.jabatan_pic;
+                            this.profileData.Assessment.no_hp_pic   = this.editForm.no_hp_pic;
                             if (this.editForm.email) {
-                                this.profileData.pengumpulan.email_pic = this.editForm.email;
+                                this.profileData.Assessment.email_pic = this.editForm.email;
                                 {{-- Sync localStorage auth_user --}}
                                 try {
                                     const u = JSON.parse(localStorage.getItem('auth_user') || '{}');

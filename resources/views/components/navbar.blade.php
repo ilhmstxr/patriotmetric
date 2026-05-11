@@ -13,7 +13,7 @@
             } catch (e) {}
             localStorage.removeItem('auth_token');
             localStorage.removeItem('auth_user');
-            localStorage.removeItem('pengumpulan_status');
+            localStorage.removeItem('Assessment_status');
             localStorage.removeItem('profile_data_cache');
             localStorage.removeItem('rubrik_questions_cache');
             localStorage.removeItem('rubrik_data_cache');

@@ -14,7 +14,7 @@
 - FE semua yang persentase diubah menjadi jumlah
 - ilham informasi semua ada ditulis jumlah *done
 - FE dikasih disclaimer poin draft belum final "hasil penilaian sementara, nilai akhir ditentukan oleh reviewer"
-- FE + ilham edit tidak bisa jika sudah tutup dan status pengumpulannya sedang di review nyangkut
+- FE + ilham edit tidak bisa jika sudah tutup dan status Assessmentnya sedang di review nyangkut
 - FE minimal 20 karakter dan wajib diisi untuk catatan penilaian spasi dihitung
 - ilham super admin ajah
 - ilham foto diganti

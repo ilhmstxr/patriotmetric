@@ -31,7 +31,7 @@ class Pertanyaan extends Model
 
     public function jawaban()
     {
-        return $this->hasMany(PengumpulanJawaban::class, 'pertanyaan_id');
+        return $this->hasMany(ResponAssessment::class, 'pertanyaan_id');
     }
 
     public function OpsiJawaban()

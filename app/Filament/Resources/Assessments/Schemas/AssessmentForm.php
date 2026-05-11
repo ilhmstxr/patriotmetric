@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\Pengumpulans\Schemas;
+namespace App\Filament\Resources\Assessments\Schemas;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
-class PengumpulanForm
+class AssessmentForm
 {
     public static function configure(Schema $schema): Schema
     {

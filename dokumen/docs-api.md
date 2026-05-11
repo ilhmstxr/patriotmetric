@@ -137,7 +137,7 @@ response
 "message": "Jawaban berhasil disimpan.",
 "data": {
 "id": 1,
-"submission_id": 2,
+"assessment_id": 2,
 "pertanyaan_id": 1,
 "jawaban_id": 1,
 "jawaban_teks": "0",
@@ -193,11 +193,11 @@ response{
 reviewer
 method get
 menu dashboard
-belum dinilai = tabel pengumpulan where status = submitted where total diplotting = true return hasil angka / count
-total diplotting =tabel pengumpulan where reviewer_id = user id return hasil angka/ count
-selesai dinilai = tabel pengumpulan where status = graded where total diplotting = true return hasil angka/ count
-yang belum di review = belum dinilai true return id tabel pengumpulan with tabel institusi(get nama institusi)
-daftar plotting = total diplotting true return id tabel pengumpulan with tabel institusi(get nama institusi)
+belum dinilai = tabel Assessment where status = submitted where total diplotting = true return hasil angka / count
+total diplotting =tabel Assessment where reviewer_id = user id return hasil angka/ count
+selesai dinilai = tabel Assessment where status = graded where total diplotting = true return hasil angka/ count
+yang belum di review = belum dinilai true return id tabel Assessment with tabel institusi(get nama institusi)
+daftar plotting = total diplotting true return id tabel Assessment with tabel institusi(get nama institusi)
 
 GET /api/assessment/reviewer/tasks/reviewer/peseta/{pesertaId}
 
@@ -215,7 +215,7 @@ contoh response
 "success": true,
 "message": "Daftar plottingan tugas berhasil diambil.",
 "data": {
-"pengumpulan": {
+"Assessment": {
 "id": 1,
 "status": "SUBMITTED",
 "total_skor_sistem": "0.00",

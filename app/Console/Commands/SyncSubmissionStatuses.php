@@ -27,7 +27,7 @@ class SyncSubmissionStatuses extends Command
 
             // 1. Auto-Lock (Transition to SUBMITTED)
             if (($timeline->closes_at && $now->gt($timeline->closes_at)) || $timeline->is_locked) {
-                $affected = \App\Models\Pengumpulan::where('tahun_periode', $timeline->tahun_periode)
+                $affected = \App\Models\Assessment::where('tahun_periode', $timeline->tahun_periode)
                     ->whereIn('status', ['ACTIVE', 'IN_PROGRESS'])
                     ->update(['status' => 'SUBMITTED']);
                 
@@ -38,7 +38,7 @@ class SyncSubmissionStatuses extends Command
 
             // 2. Auto-Publish (Transition to PUBLISHED)
             if ($timeline->results_published_at && $now->gt($timeline->results_published_at)) {
-                $affected = \App\Models\Pengumpulan::where('tahun_periode', $timeline->tahun_periode)
+                $affected = \App\Models\Assessment::where('tahun_periode', $timeline->tahun_periode)
                     ->where('status', 'GRADED')
                     ->update(['status' => 'PUBLISHED']);
 
