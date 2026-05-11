@@ -191,4 +191,22 @@ class AssessmentRepository extends BaseRepository
         }
         return true;
     }
+    public function getIdentitasWithAgama(int $assessmentId)
+    {
+        return Identitas::with('agamas')
+            ->where('pengumpulan_id', $assessmentId)
+            ->first();
+    }
+
+    public function getLatestJawabanUpdate(int $assessmentId)
+    {
+        return PengumpulanJawaban::where('submission_id', $assessmentId)->max('updated_at');
+    }
+
+    public function updateRekapSkor(int $assessmentId, array $rekap)
+    {
+        return $this->model->where('id', $assessmentId)->update([
+            'skor_rekap_json' => json_encode($rekap),
+        ]);
+    }
 }
