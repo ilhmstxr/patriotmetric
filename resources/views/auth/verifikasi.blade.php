@@ -61,8 +61,7 @@
         sk_akreditasi: null,
         profil_pt: null,
         logo_url: null,
-        struktur_organisasi: null,
-        sk_tim: null
+        struktur_organisasi: null
     },
     
     // File Previews
@@ -72,8 +71,7 @@
         sk_akreditasi: '',
         profil_pt: '',
         logo_url: '',
-        struktur_organisasi: '',
-        sk_tim: ''
+        struktur_organisasi: ''
     },
 
     // --- IndexedDB Helper for Files ---
@@ -265,7 +263,7 @@
     },
 
     get isFormComplete() {
-        const requiredFiles = ['surat_pernyataan', 'sk_pendirian', 'sk_akreditasi', 'profil_pt', 'logo_url', 'struktur_organisasi', 'sk_tim'];
+        const requiredFiles = ['surat_pernyataan', 'sk_pendirian', 'sk_akreditasi', 'profil_pt', 'logo_url', 'struktur_organisasi'];
         const requiredData = ['nama_pt', 'jenis_pt', 'visi', 'misi', 'jumlah_fakultas', 'jumlah_prodi', 'jumlah_dosen', 'jumlah_tendik', 'jumlah_mahasiswa', 'jumlah_ormawa', 'jumlah_ukm', 'nama_pic', 'jabatan_pic', 'no_hp_pic', 'email_pic'];
         
         const filesComplete = requiredFiles.every(f => this.files[f] !== null);
@@ -662,37 +660,6 @@
                   </div>
                 </div>
 
-                {{-- Field 7 --}}
-                <div class="flex flex-col gap-[8px]">
-                  <label class="font-semibold text-[#1d293d] text-[15px]">
-                    7. SK Tim Pemeringkatan UPN Jatim Patriot Metric <span class="text-red-500">*</span>
-                  </label>
-                  <div class="mt-[4px] relative">
-                      <div x-show="!previews.sk_tim" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
-                        <input type="file" accept=".pdf" x-ref="sk_tim" @change="handleFileChange($event, 'sk_tim', '.pdf')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
-                        <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
-                          <i data-lucide="upload" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#1b5e20]"></i>
-                        </div>
-                        <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah PDF</p>
-                        <p class="text-[#64748b] text-[12px]">Maks 5MB</p>
-                      </div>
-                      <div x-show="previews.sk_tim" style="display: none;" class="border border-[#cbd5e1] rounded-[12px] p-[16px] bg-white flex items-center justify-between">
-                          <div class="flex items-center gap-3 overflow-hidden">
-                              <div class="bg-red-50 p-2 rounded-lg text-red-500 shrink-0">
-                                  <i data-lucide="file-text" class="w-6 h-6"></i>
-                              </div>
-                              <div class="truncate">
-                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="files.sk_tim ? files.sk_tim.name : ''"></p>
-                                  <p class="text-[12px] text-[#64748b]" x-text="files.sk_tim ? (files.sk_tim.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
-                              </div>
-                          </div>
-                          <button type="button" @click="removeFile('sk_tim')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors shrink-0">
-                              <i data-lucide="trash-2" class="w-5 h-5"></i>
-                          </button>
-                      </div>
-                  </div>
-                </div>
-
                 <div class="pt-[32px] mt-[16px] border-t border-[#e2e8f0] flex flex-col md:flex-row gap-[16px] items-center justify-between">
                   <button type="button" @click="activeSection = 1" class="w-full md:w-auto text-[#64748b] hover:text-[#1d293d] px-[24px] py-[12px] rounded-[10px] font-semibold transition-colors flex items-center justify-center">Kembali</button>
                   <button type="button" @click="activeSection = 3" class="w-full md:w-auto bg-[#1b5e20] hover:bg-[#15461c] text-white px-[32px] py-[14px] rounded-[10px] font-bold flex items-center justify-center gap-[10px] transition-all shadow-sm">
@@ -782,7 +749,7 @@
                 {{-- Group D: Demografi Agama --}}
                 <div class="bg-[#f8fafc] p-6 rounded-xl border border-[#cbd5e1] space-y-6">
                   <h3 class="font-bold text-[#1b5e20] text-[16px] mb-2 border-b border-[#e2e8f0] pb-2">D. Demografi Agama Mahasiswa</h3>
-                  <div class="grid grid-cols-2 md:grid-cols-3 gap-[24px]">
+                  <div class="grid grid-cols-2 gap-[24px]">
                     <div class="flex flex-col gap-[8px]">
                       <label class="font-semibold text-[#1d293d] text-[15px]">Islam</label>
                       <input type="number" x-model="formData.agama_islam" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
@@ -807,7 +774,7 @@
                       <label class="font-semibold text-[#1d293d] text-[15px]">Konghucu</label>
                       <input type="number" x-model="formData.agama_konghucu" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                     </div>
-                    <div class="flex flex-col gap-[8px] md:col-span-3">
+                    <div class="flex flex-col gap-[8px]">
                       <label class="font-semibold text-[#1d293d] text-[15px]">Kepercayaan Terhadap Tuhan Yang Maha Esa</label>
                       <input type="number" x-model="formData.agama_kepercayaan" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                     </div>
@@ -911,6 +878,41 @@
                     </div>
                   </div>
 
+                  {{-- Preview Demografi Agama --}}
+                  <div class="mt-4 pt-4 border-t border-[#e2e8f0]">
+                    <p class="text-[#64748b] font-medium text-[14px] mb-3">Demografi Agama Mahasiswa</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-[14px]">
+                      <div class="space-y-0.5" x-show="formData.agama_islam > 0 || true">
+                        <p class="text-[#64748b] text-[12px]">Islam</p>
+                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_islam || 0"></p>
+                      </div>
+                      <div class="space-y-0.5">
+                        <p class="text-[#64748b] text-[12px]">Kristen</p>
+                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_kristen || 0"></p>
+                      </div>
+                      <div class="space-y-0.5">
+                        <p class="text-[#64748b] text-[12px]">Katolik</p>
+                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_katolik || 0"></p>
+                      </div>
+                      <div class="space-y-0.5">
+                        <p class="text-[#64748b] text-[12px]">Hindu</p>
+                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_hindu || 0"></p>
+                      </div>
+                      <div class="space-y-0.5">
+                        <p class="text-[#64748b] text-[12px]">Buddha</p>
+                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_buddha || 0"></p>
+                      </div>
+                      <div class="space-y-0.5">
+                        <p class="text-[#64748b] text-[12px]">Konghucu</p>
+                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_konghucu || 0"></p>
+                      </div>
+                      <div class="space-y-0.5 md:col-span-2">
+                        <p class="text-[#64748b] text-[12px]">Kepercayaan</p>
+                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_kepercayaan || 0"></p>
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-[14px] mt-4 pt-4 border-t border-[#e2e8f0]">
                     <div class="space-y-1">
                       <p class="text-[#64748b] font-medium">Kontak PIC</p>
@@ -944,8 +946,7 @@
                       sk_pendirian: 'SK Pendirian',
                       sk_akreditasi: 'SK Akreditasi',
                       profil_pt: 'Profil Perguruan Tinggi',
-                      struktur_organisasi: 'Struktur Organisasi',
-                      sk_tim: 'SK Tim Pemeringkatan'
+                      struktur_organisasi: 'Struktur Organisasi'
                     }" :key="key">
                       <div class="flex flex-col gap-2">
                         <p class="font-semibold text-[#1d293d]" x-text="label"></p>

@@ -53,7 +53,12 @@
         },
         fillStatus(qId) {
             const score = this.reviewerScores[qId];
-            return (score !== null && score !== undefined && score !== '') ? 2 : 0;
+            const note  = this.reviewerNotes[qId];
+            const hasScore = (score !== null && score !== undefined && score !== '');
+            const hasNote  = !!(note && String(note).trim() !== '');
+            if (hasScore) return 2;       // hijau: skor sudah diisi
+            if (hasNote)  return 1;       // kuning: baru catatan, belum skor
+            return 0;                     // kosong: belum ada apa-apa
         },
         get allQuestions() {
             return this.rubrikData.flatMap(c => c.pertanyaan);
@@ -706,6 +711,7 @@
               {{-- Legend --}}
               <div class="px-4 pt-3 pb-2 flex flex-wrap items-center gap-3 text-[10px] font-medium text-[#62748e] shrink-0">
                   <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-[#1b5e20]"></span> Dinilai</span>
+                  <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-yellow-400"></span> Sebagian</span>
                   <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-[#e0e0e0]"></span> Kosong</span>
                   <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-red-500"></span> Flag</span>
               </div>
@@ -720,10 +726,10 @@
                                   <button
                                       type="button"
                                       @click="scrollToQuestion(q.id)"
-                                      :title="'Indikator ' + q.kode_pertanyaan + (isFlagged(q.id) ? ' (Flag)' : '') + (fillStatus(q.id) === 2 ? ' ✓' : '')"
+                                      :title="'Indikator ' + q.kode_pertanyaan + (isFlagged(q.id) ? ' (Flag)' : '') + (fillStatus(q.id) === 2 ? ' ✓' : fillStatus(q.id) === 1 ? ' (sebagian)' : '')"
                                       class="relative w-9 h-9 rounded text-[11px] font-bold transition-all duration-150 focus:outline-none hover:scale-110 hover:shadow-md overflow-hidden"
-                                       :class="isFlagged(q.id) ? 'text-white' : fillStatus(q.id) === 2 ? 'text-white' : 'text-[#62748e]'"
-                                      :style="isFlagged(q.id) ? 'background:#ef4444;' : fillStatus(q.id) === 2 ? 'background:#1b5e20;' : 'background:#e0e0e0;'"
+                                       :class="isFlagged(q.id) ? 'text-white' : fillStatus(q.id) === 2 ? 'text-white' : fillStatus(q.id) === 1 ? 'text-[#1d293d]' : 'text-[#62748e]'"
+                                      :style="isFlagged(q.id) ? 'background:#ef4444;' : fillStatus(q.id) === 2 ? 'background:#1b5e20;' : fillStatus(q.id) === 1 ? 'background:#facc15;' : 'background:#e0e0e0;'"
                                       x-text="q.kode_pertanyaan">
                                   </button>
                               </template>

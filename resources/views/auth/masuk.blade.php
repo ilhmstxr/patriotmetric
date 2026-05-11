@@ -4,8 +4,22 @@
         (function() {
             const token = localStorage.getItem('auth_token');
             if (token) {
+                // Cek apakah token sudah expired
+                const expiresAt = localStorage.getItem('token_expires_at');
+                if (expiresAt) {
+                    const now = new Date().getTime();
+                    const exp = new Date(expiresAt).getTime();
+                    if (now > exp) {
+                        localStorage.removeItem('auth_token');
+                        localStorage.removeItem('auth_user');
+                        localStorage.removeItem('pengumpulan_status');
+                        localStorage.removeItem('token_expires_at');
+                        return;
+                    }
+                }
                 const user = JSON.parse(localStorage.getItem('auth_user') || '{}');
-                if (user.role === 'reviewer' || user.role === 'REVIEWER') {
+                const role = (user.role || '').toLowerCase();
+                if (role === 'reviewer') {
                     window.location.replace('/reviewer');
                     return;
                 }
@@ -23,9 +37,7 @@
         {{-- Left Panel --}}
         <div class="hidden lg:flex w-[45%] relative overflow-hidden items-center">
             <img src="{{ asset('assets/images/IMG_0940.webp') }}" class="absolute inset-0 w-full h-full object-cover" alt="Background" />
-            <div class="absolute inset-0 bg-[#1b5e20] opacity-80"></div>
-            <div class="absolute inset-0 bg-gradient-to-t from-[#0a230c] to-transparent opacity-50"></div>
-            <div class="absolute -top-48 right-[-100px] bg-[rgba(212,175,55,0.3)] blur-[100px] rounded-full size-96"></div>
+            <div class="absolute inset-0 bg-black/30"></div>
             <div class="relative px-16 py-16 z-10">
                 <div class="-mb-12 mt-4">
                     <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.webp') }}" alt="Logo Patriot Metric" class="h-100 w-auto object-contain object-left" />

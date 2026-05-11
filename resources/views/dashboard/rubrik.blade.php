@@ -209,12 +209,25 @@
                         {{-- jawaban_teks dari API bisa berupa object/array (karena cast 'array' di model Laravel) --}}
                         {{-- Ekstrak raw_input jika object, agar input tidak menampilkan "[object Object]" --}}
                         const jt = existingJawaban.jawaban_teks;
-                        if (jt && typeof jt === 'object' && jt.raw_input !== undefined) {
-                            this.answers[item.id] = jt.raw_input;
+                        const isB13 = item.kode_pertanyaan === 'B.13';
+                        if (jt && typeof jt === 'object') {
+                            if (isB13) {
+                                // Untuk B.13, simpan seluruh object sebagai JSON string agar initB13() bisa restore
+                                this.answers[item.id] = JSON.stringify(jt);
+                            } else if (jt.raw_input !== undefined) {
+                                this.answers[item.id] = jt.raw_input;
+                            } else {
+                                this.answers[item.id] = jt;
+                            }
                         } else if (typeof jt === 'string') {
                             try {
                                 const parsed = JSON.parse(jt);
-                                this.answers[item.id] = parsed.raw_input !== undefined ? parsed.raw_input : jt;
+                                if (isB13) {
+                                    // Simpan seluruh JSON string asli untuk restore B13
+                                    this.answers[item.id] = jt;
+                                } else {
+                                    this.answers[item.id] = parsed.raw_input !== undefined ? parsed.raw_input : jt;
+                                }
                             } catch(e) {
                                 this.answers[item.id] = jt;
                             }
@@ -289,16 +302,21 @@
 
             let textAns = !isMulti ? (rawAns != null ? String(rawAns) : null) : null;
             if (!isMulti && question.type === 'isian_singkat') {
-                const formula = this.computeFormula(question);
-                if (formula) {
-                    textAns = JSON.stringify({
-                        raw_input: rawAns,
-                        calculated_percentage: formula.persen,
-                        label: formula.label
-                    });
+                {{-- B.13 sudah disimpan sebagai JSON lengkap oleh saveB13() --}}
+                if (question.code === 'B.13') {
+                    textAns = (typeof rawAns === 'string') ? rawAns : JSON.stringify({ raw_input: rawAns, calculated_percentage: null });
                 } else {
-                    {{-- isian_singkat tanpa formula: simpan nilai mentah saja sebagai JSON minimal --}}
-                    textAns = JSON.stringify({ raw_input: rawAns, calculated_percentage: null });
+                    const formula = this.computeFormula(question);
+                    if (formula) {
+                        textAns = JSON.stringify({
+                            raw_input: rawAns,
+                            calculated_percentage: formula.persen,
+                            label: formula.label
+                        });
+                    } else {
+                        {{-- isian_singkat tanpa formula: simpan nilai mentah saja sebagai JSON minimal --}}
+                        textAns = JSON.stringify({ raw_input: rawAns, calculated_percentage: null });
+                    }
                 }
             }
             {{-- otomatis_sistem: simpan sebagai JSON minimal agar konsisten dengan parsing di atas --}}
@@ -391,15 +409,19 @@
                 
                 let textAns = !isMulti ? (rawAns != null ? String(rawAns) : null) : null;
                 if (question && question.type === 'isian_singkat') {
-                    const formula = this.computeFormula(question);
-                    if (formula) {
-                        textAns = JSON.stringify({
-                            raw_input: rawAns,
-                            calculated_percentage: formula.persen,
-                            label: formula.label
-                        });
+                    if (question.code === 'B.13') {
+                        textAns = (typeof rawAns === 'string') ? rawAns : JSON.stringify({ raw_input: rawAns, calculated_percentage: null });
                     } else {
-                        textAns = JSON.stringify({ raw_input: rawAns, calculated_percentage: null });
+                        const formula = this.computeFormula(question);
+                        if (formula) {
+                            textAns = JSON.stringify({
+                                raw_input: rawAns,
+                                calculated_percentage: formula.persen,
+                                label: formula.label
+                            });
+                        } else {
+                            textAns = JSON.stringify({ raw_input: rawAns, calculated_percentage: null });
+                        }
                     }
                 }
                 if (question && question.type === 'otomatis_sistem') {
@@ -550,7 +572,7 @@
                                             </template>
  
                                             {{-- Isian Singkat --}}
-                                            <template x-if="q.type === 'isian_singkat'">
+                                            <template x-if="q.type === 'isian_singkat' && q.code !== 'B.13'">
                                                 <div class="space-y-2">
                                                     <div class="flex items-center gap-3">
                                                         <input
@@ -574,6 +596,90 @@
                                                             <span class="text-[10px] font-semibold text-emerald-700" x-text="computeFormula(q)?.label"></span>
                                                         </div>
                                                     </template>
+                                                </div>
+                                            </template>
+
+                                            {{-- B.13 Khusus: 4 Sub-Field Skala --}}
+                                            <template x-if="q.type === 'isian_singkat' && q.code === 'B.13'">
+                                                <div x-data="{
+                                                    b13: { lokal: '', regional: '', nasional: '', internasional: '' },
+                                                    get b13Total() {
+                                                        const l = parseInt(this.b13.lokal) || 0;
+                                                        const r = parseInt(this.b13.regional) || 0;
+                                                        const n = parseInt(this.b13.nasional) || 0;
+                                                        const i = parseInt(this.b13.internasional) || 0;
+                                                        return (l*1) + (r*2) + (n*3) + (i*4);
+                                                    },
+                                                    initB13(qId) {
+                                                        const raw = this.$parent.answers[qId];
+                                                        if (raw && typeof raw === 'string') {
+                                                            try {
+                                                                const p = JSON.parse(raw);
+                                                                if (p && typeof p === 'object') {
+                                                                    this.b13 = { lokal: p.lokal||'', regional: p.regional||'', nasional: p.nasional||'', internasional: p.internasional||'' };
+                                                                }
+                                                            } catch(e){}
+                                                        } else if (raw && typeof raw === 'object') {
+                                                            this.b13 = { lokal: raw.lokal||'', regional: raw.regional||'', nasional: raw.nasional||'', internasional: raw.internasional||'' };
+                                                        }
+                                                    },
+                                                    saveB13(qId) {
+                                                        const l = parseInt(this.b13.lokal) || 0;
+                                                        const r = parseInt(this.b13.regional) || 0;
+                                                        const n = parseInt(this.b13.nasional) || 0;
+                                                        const i = parseInt(this.b13.internasional) || 0;
+                                                        const payload = {
+                                                            lokal: l, regional: r, nasional: n, internasional: i,
+                                                            poin_lokal: l*1, poin_regional: r*2, poin_nasional: n*3, poin_internasional: i*4,
+                                                            total_poin: (l*1)+(r*2)+(n*3)+(i*4)
+                                                        };
+                                                        this.$parent.answers[qId] = JSON.stringify(payload);
+                                                        this.$parent.scheduleAutoSave(qId);
+                                                    }
+                                                }" x-init="initB13(q.id)" class="space-y-3">
+                                                    <p class="text-[10px] font-bold text-[#62748e] uppercase tracking-wider">Jumlah Kegiatan per Skala:</p>
+                                                    <div class="space-y-2.5">
+                                                        <div class="flex items-center gap-3">
+                                                            <input type="number" min="0" placeholder="0"
+                                                                :disabled="!is_edit_enabled || status === 'SUBMITTED' || status === 'GRADED'"
+                                                                class="w-[80px] px-2.5 py-2 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
+                                                                x-model="b13.lokal"
+                                                                @input="if(b13.lokal < 0) b13.lokal=0; saveB13(q.id)"/>
+                                                            <span class="text-[12px] text-[#45556c]">1. Skala lokal / kota kabupaten / internal institusi</span>
+                                                            <span class="ml-auto text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded" x-text="'Poin: ' + ((parseInt(b13.lokal)||0)*1)"></span>
+                                                        </div>
+                                                        <div class="flex items-center gap-3">
+                                                            <input type="number" min="0" placeholder="0"
+                                                                :disabled="!is_edit_enabled || status === 'SUBMITTED' || status === 'GRADED'"
+                                                                class="w-[80px] px-2.5 py-2 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
+                                                                x-model="b13.regional"
+                                                                @input="if(b13.regional < 0) b13.regional=0; saveB13(q.id)"/>
+                                                            <span class="text-[12px] text-[#45556c]">2. Skala regional / provinsi</span>
+                                                            <span class="ml-auto text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded" x-text="'Poin: ' + ((parseInt(b13.regional)||0)*2)"></span>
+                                                        </div>
+                                                        <div class="flex items-center gap-3">
+                                                            <input type="number" min="0" placeholder="0"
+                                                                :disabled="!is_edit_enabled || status === 'SUBMITTED' || status === 'GRADED'"
+                                                                class="w-[80px] px-2.5 py-2 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
+                                                                x-model="b13.nasional"
+                                                                @input="if(b13.nasional < 0) b13.nasional=0; saveB13(q.id)"/>
+                                                            <span class="text-[12px] text-[#45556c]">3. Skala nasional</span>
+                                                            <span class="ml-auto text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded" x-text="'Poin: ' + ((parseInt(b13.nasional)||0)*3)"></span>
+                                                        </div>
+                                                        <div class="flex items-center gap-3">
+                                                            <input type="number" min="0" placeholder="0"
+                                                                :disabled="!is_edit_enabled || status === 'SUBMITTED' || status === 'GRADED'"
+                                                                class="w-[80px] px-2.5 py-2 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
+                                                                x-model="b13.internasional"
+                                                                @input="if(b13.internasional < 0) b13.internasional=0; saveB13(q.id)"/>
+                                                            <span class="text-[12px] text-[#45556c]">4. Skala internasional</span>
+                                                            <span class="ml-auto text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded" x-text="'Poin: ' + ((parseInt(b13.internasional)||0)*4)"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex items-center gap-2 bg-[#f0fdf4] border border-[#1b5e20]/20 rounded px-3 py-2 mt-1">
+                                                        <span class="text-[11px] font-bold text-[#1b5e20] uppercase">Total Poin B.13:</span>
+                                                        <span class="text-[14px] font-extrabold text-[#1b5e20]" x-text="b13Total"></span>
+                                                    </div>
                                                 </div>
                                             </template>
  

@@ -4,6 +4,19 @@
         (function() {
             const token = localStorage.getItem('auth_token');
             if (token) {
+                // Cek apakah token sudah expired
+                const expiresAt = localStorage.getItem('token_expires_at');
+                if (expiresAt) {
+                    const now = new Date().getTime();
+                    const exp = new Date(expiresAt).getTime();
+                    if (now > exp) {
+                        localStorage.removeItem('auth_token');
+                        localStorage.removeItem('auth_user');
+                        localStorage.removeItem('pengumpulan_status');
+                        localStorage.removeItem('token_expires_at');
+                        return;
+                    }
+                }
                 const user = JSON.parse(localStorage.getItem('auth_user') || '{}');
                 const role = (user.role || '').toLowerCase();
                 if (role === 'reviewer') {
@@ -20,7 +33,7 @@
             }
         })();
     </script>
-    <div class="min-h-screen flex" x-data="{ 
+    <div class="min-h-screen flex"    x-data="{ 
         agree: false, 
         isFormValid: false,
         isLoading: false,
@@ -31,6 +44,8 @@
         institusiCheckMessage: '',
         institusiCheckExists: false,
         institusiCheckTimer: null,
+        passwordChecks: { hasUpper: false, hasLower: false, hasNumber: false },
+        get passwordValid() { return this.passwordChecks.hasUpper && this.passwordChecks.hasLower && this.passwordChecks.hasNumber; },
         formData: {
             nama_pt: '',
             jenis_pt: '',
@@ -48,6 +63,12 @@
             } else {
                 this.emailDomainError = '';
             }
+        },
+        validatePassword() {
+            const p = this.formData.password || '';
+            this.passwordChecks.hasUpper  = /[A-Z]/.test(p);
+            this.passwordChecks.hasLower  = /[a-z]/.test(p);
+            this.passwordChecks.hasNumber = /[0-9]/.test(p);
         },
         scheduleInstitusiCheck() {
             this.validateEmailDomain();
@@ -80,6 +101,10 @@
             this.validateEmailDomain();
             if (this.emailDomainError) {
                 this.errorMessage = this.emailDomainError;
+                return;
+            }
+            if (!this.passwordValid) {
+                this.errorMessage = 'Password harus mengandung huruf besar, huruf kecil, dan angka.';
                 return;
             }
             if (this.institusiCheckExists) {
@@ -145,9 +170,7 @@
         {{-- Left Panel --}}
         <div class="hidden lg:flex w-[45%] relative sticky top-0 h-screen overflow-hidden items-center">
             <img src="{{ asset('assets/images/IMG_0940.webp') }}" class="absolute inset-0 w-full h-full object-cover" alt="Background" />
-            <div class="absolute inset-0 bg-[#1b5e20] opacity-80"></div>
-            <div class="absolute inset-0 bg-gradient-to-t from-[#0a230c] to-transparent opacity-50"></div>
-            <div class="absolute -top-48 right-[-100px] bg-[rgba(212,175,55,0.3)] blur-[100px] rounded-full size-96"></div>
+            <div class="absolute inset-0 bg-black/30"></div>
             <div class="relative px-16 py-16 z-10 w-full">
                 <div class="-mb-12 mt-4">
                     <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.webp') }}" alt="Logo Patriot Metric" class="h-100 w-auto object-contain object-left" />
@@ -275,7 +298,7 @@
                                 <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                                     <i data-lucide="lock" class="w-5 h-5 text-[#90A1B9]"></i>
                                 </div>
-                                <input name="password" :type="showPassword ? 'text' : 'password'" x-model="formData.password" required placeholder=" " class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-12 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
+                                <input name="password" :type="showPassword ? 'text' : 'password'" x-model="formData.password" @input="validatePassword()" required placeholder=" " class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-12 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
                                 <label class="absolute left-12 top-4 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#62748e] transition-all peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[12px] peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-[12px] pointer-events-none">
                                     Password
                                 </label>
@@ -284,6 +307,31 @@
                                     <i x-show="!showPassword" data-lucide="eye-closed" class="w-5 h-5"></i>
                                     <i x-show="showPassword" style="display: none;" data-lucide="eye" class="w-5 h-5"></i>
                                 </button>
+                            </div>
+                            {{-- Password Strength Checklist --}}
+                            <div x-show="formData.password.length > 0" style="display:none;" class="mt-2 space-y-1.5 px-1">
+                                <p class="text-[11px] font-bold text-[#62748e] uppercase tracking-wider mb-1">Password harus mengandung:</p>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-4 h-4 rounded-full flex items-center justify-center shrink-0"
+                                          :class="passwordChecks.hasUpper ? 'bg-[#1b5e20]' : 'bg-[#e2e8f0]'">
+                                        <svg x-show="passwordChecks.hasUpper" class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                    </span>
+                                    <span class="text-[12px] font-medium" :class="passwordChecks.hasUpper ? 'text-[#1b5e20]' : 'text-[#94a3b8]'">Huruf besar (A-Z)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-4 h-4 rounded-full flex items-center justify-center shrink-0"
+                                          :class="passwordChecks.hasLower ? 'bg-[#1b5e20]' : 'bg-[#e2e8f0]'">
+                                        <svg x-show="passwordChecks.hasLower" class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                    </span>
+                                    <span class="text-[12px] font-medium" :class="passwordChecks.hasLower ? 'text-[#1b5e20]' : 'text-[#94a3b8]'">Huruf kecil (a-z)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-4 h-4 rounded-full flex items-center justify-center shrink-0"
+                                          :class="passwordChecks.hasNumber ? 'bg-[#1b5e20]' : 'bg-[#e2e8f0]'">
+                                        <svg x-show="passwordChecks.hasNumber" class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                    </span>
+                                    <span class="text-[12px] font-medium" :class="passwordChecks.hasNumber ? 'text-[#1b5e20]' : 'text-[#94a3b8]'">Angka (0-9)</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -313,7 +361,7 @@
                     <button
                         type="submit"
                         class="w-full bg-[#1b5e20] text-white font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[18px] leading-[28px] py-4 rounded-[20px] shadow-[0px_20px_25px_0px_rgba(27,94,32,0.2)] hover:bg-[#174d1a] transition flex items-center justify-center gap-2 disabled:opacity-50"
-                        x-bind:disabled="!agree || !isFormValid || isLoading || institusiCheckExists || emailDomainError !== ''"
+                        x-bind:disabled="!agree || !isFormValid || isLoading || institusiCheckExists || emailDomainError !== '' || !passwordValid"
                     >
                         <span x-show="!isLoading">Kirim Pendaftaran</span>
                         <span x-show="isLoading" style="display: none;">Memproses...</span>

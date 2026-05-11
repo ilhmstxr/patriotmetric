@@ -42,3 +42,15 @@
         </div>
     </template>
 </div>
+
+{{-- Disclaimer Sementara --}}
+<div class="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 mt-3">
+    <div class="shrink-0 mt-0.5">
+        <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+    </div>
+    <p class="text-[12px] text-amber-800 font-medium leading-relaxed">
+        <strong>Disclaimer:</strong> Poin yang ditampilkan bersifat <strong>sementara</strong> dan dapat berubah setelah divalidasi oleh Tim Reviewer. Nilai final akan ditetapkan setelah proses review selesai.
+    </p>
+</div>
