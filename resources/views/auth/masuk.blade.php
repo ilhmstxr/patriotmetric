@@ -36,7 +36,7 @@
     <div class="min-h-screen flex">
         {{-- Left Panel --}}
         <div class="hidden lg:flex w-[45%] relative overflow-hidden items-center">
-            <img src="{{ asset('assets/images/IMG_0940.webp') }}" class="absolute inset-0 w-full h-full object-cover" alt="Background" />
+            <img src="{{ asset('assets/images/mhs.webp') }}" class="absolute inset-0 w-full h-full object-cover" alt="Background" />
             <div class="absolute inset-0 bg-black/30"></div>
             <div class="relative px-16 py-16 z-10">
                 <div class="-mb-12 mt-4">

@@ -618,6 +618,12 @@
                                             <template x-if="q.type === 'isian_singkat' && q.code === 'B.13'">
                                                 <div x-data="{
                                                     b13: { lokal: '', regional: '', nasional: '', internasional: '' },
+                                                    b13Labels: {
+                                                        lokal: 'Skala lokal / kota kabupaten / internal institusi',
+                                                        regional: 'Skala regional / provinsi',
+                                                        nasional: 'Skala nasional',
+                                                        internasional: 'Skala internasional'
+                                                    },
                                                     get b13Total() {
                                                         const l = parseInt(this.b13.lokal) || 0;
                                                         const r = parseInt(this.b13.regional) || 0;
@@ -627,15 +633,19 @@
                                                     },
                                                     initB13(qId) {
                                                         const raw = this.$parent.answers[qId];
+                                                        const getVal = (obj, key) => {
+                                                            if (obj[key] && typeof obj[key] === 'object') return obj[key].nilai || 0;
+                                                            return parseInt(obj[key]) || 0;
+                                                        };
                                                         if (raw && typeof raw === 'string') {
                                                             try {
                                                                 const p = JSON.parse(raw);
                                                                 if (p && typeof p === 'object') {
-                                                                    this.b13 = { lokal: p.lokal||'', regional: p.regional||'', nasional: p.nasional||'', internasional: p.internasional||'' };
+                                                                    this.b13 = { lokal: getVal(p,'lokal'), regional: getVal(p,'regional'), nasional: getVal(p,'nasional'), internasional: getVal(p,'internasional') };
                                                                 }
                                                             } catch(e){}
                                                         } else if (raw && typeof raw === 'object') {
-                                                            this.b13 = { lokal: raw.lokal||'', regional: raw.regional||'', nasional: raw.nasional||'', internasional: raw.internasional||'' };
+                                                            this.b13 = { lokal: getVal(raw,'lokal'), regional: getVal(raw,'regional'), nasional: getVal(raw,'nasional'), internasional: getVal(raw,'internasional') };
                                                         }
                                                     },
                                                     saveB13(qId) {
@@ -644,8 +654,10 @@
                                                         const n = parseInt(this.b13.nasional) || 0;
                                                         const i = parseInt(this.b13.internasional) || 0;
                                                         const payload = {
-                                                            lokal: l, regional: r, nasional: n, internasional: i,
-                                                            poin_lokal: l*1, poin_regional: r*2, poin_nasional: n*3, poin_internasional: i*4,
+                                                            lokal:      { label: this.b13Labels.lokal,      nilai: l },
+                                                            regional:   { label: this.b13Labels.regional,   nilai: r },
+                                                            nasional:   { label: this.b13Labels.nasional,   nilai: n },
+                                                            internasional: { label: this.b13Labels.internasional, nilai: i },
                                                             total_poin: (l*1)+(r*2)+(n*3)+(i*4)
                                                         };
                                                         this.$parent.answers[qId] = JSON.stringify(payload);
@@ -660,8 +672,7 @@
                                                                 class="w-[80px] px-2.5 py-2 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
                                                                 x-model="b13.lokal"
                                                                 @input="if(b13.lokal < 0) b13.lokal=0; saveB13(q.id)"/>
-                                                            <span class="text-[12px] text-[#45556c]">1. Skala lokal / kota kabupaten / internal institusi</span>
-                                                            <span class="ml-auto text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded" x-text="'Poin: ' + ((parseInt(b13.lokal)||0)*1)"></span>
+                                                            <span class="text-[12px] text-[#45556c]">Skala lokal / kota kabupaten / internal institusi</span>
                                                         </div>
                                                         <div class="flex items-center gap-3">
                                                             <input type="number" min="0" placeholder="0"
@@ -669,8 +680,7 @@
                                                                 class="w-[80px] px-2.5 py-2 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
                                                                 x-model="b13.regional"
                                                                 @input="if(b13.regional < 0) b13.regional=0; saveB13(q.id)"/>
-                                                            <span class="text-[12px] text-[#45556c]">2. Skala regional / provinsi</span>
-                                                            <span class="ml-auto text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded" x-text="'Poin: ' + ((parseInt(b13.regional)||0)*2)"></span>
+                                                            <span class="text-[12px] text-[#45556c]">Skala regional / provinsi</span>
                                                         </div>
                                                         <div class="flex items-center gap-3">
                                                             <input type="number" min="0" placeholder="0"
@@ -678,8 +688,7 @@
                                                                 class="w-[80px] px-2.5 py-2 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
                                                                 x-model="b13.nasional"
                                                                 @input="if(b13.nasional < 0) b13.nasional=0; saveB13(q.id)"/>
-                                                            <span class="text-[12px] text-[#45556c]">3. Skala nasional</span>
-                                                            <span class="ml-auto text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded" x-text="'Poin: ' + ((parseInt(b13.nasional)||0)*3)"></span>
+                                                            <span class="text-[12px] text-[#45556c]">Skala nasional</span>
                                                         </div>
                                                         <div class="flex items-center gap-3">
                                                             <input type="number" min="0" placeholder="0"
@@ -687,13 +696,8 @@
                                                                 class="w-[80px] px-2.5 py-2 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
                                                                 x-model="b13.internasional"
                                                                 @input="if(b13.internasional < 0) b13.internasional=0; saveB13(q.id)"/>
-                                                            <span class="text-[12px] text-[#45556c]">4. Skala internasional</span>
-                                                            <span class="ml-auto text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded" x-text="'Poin: ' + ((parseInt(b13.internasional)||0)*4)"></span>
+                                                            <span class="text-[12px] text-[#45556c]">Skala internasional</span>
                                                         </div>
-                                                    </div>
-                                                    <div class="flex items-center gap-2 bg-[#f0fdf4] border border-[#1b5e20]/20 rounded px-3 py-2 mt-1">
-                                                        <span class="text-[11px] font-bold text-[#1b5e20] uppercase">Total Poin B.13:</span>
-                                                        <span class="text-[14px] font-extrabold text-[#1b5e20]" x-text="b13Total"></span>
                                                     </div>
                                                 </div>
                                             </template>

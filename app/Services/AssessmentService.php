@@ -317,6 +317,20 @@ class AssessmentService extends BaseService
         } else {
             // KONDISI 2: User kirim Teks (Angka) -> Cari ID & Skor yang sesuai
             $rawJawabanTeks = $dto->jawabanTeks ?? (string) $dto->jawabanId;
+
+            // SPECIAL: B.13 menyimpan JSON lengkap {lokal:{label,nilai,poin},...,total_poin}
+            if (($pertanyaan->kode_pertanyaan ?? null) === 'B.13') {
+                $decoded = is_string($rawJawabanTeks) ? json_decode($rawJawabanTeks, true) : null;
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $data['jawaban_teks'] = $rawJawabanTeks;
+                } else {
+                    $data['jawaban_teks'] = $rawJawabanTeks;
+                }
+                $data['jawaban_id'] = null;
+                $data['skor_sistem'] = (int) ($decoded['total_poin'] ?? 0);
+                return $data;
+            }
+
             $decodedJawaban = null;
 
             // 1. Defensive Parsing: Coba decode stringified JSON dari FE
