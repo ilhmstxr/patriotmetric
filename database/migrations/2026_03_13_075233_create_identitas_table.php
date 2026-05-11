@@ -30,7 +30,7 @@ return new class extends Migration {
             $table->json('legal_documents')->nullable(); // {'sk_rektor': 'url', 'aipt': 'url'}
 
             $table->boolean('is_verified')->default(false);
-            $table->text('admin_note')->nullable(); // Alasan jika ditolak (Revision Loop)
+            // $table->text('admin_note')->nullable(); // Alasan jika ditolak (Revision Loop)
             $table->timestamps();
         });
     }

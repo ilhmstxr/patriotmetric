@@ -69,4 +69,13 @@ class PertanyaanRepository extends BaseRepository
         // Sesuaikan jika ada pertanyaan yang tidak wajib (is_mandatory = false)
         return $this->model->count();
     }
+    public function getLatestPertanyaanUpdate()
+    {
+        return $this->model->max('updated_at');
+    }
+
+    public function getAllCategoriesWithPertanyaans()
+    {
+        return \App\Models\Kategori::with('pertanyaans')->get();
+    }
 }

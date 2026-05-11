@@ -17,14 +17,17 @@ use Illuminate\Support\Str;
 class AssessmentService extends BaseService
 {
     protected $pertanyaanRepository;
+    protected $timelineRepository;
 
     public function __construct(
         AssessmentRepository $AssessmentRepository,
-        PertanyaanRepository $pertanyaanRepository
+        PertanyaanRepository $pertanyaanRepository,
+        \App\Repositories\TimelineRepository $timelineRepository
     ) {
         // Parent constructor mengikat AssessmentRepository sebagai repository utama
         parent::__construct($AssessmentRepository);
         $this->pertanyaanRepository = $pertanyaanRepository;
+        $this->timelineRepository = $timelineRepository;
     }
 
     const MODE_READ = 'read';
@@ -67,7 +70,7 @@ class AssessmentService extends BaseService
             throw new Exception("Gagal: Asesmen berstatus {$assessment->status} tidak dapat diubah.", 403);
         }
 
-        $timelineCheck = \App\Models\SubmissionTimeline::canSubmit($assessment->tahun_periode);
+        $timelineCheck = $this->timelineRepository->canSubmit($assessment->tahun_periode);
         if (!$timelineCheck['allowed']) {
             throw new Exception("Gagal: " . $timelineCheck['reason'], 403);
         }
@@ -178,20 +181,8 @@ class AssessmentService extends BaseService
             throw new Exception("Master data pertanyaan belum dikonfigurasi oleh Admin.", 404);
         }
 
-        $editSetting = \App\Models\PengaturanCms::where('key', 'is_peserta_edit_enabled')->first();
-        $isEditEnabled = $editSetting ? filter_var($editSetting->value, FILTER_VALIDATE_BOOLEAN) : true;
-
-        $activePeriodSetting = \App\Models\PengaturanCms::where('key', 'active_period')->first();
-        $activePeriod = $activePeriodSetting ? $activePeriodSetting->value : date('Y');
-
-        if ($assessment->tahun_periode != $activePeriod) {
-            $isEditEnabled = false;
-        }
-
-        $timelineCheck = \App\Models\SubmissionTimeline::canSubmit($assessment->tahun_periode);
-        if (!$timelineCheck['allowed']) {
-            $isEditEnabled = false;
-        }
+        $timelineCheck = $this->timelineRepository->canSubmit($assessment->tahun_periode);
+        $isEditEnabled = $timelineCheck['allowed'];
 
         return [
             'assessment_id' => $assessment->id,
@@ -209,9 +200,7 @@ class AssessmentService extends BaseService
      */
     private function getProfilData($assessment): array
     {
-        $identitas = \App\Models\Identitas::with('agamas')
-            ->where('pengumpulan_id', $assessment->id)
-            ->first();
+        $identitas = $this->repository->getIdentitasWithAgama($assessment->id);
 
         return [
             'jml_mahasiswa' => $identitas?->jml_mahasiswa ?? 0,
@@ -291,8 +280,8 @@ class AssessmentService extends BaseService
      */
     public function getQuestionsVersion($assessment): array
     {
-        $latestPertanyaan = \App\Models\Pertanyaan::max('updated_at');
-        $latestJawaban = \App\Models\PengumpulanJawaban::where('submission_id', $assessment->id)->max('updated_at');
+        $latestPertanyaan = $this->pertanyaanRepository->getLatestPertanyaanUpdate();
+        $latestJawaban = $this->repository->getLatestJawabanUpdate($assessment->id);
 
         $components = array_filter([$latestPertanyaan, $latestJawaban, $assessment->updated_at]);
         $version = $components ? max($components) : null;
@@ -356,7 +345,15 @@ class AssessmentService extends BaseService
                 $decodedJawaban = $rawJawabanTeks;
             }
 
-            // 2. Normalisasi Struktur: Paksa masuk ke kerangka baku
+            // 2. Normalisasi Struktur & Kalkulasi Skor
+            if ($pertanyaan->code === 'B.13') {
+                // KHUSUS B.13: Payload berisi rincian 4 skala + total_poin
+                $data['jawaban_teks'] = is_array($decodedJawaban) ? $decodedJawaban : ['raw_input' => $decodedJawaban];
+                $data['skor_sistem'] = is_array($decodedJawaban) ? (float) ($decodedJawaban['total_poin'] ?? 0) : 0;
+                $data['jawaban_id'] = null;
+                return $data;
+            }
+
             $normalizedJawaban = [
                 'raw_input' => is_array($decodedJawaban) 
                     ? ($decodedJawaban['raw_input'] ?? null) 
@@ -369,7 +366,7 @@ class AssessmentService extends BaseService
 
             $data['jawaban_teks'] = $normalizedJawaban;
 
-            // Cek untuk kalkulasi skor otomatis
+            // Cek untuk kalkulasi skor otomatis (Gunakan calculated_percentage jika ada)
             $calculatedValue = $normalizedJawaban['calculated_percentage'] ?? $normalizedJawaban['raw_input'];
 
             $matchingOpsi = $this->pertanyaanRepository->findMatchingOpsiByValue(
@@ -634,13 +631,20 @@ class AssessmentService extends BaseService
             throw new Exception("Sesi asesmen aktif tidak ditemukan.", 404);
         }
 
+        $timelineCheck = $this->timelineRepository->canViewResults($assessment->tahun_periode);
+        if (!$timelineCheck['allowed']) {
+            throw new Exception($timelineCheck['reason'], 403);
+        }
+
+        if ($assessment->status !== 'PUBLISHED') {
+            throw new Exception("Hasil penilaian Anda sedang dalam proses finalisasi dan belum dipublikasikan.", 403);
+        }
+
         // Get all categories with their questions
-        $allCategories = \App\Models\Kategori::with('pertanyaans')->get();
+        $allCategories = $this->pertanyaanRepository->getAllCategoriesWithPertanyaans();
 
         // Get all existing answers for this assessment
-        $answers = \App\Models\PengumpulanJawaban::where('submission_id', $assessment->id)
-            ->with(['jawabanOpsi'])
-            ->get()
+        $answers = $this->repository->getAllAnswersByAssessment($assessment->id)
             ->keyBy('pertanyaan_id');
 
         $categories = [];
@@ -816,10 +820,9 @@ class AssessmentService extends BaseService
     {
         $assessment->refresh();
 
-        $allCategories = \App\Models\Kategori::with(['pertanyaans'])->get();
+        $allCategories = $this->pertanyaanRepository->getAllCategoriesWithPertanyaans();
 
-        $answers = \App\Models\PengumpulanJawaban::where('submission_id', $assessment->id)
-            ->get()
+        $answers = $this->repository->getAllAnswersByAssessment($assessment->id)
             ->keyBy('pertanyaan_id');
 
         $perKategori = [];
@@ -866,9 +869,7 @@ class AssessmentService extends BaseService
             'updated_at'    => now()->toIso8601String(),
         ];
 
-        \App\Models\Pengumpulan::where('id', $assessment->id)->update([
-            'skor_rekap_json' => json_encode($rekap),
-        ]);
+        $this->repository->updateRekapSkor($assessment->id, $rekap);
     }
 
 }

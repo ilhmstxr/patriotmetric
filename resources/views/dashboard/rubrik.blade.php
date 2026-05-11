@@ -10,6 +10,7 @@
         lastSaved: '',
         status: '',
         is_edit_enabled: true,
+        lock_reason: '',
         profil: {},
         saveTimers: {},
         saveStatus: {},
@@ -111,6 +112,7 @@
         applyData(data) {
             this.status = data.status;
             this.is_edit_enabled = data.is_edit_enabled;
+            this.lock_reason = data.lock_reason || '';
             this.profil = data.profil || {};
             this.answers = {};
             this.links = {};
@@ -477,6 +479,19 @@
                 <h1 class="font-bold text-[#1d293d] text-[18px] uppercase tracking-wide mb-5">Form Rubrik</h1>
 
                 <div class="space-y-6">
+                    {{-- Banner Lock Timeline --}}
+                    <template x-if="!loading && !is_edit_enabled">
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3 shadow-sm">
+                            <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                                <i data-lucide="lock" class="w-4 h-4 text-red-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-[14px] font-bold text-red-800">Formulir Dikunci</p>
+                                <p class="text-[12px] text-red-700 mt-0.5" x-text="lock_reason || 'Mohon maaf, periode pengisian rubrik saat ini sedang ditutup atau sudah berakhir.'"></p>
+                            </div>
+                        </div>
+                    </template>
+
                     {{-- Loading State (konsisten) --}}
                     <template x-if="loading">
                         <div>

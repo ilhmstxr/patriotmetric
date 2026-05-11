@@ -18,6 +18,7 @@
         total_capaian_skor: 0,
         status: 'Loading...',
         is_validated: false,
+        error_message: '',
         
         async init() {
             this.loading = true;
@@ -45,9 +46,10 @@
                     this.$nextTick(() => {
                         if (window.lucide) window.lucide.createIcons();
                     });
-                } else {
                     if (response.status === 401) {
                         window.location.href = '/masuk';
+                    } else if (response.status === 403) {
+                        this.error_message = result.message;
                     }
                 }
             } catch (error) {
@@ -68,7 +70,7 @@
                 </div>
             </template>
 
-            <template x-if="!loading">
+            <template x-if="!loading && !error_message">
                 <div class="space-y-5">
                     {{-- ✏️ Banner Hijau Total Penilaian → components/dashboard/hasil/banner.blade.php --}}
                     <x-dashboard.hasil.banner />
@@ -78,6 +80,21 @@
 
                     {{-- ✏️ Accordion Rincian Poin → components/dashboard/hasil/kategori.blade.php --}}
                     <x-dashboard.hasil.kategori />
+                </div>
+            </template>
+
+            {{-- Error/Locked State --}}
+            <template x-if="!loading && error_message">
+                <div class="bg-white border border-[#e0e0e0] rounded-xl p-8 text-center shadow-sm">
+                    <div class="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="clock" class="w-8 h-8 text-amber-600"></i>
+                    </div>
+                    <h2 class="text-[18px] font-bold text-[#1d293d]">Hasil Belum Tersedia</h2>
+                    <p class="text-[14px] text-[#62748e] mt-2 max-w-[400px] mx-auto" x-text="error_message"></p>
+                    <a href="/dashboard" class="inline-flex items-center gap-2 mt-6 bg-[#1b5e20] text-white px-6 py-2.5 rounded-lg font-semibold text-[13px] hover:bg-[#15461c] transition-colors">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        Kembali ke Dashboard
+                    </a>
                 </div>
             </template>
         </div>

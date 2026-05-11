@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->year('tahun_periode')->unique();
             $table->timestamp('opens_at')->nullable();
             $table->timestamp('closes_at')->nullable();
+            $table->timestamp('results_published_at')->nullable();
             $table->boolean('is_locked')->default(false);
             $table->text('note')->nullable();
             $table->timestamps();
