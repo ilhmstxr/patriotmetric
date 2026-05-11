@@ -178,20 +178,8 @@ class AssessmentService extends BaseService
             throw new Exception("Master data pertanyaan belum dikonfigurasi oleh Admin.", 404);
         }
 
-        $editSetting = \App\Models\PengaturanCms::where('key', 'is_peserta_edit_enabled')->first();
-        $isEditEnabled = $editSetting ? filter_var($editSetting->value, FILTER_VALIDATE_BOOLEAN) : true;
-
-        $activePeriodSetting = \App\Models\PengaturanCms::where('key', 'active_period')->first();
-        $activePeriod = $activePeriodSetting ? $activePeriodSetting->value : date('Y');
-
-        if ($assessment->tahun_periode != $activePeriod) {
-            $isEditEnabled = false;
-        }
-
         $timelineCheck = \App\Models\SubmissionTimeline::canSubmit($assessment->tahun_periode);
-        if (!$timelineCheck['allowed']) {
-            $isEditEnabled = false;
-        }
+        $isEditEnabled = $timelineCheck['allowed'];
 
         return [
             'assessment_id' => $assessment->id,
@@ -618,6 +606,15 @@ class AssessmentService extends BaseService
         $assessment = $this->repository->findActiveAssessmentByUserId($userId);
         if (!$assessment) {
             throw new Exception("Sesi asesmen aktif tidak ditemukan.", 404);
+        }
+
+        $timelineCheck = \App\Models\SubmissionTimeline::canViewResults($assessment->tahun_periode);
+        if (!$timelineCheck['allowed']) {
+            throw new Exception($timelineCheck['reason'], 403);
+        }
+
+        if ($assessment->status !== 'PUBLISHED') {
+            throw new Exception("Hasil penilaian Anda sedang dalam proses finalisasi dan belum dipublikasikan.", 403);
         }
 
         // Get all categories with their questions

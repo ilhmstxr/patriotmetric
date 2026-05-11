@@ -13,6 +13,7 @@ class SubmissionTimeline extends Model
         'tahun_periode',
         'opens_at',
         'closes_at',
+        'results_published_at',
         'is_locked',
         'note',
     ];
@@ -20,6 +21,7 @@ class SubmissionTimeline extends Model
     protected $casts = [
         'opens_at' => 'datetime',
         'closes_at' => 'datetime',
+        'results_published_at' => 'datetime',
         'is_locked' => 'boolean',
     ];
 
@@ -78,6 +80,36 @@ class SubmissionTimeline extends Model
             'allowed' => true,
             'reason' => null,
             'timeline' => $timeline,
+        ];
+    }
+
+    /**
+     * Cek apakah peserta boleh melihat hasil pada tahun_periode tertentu.
+     */
+    public static function canViewResults(int|string $tahunPeriode): array
+    {
+        $timeline = static::where('tahun_periode', $tahunPeriode)->first();
+
+        if (! $timeline) {
+            return [
+                'allowed' => true,
+                'reason' => null,
+            ];
+        }
+
+        $now = Carbon::now();
+
+        if ($timeline->results_published_at && $now->lt($timeline->results_published_at)) {
+            return [
+                'allowed' => false,
+                'reason' => 'Hasil penilaian belum dipublikasikan. Akan tersedia pada '
+                    . $timeline->results_published_at->translatedFormat('d M Y H:i') . '.',
+            ];
+        }
+
+        return [
+            'allowed' => true,
+            'reason' => null,
         ];
     }
 }
