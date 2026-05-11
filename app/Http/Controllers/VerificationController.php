@@ -16,6 +16,20 @@ class VerificationController extends Controller
 {
     use ApiResponse;
 
+    protected $assessmentRepository;
+    protected $userRepository;
+    protected $institusiRepository;
+
+    public function __construct(
+        \App\Repositories\AssessmentRepository $assessmentRepository,
+        \App\Repositories\UserRepository $userRepository,
+        \App\Repositories\InstitusiRepository $institusiRepository
+    ) {
+        $this->assessmentRepository = $assessmentRepository;
+        $this->userRepository = $userRepository;
+        $this->institusiRepository = $institusiRepository;
+    }
+
     /**
      * POST /api/auth/verification
      * Submit verification form with file uploads.
@@ -26,9 +40,9 @@ class VerificationController extends Controller
         try {
             // Get user from token or fallback
             $userId = AuthController::getAuthPeserta();
-            $Assessment = Assessment::where('user_id', $userId)->first();
+            $assessment = $this->assessmentRepository->findActiveAssessmentByUserId($userId);
 
-            if (!$Assessment) {
+            if (!$assessment) {
                 return $this->errorResponse('Data Assessment tidak ditemukan. Silakan register terlebih dahulu.', 404);
             }
 
@@ -127,20 +141,17 @@ class VerificationController extends Controller
             }
 
             // Update or create Institusi
-            $institusi = Institusi::find($Assessment->institution_id);
-            if ($institusi) {
-                $institusi->update([
-                    'nama_institusi' => $validated['nama_pt'],
-                    'jenis_institusi' => $validated['jenis_pt'],
-                    'logo_url' => $files['logo_url'] ?? $institusi->logo_url,
-                ]);
-            }
+            $this->institusiRepository->update($assessment->institution_id, [
+                'nama_institusi' => $validated['nama_pt'],
+                'jenis_institusi' => $validated['jenis_pt'],
+                'logo_url' => $files['logo_url'] ?? null, // Will be ignored if null in update
+            ]);
 
             // Cari ID reviewer tester
-            $testerReviewer = \App\Models\User::where('email', 'reviewer@admin.com')->first();
+            $testerReviewer = $this->userRepository->findByEmail('reviewer@admin.com');
             
             // Update Assessment with PIC data
-            $Assessment->update([
+            $this->assessmentRepository->update($assessment->id, [
                 'nama_pic' => $validated['nama_pic'],
                 'jabatan_pic' => $validated['jabatan_pic'],
                 'no_hp_pic' => $validated['no_hp_pic'],
@@ -149,28 +160,22 @@ class VerificationController extends Controller
             ]);
 
             // Update User status to IN_PROGRESS
-            $user = \App\Models\User::find($userId);
-            if ($user) {
-                $user->update(['status' => 'IN_PROGRESS']);
-            }
+            $this->userRepository->update($userId, ['status' => 'IN_PROGRESS']);
 
             // Create or update Identitas
-            $identitas = Identitas::updateOrCreate(
-                ['Assessment_id' => $Assessment->id],
-                [
-                    'visi' => $validated['visi'],
-                    'misi' => $validated['misi'],
-                    'jml_mahasiswa' => $validated['jumlah_mahasiswa'],
-                    'jml_dosen' => $validated['jumlah_dosen'],
-                    'jml_tendik' => $validated['jumlah_tendik'],
-                    'jml_prodi' => $validated['jumlah_prodi'],
-                    'jml_fakultas' => $validated['jumlah_fakultas'],
-                    'jml_ukm' => $validated['jumlah_ukm'],
-                    'jml_ormawa' => $validated['jumlah_ormawa'],
-                    'legal_documents' => $files,
-                    'is_verified' => false,
-                ]
-            );
+            $identitas = $this->assessmentRepository->upsertIdentitas($assessment->id, [
+                'visi' => $validated['visi'],
+                'misi' => $validated['misi'],
+                'jml_mahasiswa' => $validated['jumlah_mahasiswa'],
+                'jml_dosen' => $validated['jumlah_dosen'],
+                'jml_tendik' => $validated['jumlah_tendik'],
+                'jml_prodi' => $validated['jumlah_prodi'],
+                'jml_fakultas' => $validated['jumlah_fakultas'],
+                'jml_ukm' => $validated['jumlah_ukm'],
+                'jml_ormawa' => $validated['jumlah_ormawa'],
+                'legal_documents' => $files,
+                'is_verified' => false,
+            ]);
 
             // Upsert Agama data
             $agamaData = [
@@ -184,10 +189,7 @@ class VerificationController extends Controller
             ];
 
             foreach ($agamaData as $namaAgama => $jumlah) {
-                Agama::updateOrCreate(
-                    ['identitas_id' => $identitas->id, 'agama' => $namaAgama],
-                    ['jumlah' => $jumlah]
-                );
+                $this->assessmentRepository->upsertAgama($identitas->id, $namaAgama, $jumlah);
             }
 
             return $this->successResponse(null, 'Verifikasi berhasil dikirim', 200);

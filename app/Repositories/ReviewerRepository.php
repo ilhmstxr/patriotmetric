@@ -10,4 +10,9 @@ class ReviewerRepository extends BaseRepository
     {
         parent::__construct($model);
     }
+
+    public function findByUserId(int $userId)
+    {
+        return $this->model->where('user_id', $userId)->first();
+    }
 }

@@ -20,4 +20,9 @@ class TimelineRepository extends BaseRepository
     {
         return SubmissionTimeline::canViewResults($tahunPeriode);
     }
+
+    public function getAllTimelines()
+    {
+        return $this->model->all();
+    }
 }

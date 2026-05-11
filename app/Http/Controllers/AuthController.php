@@ -19,10 +19,23 @@ class AuthController extends Controller
 {
     use ApiResponse;
     protected $userService;
+    protected $assessmentRepository;
+    protected $institusiRepository;
+    protected $cmsRepository;
+    protected $userRepository;
 
-    public function __construct(UserService $userService)
-    {
+    public function __construct(
+        UserService $userService,
+        \App\Repositories\AssessmentRepository $assessmentRepository,
+        \App\Repositories\InstitusiRepository $institusiRepository,
+        \App\Repositories\PengaturanCmsRepository $cmsRepository,
+        \App\Repositories\UserRepository $userRepository
+    ) {
         $this->userService = $userService;
+        $this->assessmentRepository = $assessmentRepository;
+        $this->institusiRepository = $institusiRepository;
+        $this->cmsRepository = $cmsRepository;
+        $this->userRepository = $userRepository;
     }
 
     public function register(Request $request)
@@ -44,13 +57,11 @@ class AuthController extends Controller
             // 1 instansi 1 akun: cek nama_institusi & domain email
             $domain = strtolower(substr(strrchr($validated['email'], '@'), 1));
 
-            $existsByName = Institusi::whereRaw('LOWER(nama_institusi) = ?', [strtolower($validated['nama_pt'])])->exists();
-            if ($existsByName) {
+            if ($this->institusiRepository->existsByName($validated['nama_pt'])) {
                 return $this->errorResponse('Institusi dengan nama tersebut sudah memiliki akun terdaftar. Silakan masuk atau hubungi admin.', 422);
             }
 
-            $existsByDomain = Institusi::where('domain_email', $domain)->exists();
-            if ($existsByDomain) {
+            if ($this->institusiRepository->existsByDomain($domain)) {
                 return $this->errorResponse('Domain email institusi ini sudah memiliki akun terdaftar. Satu institusi hanya boleh memiliki satu akun.', 422);
             }
 
@@ -76,8 +87,9 @@ class AuthController extends Controller
         $reasons = [];
 
         if ($nama !== '') {
-            $existsByName = Institusi::whereRaw('LOWER(nama_institusi) = ?', [strtolower($nama)])->exists();
-            if ($existsByName) $reasons[] = 'Nama institusi sudah terdaftar.';
+            if ($this->institusiRepository->existsByName($nama)) {
+                 $reasons[] = 'Nama institusi sudah terdaftar.';
+            }
         }
 
         return $this->successResponse([
@@ -99,10 +111,10 @@ class AuthController extends Controller
 
             // Determine redirect path based on user status
             $user = $result['user'];
-            $Assessment = Assessment::where('user_id', $user->id)->with('institusi')->first();
+            $assessment = $this->assessmentRepository->findActiveAssessmentByUserId($user->id);
             
             $redirectTo = '/verifikasi'; // Default: needs verification
-            if ($Assessment && in_array($Assessment->status, ['IN_PROGRESS', 'SUBMITTED', 'GRADED'])) {
+            if ($assessment && in_array($assessment->status, ['IN_PROGRESS', 'SUBMITTED', 'GRADED'])) {
                 $redirectTo = '/dashboard';
             }
 
@@ -113,12 +125,12 @@ class AuthController extends Controller
 
             return $this->successResponse([
                 'user' => array_merge($user->toArray(), [
-                    'nama_institusi' => $Assessment?->institusi?->nama_institusi
+                    'nama_institusi' => $assessment?->institusi?->nama_institusi
                 ]),
                 'token' => $result['token'],
                 'token_expires_at' => $result['expires_at'] ?? null,
                 'redirect_to' => $redirectTo,
-                'Assessment_status' => $Assessment?->status,
+                'Assessment_status' => $assessment?->status,
             ], 'Login berhasil.', 200);
         } catch (\Throwable $th) {
             $code = (is_numeric($th->getCode()) && $th->getCode() >= 400 && $th->getCode() < 600) ? $th->getCode() : 401;
@@ -187,29 +199,24 @@ class AuthController extends Controller
     {
         try {
             $userId = self::getAuthPeserta();
-            $user = User::find($userId);
+            $user = $this->userRepository->find($userId);
 
             if (!$user) {
                 return $this->errorResponse('User tidak ditemukan.', 404);
             }
 
-            $activePeriodSetting = \App\Models\PengaturanCms::where('key', 'active_period')->first();
+            $activePeriodSetting = $this->cmsRepository->getByKey('active_period');
             $activePeriod = $activePeriodSetting ? $activePeriodSetting->value : date('Y');
 
-            $Assessment = Assessment::where('user_id', $user->id)
-                ->where('tahun_periode', $activePeriod)
-                ->with(['institusi', 'identitas.agamas'])
-                ->first();
+            $assessment = $this->assessmentRepository->findActiveAssessmentByUserIdAndYear($user->id, $activePeriod);
 
-            if (!$Assessment) {
+            if (!$assessment) {
                 // Find previous Assessment
-                $prevAssessment = Assessment::where('user_id', $user->id)
-                    ->orderBy('tahun_periode', 'desc')
-                    ->first();
+                $prevAssessment = $this->assessmentRepository->findLatestAssessmentByUserId($user->id);
                 
                 if ($prevAssessment) {
                     // Create new Assessment bypassing verification
-                    $Assessment = Assessment::create([
+                    $assessment = $this->assessmentRepository->create([
                         'user_id' => $user->id,
                         'institution_id' => $prevAssessment->institution_id,
                         'tahun_periode' => $activePeriod,
@@ -217,39 +224,43 @@ class AuthController extends Controller
                         'nama_pic' => $prevAssessment->nama_pic,
                         'jabatan_pic' => $prevAssessment->jabatan_pic,
                         'no_hp_pic' => $prevAssessment->no_hp_pic,
-                        'email_pic' => $prevAssessment->email_pic,
-                        'surat_pernyataan' => $prevAssessment->surat_pernyataan,
-                        'sk_pendirian' => $prevAssessment->sk_pendirian,
-                        'sk_akreditasi' => $prevAssessment->sk_akreditasi,
-                        'profil_pt' => $prevAssessment->profil_pt,
-                        'struktur_organisasi' => $prevAssessment->struktur_organisasi,
-                        'sk_tim' => $prevAssessment->sk_tim,
                     ]);
 
                     // Copy Identitas
-                    $prevIdentitas = \App\Models\Identitas::where('Assessment_id', $prevAssessment->id)->first();
+                    $prevIdentitas = $this->assessmentRepository->findIdentitasByAssessmentId($prevAssessment->id);
                     if ($prevIdentitas) {
-                        $newIdentitas = $prevIdentitas->replicate();
-                        $newIdentitas->Assessment_id = $Assessment->id;
-                        $newIdentitas->save();
+                        $identitasData = [
+                            'Assessment_id' => $assessment->id,
+                            'visi' => $prevIdentitas->visi,
+                            'misi' => $prevIdentitas->misi,
+                            'jml_mahasiswa' => $prevIdentitas->jml_mahasiswa,
+                            'jml_dosen' => $prevIdentitas->jml_dosen,
+                            'jml_tendik' => $prevIdentitas->jml_tendik,
+                            'jml_prodi' => $prevIdentitas->jml_prodi,
+                            'jml_fakultas' => $prevIdentitas->jml_fakultas,
+                            'jml_ukm' => $prevIdentitas->jml_ukm,
+                            'jml_ormawa' => $prevIdentitas->jml_ormawa,
+                            'legal_documents' => $prevIdentitas->legal_documents,
+                            'is_verified' => $prevIdentitas->is_verified,
+                        ];
+                        $newIdentitas = $this->assessmentRepository->upsertIdentitas($assessment->id, $identitasData);
                         
                         // Copy Agama
-                        foreach (\App\Models\Agama::where('identitas_id', $prevIdentitas->id)->get() as $agama) {
-                            $newAgama = $agama->replicate();
-                            $newAgama->identitas_id = $newIdentitas->id;
-                            $newAgama->save();
+                        $agamas = $this->assessmentRepository->getAgamasByIdentitasId($prevIdentitas->id);
+                        foreach ($agamas as $agama) {
+                            $this->assessmentRepository->upsertAgama($newIdentitas->id, $agama->agama, $agama->jumlah);
                         }
                     }
-                    $Assessment->load(['institusi', 'identitas.agamas']);
+                    $assessment = $this->assessmentRepository->findActiveAssessmentByUserIdAndYear($user->id, $activePeriod);
                 } else {
-                    $Assessment = Assessment::where('user_id', $user->id)->with(['institusi', 'identitas.agamas'])->first();
+                    $assessment = $this->assessmentRepository->findActiveAssessmentByUserId($user->id);
                 }
             }
             
-            $editSetting = \App\Models\PengaturanCms::where('key', 'is_peserta_edit_enabled')->first();
+            $editSetting = $this->cmsRepository->getByKey('is_peserta_edit_enabled');
             $isEditEnabled = $editSetting ? filter_var($editSetting->value, FILTER_VALIDATE_BOOLEAN) : true;
 
-            $profileEditSetting = \App\Models\PengaturanCms::where('key', 'is_peserta_profile_edit_enabled')->first();
+            $profileEditSetting = $this->cmsRepository->getByKey('is_peserta_profile_edit_enabled');
             $isProfileEditEnabled = $profileEditSetting ? filter_var($profileEditSetting->value, FILTER_VALIDATE_BOOLEAN) : true;
 
             return $this->successResponse([
@@ -258,19 +269,19 @@ class AuthController extends Controller
                     'email' => $user->email,
                     'role' => $user->role,
                     'status' => $user->status,
-                    'nama_institusi' => $Assessment?->institusi?->nama_institusi,
+                    'nama_institusi' => $assessment?->institusi?->nama_institusi,
                 ],
-                'Assessment' => $Assessment ? [
-                    'id' => $Assessment->id,
-                    'status' => $Assessment->status,
-                    'tahun_periode' => $Assessment->tahun_periode,
-                    'nama_pic' => $Assessment->nama_pic,
-                    'jabatan_pic' => $Assessment->jabatan_pic,
-                    'no_hp_pic' => $Assessment->no_hp_pic,
+                'Assessment' => $assessment ? [
+                    'id' => $assessment->id,
+                    'status' => $assessment->status,
+                    'tahun_periode' => $assessment->tahun_periode,
+                    'nama_pic' => $assessment->nama_pic,
+                    'jabatan_pic' => $assessment->jabatan_pic,
+                    'no_hp_pic' => $assessment->no_hp_pic,
                     'email_pic' => $user->email,
-                    'institusi' => $Assessment->institusi,
-                    'identitas' => $Assessment->identitas,
-                    'agamas' => $Assessment->identitas?->agamas,
+                    'institusi' => $assessment->institusi,
+                    'identitas' => $assessment->identitas,
+                    'agamas' => $assessment->identitas?->agamas,
                 ] : null,
                 'is_edit_enabled' => $isEditEnabled,
                 'is_peserta_profile_edit_enabled' => $isProfileEditEnabled,
@@ -283,7 +294,6 @@ class AuthController extends Controller
 
     /**
      * Helper: Get authenticated reviewer ID.
-     * Falls back to hardcoded ID 8 for development/plotting sementara.
      */
     public static function getAuthReviewer()
     {
@@ -292,7 +302,6 @@ class AuthController extends Controller
 
     /**
      * Helper: Get authenticated peserta ID.
-     * Falls back to hardcoded ID 3 for development/plotting sementara.
      */
     public static function getAuthPeserta()
     {
@@ -313,7 +322,7 @@ class AuthController extends Controller
     {
         try {
             // Cek permission dari CMS
-            $profileEditSetting   = \App\Models\PengaturanCms::where('key', 'is_peserta_profile_edit_enabled')->first();
+            $profileEditSetting = $this->cmsRepository->getByKey('is_peserta_profile_edit_enabled');
             $isProfileEditEnabled = $profileEditSetting ? filter_var($profileEditSetting->value, FILTER_VALIDATE_BOOLEAN) : true;
 
             if (!$isProfileEditEnabled) {
@@ -346,64 +355,61 @@ class AuthController extends Controller
             ]);
 
             // Ambil Assessment aktif milik peserta
-            $activePeriodSetting = \App\Models\PengaturanCms::where('key', 'active_period')->first();
-            $activePeriod        = $activePeriodSetting ? $activePeriodSetting->value : date('Y');
+            $activePeriodSetting = $this->cmsRepository->getByKey('active_period');
+            $activePeriod = $activePeriodSetting ? $activePeriodSetting->value : date('Y');
 
-            $Assessment = Assessment::where('user_id', $userId)
-                ->where('tahun_periode', $activePeriod)
-                ->with(['identitas.agamas'])
-                ->first();
+            $assessment = $this->assessmentRepository->findActiveAssessmentByUserIdAndYear($userId, $activePeriod);
 
-            if (!$Assessment) {
+            if (!$assessment) {
                 return $this->errorResponse('Data Assessment tidak ditemukan.', 404);
             }
 
             // 1. Update data PIC di Assessment
-            $Assessment->update([
+            $this->assessmentRepository->update($assessment->id, [
                 'nama_pic'    => $validated['nama_pic'],
-                'jabatan_pic' => $validated['jabatan_pic'] ?? $Assessment->jabatan_pic,
+                'jabatan_pic' => $validated['jabatan_pic'] ?? $assessment->jabatan_pic,
                 'no_hp_pic'   => $validated['no_hp_pic'],
             ]);
 
             // 1b. Update email user (akun) jika dikirim & berbeda
             if (!empty($validated['email'])) {
-                $user = User::find($userId);
+                $user = $this->userRepository->find($userId);
                 if ($user && $user->email !== $validated['email']) {
-                    $user->email = $validated['email'];
-                    $user->save();
+                    $this->userRepository->update($userId, ['email' => $validated['email']]);
                 }
             }
 
             // 2. Update data Identitas
-            if ($Assessment->identitas) {
-                $Assessment->identitas->update([
-                    'visi'          => $validated['visi']          ?? $Assessment->identitas->visi,
-                    'misi'          => $validated['misi']          ?? $Assessment->identitas->misi,
-                    'jml_fakultas'  => $validated['jml_fakultas']  ?? $Assessment->identitas->jml_fakultas,
-                    'jml_prodi'     => $validated['jml_prodi']     ?? $Assessment->identitas->jml_prodi,
-                    'jml_dosen'     => $validated['jml_dosen']     ?? $Assessment->identitas->jml_dosen,
-                    'jml_tendik'    => $validated['jml_tendik']    ?? $Assessment->identitas->jml_tendik,
-                    'jml_mahasiswa' => $validated['jml_mahasiswa'] ?? $Assessment->identitas->jml_mahasiswa,
-                    'jml_ormawa'    => $validated['jml_ormawa']    ?? $Assessment->identitas->jml_ormawa,
-                    'jml_ukm'       => $validated['jml_ukm']       ?? $Assessment->identitas->jml_ukm,
+            $identitas = $this->assessmentRepository->findIdentitasByAssessmentId($assessment->id);
+            if ($identitas) {
+                $this->assessmentRepository->upsertIdentitas($assessment->id, [
+                    'visi'          => $validated['visi']          ?? $identitas->visi,
+                    'misi'          => $validated['misi']          ?? $identitas->misi,
+                    'jml_fakultas'  => $validated['jml_fakultas']  ?? $identitas->jml_fakultas,
+                    'jml_prodi'     => $validated['jml_prodi']     ?? $identitas->jml_prodi,
+                    'jml_dosen'     => $validated['jml_dosen']     ?? $identitas->jml_dosen,
+                    'jml_tendik'    => $validated['jml_tendik']    ?? $identitas->jml_tendik,
+                    'jml_mahasiswa' => $validated['jml_mahasiswa'] ?? $identitas->jml_mahasiswa,
+                    'jml_ormawa'    => $validated['jml_ormawa']    ?? $identitas->jml_ormawa,
+                    'jml_ukm'       => $validated['jml_ukm']       ?? $identitas->jml_ukm,
                 ]);
 
                 // 3. Update demografi agama (upsert per agama)
                 if (!empty($validated['agamas']) && is_array($validated['agamas'])) {
                     foreach ($validated['agamas'] as $agamaKey => $jumlah) {
-                        \App\Models\Agama::updateOrCreate(
-                            ['identitas_id' => $Assessment->identitas->id, 'agama' => $agamaKey],
-                            ['jumlah' => (int) ($jumlah ?: 0)]
-                        );
+                        $this->assessmentRepository->upsertAgama($identitas->id, $agamaKey, (int) ($jumlah ?: 0));
                     }
                 }
             }
 
+            $freshAssessment = $this->assessmentRepository->find($assessment->id);
+            $freshUser = $this->userRepository->find($userId);
+
             return $this->successResponse([
-                'nama_pic'    => $Assessment->fresh()->nama_pic,
-                'jabatan_pic' => $Assessment->fresh()->jabatan_pic,
-                'no_hp_pic'   => $Assessment->fresh()->no_hp_pic,
-                'email'       => User::find($userId)?->email,
+                'nama_pic'    => $freshAssessment->nama_pic,
+                'jabatan_pic' => $freshAssessment->jabatan_pic,
+                'no_hp_pic'   => $freshAssessment->no_hp_pic,
+                'email'       => $freshUser->email,
             ], 'Profil berhasil diperbarui.', 200);
         } catch (\Throwable $th) {
             $code = (is_numeric($th->getCode()) && $th->getCode() >= 400 && $th->getCode() < 600) ? $th->getCode() : 500;
@@ -413,7 +419,6 @@ class AuthController extends Controller
 
     /**
      * Helper internal untuk mem-build DTO dengan konteks User Auth yang aman.
-     * Mencegah celah IDOR (Insecure Direct Object Reference).
      */
     public function getAuthDTO(): AssessmentDTO
     {

@@ -56,11 +56,6 @@ class User extends Authenticatable implements HasName
         ];
     }
 
-    public function Assessments()
-    {
-        return $this->hasMany(Assessment::class, 'user_id');
-    }
-
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->role === 'admin';

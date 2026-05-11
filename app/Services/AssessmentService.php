@@ -858,4 +858,42 @@ class AssessmentService extends BaseService
         $this->repository->updateRekapSkor($assessment->id, $rekap);
     }
 
+    public function saveReviewerScores($assessment, array $scores, array $notes)
+    {
+        return DB::transaction(function () use ($assessment, $scores, $notes) {
+            foreach ($scores as $pertanyaanId => $skor) {
+                if ($skor === null || $skor === '') continue;
+
+                $skor = min(5, max(0, (int) $skor));
+
+                $this->repository->upsertJawaban([
+                    'assessment_id' => $assessment->id,
+                    'pertanyaan_id' => (int) $pertanyaanId,
+                    'skor_validasi_reviewer' => $skor,
+                    'note_reviewer'          => $notes[$pertanyaanId] ?? null,
+                ]);
+            }
+
+            // Perbarui rekap skor JSON setelah skor reviewer disimpan
+            return $this->recapAndSaveSkor($assessment);
+        });
+    }
+
+    public function finalizeReview($assessment)
+    {
+        // Cek semua pertanyaan sudah ada skor dari reviewer
+        $totalPertanyaan = $this->pertanyaanRepository->countTotalMandatoryQuestions();
+        $totalDinilai = $this->repository->countValidReviewerScores($assessment->id);
+
+        if ($totalDinilai < $totalPertanyaan) {
+            $belum = $totalPertanyaan - $totalDinilai;
+            throw new Exception("Finalisasi gagal: Masih ada {$belum} indikator yang belum diberi skor.", 422);
+        }
+
+        // Update status ke GRADED
+        $this->repository->updateStatusAssessment($assessment->id, 'GRADED');
+
+        // Update rekap skor final
+        return $this->recapAndSaveSkor($assessment);
+    }
 }

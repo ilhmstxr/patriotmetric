@@ -22,14 +22,32 @@ class AssessmentRepository extends BaseRepository
 
     public function findActiveAssessmentByUserId($userId)
     {
-        // Gunakan active_period dari CMS agar konsisten dengan AuthController@me
-        $activePeriodSetting = \App\Models\PengaturanCms::where('key', 'active_period')->first();
-        $activePeriod = $activePeriodSetting ? $activePeriodSetting->value : date('Y');
-
         return $this->model
             ->where('user_id', $userId)
-            ->where('tahun_periode', $activePeriod)
+            ->latest()
             ->first();
+    }
+
+    public function findActiveAssessmentByUserIdAndYear($userId, $year)
+    {
+        return $this->model
+            ->where('user_id', $userId)
+            ->where('tahun_periode', $year)
+            ->with(['institusi', 'identitas.agamas'])
+            ->first();
+    }
+
+    public function findLatestAssessmentByUserId($userId)
+    {
+        return $this->model
+            ->where('user_id', $userId)
+            ->orderBy('tahun_periode', 'desc')
+            ->first();
+    }
+
+    public function getAgamasByIdentitasId($identitasId)
+    {
+        return Agama::where('identitas_id', $identitasId)->get();
     }
 
     /**
@@ -208,5 +226,19 @@ class AssessmentRepository extends BaseRepository
         return $this->model->where('id', $assessmentId)->update([
             'skor_rekap_json' => json_encode($rekap),
         ]);
+    }
+
+    public function batchUpdateStatusByYear(string $tahun, array $fromStatuses, string $toStatus)
+    {
+        return $this->model->where('tahun_periode', $tahun)
+            ->whereIn('status', $fromStatuses)
+            ->update(['status' => $toStatus]);
+    }
+
+    public function countValidReviewerScores(int $assessmentId)
+    {
+        return \App\Models\ResponAssessment::where('assessment_id', $assessmentId)
+            ->whereNotNull('skor_validasi_reviewer')
+            ->count();
     }
 }

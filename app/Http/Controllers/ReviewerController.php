@@ -12,13 +12,18 @@ class ReviewerController extends Controller
     use ApiResponse;
 
     protected $assessmentService;
+    protected $reviewerRepository;
+    protected $assessmentRepository;
 
-    public function __construct(AssessmentService $assessmentService)
-    {
+    public function __construct(
+        AssessmentService $assessmentService,
+        \App\Repositories\ReviewerRepository $reviewerRepository,
+        \App\Repositories\AssessmentRepository $assessmentRepository
+    ) {
         $this->assessmentService = $assessmentService;
+        $this->reviewerRepository = $reviewerRepository;
+        $this->assessmentRepository = $assessmentRepository;
     }
-
-
 
     private function getErrorCode(\Throwable $e)
     {
@@ -38,7 +43,7 @@ class ReviewerController extends Controller
                 throw new \Exception("Unauthorized: Akses khusus untuk Reviewer.", 403);
             }
             
-            $reviewer = \App\Models\Reviewer::where('user_id', $user->id)->first();
+            $reviewer = $this->reviewerRepository->findByUserId($user->id);
             if (!$reviewer) {
                 throw new \Exception("Profil Reviewer tidak ditemukan.", 404);
             }
@@ -61,14 +66,14 @@ class ReviewerController extends Controller
                 throw new \Exception("Unauthorized: Akses khusus untuk Reviewer.", 403);
             }
             
-            $reviewer = \App\Models\Reviewer::where('user_id', $user->id)->first();
+            $reviewer = $this->reviewerRepository->findByUserId($user->id);
             if (!$reviewer) {
                 throw new \Exception("Profil Reviewer tidak ditemukan.", 404);
             }
             $reviewerId = $reviewer->id;
 
             // Eksekusi Service
-            $result = $this->assessmentService->getDetailReviewTasks($reviewerId, $pesertaId);
+            $result = $this->assessmentService->getDetailReviewTasks($reviewerId, (int) $pesertaId);
 
             return $this->successResponse($result, 'Daftar plottingan tugas berhasil diambil.', 200);
         } catch (\Throwable $e) {
@@ -89,35 +94,15 @@ class ReviewerController extends Controller
                 throw new \Exception("Unauthorized: Akses khusus untuk Reviewer.", 403);
             }
 
-            $assessment = \App\Models\Assessment::where('id', $pesertaId)
-                ->whereIn('status', ['SUBMITTED', 'IN_PROGRESS', 'GRADED'])
-                ->latest()
-                ->firstOrFail();
+            $assessment = $this->assessmentRepository->find($pesertaId);
+            if (!$assessment || !in_array($assessment->status, ['SUBMITTED', 'IN_PROGRESS', 'GRADED'])) {
+                 throw new \Exception("Asesmen tidak ditemukan atau tidak dapat dinilai.", 404);
+            }
 
             $scores = $request->input('scores', []);
             $notes  = $request->input('notes', []);
 
-            \Illuminate\Support\Facades\DB::transaction(function () use ($assessment, $scores, $notes) {
-                foreach ($scores as $pertanyaanId => $skor) {
-                    if ($skor === null || $skor === '') continue;
-
-                    $skor = min(5, max(0, (int) $skor));
-
-                    \App\Models\ResponAssessment::updateOrCreate(
-                        [
-                            'assessment_id' => $assessment->id,
-                            'pertanyaan_id' => (int) $pertanyaanId,
-                        ],
-                        [
-                            'skor_validasi_reviewer' => $skor,
-                            'note_reviewer'          => $notes[$pertanyaanId] ?? null,
-                        ]
-                    );
-                }
-            });
-
-            // Perbarui rekap skor JSON setelah skor reviewer disimpan
-            $this->assessmentService->recapAndSaveSkor($assessment);
+            $this->assessmentService->saveReviewerScores($assessment, $scores, $notes);
 
             return $this->successResponse([], 'Skor berhasil disimpan dan rekap diperbarui.');
         } catch (\Throwable $e) {
@@ -137,27 +122,12 @@ class ReviewerController extends Controller
                 throw new \Exception("Unauthorized: Akses khusus untuk Reviewer.", 403);
             }
 
-            $assessment = \App\Models\Assessment::where('id', $pesertaId)
-                ->whereIn('status', ['SUBMITTED', 'IN_PROGRESS'])
-                ->latest()
-                ->firstOrFail();
-
-            // Cek semua pertanyaan sudah ada skor dari reviewer
-            $totalPertanyaan = \App\Models\Pertanyaan::count();
-            $totalDinilai = \App\Models\ResponAssessment::where('assessment_id', $assessment->id)
-                ->whereNotNull('skor_validasi_reviewer')
-                ->count();
-
-            if ($totalDinilai < $totalPertanyaan) {
-                $belum = $totalPertanyaan - $totalDinilai;
-                throw new \Exception("Finalisasi gagal: Masih ada {$belum} indikator yang belum diberi skor.", 422);
+            $assessment = $this->assessmentRepository->find($pesertaId);
+            if (!$assessment || !in_array($assessment->status, ['SUBMITTED', 'IN_PROGRESS'])) {
+                 throw new \Exception("Asesmen tidak ditemukan atau tidak dapat difinalisasi.", 404);
             }
 
-            // Update status ke GRADED
-            $assessment->update(['status' => 'GRADED']);
-
-            // Update rekap skor final
-            $this->assessmentService->recapAndSaveSkor($assessment);
+            $this->assessmentService->finalizeReview($assessment);
 
             return $this->successResponse([], 'Penilaian berhasil difinalisasi. Status peserta berubah menjadi GRADED.');
         } catch (\Throwable $e) {
