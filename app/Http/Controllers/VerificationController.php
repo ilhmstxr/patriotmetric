@@ -42,7 +42,6 @@ class VerificationController extends Controller
                 'profil_pt' => 'required|file|mimes:pdf|max:5120',
                 'logo_url' => 'required|file|mimes:jpeg,jpg,png|max:5120',
                 'struktur_organisasi' => 'required|file|mimes:pdf|max:5120',
-                'sk_tim' => 'required|file|mimes:pdf|max:5120',
                 // Data Institusi — Section 3
                 'nama_pt' => 'required|string|max:255',
                 'jenis_pt' => 'required|string|max:100',
@@ -76,7 +75,7 @@ class VerificationController extends Controller
 
             // Upload all PDF files
             $files = [];
-            $pdfFields = ['surat_pernyataan', 'sk_pendirian', 'sk_akreditasi', 'profil_pt', 'struktur_organisasi', 'sk_tim'];
+            $pdfFields = ['surat_pernyataan', 'sk_pendirian', 'sk_akreditasi', 'profil_pt', 'struktur_organisasi'];
 
             foreach ($pdfFields as $field) {
                 if ($request->hasFile($field)) {

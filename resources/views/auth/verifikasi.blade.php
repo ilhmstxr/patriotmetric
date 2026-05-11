@@ -441,9 +441,15 @@
           <div class="p-[32px] md:p-[48px]">
             {{-- SECTION 1: Dokumen Legal --}}
             <div x-show="activeSection === 1" x-transition.opacity.duration.500ms class="space-y-[32px]">
-              <div class="pb-[16px] border-b border-[#e2e8f0] mb-[32px]">
-                <h2 class="text-[22px] font-bold text-[#1d293d]">Bagian 1: Dokumen Legalitas</h2>
-                <p class="text-[#64748b] text-[15px] mt-[4px]">Unggah berkas-berkas legalitas perguruan tinggi Anda.</p>
+              <div class="pb-[16px] border-b border-[#e2e8f0] mb-[32px] flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <h2 class="text-[22px] font-bold text-[#1d293d]">Bagian 1: Dokumen Legalitas</h2>
+                  <p class="text-[#64748b] text-[15px] mt-[4px]">Unggah berkas-berkas legalitas perguruan tinggi Anda.</p>
+                </div>
+                <a href="#" target="_blank" class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#f0fdf4] text-[#1b5e20] border border-[#1b5e20] rounded-lg hover:bg-[#1b5e20] hover:text-white transition-colors text-[14px] font-semibold whitespace-nowrap">
+                  <i data-lucide="download" class="w-4 h-4"></i>
+                  Unduh Template Berkas
+                </a>
               </div>
 
                 {{-- Field 1 --}}
@@ -749,34 +755,38 @@
                 {{-- Group D: Demografi Agama --}}
                 <div class="bg-[#f8fafc] p-6 rounded-xl border border-[#cbd5e1] space-y-6">
                   <h3 class="font-bold text-[#1b5e20] text-[16px] mb-2 border-b border-[#e2e8f0] pb-2">D. Demografi Agama Mahasiswa</h3>
-                  <div class="grid grid-cols-2 gap-[24px]">
-                    <div class="flex flex-col gap-[8px]">
-                      <label class="font-semibold text-[#1d293d] text-[15px]">Islam</label>
-                      <input type="number" x-model="formData.agama_islam" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
+                    <div class="space-y-[24px]">
+                      <div class="flex flex-col gap-[8px]">
+                        <label class="font-semibold text-[#1d293d] text-[15px]">Islam</label>
+                        <input type="number" x-model="formData.agama_islam" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
+                      </div>
+                      <div class="flex flex-col gap-[8px]">
+                        <label class="font-semibold text-[#1d293d] text-[15px]">Kristen</label>
+                        <input type="number" x-model="formData.agama_kristen" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
+                      </div>
+                      <div class="flex flex-col gap-[8px]">
+                        <label class="font-semibold text-[#1d293d] text-[15px]">Katolik</label>
+                        <input type="number" x-model="formData.agama_katolik" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
+                      </div>
+                      <div class="flex flex-col gap-[8px]">
+                        <label class="font-semibold text-[#1d293d] text-[15px]">Hindu</label>
+                        <input type="number" x-model="formData.agama_hindu" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
+                      </div>
                     </div>
-                    <div class="flex flex-col gap-[8px]">
-                      <label class="font-semibold text-[#1d293d] text-[15px]">Kristen</label>
-                      <input type="number" x-model="formData.agama_kristen" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
-                    </div>
-                    <div class="flex flex-col gap-[8px]">
-                      <label class="font-semibold text-[#1d293d] text-[15px]">Katolik</label>
-                      <input type="number" x-model="formData.agama_katolik" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
-                    </div>
-                    <div class="flex flex-col gap-[8px]">
-                      <label class="font-semibold text-[#1d293d] text-[15px]">Hindu</label>
-                      <input type="number" x-model="formData.agama_hindu" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
-                    </div>
-                    <div class="flex flex-col gap-[8px]">
-                      <label class="font-semibold text-[#1d293d] text-[15px]">Buddha</label>
-                      <input type="number" x-model="formData.agama_buddha" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
-                    </div>
-                    <div class="flex flex-col gap-[8px]">
-                      <label class="font-semibold text-[#1d293d] text-[15px]">Konghucu</label>
-                      <input type="number" x-model="formData.agama_konghucu" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
-                    </div>
-                    <div class="flex flex-col gap-[8px]">
-                      <label class="font-semibold text-[#1d293d] text-[15px]">Kepercayaan Terhadap Tuhan Yang Maha Esa</label>
-                      <input type="number" x-model="formData.agama_kepercayaan" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
+                    <div class="space-y-[24px]">
+                      <div class="flex flex-col gap-[8px]">
+                        <label class="font-semibold text-[#1d293d] text-[15px]">Buddha</label>
+                        <input type="number" x-model="formData.agama_buddha" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
+                      </div>
+                      <div class="flex flex-col gap-[8px]">
+                        <label class="font-semibold text-[#1d293d] text-[15px]">Konghucu</label>
+                        <input type="number" x-model="formData.agama_konghucu" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
+                      </div>
+                      <div class="flex flex-col gap-[8px]">
+                        <label class="font-semibold text-[#1d293d] text-[15px]">Kepercayaan Terhadap Tuhan Yang Maha Esa (Keputusan MK No. 97/PUU-XIV/2016)</label>
+                        <input type="number" x-model="formData.agama_kepercayaan" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -881,34 +891,38 @@
                   {{-- Preview Demografi Agama --}}
                   <div class="mt-4 pt-4 border-t border-[#e2e8f0]">
                     <p class="text-[#64748b] font-medium text-[14px] mb-3">Demografi Agama Mahasiswa</p>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-[14px]">
-                      <div class="space-y-0.5" x-show="formData.agama_islam > 0 || true">
-                        <p class="text-[#64748b] text-[12px]">Islam</p>
-                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_islam || 0"></p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[14px]">
+                      <div class="space-y-3">
+                        <div class="space-y-0.5" x-show="formData.agama_islam > 0 || true">
+                          <p class="text-[#64748b] text-[12px]">Islam</p>
+                          <p class="text-[#1d293d] font-semibold" x-text="formData.agama_islam || 0"></p>
+                        </div>
+                        <div class="space-y-0.5">
+                          <p class="text-[#64748b] text-[12px]">Kristen</p>
+                          <p class="text-[#1d293d] font-semibold" x-text="formData.agama_kristen || 0"></p>
+                        </div>
+                        <div class="space-y-0.5">
+                          <p class="text-[#64748b] text-[12px]">Katolik</p>
+                          <p class="text-[#1d293d] font-semibold" x-text="formData.agama_katolik || 0"></p>
+                        </div>
+                        <div class="space-y-0.5">
+                          <p class="text-[#64748b] text-[12px]">Hindu</p>
+                          <p class="text-[#1d293d] font-semibold" x-text="formData.agama_hindu || 0"></p>
+                        </div>
                       </div>
-                      <div class="space-y-0.5">
-                        <p class="text-[#64748b] text-[12px]">Kristen</p>
-                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_kristen || 0"></p>
-                      </div>
-                      <div class="space-y-0.5">
-                        <p class="text-[#64748b] text-[12px]">Katolik</p>
-                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_katolik || 0"></p>
-                      </div>
-                      <div class="space-y-0.5">
-                        <p class="text-[#64748b] text-[12px]">Hindu</p>
-                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_hindu || 0"></p>
-                      </div>
-                      <div class="space-y-0.5">
-                        <p class="text-[#64748b] text-[12px]">Buddha</p>
-                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_buddha || 0"></p>
-                      </div>
-                      <div class="space-y-0.5">
-                        <p class="text-[#64748b] text-[12px]">Konghucu</p>
-                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_konghucu || 0"></p>
-                      </div>
-                      <div class="space-y-0.5 md:col-span-2">
-                        <p class="text-[#64748b] text-[12px]">Kepercayaan</p>
-                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_kepercayaan || 0"></p>
+                      <div class="space-y-3">
+                        <div class="space-y-0.5">
+                          <p class="text-[#64748b] text-[12px]">Buddha</p>
+                          <p class="text-[#1d293d] font-semibold" x-text="formData.agama_buddha || 0"></p>
+                        </div>
+                        <div class="space-y-0.5">
+                          <p class="text-[#64748b] text-[12px]">Konghucu</p>
+                          <p class="text-[#1d293d] font-semibold" x-text="formData.agama_konghucu || 0"></p>
+                        </div>
+                        <div class="space-y-0.5">
+                          <p class="text-[#64748b] text-[12px]">Kepercayaan Terhadap Tuhan Yang Maha Esa (Keputusan MK No. 97/PUU-XIV/2016)</p>
+                          <p class="text-[#1d293d] font-semibold" x-text="formData.agama_kepercayaan || 0"></p>
+                        </div>
                       </div>
                     </div>
                   </div>

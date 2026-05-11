@@ -33,7 +33,7 @@
             }
         })();
     </script>
-    <div class="min-h-screen flex"    x-data="{ 
+    <div class="min-h-screen flex items-start lg:items-center justify-center relative py-12" x-data="{ 
         agree: false, 
         isFormValid: false,
         isLoading: false,
@@ -167,26 +167,27 @@
             }
         }
     }">
-        {{-- Left Panel --}}
-        <div class="hidden lg:flex w-[45%] relative sticky top-0 h-screen overflow-hidden items-center">
-            <img src="{{ asset('assets/images/IMG_0940.webp') }}" class="absolute inset-0 w-full h-full object-cover" alt="Background" />
-            <div class="absolute inset-0 bg-black/30"></div>
-            <div class="relative px-16 py-16 z-10 w-full">
-                <div class="-mb-12 mt-4">
-                    <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.webp') }}" alt="Logo Patriot Metric" class="h-100 w-auto object-contain object-left" />
+        {{-- Full Background (Fixed for scrolling) --}}
+        <img src="{{ asset('assets/images/mhs.webp') }}" class="fixed inset-0 w-full h-full object-cover" alt="Background" />
+        <div class="fixed inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+
+        <div class="relative z-10 flex flex-col lg:flex-row w-full max-w-[1300px] mx-auto items-start lg:items-center justify-between px-6 lg:px-12 gap-12">
+            
+            {{-- Left Content --}}
+            <div class="w-full lg:w-1/2 flex flex-col justify-center text-center lg:text-left lg:sticky lg:top-12">
+                <div class="-mb-12 mt-4 flex justify-center lg:justify-start">
+                    <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.webp') }}" alt="Logo Patriot Metric" class="h-100 w-auto object-contain" />
                 </div>
-                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[50px] leading-[45px] text-white max-w-[500px]">
+                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] md:text-[50px] leading-[1.1] text-white max-w-[500px] mx-auto lg:mx-0">
                     Jadilah Bagian dari Perubahan
                 </h1>
-                <p class="mt-8 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[25px] leading-[29.25px] text-[rgba(255,255,255,0.8)] max-w-[500px]">
+                <p class="mt-6 md:mt-8 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[18px] md:text-[22px] leading-relaxed text-[rgba(255,255,255,0.9)] max-w-[500px] mx-auto lg:mx-0">
                     Dengan mendaftarkan institusi Anda, Anda telah mengambil langkah nyata dalam membina karakter bela negara generasi penerus bangsa.
                 </p>
             </div>
-        </div>
 
-        {{-- Right Panel --}}
-        <div class="flex-1 flex items-start justify-center px-6 md:px-8 py-10 md:py-12 bg-white overflow-y-auto">
-            <div class="w-full max-w-[576px]">
+            {{-- Right Floating Form --}}
+            <div class="w-full lg:w-[576px] bg-white rounded-[32px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] p-8 md:p-10 border border-white/20">
                 <a href="{{ url('/masuk') }}" class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] text-[#1B5E20] hover:underline">
                     Sudah punya akun? Masuk
                 </a>

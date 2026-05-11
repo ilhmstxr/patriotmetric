@@ -33,26 +33,28 @@
             }
         })();
     </script>
-    <div class="min-h-screen flex">
-        {{-- Left Panel --}}
-        <div class="hidden lg:flex w-[45%] relative overflow-hidden items-center">
-            <img src="{{ asset('assets/images/IMG_0940.webp') }}" class="absolute inset-0 w-full h-full object-cover" alt="Background" />
-            <div class="absolute inset-0 bg-black/30"></div>
-            <div class="relative px-16 py-16 z-10">
-                <div class="-mb-12 mt-4">
-                    <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.webp') }}" alt="Logo Patriot Metric" class="h-100 w-auto object-contain object-left" />
+    <div class="min-h-screen flex items-center justify-center relative overflow-hidden py-12">
+        {{-- Full Background --}}
+        <img src="{{ asset('assets/images/mhs.webp') }}" class="absolute inset-0 w-full h-full object-cover" alt="Background" />
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+
+        <div class="relative z-10 flex flex-col lg:flex-row w-full max-w-[1300px] mx-auto items-center justify-between px-6 lg:px-12 gap-12">
+            
+            {{-- Left Content --}}
+            <div class="w-full lg:w-1/2 flex flex-col justify-center text-center lg:text-left">
+                <div class="-mb-12 mt-4 flex justify-center lg:justify-start">
+                    <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.webp') }}" alt="Logo Patriot Metric" class="h-100 w-auto object-contain" />
                 </div>
-                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[50px] leading-[45px] text-white max-w-[500px]">
+                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] md:text-[50px] leading-[1.1] text-white max-w-[500px] mx-auto lg:mx-0">
                     Selamat Datang di Patriot Metric
                 </h1>
-                <p class="mt-8 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[25px] leading-[29.25px] text-[rgba(255,255,255,0.8)] max-w-[500px]">
+                <p class="mt-6 md:mt-8 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[18px] md:text-[22px] leading-relaxed text-[rgba(255,255,255,0.9)] max-w-[500px] mx-auto lg:mx-0">
                     Masuk untuk mengakses dashboard institusi Anda, memperbarui data rubrik, dan memantau perkembangan nilai bela negara kampus.
                 </p>
             </div>
-        </div>
 
-        {{-- Right Panel --}}
-        <div class="flex-1 flex items-center justify-center px-6 md:px-8 py-10 md:py-16 bg-white" x-data="{ 
+            {{-- Right Floating Form --}}
+            <div class="w-full lg:w-[480px] bg-white rounded-[32px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] p-8 md:p-10 border border-white/20" x-data="{ 
             email: '', 
             password: '', 
             showPassword: false,
@@ -128,7 +130,7 @@
                 }
             }
         }">
-            <div class="w-full max-w-[448px]">
+            <div class="w-full">
                 <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[24px] md:text-[30px] leading-[36px] text-[#1d293d]">Masuk Akun</h2>
                 <p class="mt-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] leading-[24px] text-[#62748e]">
                     Silakan masukkan kredensial institusi Anda.

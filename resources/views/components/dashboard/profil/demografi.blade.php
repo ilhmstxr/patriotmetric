@@ -12,22 +12,41 @@
     </div>
 
     <div class="p-5 md:p-6">
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <template x-for="agama in ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Konghucu', 'Kepercayaan Terhadap Tuhan Yang Maha Esa']">
-                <div>
-                    <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block" x-text="agama"></label>
-                    {{-- VIEW --}}
-                    <div x-show="!isEditMode" class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
-                        <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.agamas[agama.toLowerCase()] || '0'"></p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+                <template x-for="agama in ['Islam', 'Kristen', 'Katolik', 'Hindu']">
+                    <div>
+                        <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block" x-text="agama"></label>
+                        {{-- VIEW --}}
+                        <div x-show="!isEditMode" class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
+                            <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.agamas[agama.toLowerCase()] || '0'"></p>
+                        </div>
+                        {{-- EDIT --}}
+                        <input x-show="isEditMode" style="display:none;" type="number" min="0"
+                            :x-model="`editForm.agamas['${agama.toLowerCase()}']`"
+                            @input="editForm.agamas[agama.toLowerCase()] = $event.target.value"
+                            :value="editForm.agamas[agama.toLowerCase()] || ''"
+                            class="w-full bg-white border border-[#1b5e20]/40 rounded px-4 h-[42px] text-[13px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
                     </div>
-                    {{-- EDIT --}}
-                    <input x-show="isEditMode" style="display:none;" type="number" min="0"
-                        :x-model="`editForm.agamas['${agama.toLowerCase()}']`"
-                        @input="editForm.agamas[agama.toLowerCase()] = $event.target.value"
-                        :value="editForm.agamas[agama.toLowerCase()] || ''"
-                        class="w-full bg-white border border-[#1b5e20]/40 rounded px-4 h-[42px] text-[13px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
-                </div>
-            </template>
+                </template>
+            </div>
+            <div class="space-y-4">
+                <template x-for="agama in ['Buddha', 'Konghucu', 'Kepercayaan Terhadap Tuhan Yang Maha Esa']">
+                    <div>
+                        <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block" x-text="agama === 'Kepercayaan Terhadap Tuhan Yang Maha Esa' ? 'Kepercayaan Terhadap Tuhan Yang Maha Esa (Keputusan MK No. 97/PUU-XIV/2016)' : agama"></label>
+                        {{-- VIEW --}}
+                        <div x-show="!isEditMode" class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center gap-2">
+                            <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.agamas[agama.toLowerCase()] || '0'"></p>
+                        </div>
+                        {{-- EDIT --}}
+                        <input x-show="isEditMode" style="display:none;" type="number" min="0"
+                            :x-model="`editForm.agamas['${agama.toLowerCase()}']`"
+                            @input="editForm.agamas[agama.toLowerCase()] = $event.target.value"
+                            :value="editForm.agamas[agama.toLowerCase()] || ''"
+                            class="w-full bg-white border border-[#1b5e20]/40 rounded px-4 h-[42px] text-[13px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
+                    </div>
+                </template>
+            </div>
         </div>
     </div>
 </div>

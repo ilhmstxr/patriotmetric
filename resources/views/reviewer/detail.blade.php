@@ -92,6 +92,19 @@
             let timeout = null;
             const autoSave = () => {
                 if (this.loading || this.isDone) return;
+                
+                let isValid = true;
+                for (const [qId, skor] of Object.entries(this.reviewerScores)) {
+                    if (skor !== null && skor !== '') {
+                        const note = this.reviewerNotes[qId] || '';
+                        if (note.length < 20) {
+                            isValid = false;
+                            break;
+                        }
+                    }
+                }
+                if (!isValid) return;
+
                 this.isSaving = true;
                 clearTimeout(timeout);
                 timeout = setTimeout(async () => {
@@ -143,6 +156,17 @@
         },
 
         async lockReview() {
+            // Validate all scores have valid notes before locking
+            for (const [qId, skor] of Object.entries(this.reviewerScores)) {
+                if (skor !== null && skor !== '') {
+                    const note = this.reviewerNotes[qId] || '';
+                    if (note.length < 20) {
+                        alert('Ada indikator yang telah dinilai namun catatannya kurang dari 20 karakter. Mohon periksa kembali.');
+                        return;
+                    }
+                }
+            }
+            
             this.isLocking = true;
             this.showLockConfirm = false;
             try {
@@ -421,12 +445,22 @@
                 <div class="bg-white p-[24px] rounded-[12px] border border-[#cbd5e1] mb-6">
                     <h3 class="font-bold text-[#1b5e20] text-[15px] mb-4 border-b border-[#e2e8f0] pb-2">E. Demografi Agama Mahasiswa</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
-                        <template x-for="(agama, i) in agamaData" :key="i">
-                            <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
-                                <span class="text-[14px] text-[#64748b] font-medium" x-text="agama.name"></span>
-                                <span class="text-[15px] text-[#1d293d] font-bold" x-text="agama.count"></span>
-                            </div>
-                        </template>
+                        <div class="space-y-4">
+                            <template x-for="agama in ['Islam', 'Kristen', 'Katolik', 'Hindu']">
+                                <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                                    <span class="text-[14px] text-[#64748b] font-medium" x-text="agama"></span>
+                                    <span class="text-[15px] text-[#1d293d] font-bold" x-text="(profil_peserta.agama && profil_peserta.agama[agama.toLowerCase()]) || '0'"></span>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="space-y-4">
+                            <template x-for="agama in ['Buddha', 'Konghucu', 'Kepercayaan Terhadap Tuhan Yang Maha Esa']">
+                                <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                                    <span class="text-[14px] text-[#64748b] font-medium" x-text="agama === 'Kepercayaan Terhadap Tuhan Yang Maha Esa' ? 'Kepercayaan Terhadap Tuhan Yang Maha Esa (Keputusan MK No. 97/PUU-XIV/2016)' : agama"></span>
+                                    <span class="text-[15px] text-[#1d293d] font-bold" x-text="(profil_peserta.agama && profil_peserta.agama[agama.toLowerCase()]) || '0'"></span>
+                                </div>
+                            </template>
+                        </div>
                     </div>
                 </div>
 
@@ -556,11 +590,12 @@
                                 <textarea 
                                     rows="3"
                                     placeholder="Tuliskan alasan mengapa skor diberikan, atau hal yang kurang dari bukti validasi..."
-                                    class="w-full text-[14px] p-[12px] rounded-[8px] border-2 focus:outline-none focus:border-[#1b5e20] hover:border-[#1b5e20]/60 transition-colors resize-y"
-                                    :class="isDone ? 'bg-[#f1f5f9] border-[#cbd5e1] text-[#94a3b8]' : 'border-[#cbd5e1] text-[#1d293d] bg-white'"
+                                    class="w-full text-[14px] p-[12px] rounded-[8px] border-2 focus:outline-none transition-colors resize-y"
+                                    :class="isDone ? 'bg-[#f1f5f9] border-[#cbd5e1] text-[#94a3b8]' : (reviewerScores[q.id] !== null && reviewerScores[q.id] !== '' && (reviewerNotes[q.id] || '').length < 20 ? 'border-red-500 focus:border-red-500 bg-red-50 text-[#1d293d]' : 'border-[#cbd5e1] focus:border-[#1b5e20] hover:border-[#1b5e20]/60 text-[#1d293d] bg-white')"
                                     :disabled="isDone"
                                     x-model="reviewerNotes[q.id]"
                                 ></textarea>
+                                <p x-show="reviewerScores[q.id] !== null && reviewerScores[q.id] !== '' && (reviewerNotes[q.id] || '').length < 20" class="text-red-500 text-[12px] mt-1 font-medium">Catatan wajib diisi minimal 20 karakter (termasuk spasi).</p>
                             </div>
                         </div>
                       </div>
