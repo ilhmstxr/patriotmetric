@@ -29,6 +29,7 @@ return new class extends Migration {
             $table->foreignId('reviewer_id')->nullable()->constrained('reviewers')->onDelete('set null');
             $table->decimal('total_skor_sistem', 8, 2)->default(0);
             $table->decimal('total_skor_akhir', 8, 2)->default(0);
+            $table->json('skor_rekap_json')->nullable();
             $table->timestamps();
         });
     }
