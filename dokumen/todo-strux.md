@@ -409,4 +409,16 @@ datanya masih kesimpen di local storage
 }
 ```
 
+bobot, dihapus
+lepas hubungan dihapus
+hapus dihapus
 
+kelola opsi
+kelola pertanyaan
+syarat bukti
+
+note tanya bu sri
+untuk keagamaan apakah butuh dengan keputusan mk
+
+- fitur cek pdf per peserta
+- untuk create user tidak bisa dibuatkan via admin untuk pembuatan & verifikasi akunnya

@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Assessments\Pages;
 
-use App\DTO\AssessmentDTO;
+use App\DTO\AssessmentDTO\AssessmentDTO;
 use App\Filament\Resources\Assessments\AssessmentResource;
 use App\Services\AssessmentService;
 use Filament\Actions\DeleteAction;
@@ -27,7 +27,9 @@ class EditAssessment extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        $dto = new AssessmentDTO($data);
+        // Gabungkan data lama dengan data baru agar DTO tidak kosong untuk field yang tidak ada di form
+        $dto = new AssessmentDTO(array_merge($record->toArray(), $data));
+        
         app(AssessmentService::class)->update($record->getKey(), $dto);
 
         return $record->refresh();

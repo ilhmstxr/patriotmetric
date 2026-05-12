@@ -77,8 +77,7 @@ class PertanyaansRelationManager extends RelationManager
     {
         return $table
             ->headerActions([
-                CreateAction::make()->label('Tambah Pertanyaan'),
-                AssociateAction::make()->label('Hubungkan Pertanyaan'),
+                //
             ])
             ->recordTitleAttribute('teks_pertanyaan')
             ->columns([
@@ -107,10 +106,9 @@ class PertanyaansRelationManager extends RelationManager
                     ->titlePrefixedWithLabel(false),
             ])
             ->defaultGroup('kategori.nama_kategori')
-            ->collapsedGroupsByDefault(true)
+            ->collapsedGroupsByDefault(false)
             ->headerActions([
-                CreateAction::make(),
-                AssociateAction::make(),
+                //
             ])
             ->recordActions([
                 Action::make('manageOptions')
@@ -118,14 +116,11 @@ class PertanyaansRelationManager extends RelationManager
                     ->icon('heroicon-o-list-bullet')
                     ->color('info')
                     ->url(fn ($record) => \App\Filament\Resources\Pertanyaans\PertanyaanResource::getUrl('edit', ['record' => $record])),
-                EditAction::make()->label('Ubah'),
-                DissociateAction::make()->label('Lepas Hubungan'),
-                DeleteAction::make()->label('Hapus'),
             ])
+            ->defaultPaginationPageOption(5)
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DissociateBulkAction::make()->label('Lepas Terpilih'),
-                    DeleteBulkAction::make()->label('Hapus Terpilih'),
+                    //
                 ])->label('Aksi Massal'),
             ]);
     }

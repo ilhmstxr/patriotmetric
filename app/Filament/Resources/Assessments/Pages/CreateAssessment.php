@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Assessments\Pages;
 
-use App\DTO\AssessmentDTO;
+use App\DTO\AssessmentDTO\AssessmentDTO;
 use App\Filament\Resources\Assessments\AssessmentResource;
 use App\Services\AssessmentService;
 use Filament\Resources\Pages\CreateRecord;

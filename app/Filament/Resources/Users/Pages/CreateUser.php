@@ -39,7 +39,7 @@ class CreateUser extends CreateRecord
                 'email' => $data['email'],
                 'password' => $data['password'] ? Hash::make($data['password']) : Hash::make('password'),
                 'role' => $data['role'],
-                'status' => $data['status'],
+                'status' => $data['status'] ?? 'ACTIVE',
             ]);
 
             if ($data['role'] === 'REVIEWER') {

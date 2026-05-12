@@ -18,11 +18,13 @@ class PertanyaanResource extends Resource
 {
     protected static ?string $model = Pertanyaan::class;
 
-    protected static bool $shouldRegisterNavigation = false;
+    protected static bool $shouldRegisterNavigation = true;
+    
+    // protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $navigationLabel = 'Pertanyaan';
+    protected static ?string $navigationLabel = 'Rubrik Penilaian';
 
-    protected static ?string $pluralLabel = 'Pertanyaan';
+    protected static ?string $pluralLabel = 'Rubrik Penilaian';
 
     protected static ?string $singularLabel = 'Pertanyaan';
 

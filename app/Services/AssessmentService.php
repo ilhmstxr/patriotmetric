@@ -910,4 +910,9 @@ class AssessmentService extends BaseService
         // Update rekap skor final
         return $this->recapAndSaveSkor($assessment);
     }
+
+    public function assignReviewer(int|string $assessmentId, int|string $reviewerId): bool
+    {
+        return $this->repository->update($assessmentId, ['reviewer_id' => $reviewerId]);
+    }
 }

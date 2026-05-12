@@ -18,6 +18,8 @@ use Filament\Forms\Components\TextInput;
 class RubrikResource extends Resource
 {
     protected static ?string $model = Kategori::class;
+    
+    protected static bool $shouldRegisterNavigation = false;
 
     protected static ?string $navigationLabel = 'Rubrik Penilaian';
 

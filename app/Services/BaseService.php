@@ -32,4 +32,9 @@ abstract class BaseService
         // $dto di sini adalah objek dari class DTO kamu
         return $this->repository->create($dto->toArray());
     }
+
+    public function update(int|string $id, object $dto): bool
+    {
+        return $this->repository->update($id, $dto->toArray());
+    }
 }
