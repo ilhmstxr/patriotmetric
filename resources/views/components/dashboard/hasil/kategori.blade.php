@@ -34,7 +34,7 @@
                     <div class="text-right hidden sm:block border-r border-[#e2e8f0] pr-6">
                         <p class="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest mb-1">Capaian Poin</p>
                         <div class="flex items-center gap-1.5 justify-end">
-                            <span class="text-[18px] font-extrabold text-[#1d293d]" x-text="cat.score"></span>
+                            <span class="text-[18px] font-extrabold text-[#1d293d]" x-text="parseInt(cat.score)"></span>
                             <span class="text-[13px] font-bold text-[#94a3b8]">/ <span x-text="cat.max"></span></span>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
                                             <span class="text-[9px] font-bold text-[#059669] uppercase tracking-[0.1em] mb-1">Skor Akhir</span>
                                             <div class="flex items-center gap-1.5 bg-[#ecfdf5] border border-[#10b981]/20 px-3 py-1.5 rounded-lg">
                                                 <i data-lucide="check-circle" class="w-3.5 h-3.5 text-[#059669]"></i>
-                                                <span class="text-[13px] font-bold text-[#047857]" x-text="item.score + ' / ' + item.max"></span>
+                                                <span class="text-[13px] font-bold text-[#047857]" x-text="parseInt(item.score) + ' / ' + item.max"></span>
                                             </div>
                                         </div>
                                     </template>
@@ -89,7 +89,7 @@
                                         <div class="flex flex-col items-end">
                                             <span class="text-[9px] font-bold text-[#d97706] uppercase tracking-[0.1em] mb-1">Estimasi Skor</span>
                                             <div class="flex items-center gap-1.5 bg-[#fffbeb] border border-[#f59e0b]/20 px-3 py-1.5 rounded-lg">
-                                                <span class="text-[13px] font-bold text-[#b45309]" x-text="item.score + ' / ' + item.max"></span>
+                                                <span class="text-[13px] font-bold text-[#b45309]" x-text="parseInt(item.score) + ' / ' + item.max"></span>
                                             </div>
                                         </div>
                                     </template>

@@ -459,7 +459,7 @@
                     localStorage.removeItem(this.cacheKey); {{-- Invalidate cache pertanyaan --}}
                     this.showToast('success', 'Draft tersubmit', 'Seluruh jawaban berhasil dikirim untuk direview.');
                     this.status = 'SUBMITTED';
-                    setTimeout(() => { window.location.href = '/dashboard/hasil'; }, 1200);
+                    setTimeout(() => { Livewire.navigate('/dashboard/hasil'); }, 1200);
                 } else {
                     this.showToast('error', 'Gagal submit', result.message || 'Periksa kembali jawaban Anda.');
                 }

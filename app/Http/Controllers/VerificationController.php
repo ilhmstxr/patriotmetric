@@ -6,6 +6,7 @@ use App\Models\Institusi;
 use App\Models\Identitas;
 use App\Models\Pengumpulan;
 use App\Models\Agama;
+use App\Models\Reviewer;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,7 +43,6 @@ class VerificationController extends Controller
                 'profil_pt' => 'required|file|mimes:pdf|max:5120',
                 'logo_url' => 'required|file|mimes:jpeg,jpg,png|max:5120',
                 'struktur_organisasi' => 'required|file|mimes:pdf|max:5120',
-                'sk_tim' => 'required|file|mimes:pdf|max:5120',
                 // Data Institusi — Section 3
                 'nama_pt' => 'required|string|max:255',
                 'jenis_pt' => 'required|string|max:100',
@@ -76,7 +76,7 @@ class VerificationController extends Controller
 
             // Upload all PDF files
             $files = [];
-            $pdfFields = ['surat_pernyataan', 'sk_pendirian', 'sk_akreditasi', 'profil_pt', 'struktur_organisasi', 'sk_tim'];
+            $pdfFields = ['surat_pernyataan', 'sk_pendirian', 'sk_akreditasi', 'profil_pt', 'struktur_organisasi'];
 
             foreach ($pdfFields as $field) {
                 if ($request->hasFile($field)) {
@@ -136,8 +136,10 @@ class VerificationController extends Controller
                 ]);
             }
 
-            // Cari ID reviewer tester
-            $testerReviewer = \App\Models\User::where('email', 'reviewer@admin.com')->first();
+            // Cari reviewer tester dari tabel reviewers (bukan users)
+            $testerReviewer = \App\Models\Reviewer::whereHas('user', function($q) {
+                $q->where('email', 'reviewer@admin.com');
+            })->first();
             
             // Update Pengumpulan with PIC data
             $pengumpulan->update([

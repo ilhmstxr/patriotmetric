@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>[x-cloak] { display: none !important; }</style>
+    @livewireStyles
 </head>
 <body class="antialiased bg-[#f5f5f5]" style="font-family: 'Plus Jakarta Sans', sans-serif;"
       x-data="{ mobileMenuOpen: false, showBar: true, lastPos: 0, threshold: 50 }"
@@ -22,6 +23,13 @@
           lastPos = cur;
       "
       x-init="$nextTick(() => { lucide.createIcons() })">
+
+    {{-- Re-init Lucide setelah Livewire navigate --}}
+    <script>
+        document.addEventListener('livewire:navigated', () => {
+            if (window.lucide) window.lucide.createIcons();
+        });
+    </script>
 
     {{-- ⚡ Immediate auth guard — redirect sebelum halaman render --}}
     <script>
@@ -95,5 +103,6 @@
     {{-- Global Modals --}}
     <x-dashboard.password-modal />
 
+    @livewireScripts
 </body>
 </html>

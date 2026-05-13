@@ -82,7 +82,7 @@ class AssessmentService extends BaseService
     private function guardReadAccess($assessment)
     {
         // Izinkan pembacaan jika sudah dikirim atau dinilai
-        if (!in_array($assessment->status, ['SUBMITTED', 'GRADED'])) {
+        if (!in_array($assessment->status, ['SUBMITTED', 'GRADED', 'PUBLISHED'])) {
             throw new Exception("Gagal: Hasil asesmen belum tersedia untuk dilihat.", 403);
         }
         return $assessment;
@@ -183,12 +183,24 @@ class AssessmentService extends BaseService
 
         $timelineCheck = $this->timelineRepository->canSubmit($assessment->tahun_periode);
         $isEditEnabled = $timelineCheck['allowed'];
+        $lockReason = $timelineCheck['reason'] ?? null;
+
+        // Override: jika status sudah SUBMITTED/GRADED/PUBLISHED, selalu lock
+        if (in_array($assessment->status, ['SUBMITTED', 'GRADED', 'PUBLISHED'])) {
+            $isEditEnabled = false;
+            $lockReason = match($assessment->status) {
+                'SUBMITTED' => 'Formulir dikunci karena data sudah disubmit dan sedang menunggu review.',
+                'GRADED'    => 'Formulir dikunci karena penilaian sudah selesai dilakukan.',
+                'PUBLISHED' => 'Formulir dikunci karena hasil sudah dipublikasikan.',
+                default     => 'Formulir dikunci.',
+            };
+        }
 
         return [
             'assessment_id' => $assessment->id,
             'status' => $assessment->status,
             'is_edit_enabled' => $isEditEnabled,
-            'lock_reason'     => $timelineCheck['reason'] ?? null,
+            'lock_reason'     => $lockReason,
             'questions'       => $questions,
             'profil'          => $this->getProfilData($assessment),
         ];
@@ -251,7 +263,7 @@ class AssessmentService extends BaseService
         $payload['note_reviewer'] = $dto->noteReviewer;
 
         // 5. Aturan skor: hanya dihitung saat jawaban DAN tautan bukti keduanya terisi.
-        //    Soal otomatis_sistem dikecualikan karena tidak butuh tautan bukti.
+        //    Soal otomatis_sistem yang TIDAK punya kebutuhan_bukti dikecualikan.
         $jawabanTeksFilled = false;
         if (isset($payload['jawaban_teks'])) {
             $teks = $payload['jawaban_teks'];
@@ -263,10 +275,11 @@ class AssessmentService extends BaseService
             }
         }
         $hasJawaban = !empty($payload['jawaban_id']) || $jawabanTeksFilled;
-        
+
         $hasTautan = !empty($payload['tautan_bukti_drive']) && trim((string) $payload['tautan_bukti_drive']) !== '';
         $isOtomatis = ($pertanyaan->tipe ?? null) === 'otomatis_sistem';
-        if (!$isOtomatis && (!$hasJawaban || !$hasTautan)) {
+        $needsBukti = !empty($pertanyaan->kebutuhan_bukti);
+        if ((!$isOtomatis || $needsBukti) && (!$hasJawaban || !$hasTautan)) {
             $payload['skor_sistem'] = 0;
         }
 
@@ -622,7 +635,9 @@ class AssessmentService extends BaseService
     }
 
     /**
-     * Get hasil data for peserta dashboard — shows raw scores if not yet validated
+     * Get hasil data for peserta dashboard.
+     * - IN_PROGRESS/SUBMITTED/GRADED: tampilkan skor_sistem (draft, belum divalidasi)
+     * - PUBLISHED: tampilkan skor_validasi_reviewer (final, sudah dipublikasikan admin)
      */
     public function getHasilData(int $userId)
     {
@@ -631,14 +646,14 @@ class AssessmentService extends BaseService
             throw new Exception("Sesi asesmen aktif tidak ditemukan.", 404);
         }
 
-        $timelineCheck = $this->timelineRepository->canViewResults($assessment->tahun_periode);
-        if (!$timelineCheck['allowed']) {
-            throw new Exception($timelineCheck['reason'], 403);
+        // Peserta hanya bisa lihat hasil jika sudah submit (minimal IN_PROGRESS tidak cukup)
+        // IN_PROGRESS = masih mengisi, belum submit → belum ada hasil
+        if ($assessment->status === 'ACTIVE') {
+            throw new Exception("Silakan lengkapi dan submit rubrik terlebih dahulu untuk melihat hasil.", 403);
         }
 
-        if ($assessment->status !== 'PUBLISHED') {
-            throw new Exception("Hasil penilaian Anda sedang dalam proses finalisasi dan belum dipublikasikan.", 403);
-        }
+        // Tentukan apakah ini hasil final (PUBLISHED) atau draft
+        $isPublished = $assessment->status === 'PUBLISHED';
 
         // Get all categories with their questions
         $allCategories = $this->pertanyaanRepository->getAllCategoriesWithPertanyaans();
@@ -662,11 +677,17 @@ class AssessmentService extends BaseService
             foreach ($cat->pertanyaans as $pertanyaan) {
                 $answer = $answers->get($pertanyaan->id);
 
-                $catData['max'] += 5; // Max score per question is 5
+                $catData['max'] += 5;
 
                 $displayScore = 0;
                 if ($answer) {
-                    $displayScore = $answer->skor_validasi_reviewer ?? $answer->skor_sistem ?? 0;
+                    // PUBLISHED: pakai skor reviewer jika ada, fallback ke skor sistem
+                    // Selain PUBLISHED: selalu pakai skor sistem (draft)
+                    if ($isPublished) {
+                        $displayScore = (int) ($answer->skor_validasi_reviewer ?? $answer->skor_sistem ?? 0);
+                    } else {
+                        $displayScore = (int) ($answer->skor_sistem ?? 0);
+                    }
                 }
                 $catData['score'] += $displayScore;
 
@@ -677,12 +698,12 @@ class AssessmentService extends BaseService
                     'max' => 5,
                     'jawaban' => $answer ? ($this->formatJawabanTeksDisplay($answer->jawaban_teks) ?? ($answer->jawabanOpsi ? $answer->jawabanOpsi->keterangan : 'Belum diisi')) : 'Belum diisi',
                     'tautan' => $answer ? $answer->tautan_bukti_drive : null,
-                    'catatan' => $answer ? $answer->note_reviewer : null,
-                    'is_validated' => $answer ? ($answer->skor_validasi_reviewer !== null) : false,
+                    // Catatan reviewer hanya tampil jika sudah PUBLISHED
+                    'catatan' => ($isPublished && $answer) ? $answer->note_reviewer : null,
+                    'is_validated' => $isPublished && $answer && ($answer->skor_validasi_reviewer !== null),
                 ];
             }
 
-            // Capaian skor tertimbang = (skor / max) * bobot, 2 desimal
             if ($catData['max'] > 0) {
                 $catData['capaian_skor'] = round(($catData['score'] / $catData['max']) * $bobot, 2);
             }
@@ -690,14 +711,14 @@ class AssessmentService extends BaseService
             $categories[] = $catData;
         }
 
-        // Calculate total
         $totalScore = array_sum(array_column($categories, 'score'));
         $totalMax = array_sum(array_column($categories, 'max'));
         $totalCapaianSkor = round(array_sum(array_column($categories, 'capaian_skor')), 2);
 
         return [
             'status' => $assessment->status,
-            'is_validated' => $assessment->status === 'GRADED',
+            'is_published' => $isPublished,
+            'is_validated' => $isPublished,
             'total_score' => $totalScore,
             'total_max' => $totalMax,
             'total_capaian_skor' => $totalCapaianSkor,
@@ -756,10 +777,11 @@ class AssessmentService extends BaseService
                     }
                 }
                 $hasJawaban = !empty($payload['jawaban_id']) || $jawabanTeksFilled;
-                
+
                 $hasTautan = !empty($payload['tautan_bukti_drive']) && trim((string) $payload['tautan_bukti_drive']) !== '';
                 $isOtomatis = ($pertanyaan->tipe ?? null) === 'otomatis_sistem';
-                if (!$isOtomatis && (!$hasJawaban || !$hasTautan)) {
+                $needsBukti = !empty($pertanyaan->kebutuhan_bukti);
+                if ((!$isOtomatis || $needsBukti) && (!$hasJawaban || !$hasTautan)) {
                     $payload['skor_sistem'] = 0;
                 }
 

@@ -262,7 +262,7 @@
       <div x-show="!loading" x-cloak class="flex-1 flex flex-col h-full">
       {{-- Page Header --}}
       <div class="bg-white border-b border-[#e2e8f0] px-[20px] md:px-[40px] pt-[20px] md:pt-[28px] shadow-sm">
-        <a href="{{ route('reviewer.index') }}" class="inline-flex items-center gap-[6px] text-[#62748e] hover:text-[#1b5e20] text-[13px] font-semibold mb-[8px] transition-colors">
+        <a href="{{ route('reviewer.index') }}" wire:navigate class="inline-flex items-center gap-[6px] text-[#62748e] hover:text-[#1b5e20] text-[13px] font-semibold mb-[8px] transition-colors">
           <i data-lucide="arrow-left" class="w-[14px] h-[14px]"></i> Kembali ke Daftar Plotting
         </a>
         
@@ -290,7 +290,7 @@
                 </template>
                 <template x-if="!isSaving && lastSaved">
                     <span class="flex items-center gap-[6px] text-[13px] font-semibold text-green-600">
-                        <i data-lucide="check" class="w-[14px] h-[14px]"></i> Draft tersimpan <span x-text="lastSaved"></span>
+                        <i data-lucide="check" class="w-[14px] h-[14px]"></i> Tersimpan <span x-text="lastSaved"></span>
                     </span>
                 </template>
                 <template x-if="!isSaving && !lastSaved">
@@ -489,7 +489,7 @@
                                   <template x-for="(opt, oIdx) in q.opsi_jawaban" :key="oIdx">
                                     <li class="leading-[18px] flex gap-[6px] items-start">
                                       <span class="shrink-0 mt-[2px] inline-flex items-center justify-center min-w-[44px] px-[6px] py-[1px] rounded-full text-[11px] font-bold bg-amber-200 text-amber-900"
-                                            x-text="(opt.value !== null && opt.value !== undefined ? opt.value : opt.opsi_jawaban) + ' Poin'"></span>
+                                            x-text="Math.min(opt.value !== null && opt.value !== undefined ? Number(opt.value) : Number(opt.opsi_jawaban), 5) + ' Poin'"></span>
                                       <span x-text="opt.keterangan || opt.opsi_jawaban || '-'"></span>
                                     </li>
                                   </template>
@@ -557,10 +557,24 @@
                                     rows="3"
                                     placeholder="Tuliskan alasan mengapa skor diberikan, atau hal yang kurang dari bukti validasi..."
                                     class="w-full text-[14px] p-[12px] rounded-[8px] border-2 focus:outline-none focus:border-[#1b5e20] hover:border-[#1b5e20]/60 transition-colors resize-y"
-                                    :class="isDone ? 'bg-[#f1f5f9] border-[#cbd5e1] text-[#94a3b8]' : 'border-[#cbd5e1] text-[#1d293d] bg-white'"
+                                    :class="isDone ? 'bg-[#f1f5f9] border-[#cbd5e1] text-[#94a3b8]' : (reviewerNotes[q.id] && reviewerNotes[q.id].length > 0 && reviewerNotes[q.id].length < 20 ? 'border-amber-400 bg-white text-[#1d293d]' : 'border-[#cbd5e1] text-[#1d293d] bg-white')"
                                     :disabled="isDone"
                                     x-model="reviewerNotes[q.id]"
                                 ></textarea>
+                                {{-- Character counter + warning --}}
+                                <div class="flex items-center justify-between mt-[4px]">
+                                    <div x-show="reviewerNotes[q.id] && reviewerNotes[q.id].length > 0 && reviewerNotes[q.id].length < 20"
+                                         style="display:none;"
+                                         class="flex items-center gap-[4px] text-amber-600">
+                                        <svg class="w-[12px] h-[12px] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                        </svg>
+                                        <span class="text-[11px] font-medium">Minimal 20 karakter diperlukan</span>
+                                    </div>
+                                    <span class="text-[11px] font-medium ml-auto"
+                                          :class="reviewerNotes[q.id] && reviewerNotes[q.id].length > 0 && reviewerNotes[q.id].length < 20 ? 'text-amber-600' : 'text-[#94a3b8]'"
+                                          x-text="(reviewerNotes[q.id] ? reviewerNotes[q.id].length : 0) + ' karakter'"></span>
+                                </div>
                             </div>
                         </div>
                       </div>
@@ -578,19 +592,12 @@
       <div x-show="!isDone" class="bg-white border-t border-[#e2e8f0] px-[20px] md:px-[40px] py-[16px] flex flex-col sm:flex-row justify-between items-center gap-[16px] shrink-0 z-10 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-[4px] sm:gap-[12px]">
                 <div class="flex items-center gap-[8px] text-[13px] font-bold text-[#1d293d]">
-                  <span class="w-[8px] h-[8px] rounded-full bg-amber-400 animate-pulse shrink-0"></span>
+                  <span class="w-[8px] h-[8px] rounded-full bg-green-400 animate-pulse shrink-0"></span>
                   Pastikan Seluruh Nilai Sudah Terisi Sebelum Finalisasi
                 </div>
-                <span class="text-[12px] font-medium text-[#64748b]">Klik Simpan Draft dulu, lalu Finalisasi jika sudah yakin.</span>
+                <span class="text-[12px] font-medium text-[#64748b]">Data tersimpan otomatis. Klik Finalisasi jika sudah yakin.</span>
             </div>
             <div class="flex items-center gap-[10px]">
-                {{-- Simpan Draft --}}
-                <button
-                  @click="await saveScores(); lastSaved = (new Date()).getHours().toString().padStart(2,'0') + ':' + (new Date()).getMinutes().toString().padStart(2,'0');"
-                  class="w-full sm:w-auto border-2 border-[#1b5e20] text-[#1b5e20] hover:bg-[#f0fdf4] px-[20px] py-[10px] rounded-[8px] text-[14px] font-bold flex items-center justify-center gap-[8px] transition-colors focus:outline-none">
-                  <i data-lucide="save" class="w-[16px] h-[16px]"></i>
-                  Simpan Draft
-                </button>
                 {{-- Finalisasi Penilaian --}}
                 <button
                   @click="showLockConfirm = true"

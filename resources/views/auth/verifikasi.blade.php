@@ -448,9 +448,19 @@
 
                 {{-- Field 1 --}}
                 <div class="flex flex-col gap-[8px]">
-                  <label class="font-semibold text-[#1d293d] text-[15px]">
-                    1. Surat Pernyataan Resmi <span class="text-red-500">*</span>
-                  </label>
+                  <div class="flex items-center justify-between gap-2">
+                    <label class="font-semibold text-[#1d293d] text-[15px]">
+                      1. Surat Pernyataan Resmi <span class="text-red-500">*</span>
+                    </label>
+                    <a href="/templates/template-surat-pernyataan.pdf" target="_blank"
+                       class="inline-flex items-center gap-[6px] text-[12px] font-semibold text-[#1b5e20] hover:text-[#15461c] bg-[#f0fdf4] hover:bg-[#dcfce7] border border-[#bbf7d0] px-[10px] py-[5px] rounded-[6px] transition-colors shrink-0">
+                        <svg class="w-[13px] h-[13px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        Lihat Template
+                    </a>
+                  </div>
                   <p class="text-[#62748e] text-[13px] leading-relaxed">Unggah Surat Pernyataan resmi yang ditandatangani oleh pimpinan perguruan tinggi sebagai bentuk konfirmasi keikutsertaan.</p>
                   
                   <div class="mt-[4px] relative">
@@ -483,9 +493,19 @@
 
                 {{-- Field 2 --}}
                 <div class="flex flex-col gap-[8px]">
-                  <label class="font-semibold text-[#1d293d] text-[15px]">
-                    2. Surat Keputusan (SK) Pendirian Perguruan Tinggi <span class="text-red-500">*</span>
-                  </label>
+                  <div class="flex items-center justify-between gap-2">
+                    <label class="font-semibold text-[#1d293d] text-[15px]">
+                      2. Surat Keputusan (SK) Pendirian Perguruan Tinggi <span class="text-red-500">*</span>
+                    </label>
+                    <a href="/templates/template-sk-pendirian.pdf" target="_blank"
+                       class="inline-flex items-center gap-[6px] text-[12px] font-semibold text-[#1b5e20] hover:text-[#15461c] bg-[#f0fdf4] hover:bg-[#dcfce7] border border-[#bbf7d0] px-[10px] py-[5px] rounded-[6px] transition-colors shrink-0">
+                        <svg class="w-[13px] h-[13px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        Lihat Template
+                    </a>
+                  </div>
                   <div class="mt-[4px] relative">
                       <div x-show="!previews.sk_pendirian" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
                         <input type="file" accept=".pdf" x-ref="sk_pendirian" @change="handleFileChange($event, 'sk_pendirian', '.pdf')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
@@ -516,9 +536,19 @@
 
                 {{-- Field 3 --}}
                 <div class="flex flex-col gap-[8px]">
-                  <label class="font-semibold text-[#1d293d] text-[15px]">
-                    3. Surat Keputusan Akreditasi Institusi Perguruan Tinggi (AIPT) <span class="text-red-500">*</span>
-                  </label>
+                  <div class="flex items-center justify-between gap-2">
+                    <label class="font-semibold text-[#1d293d] text-[15px]">
+                      3. Surat Keputusan Akreditasi Institusi Perguruan Tinggi (AIPT) <span class="text-red-500">*</span>
+                    </label>
+                    <a href="/templates/template-sk-akreditasi.pdf" target="_blank"
+                       class="inline-flex items-center gap-[6px] text-[12px] font-semibold text-[#1b5e20] hover:text-[#15461c] bg-[#f0fdf4] hover:bg-[#dcfce7] border border-[#bbf7d0] px-[10px] py-[5px] rounded-[6px] transition-colors shrink-0">
+                        <svg class="w-[13px] h-[13px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        Lihat Template
+                    </a>
+                  </div>
                   <p class="text-[#62748e] text-[13px] leading-relaxed">Unggah SK AIPT yang masih berlaku.</p>
                   <div class="mt-[4px] relative">
                       <div x-show="!previews.sk_akreditasi" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
@@ -569,9 +599,19 @@
 
                 {{-- Field 4 --}}
                 <div class="flex flex-col gap-[8px]">
-                  <label class="font-semibold text-[#1d293d] text-[15px]">
-                    4. Profil Perguruan Tinggi <span class="text-red-500">*</span>
-                  </label>
+                  <div class="flex items-center justify-between gap-2">
+                    <label class="font-semibold text-[#1d293d] text-[15px]">
+                      4. Profil Perguruan Tinggi <span class="text-red-500">*</span>
+                    </label>
+                    <a href="/templates/template-profil-pt.pdf" target="_blank"
+                       class="inline-flex items-center gap-[6px] text-[12px] font-semibold text-[#1b5e20] hover:text-[#15461c] bg-[#f0fdf4] hover:bg-[#dcfce7] border border-[#bbf7d0] px-[10px] py-[5px] rounded-[6px] transition-colors shrink-0">
+                        <svg class="w-[13px] h-[13px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        Lihat Template
+                    </a>
+                  </div>
                   <div class="mt-[4px] relative">
                       <div x-show="!previews.profil_pt" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
                         <input type="file" accept=".pdf" x-ref="profil_pt" @change="handleFileChange($event, 'profil_pt', '.pdf')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
@@ -631,9 +671,19 @@
 
                 {{-- Field 6 --}}
                 <div class="flex flex-col gap-[8px]">
-                  <label class="font-semibold text-[#1d293d] text-[15px]">
-                    6. Struktur Organisasi Perguruan Tinggi <span class="text-red-500">*</span>
-                  </label>
+                  <div class="flex items-center justify-between gap-2">
+                    <label class="font-semibold text-[#1d293d] text-[15px]">
+                      6. Struktur Organisasi Perguruan Tinggi <span class="text-red-500">*</span>
+                    </label>
+                    <a href="/templates/template-struktur-organisasi.pdf" target="_blank"
+                       class="inline-flex items-center gap-[6px] text-[12px] font-semibold text-[#1b5e20] hover:text-[#15461c] bg-[#f0fdf4] hover:bg-[#dcfce7] border border-[#bbf7d0] px-[10px] py-[5px] rounded-[6px] transition-colors shrink-0">
+                        <svg class="w-[13px] h-[13px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        Lihat Template
+                    </a>
+                  </div>
                   <div class="mt-[4px] relative">
                       <div x-show="!previews.struktur_organisasi" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
                         <input type="file" accept=".pdf" x-ref="struktur_organisasi" @change="handleFileChange($event, 'struktur_organisasi', '.pdf')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />

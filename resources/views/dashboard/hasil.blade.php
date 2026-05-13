@@ -17,6 +17,7 @@
         total_max: 0,
         total_capaian_skor: 0,
         status: 'Loading...',
+        is_published: false,
         is_validated: false,
         error_message: '',
         
@@ -40,20 +41,20 @@
                     this.total_max = data.total_max;
                     this.total_capaian_skor = data.total_capaian_skor;
                     this.status = data.status;
-                    this.is_validated = data.is_validated;
-                    
-                    // Re-init Lucide icons after DOM update
-                    this.$nextTick(() => {
-                        if (window.lucide) window.lucide.createIcons();
-                    });
-                    if (response.status === 401) {
-                        window.location.href = '/masuk';
-                    } else if (response.status === 403) {
-                        this.error_message = result.message;
-                    }
+                    this.is_published = data.is_published || false;
+                    this.is_validated = data.is_validated || false;
+                } else if (response.status === 401) {
+                    window.location.href = '/masuk';
+                } else {
+                    this.error_message = result.message || 'Gagal memuat hasil penilaian.';
                 }
+                
+                this.$nextTick(() => {
+                    if (window.lucide) window.lucide.createIcons();
+                });
             } catch (error) {
                 console.error('Failed to fetch results', error);
+                this.error_message = 'Terjadi kesalahan jaringan.';
             } finally {
                 this.loading = false;
             }
@@ -61,7 +62,7 @@
     }" class="bg-[#f5f5f5] min-h-full py-5 px-4 md:px-8">
 
         <div class="max-w-[860px] mx-auto">
-            {{-- Loading State (konsisten) --}}
+            {{-- Loading State --}}
             <template x-if="loading">
                 <div>
                     <x-dashboard.loading
@@ -72,18 +73,15 @@
 
             <template x-if="!loading && !error_message">
                 <div class="space-y-5">
-                    {{-- ✏️ Banner Hijau Total Penilaian → components/dashboard/hasil/banner.blade.php --}}
+                    {{-- Banner Total Penilaian --}}
                     <x-dashboard.hasil.banner />
 
-                    {{-- ✏️ Card Status Penilaian → components/dashboard/hasil/status.blade.php --}}
-                    <x-dashboard.hasil.status />
-
-                    {{-- ✏️ Accordion Rincian Poin → components/dashboard/hasil/kategori.blade.php --}}
+                    {{-- Rincian Poin per Kategori --}}
                     <x-dashboard.hasil.kategori />
                 </div>
             </template>
 
-            {{-- Error/Locked State --}}
+            {{-- Error State --}}
             <template x-if="!loading && error_message">
                 <div class="bg-white border border-[#e0e0e0] rounded-xl p-8 text-center shadow-sm">
                     <div class="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">

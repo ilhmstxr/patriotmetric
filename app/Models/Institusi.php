@@ -36,12 +36,18 @@ class Institusi extends Model
             return $this->logo_url;
         }
 
-        // Jika sudah berupa path storage, gunakan langsung
+        // Jika sudah berupa path storage
         if (str_starts_with($this->logo_url, '/storage/') || str_starts_with($this->logo_url, 'storage/')) {
+            $path = ltrim($this->logo_url, '/');
+            $relativePath = str_starts_with($path, 'storage/') ? substr($path, 8) : $path;
+            return \Illuminate\Support\Facades\Storage::disk('public')->url($relativePath);
+        }
+
+        // Default: asumsikan path relatif dari public
+        if (str_starts_with($this->logo_url, 'assets/')) {
             return asset($this->logo_url);
         }
 
-        // Default: prefix dengan assets/images/
         return asset('assets/images/' . $this->logo_url);
     }
 

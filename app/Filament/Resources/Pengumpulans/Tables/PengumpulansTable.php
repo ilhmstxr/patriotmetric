@@ -7,9 +7,11 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Collection;
 
 class PengumpulansTable
 {
@@ -23,6 +25,14 @@ class PengumpulansTable
                     ->sortable(),
                 TextColumn::make('status')
                     ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'ACTIVE'      => 'gray',
+                        'IN_PROGRESS' => 'info',
+                        'SUBMITTED'   => 'warning',
+                        'GRADED'      => 'success',
+                        'PUBLISHED'   => 'success',
+                        default       => 'gray',
+                    })
                     ->sortable(),
                 TextColumn::make('total_skor_sistem')
                     ->sortable(),
@@ -55,10 +65,46 @@ class PengumpulansTable
                     ])
                     ->action(function (\Illuminate\Database\Eloquent\Model $record, array $data) {
                         app(\App\Services\PengumpulanService::class)->assignReviewer($record->id, $data['reviewer_id']);
-                    })
+                    }),
+                // Publish individual record
+                Action::make('publish')
+                    ->label('Publish Nilai')
+                    ->icon('heroicon-o-eye')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Publish Nilai Peserta?')
+                    ->modalDescription('Nilai akan dipublikasikan dan peserta dapat melihat hasil final yang sudah divalidasi reviewer.')
+                    ->visible(fn (\Illuminate\Database\Eloquent\Model $record): bool => $record->status === 'GRADED')
+                    ->action(function (\Illuminate\Database\Eloquent\Model $record): void {
+                        $record->update(['status' => 'PUBLISHED']);
+                    }),
+                // Unpublish individual record
+                Action::make('unpublish')
+                    ->label('Unpublish')
+                    ->icon('heroicon-o-eye-slash')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->modalHeading('Unpublish Nilai Peserta?')
+                    ->modalDescription('Nilai akan dikembalikan ke status GRADED dan peserta hanya melihat estimasi skor.')
+                    ->visible(fn (\Illuminate\Database\Eloquent\Model $record): bool => $record->status === 'PUBLISHED')
+                    ->action(function (\Illuminate\Database\Eloquent\Model $record): void {
+                        $record->update(['status' => 'GRADED']);
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    // Publish semua yang GRADED sekaligus
+                    BulkAction::make('publishAll')
+                        ->label('Publish Nilai Terpilih')
+                        ->icon('heroicon-o-eye')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->modalHeading('Publish Nilai Semua Peserta Terpilih?')
+                        ->modalDescription('Hanya peserta dengan status GRADED yang akan dipublikasikan.')
+                        ->action(function (Collection $records): void {
+                            $records->where('status', 'GRADED')
+                                ->each(fn ($record) => $record->update(['status' => 'PUBLISHED']));
+                        }),
                     DeleteBulkAction::make(),
                 ]),
             ]);

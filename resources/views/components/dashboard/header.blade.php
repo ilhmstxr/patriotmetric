@@ -12,7 +12,7 @@
         @php
             $logoLink = request()->is('reviewer*') || request()->routeIs('reviewer.*') ? route('reviewer.index') : route('dashboard.index');
         @endphp
-        <a href="{{ $logoLink }}" class="flex items-center shrink-0">
+        <a href="{{ $logoLink }}" wire:navigate class="flex items-center shrink-0">
             <div class="h-[48px] lg:h-[73px] w-[81px] lg:w-[124px] relative shrink-0">
                 <img alt="Patriot Metric" class="absolute inset-0 max-w-none object-cover lg:object-contain pointer-events-none size-full" src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.webp') }}" />
             </div>
@@ -22,12 +22,35 @@
         <div class="flex items-center gap-3 shrink-0" 
              x-data="{ 
                  userMenuOpen: false,
-                 userData: {
-                     nama_pic: '...',
-                     nama_pt: '...',
-                     avatar: '...',
-                     logo_url: null
-                 },
+                 userData: (function() {
+                     // Baca cache synchronous sebelum Alpine init agar tidak ada flash '...'
+                     try {
+                         const cached = localStorage.getItem('profile_data_cache');
+                         if (cached) {
+                             const result = JSON.parse(cached);
+                             const user = result.user || {};
+                             const p = result.pengumpulan;
+                             const role = (user.role || '').toLowerCase();
+                             if (p) {
+                                 const namaPt = p.institusi ? p.institusi.nama_institusi : 'Institusi Terdaftar';
+                                 return {
+                                     nama_pic: p.nama_pic || user.email || '',
+                                     nama_pt: namaPt,
+                                     avatar: namaPt.substring(0, 2).toUpperCase(),
+                                     logo_url: (p.institusi && p.institusi.logo_url_full) ? p.institusi.logo_url_full : null
+                                 };
+                             } else if (role === 'reviewer') {
+                                 return {
+                                     nama_pic: user.name || user.email || '',
+                                     nama_pt: 'Reviewer Patriot Metric',
+                                     avatar: (user.name || 'RV').substring(0, 2).toUpperCase(),
+                                     logo_url: null
+                                 };
+                             }
+                         }
+                     } catch(e) {}
+                     return { nama_pic: '', nama_pt: '', avatar: '', logo_url: null };
+                 })(),
                     processUserData(user, p) {
                         const role = (user.role || '').toLowerCase();
                         // 1. Check if redirection is needed for Peserta
@@ -38,7 +61,7 @@
                                     window.location.href = '/verifikasi';
                                     return true;
                                 }
-                            } else if (isAtVerifikasi && ['IN_PROGRESS', 'SUBMITTED', 'GRADED'].includes(p.status)) {
+                            } else if (isAtVerifikasi && ['IN_PROGRESS', 'SUBMITTED', 'GRADED', 'PUBLISHED'].includes(p.status)) {
                                 window.location.href = '/dashboard';
                                 return true;
                             }
@@ -48,18 +71,14 @@
                         if (p) {
                             this.userData.nama_pic = p.nama_pic || user.email;
                             this.userData.nama_pt = p.institusi ? p.institusi.nama_institusi : 'Institusi Terdaftar';
-                            this.userData.avatar = this.userData.nama_pt.substring(0, 3).toUpperCase();
-                            
-                            // 3. Set logo from institusi
+                            this.userData.avatar = this.userData.nama_pt.substring(0, 2).toUpperCase();
                             this.userData.logo_url = (p.institusi && p.institusi.logo_url_full) ? p.institusi.logo_url_full : null;
-                            console.log('[Header Debug] institusi:', p.institusi);
-                            console.log('[Header Debug] logo_url set to:', this.userData.logo_url);
                         } else {
                            this.userData.nama_pic = user.name || user.email;
                            if (role === 'reviewer') {
                                this.userData.nama_pt = 'Reviewer Patriot Metric';
-                               this.userData.avatar = (user.name || 'REV').substring(0, 3).toUpperCase();
-                               this.userData.logo_url = '{{ asset('assets/images/blank-profile-picture-973460_1280.webp') }}';
+                               this.userData.avatar = (user.name || 'RV').substring(0, 2).toUpperCase();
+                               this.userData.logo_url = null;
                            }
                         }
                      return false;
@@ -74,38 +93,35 @@
                              }
                              return;
                          }
-                         
-                         // Try to load from cache first for immediate UI
+
+                         // Cek apakah cache masih fresh (< 5 menit) — skip API call jika iya
+                         const CACHE_TTL_MS = 5 * 60 * 1000; // 5 menit
                          const cached = localStorage.getItem('profile_data_cache');
-                         if (cached) {
-                             try {
-                                 const result = JSON.parse(cached);
-                                 console.log('[Header Debug] Cached data:', result);
-                                 this.processUserData(result.user, result.pengumpulan);
-                             } catch (e) { console.error('Cache parse error', e); }
+                         const cachedAt = parseInt(localStorage.getItem('profile_data_cache_at') || '0');
+                         const isCacheFresh = cached && (Date.now() - cachedAt < CACHE_TTL_MS);
+
+                         if (isCacheFresh) {
+                             // Cache masih fresh — tidak perlu fetch API, data sudah di-render synchronous
+                             return;
                          }
 
-                         console.log('[Header Debug] Fetching from API...');
-
+                         // Cache expired atau belum ada — fetch dari API (background)
                          const res = await fetch('/api/auth/me', {
                              headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' }
                          });
                          const result = await res.json();
-                         console.log('[Header Debug] API response:', result);
                          if (res.ok && result.success) {
-                             // Store to cache
                              localStorage.setItem('profile_data_cache', JSON.stringify(result.data));
-                             console.log('[Header Debug] pengumpulan from API:', result.data.pengumpulan);
-
+                             localStorage.setItem('profile_data_cache_at', Date.now().toString());
                              const p = result.data.pengumpulan;
                              const user = result.data.user;
                              this.processUserData(user, p);
                          } else {
-                             // Token invalid or expired
                              if (!window.location.pathname.includes('/reviewer')) {
                                  localStorage.removeItem('auth_token');
                                  localStorage.removeItem('auth_user');
                                  localStorage.removeItem('profile_data_cache');
+                                 localStorage.removeItem('profile_data_cache_at');
                                  sessionStorage.clear();
                                  window.location.href = '/masuk';
                              }
@@ -123,9 +139,14 @@
             <div class="relative">
                 <button @click="userMenuOpen = !userMenuOpen"
                         class="w-[40px] h-[40px] bg-[#e8f5e9] rounded-full flex items-center justify-center shrink-0 hover:opacity-80 transition-opacity ring-2 ring-[#1b5e20]/20 focus:outline-none overflow-hidden">
-                    <img :src="userData.logo_url || '{{ asset('assets/images/blank-profile-picture-973460_1280.webp') }}'"
+                    <img :src="userData.logo_url"
                          alt="Logo Instansi"
-                         class="w-full h-full object-cover">
+                         loading="lazy"
+                         class="w-full h-full object-cover"
+                         x-show="userData.logo_url">
+                    <span x-show="!userData.logo_url"
+                          class="w-full h-full flex items-center justify-center bg-[#1b5e20] text-white font-bold text-[14px] rounded-full"
+                          x-text="userData.avatar ? userData.avatar.substring(0, 2).toUpperCase() : 'RV'"></span>
                 </button>
 
                 {{-- Dropdown Menu --}}
@@ -162,6 +183,7 @@
                                 localStorage.removeItem('pengumpulan_status');
                                 localStorage.removeItem('rubrik_data_cache');
                                 localStorage.removeItem('profile_data_cache');
+                                localStorage.removeItem('profile_data_cache_at');
                                 sessionStorage.clear();
                                 window.location.href = '/masuk';
                             });

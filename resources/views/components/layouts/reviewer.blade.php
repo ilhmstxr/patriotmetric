@@ -11,11 +11,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>[x-cloak] { display: none !important; }</style>
+    @livewireStyles
 </head>
 <body class="antialiased bg-[#f5f5f5]" style="font-family: 'Plus Jakarta Sans', sans-serif;"
-      x-data="{ mobileMenuOpen: false, showBar: true, lastPos: 0, threshold: 25 }"
-      @scroll.window="showBar = (window.pageYOffset < lastPos - threshold || window.pageYOffset < 150); lastPos = window.pageYOffset"
+      x-data="{ mobileMenuOpen: false, showBar: true, lastPos: 0, threshold: 50 }"
+      @scroll.window="
+          const cur = window.pageYOffset;
+          if (cur < 10) { showBar = true; }
+          else if (cur < lastPos - threshold) { showBar = true; }
+          else if (cur > lastPos + 10) { showBar = false; }
+          lastPos = cur;
+      "
       x-init="$nextTick(() => { lucide.createIcons() })">
+
+    {{-- Re-init Lucide setelah Livewire navigate --}}
+    <script>
+        document.addEventListener('livewire:navigated', () => {
+            if (window.lucide) window.lucide.createIcons();
+        });
+    </script>
 
     {{-- ⚡ Immediate auth guard --}}
     <script>
@@ -60,5 +74,6 @@
     {{-- Global Modals --}}
     <x-dashboard.password-modal />
 
+    @livewireScripts
 </body>
 </html>
