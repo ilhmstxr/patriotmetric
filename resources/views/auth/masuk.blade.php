@@ -12,7 +12,7 @@
                     if (now > exp) {
                         localStorage.removeItem('auth_token');
                         localStorage.removeItem('auth_user');
-                        localStorage.removeItem('pengumpulan_status');
+                        localStorage.removeItem('Assessment_status');
                         localStorage.removeItem('token_expires_at');
                         return;
                     }
@@ -24,7 +24,7 @@
                     return;
                 }
 
-                const status = localStorage.getItem('pengumpulan_status') || 'ACTIVE';
+                const status = localStorage.getItem('Assessment_status') || 'ACTIVE';
                 if (status === 'ACTIVE') {
                     window.location.replace('/verifikasi');
                 } else {
@@ -90,7 +90,7 @@
                         // Simpan token untuk API calls selanjutnya
                         localStorage.setItem('auth_token', result.data.token);
                         localStorage.setItem('auth_user', JSON.stringify(result.data.user));
-                        localStorage.setItem('pengumpulan_status', result.data.pengumpulan_status || 'ACTIVE');
+                        localStorage.setItem('Assessment_status', result.data.Assessment_status || 'ACTIVE');
                         if (result.data.token_expires_at) {
                             localStorage.setItem('token_expires_at', result.data.token_expires_at);
                         }

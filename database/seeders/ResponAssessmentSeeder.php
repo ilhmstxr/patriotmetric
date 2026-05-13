@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\PengumpulanJawaban;
+use App\Models\ResponAssessment;
 use App\Models\Pertanyaan;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
-class PengumpulanJawabanSeeder extends Seeder
+class ResponAssessmentSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,7 +17,7 @@ class PengumpulanJawabanSeeder extends Seeder
     {
         $user = \App\Models\User::where('email', 'peserta@test.com')->first();
         if (!$user) return;
-        $submission = \App\Models\Pengumpulan::where('user_id', $user->id)->first();
+        $submission = \App\Models\Assessment::where('user_id', $user->id)->first();
         if (!$submission) return;
         $submissionId = $submission->id;
         $pertanyaans = Pertanyaan::all();
@@ -39,9 +39,9 @@ class PengumpulanJawabanSeeder extends Seeder
                 $url = 'https://drive.google.com/file/d/' . Str::random(32) . '/view?usp=sharing';
             }
 
-            PengumpulanJawaban::updateOrCreate(
+            ResponAssessment::updateOrCreate(
                 [
-                    'submission_id' => $submissionId,
+                    'assessment_id' => $submissionId,
                     'pertanyaan_id' => $pertanyaan->id,
                 ],
                 [

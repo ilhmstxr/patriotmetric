@@ -15,5 +15,13 @@ class InstitusiRepository extends BaseRepository
         parent::__construct($model);
     }
 
-    // Tambahkan query spesifik (misal: scope atau complex join) untuk institusi di sini
+    public function existsByName(string $name): bool
+    {
+        return $this->model->whereRaw('LOWER(nama_institusi) = ?', [strtolower($name)])->exists();
+    }
+
+    public function existsByDomain(string $domain): bool
+    {
+        return $this->model->where('domain_email', $domain)->exists();
+    }
 }

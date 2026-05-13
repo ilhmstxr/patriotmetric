@@ -5,7 +5,7 @@ Daftar ini merangkum hal-masing yang perlu dicek ulang dan dites berdasarkan tem
 ## 1. Perbaikan & Verifikasi API (Sanctum)
 - [ ] **Middleware Check**: Pastikan semua route di `api.php` sudah terbungkus `auth:sanctum` (Terutama group `assessment/peserta` yang sebelumnya 404).
 - [ ] **Rubrik Data Loading**: Tes akun `peserta@test.com` untuk memastikan pertanyaan rubrik muncul (sebelumnya gagal karena token tidak terdeteksi di backend).
-- [ ] **Status IN_PROGRESS**: Verifikasi di database bahwa `peserta@test.com` sudah memiliki record di tabel `pengumpulans` dengan status `IN_PROGRESS`.
+- [ ] **Status IN_PROGRESS**: Verifikasi di database bahwa `peserta@test.com` sudah memiliki record di tabel `Assessments` dengan status `IN_PROGRESS`.
 
 ## 2. Pengujian Login & Role
 - [ ] **Reviewer Login**: Coba login `reviewer@admin.com` dengan password `reviewer` (sebelumnya gagal karena salah input password `password`).

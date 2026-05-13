@@ -10,9 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('pengumpulan_jawabans', function (Blueprint $table) {
+        Schema::create('respon_assessments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('submission_id')->constrained('pengumpulans')->onDelete('cascade');
+            $table->foreignId('assessment_id')->constrained('Assessments')->onDelete('cascade');
             $table->foreignId('pertanyaan_id')->constrained('pertanyaans')->onDelete('cascade');
             $table->foreignId('jawaban_id')->nullable()->constrained('opsi_jawaban')->onDelete('cascade');
             $table->json('jawaban_teks')->nullable();
@@ -29,6 +29,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('pengumpulan_jawabans');
+        Schema::dropIfExists('respon_assessments');
     }
 };

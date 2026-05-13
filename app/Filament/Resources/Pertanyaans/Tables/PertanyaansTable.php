@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
 
 class PertanyaansTable
 {
@@ -26,8 +27,8 @@ class PertanyaansTable
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('teks_pertanyaan')
                     ->label('Pertanyaan')
-                    ->limit(60)
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap(),
                 TextColumn::make('tipe')
                     ->label('Tipe Jawaban')
                     ->badge(),
@@ -45,13 +46,18 @@ class PertanyaansTable
                     ->titlePrefixedWithLabel(false),
             ])
             ->defaultGroup('kategori.nama_kategori')
-            ->collapsedGroupsByDefault(true)
+            ->collapsedGroupsByDefault(false)
             ->recordActions([
-                EditAction::make()->label('Ubah'),
+                Action::make('manageOptions')
+                    ->label('Kelola Opsi')
+                    ->icon('heroicon-o-list-bullet')
+                    ->color('info')
+                    ->url(fn ($record) => \App\Filament\Resources\Pertanyaans\PertanyaanResource::getUrl('edit', ['record' => $record])),
             ])
+            ->defaultPaginationPageOption(5)
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make()->label('Hapus Terpilih'),
+                    //
                 ])->label('Aksi Massal'),
             ]);
     }

@@ -35,26 +35,35 @@ class UserForm
                                     : ($operation === 'create' ? '' : 'Kosongkan jika tidak ingin mengganti password.')
                             ),
                         Select::make('role')
-                            ->options([
-                                'ADMIN' => 'Admin',
-                                'REVIEWER' => 'Reviewer',
-                                'PESERTA' => 'Peserta',
-                            ])
+                            ->options(function (string $operation) {
+                                $options = [
+                                    'ADMIN' => 'Admin',
+                                    'REVIEWER' => 'Reviewer',
+                                ];
+
+                                if ($operation === 'edit') {
+                                    $options['PESERTA'] = 'Peserta';
+                                }
+
+                                return $options;
+                            })
                             ->required()
                             ->live(),
                         Select::make('status')
                             ->options([
-                                'PENDING' => 'Pending',
                                 'ACTIVE' => 'Active',
-                                'SUSPENDED' => 'Suspended',
+                                'IN_PROGRESS' => 'In Progress',
+                                'SUBMITTED' => 'Submitted',
+                                'GRADED' => 'Graded',
                             ])
-                            ->required(),
+                            ->required()
+                            ->visible(fn (string $operation): bool => $operation === 'edit'),
                     ]),
 
                 Section::make('Detail Profil')
                     ->description('Informasi tambahan sesuai dengan role yang dipilih.')
                     ->columns(2)
-                    ->visible(fn ($get) => in_array($get('role'), ['REVIEWER', 'PESERTA']))
+                    ->visible(fn ($get) => $get('role') === 'REVIEWER')
                     ->schema([
                         // Fields for PESERTA
                         TextInput::make('nama_pt')
@@ -64,8 +73,9 @@ class UserForm
                         Select::make('jenis_pt')
                             ->label('Jenis PT')
                             ->options([
-                                'Negeri' => 'Negeri',
-                                'Swasta' => 'Swasta',
+                                'PTN' => 'Perguruan Tinggi Negeri (PTN)',
+                                'PTS' => 'Perguruan Tinggi Swasta (PTS)',
+                                'PTK' => 'Perguruan Tinggi Kedinasan (PTK)',
                             ])
                             ->required(fn ($get) => $get('role') === 'PESERTA')
                             ->visible(fn ($get) => $get('role') === 'PESERTA'),

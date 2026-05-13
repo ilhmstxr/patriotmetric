@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\Pengumpulans\Schemas;
+namespace App\Filament\Resources\Assessments\Schemas;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
-class PengumpulanForm
+class AssessmentForm
 {
     public static function configure(Schema $schema): Schema
     {
@@ -19,9 +19,11 @@ class PengumpulanForm
                     ->relationship('reviewer', 'nama_lengkap'),
                 Select::make('status')
                     ->options([
-                        'pending' => 'Pending',
-                        'assigned' => 'Assigned',
-                        'reviewed' => 'Reviewed',
+                        'ACTIVE' => 'Active',
+                        'IN_PROGRESS' => 'In Progress',
+                        'SUBMITTED' => 'Submitted',
+                        'GRADED' => 'Graded',
+                        'PUBLISHED' => 'Published',
                     ])
                     ->required(),
                 TextInput::make('total_skor_sistem')

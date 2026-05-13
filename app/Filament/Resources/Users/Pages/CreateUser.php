@@ -4,7 +4,7 @@ namespace App\Filament\Resources\Users\Pages;
 
 use App\Filament\Resources\Users\UserResource;
 use App\Models\Institusi;
-use App\Models\Pengumpulan;
+use App\Models\Assessment;
 use App\Models\Reviewer;
 use App\Models\User;
 use Filament\Notifications\Notification;
@@ -39,7 +39,7 @@ class CreateUser extends CreateRecord
                 'email' => $data['email'],
                 'password' => $data['password'] ? Hash::make($data['password']) : Hash::make('password'),
                 'role' => $data['role'],
-                'status' => $data['status'],
+                'status' => $data['status'] ?? 'ACTIVE',
             ]);
 
             if ($data['role'] === 'REVIEWER') {
@@ -67,7 +67,7 @@ class CreateUser extends CreateRecord
                     'domain_email' => $domain ?: null,
                 ]);
 
-                Pengumpulan::create([
+                Assessment::create([
                     'user_id' => $user->id,
                     'institution_id' => $institusi->id,
                     'tahun_periode' => date('Y'),

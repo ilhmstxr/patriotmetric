@@ -2,10 +2,10 @@
 
 namespace App\DTO;
 
-readonly class PengumpulanDTO
+readonly class AssessmentDTO
 {
     /**
-     * Data Transfer Object untuk pengumpulan.
+     * Data Transfer Object untuk Assessment.
      * Menggunakan Constructor Property Promotion (Laravel 12/PHP 8.2+).
      */
     public function __construct(

@@ -78,24 +78,24 @@ Tabel,Kolom Baru / Revisi,Penjelasan
 institutions,"id, nama_institusi, jenis_institusi, alamat, status_verifikasi"
 identitas_institusi,"institution_id, jml_mahasiswa, jml_dosen, jml_prodi, baseline_json"
 pertanyaans,"formula_config (JSON), benchmark_value"
-pengumpulans,"periode_tahun, is_published"
-pengumpulan_jawabans,"verified_details (JSON), skor_normalisasi"
+Assessments,"periode_tahun, is_published"
+respon_assessments,"verified_details (JSON), skor_normalisasi"
 
 untuk rubrik
 
-- TODO: edit pengumpulan & pengumpulan -> user => peserta, view reviewer ga muncul
+- TODO: edit Assessment & Assessment -> user => peserta, view reviewer ga muncul
 - TODO: tugaskan reviewer masih belum konek
 - TODO: fw ketika successful create
 - TODO: password di pengaturan cms kosong
-- TODO: delete pengumpulan
+- TODO: delete Assessment
 - TODO: plottingan peserta & reviewer
 
 Tabel,Kolom Baru / Revisi,Penjelasan
 institutions,"id, nama_institusi, jenis_institusi, alamat, status_verifikasi"
 identitas_institusi,"institution_id, jml_mahasiswa, jml_dosen, jml_prodi, baseline_json"
 pertanyaans,"formula_config (JSON), benchmark_value"
-pengumpulans,"periode_tahun, is_published"
-pengumpulan_jawabans,"verified_details (JSON), skor_normalisasi"
+Assessments,"periode_tahun, is_published"
+respon_assessments,"verified_details (JSON), skor_normalisasi"
 
 untuk rubrik
 
@@ -118,7 +118,7 @@ CHECK
    DONE
 3. diinject
 4. untuk rumus perhitungan dibuat di frontend, jadi tinggal terima hasil nya lalu di lempar ke api
-   DONE 5. untuk pengumpulan_jawabans diisi foreign di opsi jawaban + jawaban_teks
+   DONE 5. untuk respon_assessments diisi foreign di opsi jawaban + jawaban_teks
 5. qa revisi tampilan peserta
    DONE 7. nambahin label isian singkat / pilihan ganda
 
@@ -126,7 +126,7 @@ DONE
 contoh
 fetch harus
 fetch pertanyaan_id
-fetch submission_id
+fetch assessment_id
 
 kondisi 1
 ketika mengklik tipe pilihan_ganda, maka akan fetch jawaban_id
@@ -232,7 +232,7 @@ no hp pic
 email pic
 password
 
-dikarenakan tabel pengumpulan wajib ada
+dikarenakan tabel Assessment wajib ada
 tahun_periode maka otomatis masukkan tahun sekarang
 
 dikarenakan tabel user juga wajib ada
@@ -408,3 +408,17 @@ datanya masih kesimpen di local storage
   "tautan_bukti": "https://drive.google.com/..."
 }
 ```
+
+bobot, dihapus
+lepas hubungan dihapus
+hapus dihapus
+
+kelola opsi
+kelola pertanyaan
+syarat bukti
+
+note tanya bu sri
+untuk keagamaan apakah butuh dengan keputusan mk
+
+- fitur cek pdf per peserta
+- untuk create user tidak bisa dibuatkan via admin untuk pembuatan & verifikasi akunnya

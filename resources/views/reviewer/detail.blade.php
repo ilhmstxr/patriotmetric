@@ -14,7 +14,7 @@
         pesertaId: {{ $reqId }},
         
         // Data dari API
-        pengumpulan: {},
+        Assessment: {},
         institusi: {},
         profil_peserta: {},
         nama_pic: '',
@@ -131,7 +131,7 @@
         },
 
         get submissionStatus() {
-            const s = this.pengumpulan.status;
+            const s = this.Assessment.status;
             const map = {
                 'ACTIVE'      : { label: 'Belum Submit',     color: 'bg-slate-100 text-slate-600',  icon: 'clock' },
                 'IN_PROGRESS' : { label: 'Dalam Pengerjaan', color: 'bg-blue-100 text-blue-700',    icon: 'pen-line' },
@@ -173,7 +173,7 @@
         },
 
         applyData(data) {
-            this.pengumpulan    = data.pengumpulan    || {};
+            this.Assessment    = data.Assessment    || {};
             this.institusi      = data.institusi      || {};
             this.profil_peserta = data.profil_peserta || {};
             this.rubrikData     = data.rubrik         || [];
@@ -182,7 +182,7 @@
             this.email_pic      = data.email_pic;
             this.no_hp_pic      = data.no_hp_pic;
             // isDone = true hanya jika sudah di-GRADED (reviewer sudah finalisasi)
-            this.isDone = ['GRADED', 'REJECTED'].includes(this.pengumpulan.status);
+            this.isDone = ['GRADED', 'REJECTED'].includes(this.Assessment.status);
             this.rubrikData.forEach(kategori => {
                 kategori.pertanyaan.forEach(q => {
                     if (q.jawaban_peserta) {

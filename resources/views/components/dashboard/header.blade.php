@@ -97,23 +97,25 @@
                          // Cek apakah cache masih fresh (< 5 menit) — skip API call jika iya
                          const CACHE_TTL_MS = 5 * 60 * 1000; // 5 menit
                          const cached = localStorage.getItem('profile_data_cache');
-                         const cachedAt = parseInt(localStorage.getItem('profile_data_cache_at') || '0');
-                         const isCacheFresh = cached && (Date.now() - cachedAt < CACHE_TTL_MS);
-
-                         if (isCacheFresh) {
-                             // Cache masih fresh — tidak perlu fetch API, data sudah di-render synchronous
-                             return;
+                         if (cached) {
+                             try {
+                                 const result = JSON.parse(cached);
+                                 console.log('[Header Debug] Cached data:', result);
+                                 this.processUserData(result.user, result.Assessment);
+                             } catch (e) { console.error('Cache parse error', e); }
                          }
 
-                         // Cache expired atau belum ada — fetch dari API (background)
+                         console.log('[Header Debug] Fetching from API...');
+
                          const res = await fetch('/api/auth/me', {
                              headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' }
                          });
                          const result = await res.json();
                          if (res.ok && result.success) {
                              localStorage.setItem('profile_data_cache', JSON.stringify(result.data));
-                             localStorage.setItem('profile_data_cache_at', Date.now().toString());
-                             const p = result.data.pengumpulan;
+                             console.log('[Header Debug] Assessment from API:', result.data.Assessment);
+
+                             const p = result.data.Assessment;
                              const user = result.data.user;
                              this.processUserData(user, p);
                          } else {
@@ -180,7 +182,7 @@
                             fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + localStorage.getItem('auth_token'), 'Accept': 'application/json' } }).finally(() => {
                                 localStorage.removeItem('auth_token');
                                 localStorage.removeItem('auth_user');
-                                localStorage.removeItem('pengumpulan_status');
+                                localStorage.removeItem('Assessment_status');
                                 localStorage.removeItem('rubrik_data_cache');
                                 localStorage.removeItem('profile_data_cache');
                                 localStorage.removeItem('profile_data_cache_at');

@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('identitas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pengumpulan_id')->references('id')->on('pengumpulans')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('Assessment_id')->references('id')->on('Assessments')->onUpdate('cascade')->onDelete('cascade');
 
             // Data Baseline (Penyebut Rumus)
             $table->integer('jml_mahasiswa')->default(0);
@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->integer('jml_tendik')->default(0);
             $table->integer('jml_prodi')->default(0);
             $table->integer('jml_ukm')->default(0);
+            $table->integer('jml_ormawa')->default(0);
             $table->integer('jml_fakultas')->default(0);
             
             // visi misi

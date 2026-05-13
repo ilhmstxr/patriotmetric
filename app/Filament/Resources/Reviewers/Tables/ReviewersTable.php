@@ -12,7 +12,7 @@ class ReviewersTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->query(\App\Models\Pengumpulan::query())
+            ->query(\App\Models\Assessment::query())
             ->columns([
                 TextColumn::make('rowIndex')
                     ->rowIndex()

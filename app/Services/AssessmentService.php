@@ -98,7 +98,7 @@ class AssessmentService extends BaseService
         return DB::transaction(function () use ($dto, $assessment) {
 
             // 1. DATA HYDRATION: Ambil data lama
-            $existingIdentitas = $this->repository->findIdentitasByPengumpulanId($assessment->id);
+            $existingIdentitas = $this->repository->findIdentitasByAssessmentId($assessment->id);
             $existingInstitusi = $this->repository->findInstitusiById($assessment->institution_id);
 
             // 2. Update Institusi (Gunakan Null-safe operator ?-> untuk mencegah crash)
@@ -121,7 +121,7 @@ class AssessmentService extends BaseService
 
             // 4. Update Identitas (Gunakan Null-safe operator secara ketat)
             $identitasData = [
-                'pengumpulan_id' => $assessment->id,
+                'Assessment_id' => $assessment->id,
                 'jml_mahasiswa' => $dto->jmlMhs ?? $existingIdentitas?->jml_mahasiswa ?? 0,
                 'jml_dosen' => $dto->jmlDosen ?? $existingIdentitas?->jml_dosen ?? 0,
                 'jml_tendik' => $dto->jmlTendik ?? $existingIdentitas?->jml_tendik ?? 0,
@@ -250,7 +250,7 @@ class AssessmentService extends BaseService
 
         // 2. Build Payload Dasar
         $payload = [
-            'submission_id' => $dto->submissionId,
+            'assessment_id' => $dto->submissionId,
             'pertanyaan_id' => $dto->pertanyaanId,
         ];
 
@@ -603,7 +603,7 @@ class AssessmentService extends BaseService
         }
 
         return [
-            'pengumpulan' => [
+            'Assessment' => [
                 'id' => $assessment->id,
                 'status' => $assessment->status,
                 'total_skor_sistem' => $assessment->total_skor_sistem,
@@ -757,7 +757,7 @@ class AssessmentService extends BaseService
                     continue;
 
                 $payload = [
-                    'submission_id' => $dto->submissionId,
+                    'assessment_id' => $dto->submissionId,
                     'pertanyaan_id' => $dto->pertanyaanId,
                 ];
 
@@ -791,7 +791,7 @@ class AssessmentService extends BaseService
             // Update status to SUBMITTED
             $this->repository->updateStatusAssessment($assessment->id, 'SUBMITTED');
 
-            // Simpan rekap skor persen ke pengumpulan
+            // Simpan rekap skor persen ke Assessment
             $this->recapAndSaveSkor($assessment);
 
             return ['saved_count' => count($answers)];
@@ -894,4 +894,47 @@ class AssessmentService extends BaseService
         $this->repository->updateRekapSkor($assessment->id, $rekap);
     }
 
+    public function saveReviewerScores($assessment, array $scores, array $notes)
+    {
+        return DB::transaction(function () use ($assessment, $scores, $notes) {
+            foreach ($scores as $pertanyaanId => $skor) {
+                if ($skor === null || $skor === '') continue;
+
+                $skor = min(5, max(0, (int) $skor));
+
+                $this->repository->upsertJawaban([
+                    'assessment_id' => $assessment->id,
+                    'pertanyaan_id' => (int) $pertanyaanId,
+                    'skor_validasi_reviewer' => $skor,
+                    'note_reviewer'          => $notes[$pertanyaanId] ?? null,
+                ]);
+            }
+
+            // Perbarui rekap skor JSON setelah skor reviewer disimpan
+            return $this->recapAndSaveSkor($assessment);
+        });
+    }
+
+    public function finalizeReview($assessment)
+    {
+        // Cek semua pertanyaan sudah ada skor dari reviewer
+        $totalPertanyaan = $this->pertanyaanRepository->countTotalMandatoryQuestions();
+        $totalDinilai = $this->repository->countValidReviewerScores($assessment->id);
+
+        if ($totalDinilai < $totalPertanyaan) {
+            $belum = $totalPertanyaan - $totalDinilai;
+            throw new Exception("Finalisasi gagal: Masih ada {$belum} indikator yang belum diberi skor.", 422);
+        }
+
+        // Update status ke GRADED
+        $this->repository->updateStatusAssessment($assessment->id, 'GRADED');
+
+        // Update rekap skor final
+        return $this->recapAndSaveSkor($assessment);
+    }
+
+    public function assignReviewer(int|string $assessmentId, int|string $reviewerId): bool
+    {
+        return $this->repository->update($assessmentId, ['reviewer_id' => $reviewerId]);
+    }
 }

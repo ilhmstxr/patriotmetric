@@ -56,11 +56,6 @@ class User extends Authenticatable implements HasName
         ];
     }
 
-    public function pengumpulans()
-    {
-        return $this->hasMany(Pengumpulan::class, 'user_id');
-    }
-
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->role === 'admin';
@@ -68,7 +63,7 @@ class User extends Authenticatable implements HasName
 
     public function reviews()
     {
-        return $this->hasMany(Pengumpulan::class, 'reviewer_id');
+        return $this->hasMany(Assessment::class, 'reviewer_id');
     }
 
     public function assessments()

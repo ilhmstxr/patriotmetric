@@ -15,5 +15,8 @@ class PengaturanCmsRepository extends BaseRepository
         parent::__construct($model);
     }
 
-    // Tambahkan query spesifik (misal: scope atau complex join) untuk PengaturanCms di sini
+    public function getByKey(string $key)
+    {
+        return $this->model->where('key', $key)->first();
+    }
 }

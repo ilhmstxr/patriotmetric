@@ -10,28 +10,34 @@ class Assessment extends Model
     /** @use HasFactory<\Database\Factories\AssessmentFactory> */
     use HasFactory;
 
-    protected $fillable = [
-        'institution_id',
-        'user_id',
-        'nama_pic',
-        'jabatan_pic',
-        'no_hp_pic',
-        'tahun_periode',
-        'status',
-    ];
+    protected $fillable = ['user_id', 'reviewer_id', 'institution_id', 'tahun_periode', 'status', 'total_skor_sistem', 'total_skor_akhir', 'skor_rekap_json', 'nama_pic', 'jabatan_pic', 'no_hp_pic'];
 
-    public function institusi()
-    {
-        return $this->belongsTo(Institusi::class, 'institution_id');
-    }
+    protected $casts = [
+        'skor_rekap_json' => 'array',
+    ];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function reviewer()
+    {
+        return $this->belongsTo(Reviewer::class, 'reviewer_id');
+    }
+
+    public function jawabans()
+    {
+        return $this->hasMany(ResponAssessment::class, 'assessment_id');
+    }
+
     public function identitas()
     {
-        return $this->hasOne(Identitas::class, 'assessment_id');
+        return $this->hasOne(Identitas::class, 'Assessment_id');
+    }
+
+    public function institusi()
+    {
+        return $this->belongsTo(Institusi::class, 'institution_id');
     }
 }

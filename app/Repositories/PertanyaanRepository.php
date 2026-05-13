@@ -22,7 +22,7 @@ class PertanyaanRepository extends BaseRepository
             'OpsiJawaban', // <--- WAJIB DITAMBAHKAN AGAR OPSI PILIHAN GANDA MUNCUL DI JSON
             'jawaban' => function ($query) use ($assessment) {
                 // Filter jawaban spesifik untuk submission ini
-                $query->where('submission_id', $assessment->id);
+                $query->where('assessment_id', $assessment->id);
             }
         ])->get();
     }
