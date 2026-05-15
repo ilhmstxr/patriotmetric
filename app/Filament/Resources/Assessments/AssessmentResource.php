@@ -15,6 +15,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Schemas\Components\Section;
 
 class AssessmentResource extends Resource
 {
@@ -40,14 +41,14 @@ class AssessmentResource extends Resource
     {
         return $schema
             ->components([
-                \Filament\Schemas\Components\Section::make('Informasi Utama')
+                Section::make('Informasi Utama')
                     ->schema([
                         TextEntry::make('institusi.nama_institusi')->label('Nama Peserta'),
                         TextEntry::make('status')->badge(),
                         TextEntry::make('total_skor_akhir')->label('Total Skor Akhir'),
                     ])->columns(3),
 
-                \Filament\Schemas\Components\Section::make('Biodata Instansi')
+                Section::make('Biodata Instansi')
                     ->schema([
                         TextEntry::make('institusi.jenis_institusi')->label('Jenis Instansi'),
                         TextEntry::make('identitas.jml_mahasiswa')->label('Jumlah Mahasiswa'),
@@ -62,16 +63,16 @@ class AssessmentResource extends Resource
                         TextEntry::make('identitas.misi')->label('Misi')->columnSpanFull(),
                     ])->columns(3),
 
-                \Filament\Schemas\Components\Section::make('Hasil Dokumen Setelah Verifikasi')
+                Section::make('Hasil Dokumen Setelah Verifikasi')
                     ->schema([
-                        TextEntry::make('identitas.legal_documents')
+                        TextEntry::make('identitas_legal_documents')
                             ->label('Dokumen Verifikasi (Klik untuk membuka)')
-                            ->formatStateUsing(function ($state) {
-                                if (empty($state) || !is_array($state)) return '-';
+                            ->getStateUsing(function ($record) {
+                                $docs = $record->identitas?->legal_documents;
+                                if (empty($docs) || !is_array($docs)) return '-';
                                 $html = '<ul class="list-disc ml-5">';
-                                foreach ($state as $key => $link) {
+                                foreach ($docs as $key => $link) {
                                     $name = is_numeric($key) ? 'Dokumen '.($key+1) : ucfirst(str_replace('_', ' ', $key));
-                                    // Handle array values gracefully if needed, though they should be string URLs
                                     $href = is_string($link) ? $link : '#';
                                     $html .= "<li><a href=\"{$href}\" target=\"_blank\" style=\"color:blue; text-decoration:underline;\">{$name}</a></li>";
                                 }
@@ -82,7 +83,7 @@ class AssessmentResource extends Resource
                             ->columnSpanFull()
                     ]),
 
-                \Filament\Schemas\Components\Section::make('Jawaban Rubrik')
+                Section::make('Jawaban Rubrik')
                     ->schema([
                         RepeatableEntry::make('jawabans')
                             ->label('')

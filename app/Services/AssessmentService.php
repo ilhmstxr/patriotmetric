@@ -264,12 +264,17 @@ class AssessmentService extends BaseService
 
         // 5. Aturan skor: hanya dihitung saat jawaban DAN tautan bukti keduanya terisi.
         //    Soal otomatis_sistem yang TIDAK punya kebutuhan_bukti dikecualikan.
+        //    B.13 menyimpan struktur JSON tanpa raw_input — cek total_poin sebagai indikator terisi.
         $jawabanTeksFilled = false;
         if (isset($payload['jawaban_teks'])) {
             $teks = $payload['jawaban_teks'];
             if (is_array($teks)) {
-                $raw = $teks['raw_input'] ?? '';
-                $jawabanTeksFilled = trim((string) $raw) !== '';
+                if (isset($teks['total_poin'])) {
+                    $jawabanTeksFilled = true;
+                } else {
+                    $raw = $teks['raw_input'] ?? '';
+                    $jawabanTeksFilled = trim((string) $raw) !== '';
+                }
             } else {
                 $jawabanTeksFilled = trim((string) $teks) !== '';
             }
@@ -334,10 +339,17 @@ class AssessmentService extends BaseService
             // SPECIAL: B.13 menyimpan JSON lengkap {lokal:{label,nilai,poin},...,total_poin}
             if (($pertanyaan->kode_pertanyaan ?? null) === 'B.13') {
                 $decoded = is_string($rawJawabanTeks) ? json_decode($rawJawabanTeks, true) : $rawJawabanTeks;
-                
+
                 $data['jawaban_teks'] = is_array($decoded) ? $decoded : ['raw_input' => $rawJawabanTeks];
-                $data['jawaban_id'] = null;
-                $data['skor_sistem'] = is_array($decoded) ? (float) ($decoded['total_poin'] ?? 0) : 0;
+
+                $totalPoin = is_array($decoded) ? (float) ($decoded['total_poin'] ?? 0) : 0;
+                $matchingOpsi = $this->pertanyaanRepository->findMatchingOpsiByValue(
+                    $dto->pertanyaanId,
+                    $totalPoin
+                );
+
+                $data['jawaban_id'] = $matchingOpsi ? $matchingOpsi->id : null;
+                $data['skor_sistem'] = $matchingOpsi ? (int) $matchingOpsi->opsi_jawaban : 0;
                 return $data;
             }
 
@@ -370,20 +382,21 @@ class AssessmentService extends BaseService
 
             $data['jawaban_teks'] = $normalizedJawaban;
 
-            // Cek untuk kalkulasi skor otomatis (Gunakan calculated_percentage jika ada)
+            // Cek untuk kalkulasi skor otomatis
+            // Prioritas: calculated_percentage (untuk pertanyaan dengan formula), fallback ke raw_input
             $calculatedValue = $normalizedJawaban['calculated_percentage'] ?? $normalizedJawaban['raw_input'];
 
-            $matchingOpsi = $this->pertanyaanRepository->findMatchingOpsiByValue(
-                $dto->pertanyaanId,
-                $calculatedValue
-            );
-
-            if ($matchingOpsi) {
-                $data['jawaban_id'] = $matchingOpsi->id;
-                $data['skor_sistem'] = (int) $matchingOpsi->opsi_jawaban; // Score is stored in opsi_jawaban
-            } else {
+            if ($calculatedValue === null || $calculatedValue === '') {
                 $data['jawaban_id'] = null;
                 $data['skor_sistem'] = 0;
+            } else {
+                $matchingOpsi = $this->pertanyaanRepository->findMatchingOpsiByValue(
+                    $dto->pertanyaanId,
+                    $calculatedValue
+                );
+
+                $data['jawaban_id'] = $matchingOpsi ? $matchingOpsi->id : null;
+                $data['skor_sistem'] = $matchingOpsi ? (int) $matchingOpsi->opsi_jawaban : 0;
             }
         }
 
@@ -723,8 +736,12 @@ class AssessmentService extends BaseService
                 if (isset($payload['jawaban_teks'])) {
                     $teks = $payload['jawaban_teks'];
                     if (is_array($teks)) {
-                        $raw = $teks['raw_input'] ?? '';
-                        $jawabanTeksFilled = trim((string) $raw) !== '';
+                        if (isset($teks['total_poin'])) {
+                            $jawabanTeksFilled = true;
+                        } else {
+                            $raw = $teks['raw_input'] ?? '';
+                            $jawabanTeksFilled = trim((string) $raw) !== '';
+                        }
                     } else {
                         $jawabanTeksFilled = trim((string) $teks) !== '';
                     }
