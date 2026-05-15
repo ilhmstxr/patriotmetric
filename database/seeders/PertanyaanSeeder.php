@@ -502,7 +502,7 @@ class PertanyaanSeeder extends Seeder
                 'kebutuhan_bukti' => ['Dokumen SK/ST', 'laporan kegiatan'],
                 // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah mahasiswa yang terlibat aktif dalam pencegahan kekerasan di perguruan tinggi',
-                'tipe' => 'pilihan_ganda',
+                'tipe' => 'isian_singkat',
                 'opsi_jawaban' => [
                     ['urutan' => 0, 'teks_jawaban' => 'Tidak ada'],
                     ['urutan' => 1, 'teks_jawaban' => 'jumlah mahasiswa < jumlah fakultas'],
