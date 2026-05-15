@@ -57,6 +57,11 @@
                 this.profileData.identitas   = data.Assessment?.identitas;
                 this.is_peserta_profile_edit_enabled = data.is_peserta_profile_edit_enabled ?? false;
 
+                const lockedStatuses = ['SUBMITTED', 'GRADED', 'PUBLISHED'];
+                if (data.Assessment && lockedStatuses.includes(data.Assessment.status)) {
+                    this.is_peserta_profile_edit_enabled = false;
+                }
+
                 this.profileData.agamas = {};
                 if (data.Assessment?.agamas) {
                     data.Assessment.agamas.forEach(a => {
