@@ -33,7 +33,7 @@ class AssessmentController extends Controller
             throw new \Exception("Unauthorized: Silakan login terlebih dahulu.", 401);
         }
 
-        $authDto = new AssessmentDTO((int) $userId);
+        $authDto = new AssessmentDTO(['user_id' => (int) $userId]);
 
         // Kita panggil fungsi validate di service yang bertindak sebagai dispatcher
         return $this->AssessmentService->validate($authDto, $mode);
@@ -81,6 +81,7 @@ class AssessmentController extends Controller
 
             return $this->successResponse($data, 'Data berhasil diambil', 200);
         } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("GET_QUESTIONS_ERROR: " . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
             return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
         }
     }

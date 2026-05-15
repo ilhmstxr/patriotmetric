@@ -868,106 +868,146 @@
               </div>
 
               {{-- SECTION 4: Pratinjau --}}
-              <div x-show="activeSection === 4" style="display: none;" x-transition.opacity.duration.500ms class="space-y-[32px]">
-                <div class="pb-[16px] border-b border-[#e2e8f0] mb-[32px]">
+              <div x-show="activeSection === 4" style="display: none;" x-transition.opacity.duration.500ms class="space-y-[24px]">
+                <div class="pb-[16px] border-b border-[#e2e8f0]">
                   <h2 class="text-[22px] font-bold text-[#1d293d]">Bagian 4: Pratinjau Pendaftaran</h2>
-                  <p class="text-[#64748b] text-[15px] mt-[4px]">Periksa kembali semua data dan dokumen sebelum melakukan submit final.</p>
+                  <p class="text-[#64748b] text-[15px] mt-[4px]">Periksa kembali semua data dan dokumen sebelum submit final.</p>
                 </div>
 
-                {{-- Preview Data --}}
-                <div class="bg-[#f8fafc] p-6 rounded-xl border border-[#cbd5e1] space-y-6">
-                  <h3 class="font-bold text-[#1b5e20] text-[16px] mb-2 border-b border-[#e2e8f0] pb-2">Ringkasan Data Profil</h3>
-                  
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-[14px]">
-                    <div class="space-y-1">
-                      <p class="text-[#64748b] font-medium">Nama Perguruan Tinggi</p>
+                {{-- Preview: Identitas & Visi-Misi --}}
+                <div class="bg-white border border-[#e2e8f0] rounded-xl overflow-hidden">
+                  <div class="flex items-center gap-3 px-5 py-3 bg-[#f0fdf4] border-b border-[#e2e8f0]">
+                    <i data-lucide="building-2" class="w-4 h-4 text-[#1b5e20]"></i>
+                    <h3 class="font-bold text-[#1b5e20] text-[14px] uppercase tracking-wide">A. Identitas Institusi</h3>
+                  </div>
+                  <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 text-[14px]">
+                    <div>
+                      <p class="text-[#64748b] text-[12px] font-medium mb-0.5">Nama Perguruan Tinggi</p>
                       <p class="text-[#1d293d] font-semibold" x-text="formData.nama_pt || '-'"></p>
                     </div>
-                    <div class="space-y-1">
-                      <p class="text-[#64748b] font-medium">Jenis Perguruan Tinggi</p>
+                    <div>
+                      <p class="text-[#64748b] text-[12px] font-medium mb-0.5">Jenis Perguruan Tinggi</p>
                       <p class="text-[#1d293d] font-semibold" x-text="formData.jenis_pt || '-'"></p>
                     </div>
-                    <div class="space-y-1 md:col-span-2">
-                      <p class="text-[#64748b] font-medium">Visi</p>
-                      <p class="text-[#1d293d] font-semibold whitespace-pre-wrap" x-text="formData.visi || '-'"></p>
+                    <div class="md:col-span-2">
+                      <p class="text-[#64748b] text-[12px] font-medium mb-0.5">Visi</p>
+                      <p class="text-[#1d293d] font-semibold whitespace-pre-wrap leading-relaxed" x-text="formData.visi || '-'"></p>
                     </div>
-                    <div class="space-y-1 md:col-span-2">
-                      <p class="text-[#64748b] font-medium">Misi</p>
-                      <p class="text-[#1d293d] font-semibold whitespace-pre-wrap" x-text="formData.misi || '-'"></p>
-                    </div>
-                  </div>
-
-                  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-[14px] mt-4 pt-4 border-t border-[#e2e8f0]">
-                    <div class="space-y-1">
-                      <p class="text-[#64748b] font-medium">Jumlah Fakultas</p>
-                      <p class="text-[#1d293d] font-semibold" x-text="formData.jumlah_fakultas"></p>
-                    </div>
-                    <div class="space-y-1">
-                      <p class="text-[#64748b] font-medium">Jumlah Prodi</p>
-                      <p class="text-[#1d293d] font-semibold" x-text="formData.jumlah_prodi"></p>
-                    </div>
-                    <div class="space-y-1">
-                      <p class="text-[#64748b] font-medium">Jumlah Dosen</p>
-                      <p class="text-[#1d293d] font-semibold" x-text="formData.jumlah_dosen"></p>
-                    </div>
-                    <div class="space-y-1">
-                      <p class="text-[#64748b] font-medium">Jumlah Tendik</p>
-                      <p class="text-[#1d293d] font-semibold" x-text="formData.jumlah_tendik"></p>
-                    </div>
-                    <div class="space-y-1">
-                      <p class="text-[#64748b] font-medium">Jml Mahasiswa</p>
-                      <p class="text-[#1d293d] font-semibold" x-text="formData.jumlah_mahasiswa"></p>
-                    </div>
-                    <div class="space-y-1">
-                      <p class="text-[#64748b] font-medium">Jml Ormawa</p>
-                      <p class="text-[#1d293d] font-semibold" x-text="formData.jumlah_ormawa"></p>
-                    </div>
-                    <div class="space-y-1">
-                      <p class="text-[#64748b] font-medium">Jml UKM</p>
-                      <p class="text-[#1d293d] font-semibold" x-text="formData.jumlah_ukm"></p>
+                    <div class="md:col-span-2">
+                      <p class="text-[#64748b] text-[12px] font-medium mb-0.5">Misi</p>
+                      <p class="text-[#1d293d] font-semibold whitespace-pre-wrap leading-relaxed" x-text="formData.misi || '-'"></p>
                     </div>
                   </div>
+                </div>
 
-                  {{-- Preview Demografi Agama --}}
-                  <div class="mt-4 pt-4 border-t border-[#e2e8f0]">
-                    <p class="text-[#64748b] font-medium text-[14px] mb-3">Demografi Agama Mahasiswa</p>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-[14px]">
-                      <div class="space-y-0.5" x-show="formData.agama_islam > 0 || true">
-                        <p class="text-[#64748b] text-[12px]">Islam</p>
-                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_islam || 0"></p>
-                      </div>
-                      <div class="space-y-0.5">
-                        <p class="text-[#64748b] text-[12px]">Kristen</p>
-                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_kristen || 0"></p>
-                      </div>
-                      <div class="space-y-0.5">
-                        <p class="text-[#64748b] text-[12px]">Katolik</p>
-                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_katolik || 0"></p>
-                      </div>
-                      <div class="space-y-0.5">
-                        <p class="text-[#64748b] text-[12px]">Hindu</p>
-                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_hindu || 0"></p>
-                      </div>
-                      <div class="space-y-0.5">
-                        <p class="text-[#64748b] text-[12px]">Buddha</p>
-                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_buddha || 0"></p>
-                      </div>
-                      <div class="space-y-0.5">
-                        <p class="text-[#64748b] text-[12px]">Konghucu</p>
-                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_konghucu || 0"></p>
-                      </div>
-                      <div class="space-y-0.5 md:col-span-2">
-                        <p class="text-[#64748b] text-[12px]">Kepercayaan</p>
-                        <p class="text-[#1d293d] font-semibold" x-text="formData.agama_kepercayaan || 0"></p>
-                      </div>
+                {{-- Preview: Akademik & SDM --}}
+                <div class="bg-white border border-[#e2e8f0] rounded-xl overflow-hidden">
+                  <div class="flex items-center gap-3 px-5 py-3 bg-[#f0fdf4] border-b border-[#e2e8f0]">
+                    <i data-lucide="graduation-cap" class="w-4 h-4 text-[#1b5e20]"></i>
+                    <h3 class="font-bold text-[#1b5e20] text-[14px] uppercase tracking-wide">B. Akademik & SDM</h3>
+                  </div>
+                  <div class="p-5 grid grid-cols-2 md:grid-cols-4 gap-4 text-[14px]">
+                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
+                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Fakultas</p>
+                      <p class="text-[#1d293d] font-bold text-[20px]" x-text="formData.jumlah_fakultas || 0"></p>
+                    </div>
+                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
+                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Program Studi</p>
+                      <p class="text-[#1d293d] font-bold text-[20px]" x-text="formData.jumlah_prodi || 0"></p>
+                    </div>
+                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
+                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Dosen</p>
+                      <p class="text-[#1d293d] font-bold text-[20px]" x-text="formData.jumlah_dosen || 0"></p>
+                    </div>
+                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
+                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Tendik</p>
+                      <p class="text-[#1d293d] font-bold text-[20px]" x-text="formData.jumlah_tendik || 0"></p>
                     </div>
                   </div>
+                </div>
 
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-[14px] mt-4 pt-4 border-t border-[#e2e8f0]">
-                    <div class="space-y-1">
-                      <p class="text-[#64748b] font-medium">Kontak PIC</p>
-                      <p class="text-[#1d293d] font-semibold" x-text="formData.nama_pic + ' (' + formData.jabatan_pic + ')'"></p>
-                      <p class="text-[#1d293d] font-semibold" x-text="formData.no_hp_pic + ' | ' + formData.email_pic"></p>
+                {{-- Preview: Kemahasiswaan --}}
+                <div class="bg-white border border-[#e2e8f0] rounded-xl overflow-hidden">
+                  <div class="flex items-center gap-3 px-5 py-3 bg-[#f0fdf4] border-b border-[#e2e8f0]">
+                    <i data-lucide="users" class="w-4 h-4 text-[#1b5e20]"></i>
+                    <h3 class="font-bold text-[#1b5e20] text-[14px] uppercase tracking-wide">C. Kemahasiswaan</h3>
+                  </div>
+                  <div class="p-5 grid grid-cols-3 gap-4 text-[14px]">
+                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
+                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Mahasiswa</p>
+                      <p class="text-[#1d293d] font-bold text-[20px]" x-text="formData.jumlah_mahasiswa || 0"></p>
+                    </div>
+                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
+                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Ormawa</p>
+                      <p class="text-[#1d293d] font-bold text-[20px]" x-text="formData.jumlah_ormawa || 0"></p>
+                    </div>
+                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
+                      <p class="text-[#64748b] text-[11px] font-medium mb-1">UKM</p>
+                      <p class="text-[#1d293d] font-bold text-[20px]" x-text="formData.jumlah_ukm || 0"></p>
+                    </div>
+                  </div>
+                </div>
+
+                {{-- Preview: Demografi Agama --}}
+                <div class="bg-white border border-[#e2e8f0] rounded-xl overflow-hidden">
+                  <div class="flex items-center gap-3 px-5 py-3 bg-[#f0fdf4] border-b border-[#e2e8f0]">
+                    <i data-lucide="globe" class="w-4 h-4 text-[#1b5e20]"></i>
+                    <h3 class="font-bold text-[#1b5e20] text-[14px] uppercase tracking-wide">D. Demografi Agama Mahasiswa</h3>
+                  </div>
+                  <div class="p-5 grid grid-cols-2 md:grid-cols-4 gap-3 text-[14px]">
+                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
+                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Islam</p>
+                      <p class="text-[#1d293d] font-bold text-[18px]" x-text="formData.agama_islam || 0"></p>
+                    </div>
+                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
+                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Kristen</p>
+                      <p class="text-[#1d293d] font-bold text-[18px]" x-text="formData.agama_kristen || 0"></p>
+                    </div>
+                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
+                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Katolik</p>
+                      <p class="text-[#1d293d] font-bold text-[18px]" x-text="formData.agama_katolik || 0"></p>
+                    </div>
+                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
+                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Hindu</p>
+                      <p class="text-[#1d293d] font-bold text-[18px]" x-text="formData.agama_hindu || 0"></p>
+                    </div>
+                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
+                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Buddha</p>
+                      <p class="text-[#1d293d] font-bold text-[18px]" x-text="formData.agama_buddha || 0"></p>
+                    </div>
+                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
+                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Konghucu</p>
+                      <p class="text-[#1d293d] font-bold text-[18px]" x-text="formData.agama_konghucu || 0"></p>
+                    </div>
+                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center md:col-span-2">
+                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Kepercayaan Terhadap Tuhan YME</p>
+                      <p class="text-[#1d293d] font-bold text-[18px]" x-text="formData.agama_kepercayaan || 0"></p>
+                    </div>
+                  </div>
+                </div>
+
+                {{-- Preview: Kontak PIC --}}
+                <div class="bg-white border border-[#e2e8f0] rounded-xl overflow-hidden">
+                  <div class="flex items-center gap-3 px-5 py-3 bg-[#f0fdf4] border-b border-[#e2e8f0]">
+                    <i data-lucide="contact" class="w-4 h-4 text-[#1b5e20]"></i>
+                    <h3 class="font-bold text-[#1b5e20] text-[14px] uppercase tracking-wide">E. Kontak Penanggung Jawab (PIC)</h3>
+                  </div>
+                  <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 text-[14px]">
+                    <div>
+                      <p class="text-[#64748b] text-[12px] font-medium mb-0.5">Nama PIC</p>
+                      <p class="text-[#1d293d] font-semibold" x-text="formData.nama_pic || '-'"></p>
+                    </div>
+                    <div>
+                      <p class="text-[#64748b] text-[12px] font-medium mb-0.5">Jabatan</p>
+                      <p class="text-[#1d293d] font-semibold" x-text="formData.jabatan_pic || '-'"></p>
+                    </div>
+                    <div>
+                      <p class="text-[#64748b] text-[12px] font-medium mb-0.5">No. HP / WhatsApp</p>
+                      <p class="text-[#1d293d] font-semibold" x-text="formData.no_hp_pic || '-'"></p>
+                    </div>
+                    <div>
+                      <p class="text-[#64748b] text-[12px] font-medium mb-0.5">Email PIC</p>
+                      <p class="text-[#1d293d] font-semibold" x-text="formData.email_pic || '-'"></p>
                     </div>
                   </div>
                 </div>
@@ -1019,9 +1059,9 @@
                             
                             <!-- Overlay actions (optional, like open in new tab) -->
                             <template x-if="previews[key] && previews[key].startsWith('blob:')">
-                              <a :href="previews[key]" target="_blank" class="absolute top-4 right-4 bg-white/90 backdrop-blur shadow-sm p-2 rounded-lg text-gray-600 hover:text-[#1b5e20] hover:bg-white transition-colors opacity-0 group-hover:opacity-100" title="Buka di tab baru">
-                                <i data-lucide="external-link" class="w-5 h-5"></i>
-                              </a>
+                               <a :href="previews[key]" target="_blank" class="absolute top-2 right-2 bg-white border border-[#e2e8f0] shadow-sm px-3 py-1.5 rounded-lg text-[12px] font-semibold text-[#1b5e20] hover:bg-[#f0fdf4] transition-colors flex items-center gap-1.5" title="Buka di tab baru">
+                                 <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Buka
+                               </a>
                             </template>
                         </div>
                       </div>

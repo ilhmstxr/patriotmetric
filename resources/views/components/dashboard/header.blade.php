@@ -94,18 +94,18 @@
                              return;
                          }
 
-                         // Cek apakah cache masih fresh (< 5 menit) — skip API call jika iya
-                         const CACHE_TTL_MS = 5 * 60 * 1000; // 5 menit
+                         // Selalu tampilkan data dari cache terlebih dahulu (tidak ada flash)
                          const cached = localStorage.getItem('profile_data_cache');
                          if (cached) {
                              try {
                                  const result = JSON.parse(cached);
-                                 console.log('[Header Debug] Cached data:', result);
                                  this.processUserData(result.user, result.Assessment);
-                             } catch (e) { console.error('Cache parse error', e); }
+                             } catch (e) {}
                          }
 
-                         console.log('[Header Debug] Fetching from API...');
+                         // Hanya fetch API sekali per sesi browser (skip saat wire:navigate)
+                         if (window._headerApiInitDone) return;
+                         window._headerApiInitDone = true;
 
                          const res = await fetch('/api/auth/me', {
                              headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' }
@@ -113,11 +113,7 @@
                          const result = await res.json();
                          if (res.ok && result.success) {
                              localStorage.setItem('profile_data_cache', JSON.stringify(result.data));
-                             console.log('[Header Debug] Assessment from API:', result.data.Assessment);
-
-                             const p = result.data.Assessment;
-                             const user = result.data.user;
-                             this.processUserData(user, p);
+                             this.processUserData(result.data.user, result.data.Assessment);
                          } else {
                              if (!window.location.pathname.includes('/reviewer')) {
                                  localStorage.removeItem('auth_token');
@@ -143,7 +139,6 @@
                         class="w-[40px] h-[40px] bg-[#e8f5e9] rounded-full flex items-center justify-center shrink-0 hover:opacity-80 transition-opacity ring-2 ring-[#1b5e20]/20 focus:outline-none overflow-hidden">
                     <img :src="userData.logo_url"
                          alt="Logo Instansi"
-                         loading="lazy"
                          class="w-full h-full object-cover"
                          x-show="userData.logo_url">
                     <span x-show="!userData.logo_url"
@@ -198,5 +193,3 @@
             </div>
         </div>
     </div>
-</div>
-

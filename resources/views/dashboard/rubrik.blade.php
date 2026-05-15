@@ -369,19 +369,23 @@
 
             const map = {
                 'B.6':  { varKey: 'jml_dosen',       label: 'total dosen' },
-                'B.7':  { varKey: 'jml_prodi',        label: 'total prodi' },
-                'B.18': { varKey: 'jml_ormawa',       label: 'total ormawa' },
-                'B.20': { varKey: 'jml_agama_aktif',  label: 'jenis agama yang ada' },
-                'C.5':  { varKey: 'jml_mahasiswa',    label: 'total mahasiswa' },
-                'C.7':  { varKey: 'jml_mahasiswa',    label: 'total mahasiswa' },
-                'C.9':  { varKey: 'jml_mahasiswa',    label: 'total mahasiswa' },
+                'B.7':  { varKey: 'jml_prodi',       label: 'total prodi' },
+                'B.18': { varKey: 'jml_ormawa',      varKey2: 'jml_ukm', label: 'total ormawa & UKM' },
+                'B.20': { varKey: 'jml_agama_aktif', label: 'jenis agama yang ada' },
+                'C.5':  { varKey: 'jml_mahasiswa',   label: 'total mahasiswa' },
+                'C.7':  { varKey: 'jml_mahasiswa',   label: 'total mahasiswa' },
+                'C.9':  { varKey: 'jml_mahasiswa',   label: 'total mahasiswa' },
             };
 
             const entry = map[q.code];
             if (!entry) return null;
 
-            const denom = parseFloat(this.profil[entry.varKey]);
-            if (!denom || denom <= 0) return null;
+            let denom = parseFloat(this.profil[entry.varKey]) || 0;
+            if (entry.varKey2) {
+                denom += parseFloat(this.profil[entry.varKey2]) || 0;
+            }
+
+            if (denom <= 0) return null;
 
             return {
                 persen: ((val / denom) * 100).toFixed(2),

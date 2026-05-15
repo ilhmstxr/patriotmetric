@@ -528,13 +528,6 @@ class AssessmentService extends BaseService
             $jawabanMap = [];
         }
 
-        // Load JSON for isian_singkat bobot
-        $isianSingkatGuides = [];
-        $jsonPath = storage_path('app/isian_singkat_bobot.json');
-        if (file_exists($jsonPath)) {
-            $isianSingkatGuides = json_decode(file_get_contents($jsonPath), true) ?? [];
-        }
-
         // 5. Group pertanyaan by kategori with jawaban
         $rubrikData = [];
         foreach ($allPertanyaan as $pertanyaan) {
@@ -559,45 +552,14 @@ class AssessmentService extends BaseService
                 'kebutuhan_bukti' => $pertanyaan->kebutuhan_bukti,
                 'tipe' => $pertanyaan->tipe,
                 // 'skor_maksimal' => $pertanyaan->skor_maksimal,
-                'opsi_jawaban' => (function () use ($pertanyaan, $isianSingkatGuides) {
-                    // Cek jika ini isian singkat, dan kita punya json guide
-                    if ($pertanyaan->tipe === 'isian_singkat' && !empty($isianSingkatGuides)) {
-                        $teks = strtolower(trim($pertanyaan->teks_pertanyaan));
-                        $bestMatch = null;
-                        $highestPercent = 0;
-                        
-                        foreach ($isianSingkatGuides as $guide) {
-                            if ($teks === strtolower(trim($guide['indikator_implementasi']))) {
-                                $bestMatch = $guide;
-                                break;
-                            }
-                        }
-                        
-                        // Jika match persis (hardcode/exact match)
-                        if ($bestMatch) {
-                            $mappedOpsi = [];
-                            foreach ($bestMatch['skor_bobot'] as $skor => $ket) {
-                                $mappedOpsi[] = [
-                                    'id' => null, // no db id
-                                    'opsi_jawaban' => (string) $skor,
-                                    'keterangan' => $ket,
-                                    'value' => (int) $skor,
-                                ];
-                            }
-                            return $mappedOpsi;
-                        }
-                    }
-
-                    // Default behaviour: ambil dari database opsi_jawaban
-                    return $pertanyaan->OpsiJawaban->map(function ($opsi) {
+                'opsi_jawaban' => $pertanyaan->OpsiJawaban->map(function ($opsi) {
                         return [
-                            'id' => $opsi->id,
+                            'id'           => $opsi->id,
                             'opsi_jawaban' => $opsi->opsi_jawaban,
-                            'keterangan' => $opsi->keterangan,
-                            'value' => $opsi->value,
+                            'keterangan'   => $opsi->keterangan,
+                            'value'        => $opsi->value,
                         ];
-                    })->toArray();
-                })(),
+                    })->toArray(),
                 'jawaban_peserta' => $jawabanMap[$pertanyaan->id] ?? null,
             ];
         }
