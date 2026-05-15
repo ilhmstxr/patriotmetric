@@ -21,4 +21,9 @@ class EditSubmissionTimeline extends EditRecord
             DeleteAction::make()->label('Hapus'),
         ];
     }
+
+    protected function afterSave(): void
+    {
+        \Illuminate\Support\Facades\Artisan::call('app:sync-submission-statuses');
+    }
 }

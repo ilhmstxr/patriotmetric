@@ -16,7 +16,8 @@ class AssessmentForm
                     ->relationship('user', 'email')
                     ->required(),
                 Select::make('reviewer_id')
-                    ->relationship('reviewer', 'nama_lengkap'),
+                    ->relationship('reviewer', 'nama_lengkap')
+                    ->searchable(),
                 Select::make('status')
                     ->options([
                         'ACTIVE' => 'Active',

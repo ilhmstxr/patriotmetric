@@ -32,6 +32,11 @@ class SubmissionTimelinesTable
                     ->dateTime('d M Y H:i')
                     ->placeholder('— tanpa deadline —')
                     ->sortable(),
+                TextColumn::make('results_published_at')
+                    ->label('Dipublikasi')
+                    ->dateTime('d M Y H:i')
+                    ->placeholder('— belum dijadwalkan —')
+                    ->sortable(),
                 IconColumn::make('is_locked')
                     ->label('Force Lock')
                     ->boolean(),
@@ -64,6 +69,9 @@ class SubmissionTimelinesTable
     protected static function stateLabel(SubmissionTimeline $record): string
     {
         $now = Carbon::now();
+        if ($record->results_published_at && $now->gt($record->results_published_at)) {
+            return 'Telah Dipublikasi';
+        }
         if ($record->is_locked) {
             return 'Dikunci Admin';
         }
@@ -80,6 +88,7 @@ class SubmissionTimelinesTable
     {
         return match (static::stateLabel($record)) {
             'Terbuka' => 'success',
+            'Telah Dipublikasi' => 'info',
             'Belum Dibuka' => 'warning',
             'Sudah Ditutup', 'Dikunci Admin' => 'danger',
             default => 'gray',

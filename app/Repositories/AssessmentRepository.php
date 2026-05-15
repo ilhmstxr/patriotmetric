@@ -230,14 +230,23 @@ class AssessmentRepository extends BaseRepository
 
     public function batchUpdateStatusByYear(string $tahun, array $fromStatuses, string $toStatus)
     {
-        return $this->model->where('tahun_periode', $tahun)
+        $assessments = $this->model->where('tahun_periode', $tahun)
             ->whereIn('status', $fromStatuses)
-            ->update(['status' => $toStatus]);
+            ->get();
+            
+        $count = 0;
+        foreach ($assessments as $assessment) {
+            $assessment->update(['status' => $toStatus]);
+            User::where('id', $assessment->user_id)->update(['status' => $toStatus]);
+            $count++;
+        }
+        
+        return $count;
     }
 
     public function countValidReviewerScores(int $assessmentId)
     {
-        return \App\Models\ResponAssessment::where('assessment_id', $assessmentId)
+        return ResponAssessment::where('assessment_id', $assessmentId)
             ->whereNotNull('skor_validasi_reviewer')
             ->count();
     }

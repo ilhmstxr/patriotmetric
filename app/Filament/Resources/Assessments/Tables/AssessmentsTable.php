@@ -60,6 +60,7 @@ class AssessmentsTable
                         Select::make('reviewer_id')
                             ->label('Pilih Reviewer')
                             ->options(\App\Models\Reviewer::pluck('nama_lengkap', 'id'))
+                            ->searchable()
                             ->default(fn(\Illuminate\Database\Eloquent\Model $record) => $record->reviewer_id)
                             ->required(),
                     ])

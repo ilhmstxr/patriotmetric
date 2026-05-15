@@ -32,6 +32,7 @@ class ReviewersTable
                     ->label('Reviewer')
                     ->options(\App\Models\Reviewer::pluck('nama_lengkap', 'id'))
                     ->searchable()
+                    ->searchableOptions()
                     ->sortable(),
                 TextColumn::make('status')
                     ->label('Status')

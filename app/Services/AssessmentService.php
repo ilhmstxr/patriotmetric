@@ -329,18 +329,15 @@ class AssessmentService extends BaseService
             $data['skor_sistem'] = $opsi ? (int) $opsi->opsi_jawaban : 0; // Score in DB is stored in opsi_jawaban
         } else {
             // KONDISI 2: User kirim Teks (Angka) -> Cari ID & Skor yang sesuai
-            $rawJawabanTeks = $dto->jawabanTeks ?? (string) $dto->jawabanId;
+            $rawJawabanTeks = $dto->jawabanTeks ?? $dto->jawabanId;
 
             // SPECIAL: B.13 menyimpan JSON lengkap {lokal:{label,nilai,poin},...,total_poin}
             if (($pertanyaan->kode_pertanyaan ?? null) === 'B.13') {
-                $decoded = is_string($rawJawabanTeks) ? json_decode($rawJawabanTeks, true) : null;
-                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                    $data['jawaban_teks'] = $rawJawabanTeks;
-                } else {
-                    $data['jawaban_teks'] = $rawJawabanTeks;
-                }
+                $decoded = is_string($rawJawabanTeks) ? json_decode($rawJawabanTeks, true) : $rawJawabanTeks;
+                
+                $data['jawaban_teks'] = is_array($decoded) ? $decoded : ['raw_input' => $rawJawabanTeks];
                 $data['jawaban_id'] = null;
-                $data['skor_sistem'] = (int) ($decoded['total_poin'] ?? 0);
+                $data['skor_sistem'] = is_array($decoded) ? (float) ($decoded['total_poin'] ?? 0) : 0;
                 return $data;
             }
 
@@ -356,17 +353,11 @@ class AssessmentService extends BaseService
                 }
             } elseif (is_array($rawJawabanTeks)) {
                 $decodedJawaban = $rawJawabanTeks;
+            } else {
+                $decodedJawaban = (string) $rawJawabanTeks;
             }
 
             // 2. Normalisasi Struktur & Kalkulasi Skor
-            if ($pertanyaan->code === 'B.13') {
-                // KHUSUS B.13: Payload berisi rincian 4 skala + total_poin
-                $data['jawaban_teks'] = is_array($decodedJawaban) ? $decodedJawaban : ['raw_input' => $decodedJawaban];
-                $data['skor_sistem'] = is_array($decodedJawaban) ? (float) ($decodedJawaban['total_poin'] ?? 0) : 0;
-                $data['jawaban_id'] = null;
-                return $data;
-            }
-
             $normalizedJawaban = [
                 'raw_input' => is_array($decodedJawaban) 
                     ? ($decodedJawaban['raw_input'] ?? null) 

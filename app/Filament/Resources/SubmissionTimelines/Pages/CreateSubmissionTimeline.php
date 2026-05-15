@@ -13,4 +13,9 @@ class CreateSubmissionTimeline extends CreateRecord
     {
         return $this->getResource()::getUrl('index');
     }
+
+    protected function afterCreate(): void
+    {
+        \Illuminate\Support\Facades\Artisan::call('app:sync-submission-statuses');
+    }
 }
