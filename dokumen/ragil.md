@@ -2,3 +2,5 @@
 - EMAIL KONFIRMASI
 - CMS
 - Reset dan lock flag saat status sudah menjadi submited dan readonly karena sudah deadline
+- Di B13 kan paling nyeleneh yakni ada 4 inputan dan 1 link, nah itu di floating quiz drawer terdeteksinya sebagian yang berwarna kuning padahal sudah saya isi semua dan tersimpan
+- 

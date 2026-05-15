@@ -46,7 +46,7 @@
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center">
                 <span class="text-white font-extrabold text-[28px] md:text-[32px] leading-none tracking-tight whitespace-nowrap"
-                      x-text="Number(total_capaian_skor || 0).toFixed(2).replace('.', ',') + '%'"></span>
+                      x-text="Number(total_capaian_skor || 0).toFixed(2).replace('.', ',')"></span>
                 <span class="text-white/80 text-[10px] font-bold tracking-[0.2em] uppercase mt-2"
                       x-text="is_published ? 'Skor Final' : 'Estimasi Skor'"></span>
             </div>

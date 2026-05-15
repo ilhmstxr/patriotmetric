@@ -112,6 +112,12 @@
         applyData(data) {
             this.status = data.status;
             this.is_edit_enabled = data.is_edit_enabled;
+
+            const lockedStatuses = ['SUBMITTED', 'GRADED', 'PUBLISHED'];
+            if (lockedStatuses.includes(data.status)) {
+                this.is_edit_enabled = false;
+            }
+
             this.lock_reason = data.lock_reason || '';
             this.profil = data.profil || {};
             this.answers = {};
@@ -142,8 +148,18 @@
                 });
                 if (!res.ok) return;
                 const result = await res.json();
+
+                if (result.success && result.data.assessment_status) {
+                    const lockedStatuses = ['SUBMITTED', 'GRADED', 'PUBLISHED'];
+                    if (lockedStatuses.includes(result.data.assessment_status)) {
+                        this.status = result.data.assessment_status;
+                        this.is_edit_enabled = false;
+                        this.lock_reason = 'Formulir dikunci karena data sudah disubmit.';
+                        localStorage.removeItem(this.cacheKey);
+                    }
+                }
+
                 if (result.success && result.data.version && result.data.version !== currentVersion) {
-                    {{-- Versi berbeda → fetch silent (tanpa loading spinner) --}}
                     await this.fetchAndCache(false);
                 }
             } catch (e) { /* silent */ }
@@ -251,10 +267,12 @@
                     })(item.kebutuhan_bukti),
                     type: item.tipe,
                     keterangan: item.keterangan || '',
-                    options: (item.OpsiJawaban || item.opsi_jawaban || []).map(opt => ({
-                        id: opt.id,
-                        text: opt.keterangan || opt.opsi_jawaban || opt.OpsiJawaban
-                    }))
+                    options: item.tipe === 'pilihan_ganda'
+                        ? (item.OpsiJawaban || item.opsi_jawaban || []).map(opt => ({
+                            id: opt.id,
+                            text: opt.keterangan || opt.opsi_jawaban || opt.OpsiJawaban
+                        }))
+                        : []
                 });
                 
                 groups[catName].weight += 5;
@@ -355,6 +373,12 @@
                     this.saveStatus[qId] = 'saved';
                     {{-- Invalidate cache agar version check selanjutnya sinkron --}}
                     localStorage.removeItem(this.cacheKey);
+                } else if (res.status === 403) {
+                    this.is_edit_enabled = false;
+                    this.lock_reason = result.message || 'Formulir dikunci.';
+                    localStorage.removeItem(this.cacheKey);
+                    this.showToast('error', 'Formulir Dikunci', this.lock_reason, 0);
+                    this.saveStatus[qId] = 'error';
                 } else {
                     this.saveStatus[qId] = 'error';
                 }
@@ -683,7 +707,7 @@
                                                         return (l*1) + (r*2) + (n*3) + (i*4);
                                                     },
                                                     initB13(qId) {
-                                                        const raw = this.$parent.answers[qId];
+                                                        const raw = this.answers[qId];
                                                         const getVal = (obj, key) => {
                                                             if (obj[key] && typeof obj[key] === 'object') return obj[key].nilai || 0;
                                                             return parseInt(obj[key]) || 0;
@@ -711,8 +735,8 @@
                                                             internasional: { label: this.b13Labels.internasional, nilai: i },
                                                             total_poin: (l*1)+(r*2)+(n*3)+(i*4)
                                                         };
-                                                        this.$parent.answers[qId] = JSON.stringify(payload);
-                                                        this.$parent.scheduleAutoSave(qId);
+                                                        this.answers[qId] = JSON.stringify(payload);
+                                                        this.scheduleAutoSave(qId);
                                                     }
                                                 }" x-init="initB13(q.id)" class="space-y-3">
                                                     <p class="text-[10px] font-bold text-[#62748e] uppercase tracking-wider">Jumlah Kegiatan per Skala:</p>

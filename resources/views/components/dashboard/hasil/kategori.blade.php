@@ -43,10 +43,10 @@
                         <p class="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest mb-1">Capaian Skor</p>
                         <div class="flex items-baseline gap-1 justify-end">
                             <span class="text-[18px] font-extrabold text-[#1b5e20]"
-                                  x-text="Number(cat.capaian_skor || 0).toFixed(2).replace('.', ',') + '%'"></span>
+                                  x-text="Number(cat.capaian_skor || 0).toFixed(2).replace('.', ',')"></span>
                         </div>
                         <p class="text-[10px] text-[#64748b] font-medium mt-0.5">
-                            dari bobot <span x-text="Number(cat.bobot || 0).toFixed(0) + '%'"></span>
+                            dari bobot <span x-text="Number(cat.bobot || 0).toFixed(0)"></span>
                         </p>
                     </div>
                     {{-- Arrow Indicator --}}

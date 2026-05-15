@@ -248,7 +248,18 @@
             if (Array.isArray(val)) return val;
             if (typeof val === 'string') return val.split(',').map(s => s.trim()).filter(s => s !== '');
             return val ? [val] : [];
-        }
+        },
+
+        parseAnswerJson(val) {
+            if (!val) return null;
+            if (typeof val === 'object') return val;
+            try {
+                const parsed = JSON.parse(val);
+                return (parsed && typeof parsed === 'object') ? parsed : null;
+            } catch (e) {
+                return null;
+            }
+        },
     }" class="flex-1 flex flex-col h-full bg-[#f8fafc] font-['Plus_Jakarta_Sans',sans-serif]">
         
       {{-- Loading State — konsisten dengan dashboard peserta --}}
@@ -505,10 +516,69 @@
                         {{-- Peserta's Answer --}}
                         <div>
                             <h4 class="text-[12px] font-bold text-[#64748b] uppercase tracking-[0.5px] mb-[6px]">Jawaban Klaim Peserta:</h4>
-                            <div class="bg-white border border-[#cbd5e1] rounded-[8px] p-[12px] text-[#1d293d] font-bold text-[14px] flex items-start gap-2 shadow-sm">
-                                <i data-lucide="check-circle-2" class="w-[18px] h-[18px] text-blue-600 shrink-0 mt-0.5"></i>
-                                <span x-text="answers[q.id] || 'Belum diisi / Belum disubmit'"></span>
-                            </div>
+                            
+                            {{-- Standard Display (Non-JSON) --}}
+                            <template x-if="!parseAnswerJson(answers[q.id])">
+                                <div class="bg-white border border-[#cbd5e1] rounded-[8px] p-[12px] text-[#1d293d] font-bold text-[14px] flex items-start gap-2 shadow-sm">
+                                    <i data-lucide="check-circle-2" class="w-[18px] h-[18px] text-blue-600 shrink-0 mt-0.5"></i>
+                                    <span x-text="answers[q.id] || 'Belum diisi / Belum disubmit'"></span>
+                                </div>
+                            </template>
+
+                            {{-- Structured JSON Display --}}
+                            <template x-if="parseAnswerJson(answers[q.id])">
+                                <div class="space-y-3">
+                                    {{-- B.13 Special Case --}}
+                                    <template x-if="q.kode_pertanyaan === 'B.13'">
+                                        <div class="bg-white border border-[#cbd5e1] rounded-[8px] p-4 shadow-sm space-y-3">
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div class="p-2 bg-slate-50 rounded border border-slate-200">
+                                                    <p class="text-[10px] text-slate-500 font-bold uppercase">Lokal</p>
+                                                    <p class="text-[14px] font-bold text-slate-700" x-text="parseAnswerJson(answers[q.id]).lokal?.nilai || 0"></p>
+                                                </div>
+                                                <div class="p-2 bg-slate-50 rounded border border-slate-200">
+                                                    <p class="text-[10px] text-slate-500 font-bold uppercase">Regional</p>
+                                                    <p class="text-[14px] font-bold text-slate-700" x-text="parseAnswerJson(answers[q.id]).regional?.nilai || 0"></p>
+                                                </div>
+                                                <div class="p-2 bg-slate-50 rounded border border-slate-200">
+                                                    <p class="text-[10px] text-slate-500 font-bold uppercase">Nasional</p>
+                                                    <p class="text-[14px] font-bold text-slate-700" x-text="parseAnswerJson(answers[q.id]).nasional?.nilai || 0"></p>
+                                                </div>
+                                                <div class="p-2 bg-slate-50 rounded border border-slate-200">
+                                                    <p class="text-[10px] text-slate-500 font-bold uppercase">Internasional</p>
+                                                    <p class="text-[14px] font-bold text-slate-700" x-text="parseAnswerJson(answers[q.id]).internasional?.nilai || 0"></p>
+                                                </div>
+                                            </div>
+                                            <div class="pt-2 border-t border-slate-100 flex justify-between items-center">
+                                                <span class="text-[12px] font-bold text-slate-600">Total Poin:</span>
+                                                <span class="text-[16px] font-extrabold text-[#1b5e20]" x-text="parseAnswerJson(answers[q.id]).total_poin || 0"></span>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    {{-- System Calculated Display (C.2, B.18, etc.) --}}
+                                    <template x-if="q.kode_pertanyaan !== 'B.13' && parseAnswerJson(answers[q.id])">
+                                        <div class="space-y-2">
+                                            <div class="bg-white border border-[#cbd5e1] rounded-[8px] p-[12px] text-[#1d293d] font-bold text-[14px] flex items-start gap-2 shadow-sm">
+                                                <i data-lucide="hash" class="w-[18px] h-[18px] text-slate-500 shrink-0 mt-0.5"></i>
+                                                <div>
+                                                    <p class="text-[10px] text-slate-500 font-bold uppercase mb-0.5">Input Mentah</p>
+                                                    <span x-text="parseAnswerJson(answers[q.id]).raw_input || '-'"></span>
+                                                </div>
+                                            </div>
+                                            <template x-if="parseAnswerJson(answers[q.id]).calculated_percentage || parseAnswerJson(answers[q.id]).label">
+                                                <div class="bg-[#f0fdf4] border border-[#bbf7d0] rounded-[8px] p-[12px] text-[#166534] font-bold text-[14px] flex items-start gap-2 shadow-sm border-l-4">
+                                                    <i data-lucide="cpu" class="w-[18px] h-[18px] text-[#166534] shrink-0 mt-0.5"></i>
+                                                    <div>
+                                                        <p class="text-[10px] text-[#166534] font-bold uppercase mb-0.5">Kalkulasi Sistem</p>
+                                                        <span x-text="(parseAnswerJson(answers[q.id]).calculated_percentage ? parseAnswerJson(answers[q.id]).calculated_percentage + '% ' : '') + (parseAnswerJson(answers[q.id]).label || '')"></span>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
                         </div>
                         
                         {{-- Peserta's Link Evidence --}}
