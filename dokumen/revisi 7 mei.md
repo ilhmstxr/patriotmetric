@@ -21,9 +21,7 @@
 - PROGRESS USECASE dan CDM PDM
 - CHECK ilham timeline untuk permission edit di sisi peserta, serta timeline peserta dapat melihat hasilnya di menggunakkan model submission_timeline
 
-- SEO
-- EMAIL KONFIRMASI
-- CMS
+
 
 
 - LOCK READONLY DI RUBRIK BERUBAH DARI STATUS PENGUMPULAN YANG AWALNYA IN_PROGRESS MENJADI SUBMITTED BUKAN WAKTU

@@ -309,11 +309,18 @@
                     textAns = (typeof rawAns === 'string') ? rawAns : JSON.stringify({ raw_input: rawAns, calculated_percentage: null });
                 } else {
                     const formula = this.computeFormula(question);
+                    const analysis = this.computeAnalysis(question);
                     if (formula) {
                         textAns = JSON.stringify({
                             raw_input: rawAns,
                             calculated_percentage: formula.persen,
                             label: formula.label
+                        });
+                    } else if (analysis) {
+                        textAns = JSON.stringify({
+                            raw_input: rawAns,
+                            calculated_percentage: null,
+                            label: analysis.label
                         });
                     } else {
                         {{-- isian_singkat tanpa formula: simpan nilai mentah saja sebagai JSON minimal --}}
@@ -372,17 +379,21 @@
                 'B.7':  { varKey: 'jml_prodi',       label: 'total prodi' },
                 'B.18': { varKey: 'jml_ormawa',      varKey2: 'jml_ukm', label: 'total ormawa & UKM' },
                 'B.20': { varKey: 'jml_agama_aktif', label: 'jenis agama yang ada' },
-                'C.5':  { varKey: 'jml_mahasiswa',   label: 'total mahasiswa' },
-                'C.7':  { varKey: 'jml_mahasiswa',   label: 'total mahasiswa' },
-                'C.9':  { varKey: 'jml_mahasiswa',   label: 'total mahasiswa' },
+                'C.5':  { varKey: 'jml_mhs',         label: 'total mahasiswa' },
+                'C.7':  { varKey: 'jml_mhs',         label: 'total mahasiswa' },
+                'C.9':  { varKey: 'jml_mhs',         label: 'total mahasiswa' },
             };
 
             const entry = map[q.code];
             if (!entry) return null;
 
-            let denom = parseFloat(this.profil[entry.varKey]) || 0;
-            if (entry.varKey2) {
-                denom += parseFloat(this.profil[entry.varKey2]) || 0;
+            let denom = 0;
+            if (q.code === 'B.18') {
+                const ormawa = parseFloat(this.profil.jml_ormawa) || 0;
+                const ukm = parseFloat(this.profil.jml_ukm) || 0;
+                denom = ormawa + ukm;
+            } else {
+                denom = parseFloat(this.profil[entry.varKey]) || 0;
             }
 
             if (denom <= 0) return null;
@@ -391,6 +402,27 @@
                 persen: ((val / denom) * 100).toFixed(2),
                 label: entry.label,
             };
+        },
+
+        {{-- ================================================================= --}}
+        {{-- 📊 ANALYSIS PREVIEW (Evaluasi Otomatis untuk C.2)                 --}}
+        {{-- ================================================================= --}}
+        computeAnalysis(q) {
+            const val = parseFloat(this.answers[q.id]);
+            if (isNaN(val) || val < 0) return null;
+
+            if (q.code === 'C.2') {
+                const f = parseFloat(this.profil.jml_fakultas) || 0;
+                const p = parseFloat(this.profil.jml_prodi) || 0;
+                
+                if (val === 0) return { label: 'Tidak ada', color: 'text-gray-700', bg: 'bg-gray-100' };
+                if (val > 0 && val < f) return { label: 'jumlah mahasiswa < jumlah fakultas', color: 'text-amber-700', bg: 'bg-amber-100' };
+                if (val > 0 && val === f) return { label: 'jumlah mahasiswa = jumlah fakultas PT', color: 'text-blue-700', bg: 'bg-blue-100' };
+                if (val > f && val < p) return { label: 'jumlah mahasiswa yang terlibat > jumlah fakultas dan < dibandingkan jumlah prodi PT', color: 'text-emerald-700', bg: 'bg-emerald-100' };
+                if (val > 0 && val === p) return { label: 'jumlah mahasiswa yang terlibat sama banyak dibandingkan jumlah prodi PT', color: 'text-indigo-700', bg: 'bg-indigo-100' };
+                if (val > p) return { label: 'jumlah mahasiswa yang terlibat lebih banyak dibandingkan jumlah prodi PT', color: 'text-purple-700', bg: 'bg-purple-100' };
+            }
+            return null;
         },
 
         {{-- ================================================================= --}}
@@ -419,11 +451,18 @@
                         textAns = (typeof rawAns === 'string') ? rawAns : JSON.stringify({ raw_input: rawAns, calculated_percentage: null });
                     } else {
                         const formula = this.computeFormula(question);
+                        const analysis = this.computeAnalysis(question);
                         if (formula) {
                             textAns = JSON.stringify({
                                 raw_input: rawAns,
                                 calculated_percentage: formula.persen,
                                 label: formula.label
+                            });
+                        } else if (analysis) {
+                            textAns = JSON.stringify({
+                                raw_input: rawAns,
+                                calculated_percentage: null,
+                                label: analysis.label
                             });
                         } else {
                             textAns = JSON.stringify({ raw_input: rawAns, calculated_percentage: null });
@@ -613,6 +652,14 @@
                                                             <span class="text-[11px] font-bold text-emerald-700" x-text="computeFormula(q)?.persen + '%'"></span>
                                                             <span class="text-[10px] text-emerald-600">dari</span>
                                                             <span class="text-[10px] font-semibold text-emerald-700" x-text="computeFormula(q)?.label"></span>
+                                                        </div>
+                                                    </template>
+                                                    {{-- Analysis Preview --}}
+                                                    <template x-if="computeAnalysis(q) !== null">
+                                                        <div class="w-fit flex items-center gap-1.5 border border-gray-200 rounded px-2.5 py-1.5"
+                                                             :class="computeAnalysis(q).bg">
+                                                            <i data-lucide="info" class="w-3 h-3" :class="computeAnalysis(q).color"></i>
+                                                            <span class="text-[11px] font-semibold" :class="computeAnalysis(q).color" x-text="computeAnalysis(q).label"></span>
                                                         </div>
                                                     </template>
                                                 </div>
