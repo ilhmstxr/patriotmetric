@@ -46,6 +46,12 @@ class AssessmentController extends Controller
         return (is_numeric($code) && $code >= 400 && $code < 600) ? $code : 500;
     }
 
+    private function getAuthDTO(): AssessmentDTO
+    {
+        $userId = AuthController::getAuthPeserta();
+        return new AssessmentDTO($userId);
+    }
+
     public function storeBaseline(BaselinePesertaRequest $request)
     // DONE
     {

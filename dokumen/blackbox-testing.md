@@ -30,7 +30,6 @@ reviewer: bisa mengklik detail rubrik, mengisi skor dan lain lain
 peserta: tidak bisa mengubah / mengisi rubrik / mengedit profil, namun terdapat keterangan di hasil penilaian bahwa reviewer sedang memeriksa rubrik 
 reviewer: ketika mengklik button simpan, maka akan otomatis merubah status menjadi graded, lalu reviewer tidak bisa merubah apapun ketika sudah mengklik button tersebut, namun masih dapat mengakses detail rubrik peserta yang telah di plotting  
 
-
 4. status published: peserta(primary)
 peserta: dapat melihat nilai finalnya, namun untuk rubrik tetap tidak bisa di edit
 reviewer: dapat melihat plottingan penilaian nya dengan status published, namun tidak bisa di edit
