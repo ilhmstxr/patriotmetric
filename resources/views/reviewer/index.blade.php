@@ -182,7 +182,7 @@
                                         </td>
                                         <td class="py-4 px-6 text-[13px] text-[#64748b]" x-text="formatDate(task.updated_at)"></td>
                                         <td class="py-4 px-6 text-right">
-                                            <a :href="'/reviewer/peserta/' + task.id"
+                                            <a :href="'/reviewer/peserta/' + task.id" wire:navigate
                                                class="inline-flex items-center gap-1.5 bg-[#1b5e20] text-white px-4 py-2 rounded-lg text-[13px] font-semibold hover:bg-[#15461c] transition-colors">
                                                 <i data-lucide="edit" class="w-3.5 h-3.5"></i> Nilai Sekarang
                                             </a>
@@ -263,7 +263,7 @@
                                             </span>
                                         </td>
                                         <td class="py-4 px-6 text-right">
-                                            <a :href="'/reviewer/peserta/' + task.id"
+                                            <a :href="'/reviewer/peserta/' + task.id" wire:navigate
                                                class="inline-flex items-center gap-1.5 bg-white border border-[#cbd5e1] text-[#45556c] px-4 py-2 rounded-lg text-[13px] font-semibold hover:bg-[#f1f5f9] transition-colors">
                                                 <i data-lucide="eye" class="w-3.5 h-3.5"></i> Lihat Detail
                                             </a>

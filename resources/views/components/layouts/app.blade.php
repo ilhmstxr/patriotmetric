@@ -9,6 +9,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @livewireStyles
 </head>
 <body class="antialiased min-h-screen flex flex-col font-['Plus_Jakarta_Sans',sans-serif]"
       x-data="{ showBar: true, lastPos: 0, threshold: 25 }"
@@ -29,5 +30,7 @@
     @if(!$hideFooter)
         <x-footer />
     @endif
+
+    @livewireScripts
 </body>
 </html>
