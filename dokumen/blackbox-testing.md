@@ -14,3 +14,23 @@ credential admin:
 username: admin@admin.com
 password: admin
 
+untuk reviewer, buat di sisi admin dan di plotting juga di sisi admin
+untuk peserta, harus melewati sesi registrasi, login & verifikasi, agar bisa mengisi rubrik 
+
+oke, testing juga di sisi 
+1. status in_progress: peserta & reviewer, 
+peserta: ketika posisi in_progress / pengisian rubrik di peserta, di peserta bisa memilih / mengisi rubrik, dan mengedit profil.
+reviewer: dapat melihat plottingan peserta yang akan di review, tapi tidak bisa mengklik detail rubrik (akan muncul alert)
+
+2. status submitted: peserta & reviewer, 
+peserta: tidak bisa mengubah / mengisi rubrik / mengedit profil. namun terdapat keterangan di hasil penilaian bahwa reviewer sedang memeriksa rubrik 
+reviewer: bisa mengklik detail rubrik, mengisi skor dan lain lain 
+
+3. status graded: reviewer(primary), 
+peserta: tidak bisa mengubah / mengisi rubrik / mengedit profil, namun terdapat keterangan di hasil penilaian bahwa reviewer sedang memeriksa rubrik 
+reviewer: ketika mengklik button simpan, maka akan otomatis merubah status menjadi graded, lalu reviewer tidak bisa merubah apapun ketika sudah mengklik button tersebut, namun masih dapat mengakses detail rubrik peserta yang telah di plotting  
+
+
+4. status published: peserta(primary)
+peserta: dapat melihat nilai finalnya, namun untuk rubrik tetap tidak bisa di edit
+reviewer: dapat melihat plottingan penilaian nya dengan status published, namun tidak bisa di edit
