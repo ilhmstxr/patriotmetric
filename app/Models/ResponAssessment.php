@@ -18,7 +18,8 @@ class ResponAssessment extends Model
         'jawaban_teks',
         'tautan_bukti_drive',
         'skor_sistem',
-        'skor_validasi_reviewer'
+        'skor_validasi_reviewer',
+        'note_reviewer'
     ];
 
     protected function casts(): array
