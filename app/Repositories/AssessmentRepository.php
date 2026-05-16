@@ -73,10 +73,28 @@ class AssessmentRepository extends BaseRepository
      */
     public function findMatchingOpsiByValue($pertanyaanId, $inputValue)
     {
-        return OpsiJawaban::where('pertanyaan_id', $pertanyaanId)
-            ->where('value', '<=', (int) $inputValue)
-            ->orderBy('value', 'desc')
+        $input = (int) $inputValue;
+
+        if ($input <= 0) {
+            return OpsiJawaban::where('pertanyaan_id', $pertanyaanId)
+                ->whereNull('value')
+                ->first();
+        }
+
+        $match = OpsiJawaban::where('pertanyaan_id', $pertanyaanId)
+            ->whereNotNull('value')
+            ->where('value', '>=', $input)
+            ->orderBy('value', 'asc')
             ->first();
+
+        if (!$match) {
+            $match = OpsiJawaban::where('pertanyaan_id', $pertanyaanId)
+                ->whereNotNull('value')
+                ->orderBy('value', 'desc')
+                ->first();
+        }
+
+        return $match;
     }
 
     /**

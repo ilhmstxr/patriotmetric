@@ -12,6 +12,7 @@ use App\Http\Requests\BaselinePesertaRequest;
 use App\Services\AssessmentService;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class AssessmentController extends Controller
 {
@@ -28,7 +29,7 @@ class AssessmentController extends Controller
     private function getValidatedAssessment(string $mode)
     {
         $userId = AuthController::getAuthPeserta();
-        
+
         if (!$userId) {
             throw new \Exception("Unauthorized: Silakan login terlebih dahulu.", 401);
         }
@@ -116,18 +117,18 @@ class AssessmentController extends Controller
                 'pertanyaan_id' => 'required|integer',
                 'jawaban_id'    => 'nullable|integer',
                 'jawaban_teks'  => 'nullable|string',
-                'tautan_bukti'  => 'nullable|url',
+                'tautan_bukti'  => 'nullable|string',
                 'note_reviewer' => 'nullable|string',
             ]);
-            // return $validated;
 
             $dto = new JawabanDTO($assessment->id, $validated);
 
             // 3. Eksekusi Service
             $result = $this->AssessmentService->storeJawaban($dto);
 
-            // return $result;
             return $this->successResponse($result, 'Jawaban berhasil disimpan.', 200);
+        } catch (ValidationException $e) {
+            return $this->errorResponse($e->getMessage(), 422);
         } catch (\Throwable $e) {
             return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
         }
@@ -230,9 +231,10 @@ class AssessmentController extends Controller
             $result = $this->AssessmentService->saveDraftBatch($assessment, $validated['answers']);
 
             return $this->successResponse($result, 'Semua jawaban berhasil disimpan dan di-submit.', 200);
+        } catch (ValidationException $e) {
+            return $this->errorResponse($e->getMessage(), 422);
         } catch (\Throwable $e) {
             return $this->errorResponse($e->getMessage(), $this->getErrorCode($e));
         }
     }
 }
-

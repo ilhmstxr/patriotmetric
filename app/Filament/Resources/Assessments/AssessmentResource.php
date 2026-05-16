@@ -15,6 +15,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Schemas\Components\Section;
 
 class AssessmentResource extends Resource
 {
@@ -40,19 +41,65 @@ class AssessmentResource extends Resource
     {
         return $schema
             ->components([
-                TextEntry::make('institusi.nama_institusi')->label('Nama Peserta'),
-                TextEntry::make('status')->badge(),
-                TextEntry::make('total_skor_akhir'),
-                RepeatableEntry::make('jawabans')
+                Section::make('Informasi Utama')
                     ->schema([
-                        TextEntry::make('pertanyaan.teks_pertanyaan'),
-                        TextEntry::make('jawaban_teks'),
-                        TextEntry::make('tautan_bukti_drive')->url(fn($state) => $state)->openUrlInNewTab(),
-                        TextEntry::make('skor_sistem'),
-                        TextEntry::make('skor_validasi_reviewer'),
+                        TextEntry::make('institusi.nama_institusi')->label('Nama Peserta'),
+                        TextEntry::make('status')->badge(),
+                        TextEntry::make('total_skor_akhir')->label('Total Skor Akhir'),
+                    ])->columns(3),
+
+                Section::make('Biodata Instansi')
+                    ->schema([
+                        TextEntry::make('institusi.jenis_institusi')->label('Jenis Instansi'),
+                        TextEntry::make('identitas.jml_mahasiswa')->label('Jumlah Mahasiswa'),
+                        TextEntry::make('identitas.jml_dosen')->label('Jumlah Dosen'),
+                        TextEntry::make('identitas.jml_tendik')->label('Jumlah Tendik'),
+                        TextEntry::make('identitas.jml_prodi')->label('Jumlah Prodi'),
+                        TextEntry::make('identitas.jml_fakultas')->label('Jumlah Fakultas'),
+                        TextEntry::make('nama_pic')->label('Nama PIC'),
+                        TextEntry::make('jabatan_pic')->label('Jabatan PIC'),
+                        TextEntry::make('no_hp_pic')->label('No HP PIC'),
+                        TextEntry::make('identitas.visi')->label('Visi')->columnSpanFull(),
+                        TextEntry::make('identitas.misi')->label('Misi')->columnSpanFull(),
+                    ])->columns(3),
+
+                Section::make('Hasil Dokumen Setelah Verifikasi')
+                    ->schema([
+                        TextEntry::make('identitas_legal_documents')
+                            ->label('Dokumen Verifikasi (Klik untuk membuka)')
+                            ->getStateUsing(function ($record) {
+                                $docs = $record->identitas?->legal_documents;
+                                if (empty($docs) || !is_array($docs)) return '-';
+                                $html = '<ul class="list-disc ml-5">';
+                                foreach ($docs as $key => $link) {
+                                    $name = is_numeric($key) ? 'Dokumen '.($key+1) : ucfirst(str_replace('_', ' ', $key));
+                                    $href = is_string($link) ? $link : '#';
+                                    $html .= "<li><a href=\"{$href}\" target=\"_blank\" style=\"color:blue; text-decoration:underline;\">{$name}</a></li>";
+                                }
+                                $html .= '</ul>';
+                                return new \Illuminate\Support\HtmlString($html);
+                            })
+                            ->html()
+                            ->columnSpanFull()
+                    ]),
+
+                Section::make('Jawaban Rubrik')
+                    ->schema([
+                        RepeatableEntry::make('jawabans')
+                            ->label('')
+                            ->schema([
+                                TextEntry::make('pertanyaan.teks_pertanyaan')->label('Pertanyaan'),
+                                TextEntry::make('jawaban_teks')->label('Jawaban')->formatStateUsing(fn($state) => is_string($state) ? $state : json_encode($state)),
+                                TextEntry::make('tautan_bukti_drive')->label('Tautan Bukti')
+                                    ->url(fn($state) => is_string($state) && filter_var($state, FILTER_VALIDATE_URL) ? $state : null)
+                                    ->openUrlInNewTab()
+                                    ->color('primary'),
+                                TextEntry::make('skor_sistem')->label('Skor Sistem'),
+                                TextEntry::make('skor_validasi_reviewer')->label('Skor Reviewer'),
+                            ])
+                            ->columns(2)
+                            ->columnSpanFull()
                     ])
-                    ->columns(2)
-                    ->columnSpanFull()
             ]);
     }
 

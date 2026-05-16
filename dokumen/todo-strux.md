@@ -422,3 +422,25 @@ untuk keagamaan apakah butuh dengan keputusan mk
 
 - fitur cek pdf per peserta
 - untuk create user tidak bisa dibuatkan via admin untuk pembuatan & verifikasi akunnya
+
+{
+    "lokal": {
+        "label": "Skala lokal / kota kabupaten / internal institusi",
+        "nilai": 1
+    },
+    "nasional": {
+        "label": "Skala nasional",
+        "nilai": 3
+    },
+    "regional": {
+        "label": "Skala regional / provinsi",
+        "nilai": 2
+    },
+    "total_poin": 30,
+    "internasional": {
+        "label": "Skala internasional",
+        "nilai": 4
+    }
+}
+
+buat flag setelah submit masih bisa di klik, harusnya tidak bisa
