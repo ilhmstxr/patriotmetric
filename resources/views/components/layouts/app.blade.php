@@ -12,8 +12,14 @@
     @livewireStyles
 </head>
 <body class="antialiased min-h-screen flex flex-col font-['Plus_Jakarta_Sans',sans-serif]"
-      x-data="{ showBar: true, lastPos: 0, threshold: 25 }"
-      @scroll.window="showBar = (window.pageYOffset < lastPos - threshold || window.pageYOffset < 100); lastPos = window.pageYOffset"
+      x-data="{ showBar: true, lastPos: 0, threshold: 50 }"
+      @scroll.window="
+          const cur = window.pageYOffset;
+          if (cur < 10) { showBar = true; }
+          else if (cur < lastPos - threshold) { showBar = true; }
+          else if (cur > lastPos + 10) { showBar = false; }
+          lastPos = cur;
+      "
       x-init="$nextTick(() => { lucide.createIcons() })">
     @if(!$hideNav)
         <header class="fixed top-0 left-0 w-full z-50 transition-transform duration-300"
