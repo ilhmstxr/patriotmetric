@@ -230,18 +230,26 @@ class AssessmentRepository extends BaseRepository
 
     public function batchUpdateStatusByYear(string $tahun, array $fromStatuses, string $toStatus)
     {
-        $assessments = $this->model->where('tahun_periode', $tahun)
+        // Ambil hanya assessment yang statusnya memang perlu diubah (bukan sudah $toStatus)
+        // Ini mencegah updated_at berubah sia-sia dan memicu false-positive version check di frontend
+        $assessments = $this->model
+            ->where('tahun_periode', $tahun)
             ->whereIn('status', $fromStatuses)
+            ->where('status', '!=', $toStatus)
             ->get();
-            
-        $count = 0;
-        foreach ($assessments as $assessment) {
-            $assessment->update(['status' => $toStatus]);
-            User::where('id', $assessment->user_id)->update(['status' => $toStatus]);
-            $count++;
+
+        if ($assessments->isEmpty()) {
+            return 0;
         }
-        
-        return $count;
+
+        $ids     = $assessments->pluck('id')->all();
+        $userIds = $assessments->pluck('user_id')->all();
+
+        // Batch update langsung — lebih efisien dan updated_at hanya berubah jika ada row nyata
+        $this->model->whereIn('id', $ids)->update(['status' => $toStatus]);
+        User::whereIn('id', $userIds)->update(['status' => $toStatus]);
+
+        return count($ids);
     }
 
     public function countValidReviewerScores(int $assessmentId)
