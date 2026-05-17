@@ -36,6 +36,7 @@
         flags: {},
 
         toggleFlag(questionId) {
+            if (!this.is_edit_enabled) return;
             this.flags[questionId] = !this.flags[questionId];
             try { sessionStorage.setItem('rubrik_flags', JSON.stringify(this.flags)); } catch(e) {}
         },
@@ -123,6 +124,17 @@
             this.answers = {};
             this.links = {};
             this.categories = this.groupByCategory(data.questions);
+
+            // Pre-initialize all question keys for Alpine.js reactivity
+            // This ensures fillStatus() triggers reactive updates in the Floating Quiz Drawer
+            this.allQuestions.forEach(q => {
+                if (!(q.id in this.answers)) {
+                    this.answers[q.id] = '';
+                }
+                if (!(q.id in this.links)) {
+                    this.links[q.id] = '';
+                }
+            });
 
             this.$nextTick(() => {
                 this.allQuestions
@@ -588,8 +600,9 @@
                                     {{-- ===== 🔖 Bookmark Flag ===== --}}
                                     <button type="button"
                                         @click.stop="toggleFlag(q.id)"
-                                        :title="isFlagged(q.id) ? 'Hapus flag' : 'Tandai pertanyaan ini'"
-                                        class="absolute top-0 right-4 z-10 focus:outline-none"
+                                        :disabled="!is_edit_enabled"
+                                        :title="!is_edit_enabled ? 'Tidak dapat diubah' : (isFlagged(q.id) ? 'Hapus flag' : 'Tandai pertanyaan ini')"
+                                        class="absolute top-0 right-4 z-10 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                                         style="width: 24px;">
                                         {{-- Classic bookmark: rectangle + single V-notch at bottom --}}
                                         <span class="block w-full transition-all duration-300"

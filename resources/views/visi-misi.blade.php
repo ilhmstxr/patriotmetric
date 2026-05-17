@@ -1,54 +1,69 @@
 <x-layouts.app>
-    <div class="bg-white">
-        {{-- Visi Section --}}
-        <section class="py-16 md:py-20 bg-white">
-            <div class="max-w-[896px] mx-auto px-6 md:px-8 text-center">
-                <p class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] md:text-[20px] text-[#d4af37] tracking-[2px] uppercase">Visi Kami</p>
-                <h1 class="mt-4 md:mt-6 font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[28px] md:text-[48px] leading-[1.4] md:leading-[1.25] text-[#1d293d]">
+    <div class="bg-white min-h-screen">
+        {{-- Hero --}}
+        <section class="bg-[#1B5E20]">
+            <div class="max-w-[900px] mx-auto px-6 md:px-8 py-20 md:py-28 text-center">
+                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[34px] md:text-[50px] text-white leading-tight">Visi & Misi</h1>
+                <p class="mt-4 font-['Plus_Jakarta_Sans',sans-serif] text-[16px] md:text-[19px] leading-[28px] text-white/85 max-w-[600px] mx-auto">
+                    Arah dan strategi Patriot Metric dalam membangun ekosistem bela negara di perguruan tinggi Indonesia.
+                </p>
+            </div>
+        </section>
+
+        {{-- Visi --}}
+        <section class="py-16 md:py-24 bg-white relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-[#1B5E20]/[0.02] rounded-full -translate-y-1/2 translate-x-1/2"></div>
+            <div class="relative max-w-[900px] mx-auto px-6 md:px-8 text-center">
+                <div class="inline-flex items-center gap-2 mb-6">
+                    <div class="w-8 h-[2px] bg-[#d4af37]"></div>
+                    <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[14px] text-[#d4af37] uppercase tracking-[2px]">Visi Kami</span>
+                    <div class="w-8 h-[2px] bg-[#d4af37]"></div>
+                </div>
+                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[26px] sm:text-[32px] md:text-[40px] leading-[1.35] text-[#1d293d]">
                     "Menjadi platform pemeringkatan dan barometer paling prestisius di Indonesia dalam mengukur, mengembangkan, dan mengapresiasi implementasi nilai-nilai bela negara di perguruan tinggi."
                 </h1>
             </div>
         </section>
 
-        {{-- Misi Section --}}
-        <section class="py-16 md:py-20 bg-[#f8fafc]">
-            <div class="max-w-[1152px] mx-auto px-6 md:px-8">
-                <div class="flex items-center gap-4 mb-10 md:mb-12">
-                    <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[30px] leading-[36px] text-[#1d293d] whitespace-nowrap">Misi Strategis</h2>
-                    <div class="flex-1 h-px bg-gradient-to-r from-[#e2e8f0] to-transparent"></div>
+        {{-- Misi --}}
+        <section class="py-16 md:py-24 bg-[#f8fafc]">
+            <div class="max-w-[1100px] mx-auto px-6 md:px-8">
+                <div class="flex items-center gap-4 mb-12">
+                    <div class="w-1 h-8 bg-[#1B5E20] rounded-full"></div>
+                    <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[26px] md:text-[32px] text-[#1d293d]">Misi Strategis</h2>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     @php
-                    $misi = [
-                        [
-                            'num' => "01",
-                            'title' => "Internalisasi",
-                            'desc' => "Proses penanaman dan integrasi nilai-nilai bela negara ke dalam budaya, kebijakan, kurikulum, serta program pengembangan mahasiswa.",
-                        ],
-                        [
-                            'num' => "02",
-                            'title' => "Implementasi",
-                            'desc' => "Perwujudan nyata dari proses internalisasi dalam bentuk tindakan, aktivitas, dan keterlibatan aktif sivitas akademika dalam kegiatan bertema kebangsaan dan bela negara.",
-                        ],
-                        [
-                            'num' => "03",
-                            'title' => "Pengembangan",
-                            'desc' => "Upaya inovatif untuk memperkaya dan memperluas penerapan nilai-nilai bela negara, baik melalui penelitian, pengabdian kepada masyarakat, maupun kemitraan strategis.",
-                        ]
-                    ];
+                        $misi = [
+                            [
+                                'num' => "01",
+                                'title' => "Internalisasi",
+                                'desc' => "Proses penanaman dan integrasi nilai-nilai bela negara ke dalam budaya, kebijakan, kurikulum, serta program pengembangan mahasiswa.",
+                            ],
+                            [
+                                'num' => "02",
+                                'title' => "Implementasi",
+                                'desc' => "Perwujudan nyata dari proses internalisasi dalam bentuk tindakan, aktivitas, dan keterlibatan aktif sivitas akademika dalam kegiatan bertema kebangsaan dan bela negara.",
+                            ],
+                            [
+                                'num' => "03",
+                                'title' => "Pengembangan",
+                                'desc' => "Upaya inovatif untuk memperkaya dan memperluas penerapan nilai-nilai bela negara, baik melalui penelitian, pengabdian kepada masyarakat, maupun kemitraan strategis.",
+                            ]
+                        ];
                     @endphp
                     @foreach($misi as $item)
-                    <div class="bg-[#f8fafc] border border-transparent rounded-3xl p-8 relative overflow-hidden">
-                        <span class="absolute top-8 right-8 font-['Plus_Jakarta_Sans',sans-serif] font-extrabold italic text-[60px] leading-[60px] text-[#e2e8f0]">{{ $item['num'] }}</span>
-                        <div class="relative">
-                            <div class="bg-white rounded-full shadow-sm size-12 flex items-center justify-center mb-6">
-                                <i data-lucide="chevron-right" class="w-6 h-6 text-[#1B5E20]"></i>
+                        <div class="bg-white rounded-2xl border border-[#f1f5f9] p-8 relative overflow-hidden hover:shadow-lg hover:border-[#1B5E20]/10 transition-all duration-300 group">
+                            <span class="absolute top-6 right-6 font-['Plus_Jakarta_Sans',sans-serif] font-extrabold text-[56px] leading-none text-[#f1f5f9] group-hover:text-[#1B5E20]/5 transition-colors">{{ $item['num'] }}</span>
+                            <div class="relative">
+                                <div class="w-10 h-10 rounded-xl bg-[#1B5E20]/10 flex items-center justify-center mb-5">
+                                    <i data-lucide="chevron-right" class="w-5 h-5 text-[#1B5E20]"></i>
+                                </div>
+                                <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[20px] md:text-[22px] text-[#1d293d] mb-3">{{ $item['title'] }}</h3>
+                                <p class="font-['Plus_Jakarta_Sans',sans-serif] text-[15px] leading-[25px] text-[#45556c]">{{ $item['desc'] }}</p>
                             </div>
-                            <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[24px] leading-[32px] text-[#1d293d]">{{ $item['title'] }}</h3>
-                            <p class="mt-4 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[18px] leading-[29.25px] text-[#45556c]">{{ $item['desc'] }}</p>
                         </div>
-                    </div>
                     @endforeach
                 </div>
             </div>

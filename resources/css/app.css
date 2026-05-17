@@ -219,3 +219,38 @@
     cursor: pointer;
   }
 }
+
+/* Marquee animation - infinite seamless scroll */
+@keyframes scroll-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes scroll-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+.marquee-wrapper {
+  overflow: hidden;
+  padding: 8px 0;
+}
+
+.marquee-content {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  will-change: transform;
+}
+
+.marquee-content--left {
+  animation: scroll-left 100s linear infinite;
+}
+
+.marquee-content--right {
+  animation: scroll-right 100s linear infinite;
+}
+
+.marquee-wrapper:hover .marquee-content {
+  animation-play-state: paused;
+}

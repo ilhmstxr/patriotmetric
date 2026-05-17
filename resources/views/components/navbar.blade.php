@@ -72,13 +72,16 @@
 
             {{-- Informasi Dropdown --}}
             <div class="relative" @mouseenter="dropdownInfoOpen = true" @mouseleave="dropdownInfoOpen = false" x-data="{ dropdownInfoOpen: false }">
-                <button class="flex items-center gap-1 px-3 py-2 rounded-2xl font-['Plus_Jakarta_Sans',sans-serif] text-[14px] whitespace-nowrap transition-colors {{ request()->is('penghargaan') ? 'font-semibold text-[#1b5e20]' : 'font-medium text-[#45556c] hover:text-[#1b5e20]' }}">
+                <button class="flex items-center gap-1 px-3 py-2 rounded-2xl font-['Plus_Jakarta_Sans',sans-serif] text-[14px] whitespace-nowrap transition-colors {{ request()->is('penghargaan') || request()->is('pengumuman') ? 'font-semibold text-[#1b5e20]' : 'font-medium text-[#45556c] hover:text-[#1b5e20]' }}">
                     Informasi
                     <i data-lucide="chevron-down" class="w-4 h-4 transition-transform opacity-50" :class="dropdownInfoOpen ? 'rotate-180' : ''"></i>
                 </button>
 
                 <div x-show="dropdownInfoOpen" x-transition class="absolute top-full left-0 pt-1 z-50 w-full" style="display: none;">
                     <div class="bg-white rounded-xl shadow-lg border border-[#f1f5f9] py-2 min-w-[180px]">
+                        <a href="{{ url('/pengumuman') }}" @click="dropdownInfoOpen = false" class="block px-4 py-2.5 font-['Plus_Jakarta_Sans',sans-serif] text-[14px] transition-colors {{ request()->is('pengumuman') ? 'font-semibold text-[#1b5e20] bg-[rgba(27,94,32,0.05)]' : 'font-medium text-[#45556c] hover:text-[#1b5e20] hover:bg-[rgba(27,94,32,0.05)]' }}">
+                            Pengumuman
+                        </a>
                         <a href="{{ url('/penghargaan') }}" @click="dropdownInfoOpen = false" class="block px-4 py-2.5 font-['Plus_Jakarta_Sans',sans-serif] text-[14px] transition-colors {{ request()->is('penghargaan') ? 'font-semibold text-[#1b5e20] bg-[rgba(27,94,32,0.05)]' : 'font-medium text-[#45556c] hover:text-[#1b5e20] hover:bg-[rgba(27,94,32,0.05)]' }}">
                             Penghargaan 2025
                         </a>
@@ -149,6 +152,7 @@
                     <i data-lucide="chevron-down" class="w-4 h-4 transition-transform opacity-50" :class="mobileInfo ? 'rotate-180' : ''"></i>
                 </button>
                 <div x-show="mobileInfo" class="flex flex-col gap-2 pl-4 mt-2" style="display: none;">
+                    <a href="{{ url('/pengumuman') }}" class="font-['Plus_Jakarta_Sans',sans-serif] py-1 text-[14px] font-medium text-[#45556c] hover:text-[#1b5e20]">Pengumuman</a>
                     <a href="{{ url('/penghargaan') }}" class="font-['Plus_Jakarta_Sans',sans-serif] py-1 text-[14px] font-medium text-[#45556c] hover:text-[#1b5e20]">Penghargaan 2026</a>
                 </div>
             </div>

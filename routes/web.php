@@ -31,6 +31,10 @@ Route::get('/penghargaan', function () {
     return view('penghargaan');
 });
 
+Route::get('/pengumuman', function () {
+    return view('pengumuman');
+});
+
 Route::get('/panduan', function () {
     return view('panduan');
 });

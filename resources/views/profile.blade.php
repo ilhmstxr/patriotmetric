@@ -3,54 +3,67 @@
         {{-- Hero --}}
         <section class="relative bg-[#0f172b] overflow-hidden">
             <div class="absolute inset-0">
-                <img src="{{ asset('assets/images/bg.webp') }}" alt="" class="w-full h-full object-cover opacity-30" />
-                <div class="absolute inset-0 bg-gradient-to-r from-[rgba(27,94,32,0.9)] via-[rgba(27,94,32,0.3)] to-transparent"></div>
+                <img src="{{ asset('assets/images/bg.webp') }}" alt="" class="w-full h-full object-cover opacity-20" />
+                <div class="absolute inset-0 bg-gradient-to-b from-[rgba(27,94,32,0.85)] to-[#0f172b]/90"></div>
             </div>
-            <div class="relative max-w-[1536px] mx-auto px-6 md:px-8 py-24 md:py-40">
-                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] sm:text-[48px] md:text-[60px] leading-[1.2] text-white max-w-[768px]">
+            <div class="absolute top-16 right-16 w-80 h-80 bg-[#d4af37]/5 rounded-full blur-3xl"></div>
+            <div class="relative max-w-[1200px] mx-auto px-6 md:px-8 py-20 md:py-32">
+                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] sm:text-[48px] md:text-[56px] leading-[1.15] text-white max-w-[700px]">
                     Membangun Karakter
                     <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#d4af37] to-[#fff085]">Bangsa</span>
                     dari Kampus
                 </h1>
-                <p class="mt-4 md:mt-6 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] md:text-[20px] leading-[32.5px] text-[rgba(255,255,255,0.8)] max-w-[616px]">
+                <p class="mt-5 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[17px] md:text-[19px] leading-[30px] text-white/75 max-w-[580px]">
                     Sebuah inisiatif pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.
                 </p>
             </div>
         </section>
 
-        {{-- Content --}}
+        {{-- Latar Belakang --}}
         <section class="py-16 md:py-24 bg-white">
-            <div class="max-w-[1200px] mx-auto px-6 md:px-8">
-                <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[24px] md:text-[30px] leading-[36px] text-[#1d293d]">Latar Belakang</h2>
-                <p class="mt-4 md:mt-6 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] md:text-[18px] leading-[26px] md:leading-[29.25px] text-[#45556c] text-justify md:text-left">
-                    Di tengah arus globalisasi, nilai patriotisme menghadapi tantangan serius, mulai dari menurunnya pemahaman terhadap sejarah, derasnya arus disinformasi serta radikalisme digital yang memicu polarisasi, hingga meningkatnya individualisme yang melemahkan kepedulian sosial. Oleh karena itu, diperlukan instrumen yang terukur dan kredibel untuk menilai sejauh mana perguruan tinggi mampu menginternalisasikan nilai-nilai bela negara di seluruh elemennya.
-                </p>
-                <p class="mt-4 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] md:text-[18px] leading-[26px] md:leading-[29.25px] text-[#45556c] text-justify md:text-left">
-                    Universitas Pembangunan Nasional “Veteran” Jawa Timur memprakarsai Patriot Metric UPN Veteran Jatim sebagai jawaban atas kebutuhan tersebut, yaitu sebuah sistem pemeringkatan perguruan tinggi berbasis indikator bela negara. Konsep Patriot Metric muncul dari kebutuhan untuk menghadirkan instrumen evaluasi yang objektif dan terstandar agar pembinaan kesadaran bela negara, khususnya dalam konteks nasionalisme dan patriotisme, dapat dianalisis, dievaluasi, serta dikembangkan secara berkelanjutan.
-                </p>
+            <div class="max-w-[860px] mx-auto px-6 md:px-8">
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="w-1 h-8 bg-[#1B5E20] rounded-full"></div>
+                    <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[26px] md:text-[32px] text-[#1d293d]">Latar Belakang</h2>
+                </div>
+                <div class="space-y-5 font-['Plus_Jakarta_Sans',sans-serif] text-[16px] md:text-[17px] leading-[28px] md:leading-[30px] text-[#45556c]">
+                    <p>
+                        Di tengah arus globalisasi, nilai patriotisme menghadapi tantangan serius, mulai dari menurunnya pemahaman terhadap sejarah, derasnya arus disinformasi serta radikalisme digital yang memicu polarisasi, hingga meningkatnya individualisme yang melemahkan kepedulian sosial. Oleh karena itu, diperlukan instrumen yang terukur dan kredibel untuk menilai sejauh mana perguruan tinggi mampu menginternalisasikan nilai-nilai bela negara di seluruh elemennya.
+                    </p>
+                    <p>
+                        Universitas Pembangunan Nasional "Veteran" Jawa Timur memprakarsai Patriot Metric UPN Veteran Jatim sebagai jawaban atas kebutuhan tersebut, yaitu sebuah sistem pemeringkatan perguruan tinggi berbasis indikator bela negara. Konsep Patriot Metric muncul dari kebutuhan untuk menghadirkan instrumen evaluasi yang objektif dan terstandar agar pembinaan kesadaran bela negara, khususnya dalam konteks nasionalisme dan patriotisme, dapat dianalisis, dievaluasi, serta dikembangkan secara berkelanjutan.
+                    </p>
+                </div>
+            </div>
+        </section>
 
-                {{-- Tujuan Utama --}}
-                <div class="mt-12 md:mt-16 bg-white border border-[#f1f5f9] rounded-3xl shadow-lg p-6 md:p-10 max-w-[832px] mx-auto relative overflow-hidden">
-                    <div class="absolute top-0 right-0 bg-[rgba(27,94,32,0.05)] rounded-bl-full size-24 md:size-32"></div>
-                    <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[20px] md:text-[24px] leading-[32px] text-[#1d293d] mb-6 md:mb-8 relative z-10">Tujuan Utama Program</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 relative z-10">
-                        @php
+        {{-- Tujuan Utama --}}
+        <section class="py-16 md:py-20 bg-[#f8fafc]">
+            <div class="max-w-[1100px] mx-auto px-6 md:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[26px] md:text-[32px] text-[#1d293d]">Tujuan Utama Program</h2>
+                    <p class="mt-3 font-['Plus_Jakarta_Sans',sans-serif] text-[16px] text-[#64748b] max-w-[500px] mx-auto">Empat pilar yang menjadi landasan pengembangan Patriot Metric.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    @php
                         $tujuan = [
-                        ['num' => "1", 'text' => "Instrumen Evaluasi Kelembagaan untuk menilai internalisasi karakter bela negara."],
-                        ['num' => "2", 'text' => "Penguatan Ekosistem Pendidikan Berbasis Nilai Kebangsaan melalui Tri Dharma/."],
-                        ['num' => "3", 'text' => "Peningkatan Sinergi dan kolaborasi Antarperguruan Tinggi."],
-                        ['num' => "4", 'text' => "Mendorong setiap perguruan tinggi untuk perbaikan berkelanjutan."]
+                            ['num' => "01", 'title' => "Instrumen Evaluasi", 'text' => "Menilai internalisasi karakter bela negara secara terukur dan objektif di lingkungan perguruan tinggi."],
+                            ['num' => "02", 'title' => "Penguatan Ekosistem", 'text' => "Memperkuat ekosistem pendidikan berbasis nilai kebangsaan melalui implementasi Tri Dharma."],
+                            ['num' => "03", 'title' => "Sinergi Antarperguruan Tinggi", 'text' => "Mendorong kolaborasi dan sinergi antarperguruan tinggi dalam pembinaan bela negara."],
+                            ['num' => "04", 'title' => "Perbaikan Berkelanjutan", 'text' => "Mendorong setiap perguruan tinggi untuk terus melakukan perbaikan dan inovasi berkelanjutan."],
                         ];
-                        @endphp
-                        @foreach($tujuan as $item)
-                        <div class="flex gap-4">
-                            <div class="bg-[rgba(212,175,55,0.1)] rounded-full size-8 flex items-center justify-center shrink-0 mt-0.5">
-                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] text-[#d4af37]">{{ $item['num'] }}</span>
+                    @endphp
+                    @foreach($tujuan as $item)
+                        <div class="bg-white rounded-2xl border border-[#f1f5f9] p-7 hover:shadow-lg hover:border-[#1B5E20]/10 transition-all duration-300">
+                            <div class="flex items-start gap-4">
+                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[28px] text-[#d4af37]/40 leading-none">{{ $item['num'] }}</span>
+                                <div>
+                                    <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[17px] text-[#1d293d]">{{ $item['title'] }}</h3>
+                                    <p class="mt-2 font-['Plus_Jakarta_Sans',sans-serif] text-[15px] leading-[24px] text-[#45556c]">{{ $item['text'] }}</p>
+                                </div>
                             </div>
-                            <p class="font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[16px] leading-[26px] text-[#45556c]">{{ $item['text'] }}</p>
                         </div>
-                        @endforeach
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </section>

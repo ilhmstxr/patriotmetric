@@ -50,6 +50,9 @@
                             <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-300 text-[#45556C] opacity-60" :class="infoOpen ? 'rotate-180' : ''"></i>
                         </button>
                         <div x-show="infoOpen" x-transition.opacity.duration.300ms class="flex flex-col gap-2.5 pl-[20px] border-l-2 border-[#f1f5f9] ml-[2px] mt-2 mb-1" style="display: none;">
+                            <a href="{{ url('/pengumuman') }}" class="font-['Plus_Jakarta_Sans',sans-serif] font-normal leading-[20px] text-[13px] text-[#62748E] hover:text-[#1B5E20] hover:translate-x-1 transition-all">
+                                Pengumuman
+                            </a>
                             <a href="{{ url('/penghargaan') }}" class="font-['Plus_Jakarta_Sans',sans-serif] font-normal leading-[20px] text-[13px] text-[#62748E] hover:text-[#1B5E20] hover:translate-x-1 transition-all">
                                 Penghargaan 2025
                             </a>
