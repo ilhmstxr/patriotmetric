@@ -65,22 +65,38 @@ class AssessmentResource extends Resource
 
                 Section::make('Hasil Dokumen Setelah Verifikasi')
                     ->schema([
-                        TextEntry::make('identitas_legal_documents')
-                            ->label('Dokumen Verifikasi (Klik untuk membuka)')
-                            ->getStateUsing(function ($record) {
-                                $docs = $record->identitas?->legal_documents;
-                                if (empty($docs) || !is_array($docs)) return '-';
-                                $html = '<ul class="list-disc ml-5">';
-                                foreach ($docs as $key => $link) {
-                                    $name = is_numeric($key) ? 'Dokumen '.($key+1) : ucfirst(str_replace('_', ' ', $key));
-                                    $href = is_string($link) ? $link : '#';
-                                    $html .= "<li><a href=\"{$href}\" target=\"_blank\" style=\"color:blue; text-decoration:underline;\">{$name}</a></li>";
-                                }
-                                $html .= '</ul>';
-                                return new \Illuminate\Support\HtmlString($html);
-                            })
+                        TextEntry::make('legal_documents_preview')
+                            ->label('')
                             ->html()
                             ->columnSpanFull()
+                            ->getStateUsing(function ($record) {
+                                $docs = $record->identitas?->legal_documents;
+
+                                if (empty($docs)) return '<p class="text-gray-500">Belum ada dokumen.</p>';
+
+                                if (is_string($docs)) {
+                                    $docs = json_decode($docs, true);
+                                }
+
+                                if (empty($docs) || !is_array($docs)) {
+                                    return '<p class="text-gray-500">Belum ada dokumen.</p>';
+                                }
+
+                                $html = '<div class="space-y-2">';
+                                foreach ($docs as $key => $path) {
+                                    $label = ucfirst(str_replace('_', ' ', $key));
+                                    $url = str_starts_with($path, 'http')
+                                        ? $path
+                                        : asset('storage/' . ltrim(str_replace('/storage/', '', $path), '/'));
+                                    $html .= '<div class="flex items-center gap-2">';
+                                    $html .= '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>';
+                                    $html .= '<a href="' . e($url) . '" target="_blank" class="text-primary-600 hover:underline">' . e($label) . '</a>';
+                                    $html .= '</div>';
+                                }
+                                $html .= '</div>';
+
+                                return $html;
+                            }),
                     ]),
 
                 Section::make('Jawaban Rubrik')
@@ -95,7 +111,12 @@ class AssessmentResource extends Resource
                                     ->openUrlInNewTab()
                                     ->color('primary'),
                                 TextEntry::make('skor_sistem')->label('Skor Sistem'),
-                                TextEntry::make('skor_validasi_reviewer')->label('Skor Reviewer'),
+                                TextEntry::make('skor_validasi_reviewer')
+                                    ->label('Skor Reviewer')
+                                    ->placeholder('(kosong / belum di review)'),
+                                TextEntry::make('note_reviewer')
+                                    ->label('Note Reviewer')
+                                    ->placeholder('(kosong / belum di review)'),
                             ])
                             ->columns(2)
                             ->columnSpanFull()
