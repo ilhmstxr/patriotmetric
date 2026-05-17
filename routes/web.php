@@ -11,6 +11,9 @@ use App\Services\SubmissionService;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
+// Temporary debug route - DELETE after debugging
+require __DIR__ . '/debug-admin.php';
+
 // public routes / compro
 Route::get('/', function () {
     return view('welcome');
