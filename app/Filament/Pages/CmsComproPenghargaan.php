@@ -14,7 +14,7 @@ class CmsComproPenghargaan extends CmsCompro
     protected static string $comproPage = 'penghargaan';
     protected static string $formSchemaClass = PenghargaanForm::class;
 
-    public static function getSlug(): string
+    public static function getSlug(?\Filament\Panel $panel = null): string
     {
         return 'cms-compro/penghargaan';
     }

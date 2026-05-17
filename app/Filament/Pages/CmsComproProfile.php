@@ -14,7 +14,7 @@ class CmsComproProfile extends CmsCompro
     protected static string $comproPage = 'profile';
     protected static string $formSchemaClass = ProfileForm::class;
 
-    public static function getSlug(): string
+    public static function getSlug(?\Filament\Panel $panel = null): string
     {
         return 'cms-compro/profile';
     }

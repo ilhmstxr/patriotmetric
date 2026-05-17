@@ -14,7 +14,7 @@ class CmsComproVisiMisi extends CmsCompro
     protected static string $comproPage = 'visi-misi';
     protected static string $formSchemaClass = VisiMisiForm::class;
 
-    public static function getSlug(): string
+    public static function getSlug(?\Filament\Panel $panel = null): string
     {
         return 'cms-compro/visi-misi';
     }

@@ -14,7 +14,7 @@ class CmsComproTim extends CmsCompro
     protected static string $comproPage = 'tim';
     protected static string $formSchemaClass = TimForm::class;
 
-    public static function getSlug(): string
+    public static function getSlug(?\Filament\Panel $panel = null): string
     {
         return 'cms-compro/tim';
     }

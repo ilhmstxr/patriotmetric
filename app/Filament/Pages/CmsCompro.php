@@ -41,7 +41,7 @@ class CmsCompro extends Page
      */
     protected static string $formSchemaClass = WelcomeForm::class;
 
-    public static function getSlug(): string
+    public static function getSlug(?\Filament\Panel $panel = null): string
     {
         return 'cms-compro/' . static::$comproPage;
     }

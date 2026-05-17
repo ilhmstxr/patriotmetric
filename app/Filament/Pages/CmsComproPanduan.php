@@ -14,7 +14,7 @@ class CmsComproPanduan extends CmsCompro
     protected static string $comproPage = 'panduan';
     protected static string $formSchemaClass = PanduanForm::class;
 
-    public static function getSlug(): string
+    public static function getSlug(?\Filament\Panel $panel = null): string
     {
         return 'cms-compro/panduan';
     }
