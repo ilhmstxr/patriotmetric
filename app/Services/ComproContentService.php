@@ -21,10 +21,14 @@ class ComproContentService
         try {
             $cacheKey = "compro_content.{$page}";
 
-            // Check cache first
-            $cached = Cache::get($cacheKey);
-            if ($cached !== null && $cached->isNotEmpty()) {
-                return $cached;
+            // Try cache first
+            try {
+                $cached = Cache::get($cacheKey);
+                if ($cached !== null && $cached->isNotEmpty()) {
+                    return $cached;
+                }
+            } catch (\Throwable $e) {
+                // Cache unavailable (table missing, connection issue) — skip cache
             }
 
             // Query database
@@ -36,16 +40,21 @@ class ComproContentService
 
             // Only cache non-empty results
             if ($result->isNotEmpty()) {
-                Cache::put($cacheKey, $result, self::CACHE_TTL);
+                try {
+                    Cache::put($cacheKey, $result, self::CACHE_TTL);
+                } catch (\Throwable $e) {
+                    // Cache write failed — continue without caching
+                }
             }
 
             return $result;
         } catch (\Throwable $e) {
+            // If table doesn't exist or query fails, return empty collection
             Log::error('ComproContentService::getPageContent failed', [
                 'page' => $page,
                 'error' => $e->getMessage(),
             ]);
-            throw $e;
+            return collect();
         }
     }
 
