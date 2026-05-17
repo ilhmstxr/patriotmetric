@@ -2,8 +2,9 @@
 
 namespace App\Filament\Pages\Auth;
 
-use Filament\Pages\Auth\Login as BaseLogin;
-use Filament\Http\Responses\Auth\Contracts\LoginResponse;
+use Filament\Auth\Pages\Login as BaseLogin;
+use Filament\Auth\Http\Responses\Contracts\LoginResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class Login extends BaseLogin
@@ -12,7 +13,7 @@ class Login extends BaseLogin
     {
         $data = $this->form->getState();
 
-        if (! auth()->attempt([
+        if (! Auth::attempt([
             'email' => $data['email'],
             'password' => $data['password'],
         ], $data['remember'] ?? false)) {
@@ -21,13 +22,13 @@ class Login extends BaseLogin
             ]);
         }
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         $isAdmin = strtoupper($user->role) === 'ADMIN';
         $isActive = strtoupper($user->status) === 'ACTIVE';
 
         if (! $isAdmin || ! $isActive) {
-            auth()->logout();
+            Auth::logout();
 
             throw ValidationException::withMessages([
                 'data.email' => "DEBUG: role={$user->role}, status={$user->status}, is_admin=" . ($isAdmin ? 'true' : 'false') . ", is_active=" . ($isActive ? 'true' : 'false'),
