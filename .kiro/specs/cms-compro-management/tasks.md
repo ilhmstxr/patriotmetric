@@ -6,14 +6,14 @@ Implementasi CMS Compro Management untuk mengelola konten 7 halaman company prof
 
 ## Tasks
 
-- [ ] 1. Setup database, model, dan DTO
-  - [ ] 1.1 Create migration for `compro_contents` table
+- [x] 1. Setup database, model, dan DTO
+  - [x] 1.1 Create migration for `compro_contents` table
     - Create migration file `database/migrations/xxxx_create_compro_contents_table.php`
     - Define columns: id, page (varchar 50, indexed), section (varchar 100, indexed), key (varchar 150), type (enum: text/richtext/image/url/repeater), value (longText nullable), order (unsigned integer default 0), timestamps
     - Add composite unique constraint on (page, section, key)
     - _Requirements: 7.2_
 
-  - [ ] 1.2 Create ComproContent model
+  - [x] 1.2 Create ComproContent model
     - Create `app/Models/ComproContent.php`
     - Define fillable fields: page, section, key, type, value, order
     - Implement value Attribute accessor/mutator (JSON decode for repeater type, JSON encode for arrays)
@@ -21,19 +21,19 @@ Implementasi CMS Compro Management untuk mengelola konten 7 halaman company prof
     - Cast `order` to integer
     - _Requirements: 1.2, 2.1_
 
-  - [ ] 1.3 Create ComproContentDTO
+  - [x] 1.3 Create ComproContentDTO
     - Create `app/DTO/ComproContentDTO.php`
     - Define readonly class with properties: page, section, key, type, value (string|array|null), order
     - Implement `fromModel(ComproContent)` and `fromArray(array)` static factory methods
     - _Requirements: 1.2_
 
-- [ ] 2. Implement service layer
-  - [ ] 2.1 Install intervention/image package
+- [x] 2. Implement service layer
+  - [x] 2.1 Install intervention/image package
     - Run `composer require intervention/image`
     - Publish config if needed for Laravel integration
     - _Requirements: 5.1_
 
-  - [ ] 2.2 Implement ComproContentService
+  - [x] 2.2 Implement ComproContentService
     - Create `app/Services/ComproContentService.php`
     - Implement `getPageContent(string $page): Collection` — cached (1 hour TTL), grouped by section, ordered by section then order
     - Implement `getValue(string $page, string $section, string $key): string|array|null`
@@ -52,7 +52,7 @@ Implementasi CMS Compro Management untuk mengelola konten 7 halaman company prof
     - Save via `updateStaticContent()`, retrieve via `getValue()`, assert exact equality
     - Minimum 100 iterations via data provider
 
-  - [ ] 2.4 Implement ImageProcessingService
+  - [x] 2.4 Implement ImageProcessingService
     - Create `app/Services/ImageProcessingService.php`
     - Implement `processAndStore(UploadedFile $file, ?string $existingPath = null): string`
     - Delete existing file if replacing (call `delete()`)
@@ -71,11 +71,11 @@ Implementasi CMS Compro Management untuk mengelola konten 7 halaman company prof
     - Assert output is WebP, dimensions ≤ 1920x1080, aspect ratio preserved, file exists on disk
     - Minimum 100 iterations
 
-- [ ] 3. Checkpoint - Ensure migration runs and services work
+- [x] 3. Checkpoint - Ensure migration runs and services work
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Build Filament Custom Page with 7 form schemas
-  - [ ] 4.1 Create CmsCompro Filament Page
+- [x] 4. Build Filament Custom Page with 7 form schemas
+  - [x] 4.1 Create CmsCompro Filament Page
     - Create `app/Filament/Pages/CmsCompro.php`
     - Set view to `filament.pages.cms-compro`
     - Configure navigation: icon `heroicon-o-globe-alt`, label "CMS Compro", group "Konten Website", sort 1
@@ -87,7 +87,7 @@ Implementasi CMS Compro Management untuk mengelola konten 7 halaman company prof
     - Handle image uploads via ImageProcessingService within save method
     - _Requirements: 1.1, 1.2, 1.3, 3.1, 3.2, 4.1, 4.6_
 
-  - [ ] 4.2 Create Filament page Blade view
+  - [x] 4.2 Create Filament page Blade view
     - Create `resources/views/filament/pages/cms-compro.blade.php`
     - Layout: flex row with form panel (left) and preview panel (right) using Alpine.js x-data
     - Tab navigation: 7 buttons (welcome, profile, visi-misi, tim, penghargaan, panduan, pengumuman) with wire:click to switch activeTab
@@ -97,7 +97,7 @@ Implementasi CMS Compro Management untuk mengelola konten 7 halaman company prof
     - Responsive: full width form when preview hidden, 50/50 split when shown
     - _Requirements: 3.1, 3.4, 3.5, 3.6, 4.1_
 
-  - [ ] 4.3 Create WelcomeForm schema
+  - [x] 4.3 Create WelcomeForm schema
     - Create `app/Filament/Pages/ComproForms/WelcomeForm.php`
     - Sections: Hero (judul, deskripsi, background_image), About (judul, deskripsi as RichEditor with toolbar buttons, video_url), Institusi Partisipan (judul, deskripsi, daftar_baris_1 repeater with nama+logo, daftar_baris_2 repeater with nama+logo), Timeline (judul, deskripsi, daftar repeater with nomor+tanggal+judul+deskripsi), Instagram (judul, deskripsi, posts repeater with url+gambar+alt_text)
     - No CTA button fields in Hero section
@@ -106,34 +106,34 @@ Implementasi CMS Compro Management untuk mengelola konten 7 halaman company prof
     - Section titles for Institusi Partisipan and Timeline
     - _Requirements: 1.2, 1.4, 2.5_
 
-  - [ ] 4.4 Create ProfileForm schema
+  - [x] 4.4 Create ProfileForm schema
     - Create `app/Filament/Pages/ComproForms/ProfileForm.php`
     - Sections: Hero (judul, deskripsi, background_image), Latar Belakang (judul, deskripsi as RichEditor), Tujuan Utama (judul, deskripsi, daftar repeater with nomor+judul+deskripsi)
     - Latar Belakang deskripsi = 1 RichEditor field (merged paragraphs)
     - _Requirements: 1.2, 1.4, 2.5_
 
-  - [ ] 4.5 Create VisiMisiForm schema
+  - [x] 4.5 Create VisiMisiForm schema
     - Create `app/Filament/Pages/ComproForms/VisiMisiForm.php`
     - Sections: Hero (judul, deskripsi), Visi (teks textarea), Misi (judul, daftar repeater with nomor+judul+deskripsi)
     - _Requirements: 1.2, 1.4, 2.5_
 
-  - [ ] 4.6 Create TimForm schema
+  - [x] 4.6 Create TimForm schema
     - Create `app/Filament/Pages/ComproForms/TimForm.php`
     - Sections: Hero (judul, deskripsi), Team Grid (daftar repeater with nama+role+foto)
     - _Requirements: 1.2, 1.4, 2.5_
 
-  - [ ] 4.7 Create PenghargaanForm schema
+  - [x] 4.7 Create PenghargaanForm schema
     - Create `app/Filament/Pages/ComproForms/PenghargaanForm.php`
     - Sections: Hero (judul, deskripsi, background_image), Daftar Penerima (judul, daftar repeater with nama+logo+rating)
     - Award winners include logo field
     - _Requirements: 1.2, 1.4, 2.5_
 
-  - [ ] 4.8 Create PanduanForm schema
+  - [x] 4.8 Create PanduanForm schema
     - Create `app/Filament/Pages/ComproForms/PanduanForm.php`
     - Sections: Hero (judul, deskripsi, tombol_teks, tombol_link), Steps (daftar repeater with label+judul+deskripsi+icon), FAQ (judul, daftar repeater with pertanyaan+jawaban)
     - _Requirements: 1.2, 1.4, 2.5_
 
-  - [ ] 4.9 Create PengumumanForm schema
+  - [x] 4.9 Create PengumumanForm schema
     - Create `app/Filament/Pages/ComproForms/PengumumanForm.php`
     - Sections: Hero (judul, deskripsi), Artikel (daftar repeater with tanggal DatePicker+judul+excerpt+gambar)
     - _Requirements: 1.2, 1.4, 2.5_
@@ -146,11 +146,11 @@ Implementasi CMS Compro Management untuk mengelola konten 7 halaman company prof
     - Assert valid inputs pass validation, invalid inputs are rejected with specific field error messages
     - Minimum 100 iterations
 
-- [ ] 5. Checkpoint - Ensure Filament page renders and forms work
+- [x] 5. Checkpoint - Ensure Filament page renders and forms work
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Build preview system
-  - [ ] 6.1 Create ComproPreviewController
+- [x] 6. Build preview system
+  - [x] 6.1 Create ComproPreviewController
     - Create `app/Http/Controllers/ComproPreviewController.php`
     - Inject ComproContentService via constructor
     - Implement `show(Request $request, string $page): View`
@@ -158,51 +158,51 @@ Implementasi CMS Compro Management untuk mengelola konten 7 halaman company prof
     - Load page content via service, pass to view with `previewMode = true`
     - _Requirements: 3.1, 3.3, 3.5_
 
-  - [ ] 6.2 Register preview route
+  - [x] 6.2 Register preview route
     - Add route in `routes/web.php`: `GET /admin/compro-preview/{page}`
     - Apply middleware: `auth`, `verified` (admin-only access)
     - Name route: `compro.preview`
     - _Requirements: 3.5_
 
-  - [ ] 6.3 Create preview Blade template for Welcome page
+  - [x] 6.3 Create preview Blade template for Welcome page
     - Create `resources/views/compro-preview/welcome.blade.php`
     - Render all sections (hero, about, institusi, timeline, instagram) using `$content` data
     - No navbar/footer, include Tailwind CSS for styling
     - Match public page layout and styling exactly
     - _Requirements: 3.3_
 
-  - [ ] 6.4 Create preview Blade template for Profile page
+  - [x] 6.4 Create preview Blade template for Profile page
     - Create `resources/views/compro-preview/profile.blade.php`
     - Render hero, latar-belakang (rich text), tujuan-utama sections
     - _Requirements: 3.3_
 
-  - [ ] 6.5 Create preview Blade template for Visi-Misi page
+  - [x] 6.5 Create preview Blade template for Visi-Misi page
     - Create `resources/views/compro-preview/visi-misi.blade.php`
     - Render hero, visi, misi sections
     - _Requirements: 3.3_
 
-  - [ ] 6.6 Create preview Blade template for Tim page
+  - [x] 6.6 Create preview Blade template for Tim page
     - Create `resources/views/compro-preview/tim.blade.php`
     - Render hero, team-grid sections
     - _Requirements: 3.3_
 
-  - [ ] 6.7 Create preview Blade template for Penghargaan page
+  - [x] 6.7 Create preview Blade template for Penghargaan page
     - Create `resources/views/compro-preview/penghargaan.blade.php`
     - Render hero, daftar-penerima sections (with logo + rating stars)
     - _Requirements: 3.3_
 
-  - [ ] 6.8 Create preview Blade template for Panduan page
+  - [x] 6.8 Create preview Blade template for Panduan page
     - Create `resources/views/compro-preview/panduan.blade.php`
     - Render hero (with pedoman button), steps, faq sections
     - _Requirements: 3.3_
 
-  - [ ] 6.9 Create preview Blade template for Pengumuman page
+  - [x] 6.9 Create preview Blade template for Pengumuman page
     - Create `resources/views/compro-preview/pengumuman.blade.php`
     - Render hero, artikel sections (with date, title, excerpt, thumbnail)
     - _Requirements: 3.3_
 
-- [ ] 7. Create seeder for all 7 pages
-  - [ ] 7.1 Implement ComproContentSeeder
+- [x] 7. Create seeder for all 7 pages
+  - [x] 7.1 Implement ComproContentSeeder
     - Create `database/seeders/ComproContentSeeder.php`
     - Wrap all operations in DB::transaction for atomicity
     - Use `firstOrCreate` for idempotency (skip existing records)
@@ -220,11 +220,11 @@ Implementasi CMS Compro Management untuk mengelola konten 7 halaman company prof
     - Assert modified records are NOT overwritten, only new keys are created
     - Minimum 100 iterations
 
-- [ ] 8. Checkpoint - Ensure seeder runs and preview system works
+- [x] 8. Checkpoint - Ensure seeder runs and preview system works
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Update public Blade views to read from ComproContentService
-  - [ ] 9.1 Update welcome.blade.php
+- [x] 9. Update public Blade views to read from ComproContentService
+  - [x] 9.1 Update welcome.blade.php
     - Inject ComproContentService data via controller or view composer
     - Replace hardcoded hero content (judul, deskripsi, background) with service values
     - Replace hardcoded about section (judul, rich text deskripsi, video_url) with service values
@@ -234,33 +234,33 @@ Implementasi CMS Compro Management untuk mengelola konten 7 halaman company prof
     - Hide sections with zero repeater items (Requirement 2.7)
     - _Requirements: 1.3, 2.7, 6.3_
 
-  - [ ] 9.2 Update profile.blade.php
+  - [x] 9.2 Update profile.blade.php
     - Replace hardcoded hero, latar-belakang (render rich text HTML), tujuan-utama with service values
     - Hide tujuan-utama section if repeater is empty
     - _Requirements: 1.3, 2.7, 6.3_
 
-  - [ ] 9.3 Update visi-misi Blade view
+  - [x] 9.3 Update visi-misi Blade view
     - Replace hardcoded hero, visi, misi content with service values
     - Hide misi section if repeater is empty
     - _Requirements: 1.3, 2.7, 6.3_
 
-  - [ ] 9.4 Update tim.blade.php
+  - [x] 9.4 Update tim.blade.php
     - Replace hardcoded hero, team-grid content with service values
     - Hide team-grid section if repeater is empty
     - _Requirements: 1.3, 2.7, 6.3_
 
-  - [ ] 9.5 Update penghargaan.blade.php
+  - [x] 9.5 Update penghargaan.blade.php
     - Replace hardcoded hero, daftar-penerima content with service values
     - Display award winners with nama, logo, and rating stars
     - Hide daftar-penerima section if repeater is empty
     - _Requirements: 1.3, 2.7, 6.3_
 
-  - [ ] 9.6 Update panduan.blade.php
+  - [x] 9.6 Update panduan.blade.php
     - Replace hardcoded hero (with pedoman button), steps, faq content with service values
     - Hide steps/faq sections if repeater is empty
     - _Requirements: 1.3, 2.7, 6.3_
 
-  - [ ] 9.7 Update or create pengumuman.blade.php
+  - [x] 9.7 Update or create pengumuman.blade.php
     - Create public view for pengumuman page if not exists, or update existing
     - Render hero, artikel list (tanggal, judul, excerpt, gambar thumbnail) from service values
     - Hide artikel section if repeater is empty
@@ -274,7 +274,7 @@ Implementasi CMS Compro Management untuk mengelola konten 7 halaman company prof
     - Assert pengaturan_cms table remains unchanged (same row count, same values)
     - Minimum 100 iterations
 
-- [ ] 10. Checkpoint - Ensure public pages render correctly from CMS data
+- [x] 10. Checkpoint - Ensure public pages render correctly from CMS data
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 11. Integration testing and remaining property tests
@@ -310,7 +310,7 @@ Implementasi CMS Compro Management untuk mengelola konten 7 halaman company prof
     - Test preview iframe URL updates on tab switch
     - _Requirements: 1.1, 1.2, 1.3, 3.2, 4.6_
 
-- [ ] 12. Final checkpoint - Ensure all tests pass
+- [x] 12. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

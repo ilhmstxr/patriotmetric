@@ -1,21 +1,27 @@
-@inject('comproService', 'App\Services\ComproContentService')
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Preview - Welcome</title>
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/logo.webp') }}" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="antialiased font-['Plus_Jakarta_Sans',sans-serif]" x-data x-init="$nextTick(() => { lucide.createIcons() })">
+    @php
+        $hero = $content->get('hero', collect());
+        $about = $content->get('about', collect());
+        $institusi = $content->get('institusi', collect());
+        $timeline = $content->get('timeline', collect());
+        $instagram = $content->get('instagram', collect());
 
-@php
-    $content = $comproService->getPageContent('welcome');
+        // Helper to get value by key from a section collection
+        $getValue = function($section, $key) {
+            return $section->firstWhere('key', $key)?->value;
+        };
+    @endphp
 
-    $hero = $content->get('hero', collect());
-    $about = $content->get('about', collect());
-    $institusi = $content->get('institusi', collect());
-    $timeline = $content->get('timeline', collect());
-    $instagram = $content->get('instagram', collect());
-
-    // Helper to get value by key from a section collection
-    $getValue = function($section, $key) {
-        return $section->firstWhere('key', $key)?->value;
-    };
-@endphp
-
-<x-layouts.app>
     <div class="bg-white">
         {{-- Hero Section --}}
         <section class="relative bg-[#0f172b] overflow-hidden">
@@ -27,7 +33,7 @@
             </div>
             <div class="relative max-w-[1536px] mx-auto px-6 md:px-8 py-24 md:py-44">
                 <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] sm:text-[48px] md:text-[60px] leading-[1.2] text-white max-w-[768px]">
-                    {{ $getValue($hero, 'judul') ?? 'Membangun Karakter Bangsa dari Kampus' }}
+                    {{ $getValue($hero, 'judul') ?? '' }}
                 </h1>
                 <p class="mt-6 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[18px] md:text-[20px] leading-[32.5px] text-[rgba(255,255,255,0.8)] max-w-[616px]">
                     {{ $getValue($hero, 'deskripsi') ?? '' }}
@@ -50,7 +56,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div>
                         <div class="relative">
-                            <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[28px] md:text-[36px] leading-[40px] text-[#1d293d]">{{ $getValue($about, 'judul') ?? 'Patriot Metric' }}</h2>
+                            <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[28px] md:text-[36px] leading-[40px] text-[#1d293d]">{{ $getValue($about, 'judul') ?? '' }}</h2>
                             <div class="bg-[#d4af37] h-1 w-20 rounded-full mt-2"></div>
                         </div>
                         <div class="mt-8 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[18px] leading-[29.25px] text-[#45556c] prose prose-lg max-w-none [&_p]:mb-4 [&_ul]:mt-6 [&_ul]:flex [&_ul]:flex-col [&_ul]:gap-3 [&_ul]:pt-4 [&_li]:flex [&_li]:items-center [&_li]:gap-3 [&_li]:font-medium [&_li]:text-[#314158] [&_li]:before:content-[''] [&_li]:before:w-2.5 [&_li]:before:h-2.5 [&_li]:before:rounded-full [&_li]:before:bg-[#1B5E20] [&_li]:before:shrink-0 [&_li]:list-none">
@@ -104,10 +110,10 @@
                                     </div>
                                 @else
                                     <div class="size-9 rounded-full bg-[#1B5E20]/10 flex items-center justify-center shrink-0">
-                                        <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[9px] text-[#1B5E20] text-center leading-tight">{{ Str::limit($inst['nama'] ?? '', 6, '') }}</span>
+                                        <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[9px] text-[#1B5E20] text-center leading-tight">{{ Str::limit($inst['nama'], 6, '') }}</span>
                                     </div>
                                 @endif
-                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] text-[#314158]">{{ $inst['nama'] ?? '' }}</span>
+                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] text-[#314158]">{{ $inst['nama'] }}</span>
                             </div>
                         @endforeach
                     @endfor
@@ -120,10 +126,10 @@
                                     </div>
                                 @else
                                     <div class="size-9 rounded-full bg-[#1B5E20]/10 flex items-center justify-center shrink-0">
-                                        <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[9px] text-[#1B5E20] text-center leading-tight">{{ Str::limit($inst['nama'] ?? '', 6, '') }}</span>
+                                        <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[9px] text-[#1B5E20] text-center leading-tight">{{ Str::limit($inst['nama'], 6, '') }}</span>
                                     </div>
                                 @endif
-                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] text-[#314158]">{{ $inst['nama'] ?? '' }}</span>
+                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] text-[#314158]">{{ $inst['nama'] }}</span>
                             </div>
                         @endforeach
                     @endfor
@@ -146,10 +152,10 @@
                                     </div>
                                 @else
                                     <div class="size-9 rounded-full bg-[#d4af37]/15 flex items-center justify-center shrink-0">
-                                        <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[9px] text-[#b8941f] text-center leading-tight">{{ Str::limit($inst['nama'] ?? '', 6, '') }}</span>
+                                        <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[9px] text-[#b8941f] text-center leading-tight">{{ Str::limit($inst['nama'], 6, '') }}</span>
                                     </div>
                                 @endif
-                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] text-[#314158]">{{ $inst['nama'] ?? '' }}</span>
+                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] text-[#314158]">{{ $inst['nama'] }}</span>
                             </div>
                         @endforeach
                     @endfor
@@ -162,10 +168,10 @@
                                     </div>
                                 @else
                                     <div class="size-9 rounded-full bg-[#d4af37]/15 flex items-center justify-center shrink-0">
-                                        <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[9px] text-[#b8941f] text-center leading-tight">{{ Str::limit($inst['nama'] ?? '', 6, '') }}</span>
+                                        <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[9px] text-[#b8941f] text-center leading-tight">{{ Str::limit($inst['nama'], 6, '') }}</span>
                                     </div>
                                 @endif
-                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] text-[#314158]">{{ $inst['nama'] ?? '' }}</span>
+                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] text-[#314158]">{{ $inst['nama'] }}</span>
                             </div>
                         @endforeach
                     @endfor
@@ -202,16 +208,16 @@
                         <div class="relative flex md:items-start mb-12 last:mb-0">
                             {{-- Circle --}}
                             <div class="absolute left-[24px] md:left-1/2 -translate-x-1/2 bg-white border-4 border-[#f8fafc] shadow-[0px_20px_25px_0px_rgba(27,94,32,0.2)] rounded-full size-[48px] md:size-[74px] flex items-center justify-center z-10">
-                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] md:text-[24px] text-[#1b5e20]">{{ $item['nomor'] ?? '' }}</span>
+                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] md:text-[24px] text-[#1b5e20]">{{ $item['nomor'] }}</span>
                             </div>
                             {{-- Content --}}
                             <div class="w-full pl-[64px] md:pl-0 md:w-[calc(50%-60px)] {{ $isRight ? 'md:ml-auto md:pl-8 text-left' : 'md:mr-auto md:pr-8 text-left md:text-right' }}">
                                 <div class="bg-white rounded-xl p-5 shadow-sm border border-[#f1f5f9] hover:shadow-md hover:border-[#1B5E20]/10 transition-all duration-300">
                                     <div class="inline-block bg-[rgba(212,175,55,0.1)] rounded-full px-3 py-1 mb-2">
-                                        <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[13px] text-[#d4af37] uppercase tracking-wider">{{ $item['tanggal'] ?? '' }}</span>
+                                        <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[13px] text-[#d4af37] uppercase tracking-wider">{{ $item['tanggal'] }}</span>
                                     </div>
-                                    <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[18px] md:text-[20px] leading-[28px] text-[#1d293d]">{{ $item['judul'] ?? '' }}</h3>
-                                    <p class="mt-1 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[15px] leading-[24px] text-[#45556c]">{{ $item['deskripsi'] ?? '' }}</p>
+                                    <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[18px] md:text-[20px] leading-[28px] text-[#1d293d]">{{ $item['judul'] }}</h3>
+                                    <p class="mt-1 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[15px] leading-[24px] text-[#45556c]">{{ $item['deskripsi'] }}</p>
                                 </div>
                             </div>
                         </div>
@@ -266,16 +272,9 @@
                         </a>
                     @endforeach
                 </div>
-
-                <div class="text-center">
-                    <a href="https://www.instagram.com/patriotmetric.upnjatim/" target="_blank" rel="noopener noreferrer"
-                       class="inline-flex items-center gap-2 bg-[#1B5E20] text-white font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] px-8 py-4 rounded-2xl shadow-lg hover:bg-[#145214] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                        Kunjungi @patriotmetric.upnjatim
-                    </a>
-                </div>
             </div>
         </section>
         @endif
     </div>
-</x-layouts.app>
+</body>
+</html>

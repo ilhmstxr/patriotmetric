@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ComproPreviewController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\ReviewController;
@@ -41,6 +42,11 @@ Route::get('/pengumuman', function () {
 Route::get('/panduan', function () {
     return view('panduan');
 });
+
+// Admin preview route for compro pages (authenticated only)
+Route::get('/admin/compro-preview/{page}', [ComproPreviewController::class, 'show'])
+    ->middleware(['auth', 'verified'])
+    ->name('compro.preview');
 
 // Auth pages (public - no middleware needed, auth is handled via API token)
 Route::get('/masuk', function () {
