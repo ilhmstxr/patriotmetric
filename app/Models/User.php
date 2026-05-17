@@ -58,7 +58,7 @@ class User extends Authenticatable implements HasName
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->role === 'admin';
+        return $this->role === 'ADMIN';
     }
 
     public function reviews()

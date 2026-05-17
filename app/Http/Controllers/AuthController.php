@@ -68,6 +68,7 @@ class AuthController extends Controller
             $dto = new RegisterDTO($validated);
             $user = $this->userService->register($dto);
 
+            return response()->json($user);
             return $this->successResponse($user, 'Registrasi berhasil. Silakan login untuk melanjutkan.', 201);
         } catch (\Throwable $th) {
             $code = (is_numeric($th->getCode()) && $th->getCode() >= 400 && $th->getCode() < 600) ? $th->getCode() : 500;
