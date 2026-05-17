@@ -14,20 +14,32 @@ class ComproContentService
 
     /**
      * Get all content for a specific page, grouped by section.
-     * Results are cached for 1 hour.
+     * Results are cached for 1 hour. Empty results are NOT cached.
      */
     public function getPageContent(string $page): Collection
     {
         try {
-            return Cache::remember(
-                "compro_content.{$page}",
-                self::CACHE_TTL,
-                fn () => ComproContent::forPage($page)
-                    ->orderBy('section')
-                    ->orderBy('order')
-                    ->get()
-                    ->groupBy('section')
-            );
+            $cacheKey = "compro_content.{$page}";
+
+            // Check cache first
+            $cached = Cache::get($cacheKey);
+            if ($cached !== null && $cached->isNotEmpty()) {
+                return $cached;
+            }
+
+            // Query database
+            $result = ComproContent::forPage($page)
+                ->orderBy('section')
+                ->orderBy('order')
+                ->get()
+                ->groupBy('section');
+
+            // Only cache non-empty results
+            if ($result->isNotEmpty()) {
+                Cache::put($cacheKey, $result, self::CACHE_TTL);
+            }
+
+            return $result;
         } catch (\Throwable $e) {
             Log::error('ComproContentService::getPageContent failed', [
                 'page' => $page,
@@ -118,6 +130,17 @@ class ComproContentService
     public function clearCache(string $page): void
     {
         Cache::forget("compro_content.{$page}");
+    }
+
+    /**
+     * Clear cache for all compro pages.
+     */
+    public function clearAllCache(): void
+    {
+        $pages = array_keys($this->getPageStructure());
+        foreach ($pages as $page) {
+            Cache::forget("compro_content.{$page}");
+        }
     }
 
     /**

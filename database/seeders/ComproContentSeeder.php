@@ -24,6 +24,12 @@ class ComproContentSeeder extends Seeder
             $this->seedPanduanPage();
             $this->seedPengumumanPage();
         });
+
+        // Clear all compro content cache after seeding
+        $pages = ['welcome', 'profile', 'visi-misi', 'tim', 'penghargaan', 'panduan', 'pengumuman'];
+        foreach ($pages as $page) {
+            \Illuminate\Support\Facades\Cache::forget("compro_content.{$page}");
+        }
     }
 
     /**
