@@ -10,8 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('Assessments', function (Blueprint $table) {
-            $table->id()->primary();
+        Schema::create('assessments', function (Blueprint $table) {
+            $table->id();
             $table->foreignUuid('institution_id')->constrained('institusis')->onUpdate('cascade')->onDelete('cascade');
 
             // Data PIC (Snapshot per tahun)
@@ -39,6 +39,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('Assessments');
+        Schema::dropIfExists('assessments');
     }
 };

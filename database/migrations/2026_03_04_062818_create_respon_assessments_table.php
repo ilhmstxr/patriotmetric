@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('respon_assessments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('assessment_id')->constrained('Assessments')->onDelete('cascade');
+            $table->foreignId('assessment_id')->constrained('assessments')->onDelete('cascade');
             $table->foreignId('pertanyaan_id')->constrained('pertanyaans')->onDelete('cascade');
             $table->foreignId('jawaban_id')->nullable()->constrained('opsi_jawaban')->onDelete('cascade');
             $table->json('jawaban_teks')->nullable();
