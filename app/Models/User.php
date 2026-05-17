@@ -5,13 +5,14 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Filament\Panel;
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements HasName
+class User extends Authenticatable implements HasName, FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
@@ -58,9 +59,7 @@ class User extends Authenticatable implements HasName
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return ($panel->getId() === 'admin' && strtoupper($this->role) === 'ADMIN' && strtoupper($this->status) === 'ACTIVE');
-
-        return false;
+        return strtoupper($this->role) === 'ADMIN' && strtoupper($this->status) === 'ACTIVE';
     }
 
     public function reviews()

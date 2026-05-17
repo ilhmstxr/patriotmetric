@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('admin'),
             'role' => 'ADMIN',
             'status' => 'ACTIVE',
+            'email_verified_at' => now(),
         ]);
 
         // User::create([
@@ -54,6 +55,7 @@ class DatabaseSeeder extends Seeder
             KategoriSeeder::class,
             PertanyaanSeeder::class,
             PengaturanCmsSeeder::class,
+            ComproContentSeeder::class,
             // InstitusiSeeder::class,
             // AssessmentSeeder::class,
             // IdentitasSeeder::class,

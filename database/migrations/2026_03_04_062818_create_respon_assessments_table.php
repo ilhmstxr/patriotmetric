@@ -12,9 +12,12 @@ return new class extends Migration {
     {
         Schema::create('respon_assessments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('assessment_id')->constrained('assessments')->onDelete('cascade');
-            $table->foreignId('pertanyaan_id')->constrained('pertanyaans')->onDelete('cascade');
-            $table->foreignId('jawaban_id')->nullable()->constrained('opsi_jawaban')->onDelete('cascade');
+            $table->unsignedBigInteger('assessment_id');
+            $table->foreign('assessment_id')->references('id')->on('assessments')->onDelete('cascade');
+            $table->unsignedBigInteger('pertanyaan_id');
+            $table->foreign('pertanyaan_id')->references('id')->on('pertanyaans')->onDelete('cascade');
+            $table->unsignedBigInteger('jawaban_id')->nullable();
+            $table->foreign('jawaban_id')->references('id')->on('opsi_jawaban')->onDelete('cascade');
             $table->json('jawaban_teks')->nullable();
             $table->string('tautan_bukti_drive')->nullable();
             $table->decimal('skor_sistem', 8, 2)->default(0);

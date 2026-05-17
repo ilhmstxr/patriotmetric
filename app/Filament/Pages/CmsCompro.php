@@ -59,12 +59,21 @@ class CmsCompro extends Page
 
     public function mount(): void
     {
-        $this->loadFormData();
+        try {
+            $this->loadFormData();
+        } catch (\Throwable $e) {
+            Log::error('CmsCompro mount failed', ['error' => $e->getMessage()]);
+            // Continue with empty form
+        }
     }
 
     public function updatedActiveTab(): void
     {
-        $this->loadFormData();
+        try {
+            $this->loadFormData();
+        } catch (\Throwable $e) {
+            Log::error('CmsCompro updatedActiveTab failed', ['error' => $e->getMessage()]);
+        }
     }
 
     /**

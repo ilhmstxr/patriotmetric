@@ -12,7 +12,8 @@ return new class extends Migration {
     {
         Schema::create('assessments', function (Blueprint $table) {
             $table->id()->primary();
-            $table->foreignUuid('institution_id')->constrained('institusis')->onUpdate('cascade')->onDelete('cascade');
+            $table->uuid('institution_id');
+            $table->foreign('institution_id')->references('id')->on('institusis')->onUpdate('cascade')->onDelete('cascade');
 
             // Data PIC (Snapshot per tahun)
             $table->string('nama_pic');
@@ -25,8 +26,10 @@ return new class extends Migration {
             // Satu institusi hanya boleh punya satu asesmen per tahun
             $table->unique(['institution_id', 'tahun_periode']);
 
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('reviewer_id')->nullable()->constrained('reviewers')->onDelete('set null');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('reviewer_id')->nullable();
+            $table->foreign('reviewer_id')->references('id')->on('reviewers')->onDelete('set null');
             $table->decimal('total_skor_sistem', 8, 2)->default(0);
             $table->decimal('total_skor_akhir', 8, 2)->default(0);
             $table->json('skor_rekap_json')->nullable();
