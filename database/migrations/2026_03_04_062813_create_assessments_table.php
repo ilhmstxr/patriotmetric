@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('Assessments', function (Blueprint $table) {
+        Schema::create('assessments', function (Blueprint $table) {
             $table->id()->primary();
             $table->foreignUuid('institution_id')->constrained('institusis')->onUpdate('cascade')->onDelete('cascade');
 
@@ -20,11 +20,11 @@ return new class extends Migration {
             $table->string('no_hp_pic');
 
             $table->year('tahun_periode');
-            $table->enum('status', ['ACTIVE', 'IN_PROGRESS', 'SUBMITTED', 'GRADED','PUBLISHED'])->default('ACTIVE');
+            $table->enum('status', ['ACTIVE', 'IN_PROGRESS', 'SUBMITTED', 'GRADED', 'PUBLISHED'])->default('ACTIVE');
 
             // Satu institusi hanya boleh punya satu asesmen per tahun
             $table->unique(['institution_id', 'tahun_periode']);
-            
+
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('reviewer_id')->nullable()->constrained('reviewers')->onDelete('set null');
             $table->decimal('total_skor_sistem', 8, 2)->default(0);
@@ -39,6 +39,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('Assessments');
+        Schema::dropIfExists('assessments');
     }
 };
