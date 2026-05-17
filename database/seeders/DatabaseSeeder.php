@@ -54,6 +54,7 @@ class DatabaseSeeder extends Seeder
             KategoriSeeder::class,
             PertanyaanSeeder::class,
             PengaturanCmsSeeder::class,
+            ComproContentSeeder::class,
             // InstitusiSeeder::class,
             // AssessmentSeeder::class,
             // IdentitasSeeder::class,
