@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('identitas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('Assessment_id')->references('id')->on('Assessments')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('Assessment_id')->references('id')->on('assessments')->onUpdate('cascade')->onDelete('cascade');
 
             // Data Baseline (Penyebut Rumus)
             $table->integer('jml_mahasiswa')->default(0);
