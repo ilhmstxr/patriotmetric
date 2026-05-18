@@ -1,3 +1,2 @@
 - SEO
 - EMAIL KONFIRMASI
-- CMS
