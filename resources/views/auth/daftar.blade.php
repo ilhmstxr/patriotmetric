@@ -27,9 +27,10 @@
                 const status = localStorage.getItem('Assessment_status') || 'ACTIVE';
                 if (status === 'ACTIVE') {
                     window.location.replace('/verifikasi');
-                } else {
+                } else if (status !== 'UNVERIFIED') {
                     window.location.replace('/dashboard');
                 }
+                // UNVERIFIED: tetap di halaman daftar (user bisa daftar akun baru)
             }
         })();
     </script>
@@ -133,13 +134,26 @@
 
                 if (response.ok && result.success) {
                     this.successMessage = result.message;
+
+                    // Simpan token, user, dan status ke localStorage
+                    if (result.data && result.data.token) {
+                        localStorage.setItem('auth_token', result.data.token);
+                    }
+                    if (result.data && result.data.user) {
+                        localStorage.setItem('auth_user', JSON.stringify(result.data.user));
+                    }
+                    localStorage.setItem('Assessment_status', (result.data && result.data.Assessment_status) || 'UNVERIFIED');
+                    if (result.data && result.data.token_expires_at) {
+                        localStorage.setItem('token_expires_at', result.data.token_expires_at);
+                    }
+
                     Swal.fire({
                         icon: 'success',
                         title: 'Registrasi Berhasil!',
-                        text: result.message || 'Akun institusi Anda telah terdaftar. Silakan login untuk melanjutkan.',
+                        text: result.message || 'Akun institusi Anda telah terdaftar. Silakan cek email untuk verifikasi.',
                         confirmButtonColor: '#1b5e20'
                     }).then(() => {
-                        window.location.href = '/masuk';
+                        window.location.href = '/cek-email';
                     });
                 } else {
                     if (result.errors) {

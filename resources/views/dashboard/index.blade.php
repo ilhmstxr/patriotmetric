@@ -108,7 +108,7 @@
                         'hindu':           this.profileData.agamas['hindu']           || '',
                         'buddha':          this.profileData.agamas['buddha']          || '',
                         'konghucu':        this.profileData.agamas['konghucu']        || '',
-                        'kepercayaan terhadap tuhan yang maha esa': this.profileData.agamas['kepercayaan terhadap tuhan yang maha esa'] || '',
+                        'kepercayaan terhadap tuhan yme': this.profileData.agamas['kepercayaan terhadap tuhan yme'] || '',
                     }
                 };
                 this.saveProfileError   = '';

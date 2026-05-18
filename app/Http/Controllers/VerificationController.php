@@ -185,7 +185,7 @@ class VerificationController extends Controller
                 'hindu' => $validated['agama_hindu'],
                 'buddha' => $validated['agama_buddha'],
                 'konghucu' => $validated['agama_konghucu'],
-                'Kepercayaan Terhadap Tuhan Yang Maha Esa' => $validated['agama_kepercayaan'],
+                'Kepercayaan Terhadap Tuhan YME' => $validated['agama_kepercayaan'],
             ];
 
             foreach ($agamaData as $namaAgama => $jumlah) {

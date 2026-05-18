@@ -230,7 +230,7 @@
                 'hindu': 'Hindu',
                 'buddha': 'Buddha',
                 'konghucu': 'Konghucu',
-                'kepercayaan terhadap tuhan yang maha esa': 'Kepercayaan Terhadap Tuhan Yang Maha Esa'
+                'kepercayaan terhadap tuhan yang maha esa': 'Kepercayaan Terhadap Tuhan YME'
             };
             return Object.entries(this.profil_peserta.agama).map(([name, count]) => ({
                 name: labels[name.toLowerCase()] || (name.charAt(0).toUpperCase() + name.slice(1)),

@@ -7,9 +7,11 @@ use App\DTO\AuthDTO\RegisterDTO;
 use App\Models\Institusi;
 use App\Models\User;
 use App\Repositories\UserRepository;
+use App\Services\EmailVerificationService;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 
 /**
@@ -17,17 +19,20 @@ use Illuminate\Support\Facades\Hash;
  */
 class UserService extends BaseService
 {
+    protected EmailVerificationService $emailVerificationService;
+
     /**
      * UserService constructor.
      * Otomatis melakukan injection Repository terkait.
      */
-    public function __construct(UserRepository $repository)
+    public function __construct(UserRepository $repository, EmailVerificationService $emailVerificationService)
     {
         parent::__construct($repository);
+        $this->emailVerificationService = $emailVerificationService;
     }
     public function register(RegisterDTO $dto)
     {
-        return DB::transaction(function () use ($dto) {
+        $user = DB::transaction(function () use ($dto) {
             // 1. Buat User (PIC) melalui Repository
             // Password tidak perlu di-hash manual karena Model User memiliki cast 'hashed'
             $user = $this->repository->createUser([
@@ -46,12 +51,12 @@ class UserService extends BaseService
                 'logo_url' => $dto->logoUrl ?: 'assets/images/blank-profile-picture-973460_1280.webp',
             ]);
 
-            // 3. Buat Data Assessment (Assessment Record) wajib untuk tahun ini
+            // 3. Buat Data Assessment (Assessment Record) wajib untuk tahun ini dengan status UNVERIFIED
             $this->repository->createAssessment([
                 'user_id' => $user->id,
                 'institution_id' => $institusi->id,
                 'tahun_periode' => date('Y'),
-                'status' => 'ACTIVE',
+                'status' => 'UNVERIFIED',
                 'nama_pic' => $dto->namaPic,
                 'jabatan_pic' => $dto->jabatanPic,
                 'no_hp_pic' => $dto->noHpPic,
@@ -59,6 +64,19 @@ class UserService extends BaseService
 
             return $user;
         });
+
+        // 4. Kirim email verifikasi SETELAH transaction commit (data sudah tersimpan)
+        try {
+            $this->emailVerificationService->generateAndSendVerification($user, $dto->namaPt);
+        } catch (\Throwable $e) {
+            Log::error('Failed to send verification email during registration', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return $user;
     }
 
     /**
