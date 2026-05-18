@@ -25,13 +25,12 @@
                 }
 
                 const status = localStorage.getItem('Assessment_status') || 'ACTIVE';
-                if (status === 'UNVERIFIED') {
-                    window.location.replace('/cek-email');
-                } else if (status === 'ACTIVE') {
+                if (status === 'ACTIVE') {
                     window.location.replace('/verifikasi');
-                } else {
+                } else if (status !== 'UNVERIFIED') {
                     window.location.replace('/dashboard');
                 }
+                // UNVERIFIED: tetap di halaman daftar (user bisa daftar akun baru)
             }
         })();
     </script>

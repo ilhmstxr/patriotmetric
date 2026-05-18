@@ -26,7 +26,7 @@ class EmailVerificationService
 
         $verificationUrl = config('app.url') . '/api/auth/verify-email/' . $token;
 
-        Mail::to($user->email)->queue(
+        Mail::to($user->email)->send(
             new EmailVerificationMail($user, $verificationUrl, $institutionName)
         );
     }
