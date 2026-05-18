@@ -173,7 +173,7 @@ class AssessmentRepository extends BaseRepository
     public function isUserActive(int $userId): bool
     {
         $user = User::find($userId);
-        return $user && in_array($user->status, ['ACTIVE', 'IN_PROGRESS', 'SUBMITTED', 'GRADED']);
+        return $user && $user->status === 'ACTIVE';
     }
 
     public function getProfilePeserta(int $pesertaId)
@@ -222,8 +222,6 @@ class AssessmentRepository extends BaseRepository
         $assessment = $this->model->find($assessmentId);
         if ($assessment) {
             $assessment->update(['status' => $status]);
-            // Sync user status
-            User::where('id', $assessment->user_id)->update(['status' => $status]);
         }
         return true;
     }
@@ -261,11 +259,9 @@ class AssessmentRepository extends BaseRepository
         }
 
         $ids     = $assessments->pluck('id')->all();
-        $userIds = $assessments->pluck('user_id')->all();
 
         // Batch update langsung — lebih efisien dan updated_at hanya berubah jika ada row nyata
         $this->model->whereIn('id', $ids)->update(['status' => $toStatus]);
-        User::whereIn('id', $userIds)->update(['status' => $toStatus]);
 
         return count($ids);
     }

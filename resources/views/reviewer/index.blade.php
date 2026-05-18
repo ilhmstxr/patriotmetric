@@ -71,7 +71,7 @@
             if (this.filter === 'active')   return this.tasks.filter(t => t.status === 'ACTIVE');
             if (this.filter === 'progress') return this.tasks.filter(t => t.status === 'IN_PROGRESS');
             if (this.filter === 'pending')  return this.tasks.filter(t => t.status === 'SUBMITTED');
-            if (this.filter === 'done')     return this.tasks.filter(t => t.status === 'GRADED');
+            if (this.filter === 'done')     return this.tasks.filter(t => t.status === 'GRADED' || t.status === 'PUBLISHED');
             return this.tasks;
         },
 
@@ -215,7 +215,7 @@
                                 <option value="active">Belum Mengisi</option>
                                 <option value="progress">Sedang Mengisi</option>
                                 <option value="pending">Belum Dinilai (Submitted)</option>
-                                <option value="done">Selesai Dinilai (Graded)</option>
+                                <option value="done">Selesai Dinilai</option>
                             </select>
                         </div>
                     </div>
@@ -235,7 +235,7 @@
                                         <td class="py-4 px-6">
                                             <div class="flex items-center gap-3">
                                                 <div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-[13px] shrink-0"
-                                                     :class="task.status === 'SUBMITTED' ? 'bg-amber-100 text-amber-600' : task.status === 'GRADED' ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-500'"
+                                                     :class="task.status === 'SUBMITTED' ? 'bg-amber-100 text-amber-600' : (task.status === 'GRADED' || task.status === 'PUBLISHED') ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-500'"
                                                      x-text="getInitials(task.institusi?.nama_institusi)"></div>
                                                 <div>
                                                     <p class="text-[14px] font-semibold text-[#1d293d]" x-text="task.institusi?.nama_institusi || '-'"></p>
@@ -260,6 +260,10 @@
                                             <span x-show="task.status === 'GRADED'"
                                                   class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-[11px] font-bold">
                                                 <i data-lucide="check-circle-2" class="w-3 h-3"></i> Selesai
+                                            </span>
+                                            <span x-show="task.status === 'PUBLISHED'"
+                                                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold">
+                                                <i data-lucide="globe" class="w-3 h-3"></i> Published
                                             </span>
                                         </td>
                                         <td class="py-4 px-6 text-right">

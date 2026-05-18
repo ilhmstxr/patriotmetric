@@ -137,6 +137,7 @@
                 'IN_PROGRESS' : { label: 'Dalam Pengerjaan', color: 'bg-blue-100 text-blue-700',    icon: 'pen-line' },
                 'SUBMITTED'   : { label: 'Menunggu Review',  color: 'bg-amber-100 text-amber-700',  icon: 'hourglass' },
                 'GRADED'      : { label: 'Sudah Dinilai',    color: 'bg-green-100 text-green-700',  icon: 'check-circle-2' },
+                'PUBLISHED'   : { label: 'Published',        color: 'bg-emerald-100 text-emerald-800',  icon: 'globe' },
                 'REJECTED'    : { label: 'Ditolak',          color: 'bg-red-100 text-red-700',      icon: 'x-circle' },
             };
             return map[s] || { label: s || '...', color: 'bg-slate-100 text-slate-500', icon: 'info' };
@@ -181,8 +182,8 @@
             this.jabatan_pic    = data.jabatan_pic;
             this.email_pic      = data.email_pic;
             this.no_hp_pic      = data.no_hp_pic;
-            // isDone = true hanya jika sudah di-GRADED (reviewer sudah finalisasi)
-            this.isDone = ['GRADED', 'REJECTED'].includes(this.Assessment.status);
+            // isDone = true jika status GRADED, PUBLISHED, atau REJECTED
+            this.isDone = ['GRADED', 'PUBLISHED', 'REJECTED'].includes(this.Assessment.status);
             this.rubrikData.forEach(kategori => {
                 kategori.pertanyaan.forEach(q => {
                     if (q.jawaban_peserta) {
@@ -222,8 +223,17 @@
 
         get agamaData() {
             if (!this.profil_peserta || !this.profil_peserta.agama) return [];
+            const labels = {
+                'islam': 'Islam',
+                'kristen': 'Kristen',
+                'katolik': 'Katolik',
+                'hindu': 'Hindu',
+                'buddha': 'Buddha',
+                'konghucu': 'Konghucu',
+                'kepercayaan terhadap tuhan yang maha esa': 'Kepercayaan Terhadap Tuhan Yang Maha Esa'
+            };
             return Object.entries(this.profil_peserta.agama).map(([name, count]) => ({
-                name: name.charAt(0).toUpperCase() + name.slice(1),
+                name: labels[name.toLowerCase()] || (name.charAt(0).toUpperCase() + name.slice(1)),
                 count: count
             }));
         },
@@ -431,13 +441,25 @@
                 {{-- Group E: Demografi --}}
                 <div class="bg-white p-[24px] rounded-[12px] border border-[#cbd5e1] mb-6">
                     <h3 class="font-bold text-[#1b5e20] text-[15px] mb-4 border-b border-[#e2e8f0] pb-2">E. Demografi Agama Mahasiswa</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
-                        <template x-for="(agama, i) in agamaData" :key="i">
-                            <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
-                                <span class="text-[14px] text-[#64748b] font-medium" x-text="agama.name"></span>
-                                <span class="text-[15px] text-[#1d293d] font-bold" x-text="agama.count"></span>
-                            </div>
-                        </template>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-0">
+                        <!-- Kolom Kiri: 4 baris -->
+                        <div class="space-y-4 md:border-r md:border-dashed md:border-[#e2e8f0] md:pr-6">
+                            <template x-for="(agama, i) in agamaData.slice(0, 4)" :key="'l-' + i">
+                                <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                                    <span class="text-[14px] text-[#64748b] font-medium" x-text="agama.name"></span>
+                                    <span class="text-[15px] text-[#1d293d] font-bold" x-text="agama.count"></span>
+                                </div>
+                            </template>
+                        </div>
+                        <!-- Kolom Kanan: 3 baris -->
+                        <div class="space-y-4 md:pl-6">
+                            <template x-for="(agama, i) in agamaData.slice(4, 7)" :key="'r-' + i">
+                                <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                                    <span class="text-[14px] text-[#64748b] font-medium" x-text="agama.name"></span>
+                                    <span class="text-[15px] text-[#1d293d] font-bold" x-text="agama.count"></span>
+                                </div>
+                            </template>
+                        </div>
                     </div>
                 </div>
 

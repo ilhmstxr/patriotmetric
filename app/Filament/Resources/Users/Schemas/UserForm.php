@@ -51,10 +51,8 @@ class UserForm
                             ->live(),
                         Select::make('status')
                             ->options([
+                                'UNVERIFIED' => 'Unverified',
                                 'ACTIVE' => 'Active',
-                                'IN_PROGRESS' => 'In Progress',
-                                'SUBMITTED' => 'Submitted',
-                                'GRADED' => 'Graded',
                             ])
                             ->required()
                             ->visible(fn (string $operation): bool => $operation === 'edit'),
@@ -63,7 +61,7 @@ class UserForm
                 Section::make('Detail Profil')
                     ->description('Informasi tambahan sesuai dengan role yang dipilih.')
                     ->columns(2)
-                    ->visible(fn ($get) => $get('role') === 'REVIEWER')
+                    ->visible(fn ($get) => in_array($get('role'), ['REVIEWER', 'PESERTA']))
                     ->schema([
                         // Fields for PESERTA
                         TextInput::make('nama_pt')
