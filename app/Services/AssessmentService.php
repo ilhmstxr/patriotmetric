@@ -141,7 +141,7 @@ class AssessmentService extends BaseService
             if (!empty($dto->dataAgama)) {
                 foreach ($dto->dataAgama as $namaAgama => $jumlah) {
                     // Validasi Enum sebelum insert untuk mencegah SQL Error
-                    $allowedAgama = ['islam', 'kristen', 'katolik', 'hindu', 'buddha', 'konghucu', 'kepercayaan terhadap tuhan yang maha esa'];
+                    $allowedAgama = ['islam', 'kristen', 'katolik', 'hindu', 'buddha', 'konghucu', 'kepercayaan terhadap tuhan yme'];
                     if (in_array(strtolower($namaAgama), $allowedAgama)) {
                         $this->repository->upsertAgama($identitas->id, strtolower($namaAgama), $jumlah);
                     }

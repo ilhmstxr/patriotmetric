@@ -834,7 +834,7 @@
                         <input type="number" x-model="formData.agama_konghucu" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                       </div>
                       <div class="flex flex-col gap-[8px]">
-                        <label class="font-semibold text-[#1d293d] text-[15px]">Kepercayaan Terhadap Tuhan Yang Maha Esa</label>
+                        <label class="font-semibold text-[#1d293d] text-[15px]">Kepercayaan Terhadap Tuhan YME</label>
                         <input type="number" x-model="formData.agama_kepercayaan" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                       </div>
                     </div>
