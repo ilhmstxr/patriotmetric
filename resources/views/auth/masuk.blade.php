@@ -25,7 +25,9 @@
                 }
 
                 const status = localStorage.getItem('Assessment_status') || 'ACTIVE';
-                if (status === 'ACTIVE') {
+                if (status === 'UNVERIFIED') {
+                    window.location.replace('/cek-email');
+                } else if (status === 'ACTIVE') {
                     window.location.replace('/verifikasi');
                 } else {
                     window.location.replace('/dashboard');
@@ -59,6 +61,20 @@
             isLoading: false, 
             errorMessage: '',
             successMessage: '',
+            init() {
+                // Handle ?verified=1 query param
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('verified') === '1') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Email Terverifikasi!',
+                        text: 'Email berhasil diverifikasi! Silakan login.',
+                        confirmButtonColor: '#1b5e20'
+                    });
+                    // Clean URL
+                    window.history.replaceState({}, document.title, '/masuk');
+                }
+            },
             async login() {
                 this.isLoading = true;
                 this.errorMessage = '';
@@ -95,8 +111,14 @@
                             localStorage.setItem('token_expires_at', result.data.token_expires_at);
                         }
 
-                        // Redirect berdasarkan status dari server
-                        const redirectTo = result.data.redirect_to || '/verifikasi';
+                        // Redirect berdasarkan status
+                        const assessmentStatus = result.data.Assessment_status || 'ACTIVE';
+                        let redirectTo = result.data.redirect_to || '/verifikasi';
+
+                        // Jika UNVERIFIED, paksa redirect ke /cek-email
+                        if (assessmentStatus === 'UNVERIFIED') {
+                            redirectTo = '/cek-email';
+                        }
                         
                         Swal.fire({
                             icon: 'success',

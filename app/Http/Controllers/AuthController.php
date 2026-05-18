@@ -68,7 +68,15 @@ class AuthController extends Controller
             $dto = new RegisterDTO($validated);
             $user = $this->userService->register($dto);
 
-            return $this->successResponse($user, 'Registrasi berhasil. Silakan login untuk melanjutkan.', 201);
+            // Create Sanctum token for auto-login after registration
+            $token = $user->createToken('auth_token', ['*'], now()->addHours(8))->plainTextToken;
+
+            return $this->successResponse([
+                'user' => $user,
+                'token' => $token,
+                'Assessment_status' => 'UNVERIFIED',
+                'redirect_to' => '/cek-email',
+            ], 'Registrasi berhasil. Silakan verifikasi email Anda.', 201);
         } catch (\Throwable $th) {
             $code = (is_numeric($th->getCode()) && $th->getCode() >= 400 && $th->getCode() < 600) ? $th->getCode() : 500;
             return $this->errorResponse($th->getMessage(), $code);
@@ -114,7 +122,9 @@ class AuthController extends Controller
             $assessment = $this->assessmentRepository->findActiveAssessmentByUserId($user->id);
             
             $redirectTo = '/verifikasi'; // Default: needs verification
-            if ($assessment && in_array($assessment->status, ['IN_PROGRESS', 'SUBMITTED', 'GRADED'])) {
+            if ($assessment && $assessment->status === 'UNVERIFIED') {
+                $redirectTo = '/cek-email';
+            } elseif ($assessment && in_array($assessment->status, ['IN_PROGRESS', 'SUBMITTED', 'GRADED'])) {
                 $redirectTo = '/dashboard';
             }
 

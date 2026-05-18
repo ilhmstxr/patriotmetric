@@ -61,6 +61,14 @@ Route::get('/verifikasi', function () {
     return view('auth.verifikasi');
 })->name('verifikasi');
 
+Route::get('/cek-email', function () {
+    return view('auth.cek-email');
+})->name('cek-email');
+
+Route::get('/verifikasi-gagal', function () {
+    return view('auth.verifikasi-gagal');
+})->name('verifikasi-gagal');
+
 // Dashboard pages (peserta)
 Route::prefix('dashboard')->group(function () {
     Route::get('/', function () {

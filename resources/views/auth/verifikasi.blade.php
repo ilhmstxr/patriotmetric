@@ -14,6 +14,10 @@
                 return;
             }
             const status = localStorage.getItem('Assessment_status') || 'ACTIVE';
+            if (status === 'UNVERIFIED') {
+                window.location.replace('/cek-email');
+                return;
+            }
             if (status !== 'ACTIVE') {
                 window.location.replace('/dashboard');
             }
@@ -960,34 +964,42 @@
                     <i data-lucide="globe" class="w-4 h-4 text-[#1b5e20]"></i>
                     <h3 class="font-bold text-[#1b5e20] text-[14px] uppercase tracking-wide">D. Demografi Agama Mahasiswa</h3>
                   </div>
-                  <div class="p-5 grid grid-cols-2 md:grid-cols-4 gap-3 text-[14px]">
-                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
-                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Islam</p>
-                      <p class="text-[#1d293d] font-bold text-[18px]" x-text="formData.agama_islam || 0"></p>
-                    </div>
-                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
-                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Kristen</p>
-                      <p class="text-[#1d293d] font-bold text-[18px]" x-text="formData.agama_kristen || 0"></p>
-                    </div>
-                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
-                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Katolik</p>
-                      <p class="text-[#1d293d] font-bold text-[18px]" x-text="formData.agama_katolik || 0"></p>
-                    </div>
-                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
-                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Hindu</p>
-                      <p class="text-[#1d293d] font-bold text-[18px]" x-text="formData.agama_hindu || 0"></p>
-                    </div>
-                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
-                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Buddha</p>
-                      <p class="text-[#1d293d] font-bold text-[18px]" x-text="formData.agama_buddha || 0"></p>
-                    </div>
-                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center">
-                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Konghucu</p>
-                      <p class="text-[#1d293d] font-bold text-[18px]" x-text="formData.agama_konghucu || 0"></p>
-                    </div>
-                    <div class="bg-[#f8fafc] rounded-lg p-3 text-center md:col-span-2">
-                      <p class="text-[#64748b] text-[11px] font-medium mb-1">Kepercayaan Terhadap Tuhan YME</p>
-                      <p class="text-[#1d293d] font-bold text-[18px]" x-text="formData.agama_kepercayaan || 0"></p>
+                  <div class="p-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-0">
+                      <!-- Kolom Kiri: 4 baris -->
+                      <div class="space-y-4 md:border-r md:border-dashed md:border-[#e2e8f0] md:pr-6">
+                        <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                          <span class="text-[14px] text-[#64748b] font-medium">Islam</span>
+                          <span class="text-[15px] text-[#1d293d] font-bold" x-text="formData.agama_islam || 0"></span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                          <span class="text-[14px] text-[#64748b] font-medium">Kristen</span>
+                          <span class="text-[15px] text-[#1d293d] font-bold" x-text="formData.agama_kristen || 0"></span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                          <span class="text-[14px] text-[#64748b] font-medium">Katolik</span>
+                          <span class="text-[15px] text-[#1d293d] font-bold" x-text="formData.agama_katolik || 0"></span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                          <span class="text-[14px] text-[#64748b] font-medium">Hindu</span>
+                          <span class="text-[15px] text-[#1d293d] font-bold" x-text="formData.agama_hindu || 0"></span>
+                        </div>
+                      </div>
+                      <!-- Kolom Kanan: 3 baris -->
+                      <div class="space-y-4 md:pl-6">
+                        <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                          <span class="text-[14px] text-[#64748b] font-medium">Buddha</span>
+                          <span class="text-[15px] text-[#1d293d] font-bold" x-text="formData.agama_buddha || 0"></span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                          <span class="text-[14px] text-[#64748b] font-medium">Konghucu</span>
+                          <span class="text-[15px] text-[#1d293d] font-bold" x-text="formData.agama_konghucu || 0"></span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                          <span class="text-[14px] text-[#64748b] font-medium">Kepercayaan Terhadap Tuhan YME</span>
+                          <span class="text-[15px] text-[#1d293d] font-bold" x-text="formData.agama_kepercayaan || 0"></span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

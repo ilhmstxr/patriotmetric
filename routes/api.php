@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewerController;
 use App\Http\Controllers\AssessmentController;
@@ -12,6 +13,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('api.auth.register');
     Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');
     Route::get('/check-institusi', [AuthController::class, 'checkInstitusi'])->name('api.auth.check-institusi');
+    Route::get('/verify-email/{token}', [EmailVerificationController::class, 'verify'])->name('api.auth.verify-email');
 });
 
 // --- Protected Routes ---
@@ -24,6 +26,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/verification', [VerificationController::class, 'submit'])->name('api.auth.verification');
         Route::put('/profile', [AuthController::class, 'updateProfile'])->name('api.auth.profile.update');
         Route::post('/change-password', [AuthController::class, 'changePassword'])->name('api.auth.change-password');
+        Route::post('/resend-verification', [EmailVerificationController::class, 'resend'])
+            ->middleware('throttle:3,5')
+            ->name('api.auth.resend-verification');
     });
 
     // User Profile
