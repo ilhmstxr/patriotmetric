@@ -47,6 +47,14 @@ return [
             'report' => false,
         ],
 
+        'cms' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/cms'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/cms-assets',
+            'throw' => false,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

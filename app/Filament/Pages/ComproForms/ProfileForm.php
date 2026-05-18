@@ -21,8 +21,10 @@ class ProfileForm
                     FileUpload::make('hero.background_image')
                         ->label('Background Image')
                         ->image()
+                        ->disk('cms')
+                        ->directory('images')
                         ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                        ->maxSize(2048),
+                        ->maxSize(5120),
                 ]),
 
             Section::make('Latar Belakang')

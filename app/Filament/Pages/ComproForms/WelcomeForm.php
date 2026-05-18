@@ -21,8 +21,10 @@ class WelcomeForm
                     FileUpload::make('hero.background_image')
                         ->label('Background Image')
                         ->image()
+                        ->disk('cms')
+                        ->directory('images')
                         ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                        ->maxSize(2048),
+                        ->maxSize(5120),
                 ]),
 
             Section::make('About')
@@ -51,14 +53,16 @@ class WelcomeForm
                             FileUpload::make('logo')
                                 ->label('Logo Institusi')
                                 ->image()
+                                ->disk('cms')
+                                ->directory('images')
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                ->maxSize(2048)
+                                ->maxSize(5120)
                                 ->required(),
                         ])
                         ->maxItems(50)
                         ->reorderable()
-                        ->collapsible()
-                        ->itemLabel(fn(array $state) => $state['nama'] ?? 'Institusi Baru'),
+                        ->itemLabel(fn(array $state) => $state['nama'] ?? 'Institusi Baru')
+                        ->extraAttributes(['class' => 'admin-marquee-repeater']),
                     Repeater::make('institusi.daftar_baris_2')
                         ->label('Daftar Institusi Baris 2')
                         ->schema([
@@ -66,14 +70,16 @@ class WelcomeForm
                             FileUpload::make('logo')
                                 ->label('Logo Institusi')
                                 ->image()
+                                ->disk('cms')
+                                ->directory('images')
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                ->maxSize(2048)
+                                ->maxSize(5120)
                                 ->required(),
                         ])
                         ->maxItems(50)
                         ->reorderable()
-                        ->collapsible()
-                        ->itemLabel(fn(array $state) => $state['nama'] ?? 'Institusi Baru'),
+                        ->itemLabel(fn(array $state) => $state['nama'] ?? 'Institusi Baru')
+                        ->extraAttributes(['class' => 'admin-marquee-repeater']),
                 ]),
 
             Section::make('Timeline')
@@ -102,7 +108,7 @@ class WelcomeForm
                         ->label('Post Instagram')
                         ->schema([
                             TextInput::make('url')->label('URL Post')->url()->maxLength(255)->required(),
-                            FileUpload::make('gambar')->label('Gambar')->image()->maxSize(2048),
+                            FileUpload::make('gambar')->label('Gambar')->image()->disk('cms')->directory('images')->maxSize(5120),
                             TextInput::make('alt_text')->label('Alt Text')->maxLength(255),
                         ])
                         ->maxItems(50)

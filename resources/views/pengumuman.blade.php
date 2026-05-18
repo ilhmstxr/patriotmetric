@@ -35,7 +35,7 @@
                             {{-- Thumbnail --}}
                             <div class="w-full md:w-[240px] h-[160px] md:h-[140px] shrink-0 rounded-lg overflow-hidden bg-[#f1f5f9]">
                                 @if(!empty($article['gambar']))
-                                    <img src="{{ asset('storage/' . $article['gambar']) }}" alt="{{ $article['judul'] ?? '' }}" class="w-full h-full object-cover">
+                                    <img src="{{ url('cms-assets/' . $article['gambar']) }}" alt="{{ $article['judul'] ?? '' }}" class="w-full h-full object-cover">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center bg-[#f1f5f9]">
                                         <span class="text-[#94a3b8] text-[13px]">Gambar</span>

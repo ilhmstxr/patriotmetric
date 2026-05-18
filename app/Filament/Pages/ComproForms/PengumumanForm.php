@@ -31,8 +31,10 @@ class PengumumanForm
                             FileUpload::make('gambar')
                                 ->label('Gambar Thumbnail')
                                 ->image()
+                                ->disk('cms')
+                                ->directory('images')
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                ->maxSize(2048),
+                                ->maxSize(5120),
                         ])
                         ->maxItems(50)
                         ->reorderable()

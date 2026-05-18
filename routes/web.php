@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CmsAssetController;
 use App\Http\Controllers\ComproPreviewController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AssessmentController;
@@ -13,6 +14,11 @@ use Illuminate\Http\Request;
 
 // Temporary debug route - DELETE after debugging
 require __DIR__ . '/debug-admin.php';
+
+// CMS assets (public, no auth)
+Route::get('/cms-assets/{path}', [CmsAssetController::class, 'show'])
+    ->where('path', '.*')
+    ->name('cms.asset');
 
 // public routes / compro
 Route::get('/', function () {
