@@ -65,7 +65,17 @@ class CmsCompro extends Page
         foreach ($pageContent as $section => $items) {
             foreach ($items as $item) {
                 $key = "{$section}.{$item->key}";
-                $formData[$key] = $item->value;
+                $value = $item->value;
+
+                if ($item->type === 'image' && is_string($value) && $value !== '') {
+                    $value = [$value];
+                }
+
+                if ($item->type === 'repeater' && is_array($value)) {
+                    $value = $this->convertRepeaterImageStringsToArrays($value);
+                }
+
+                data_set($formData, $key, $value);
             }
         }
 
@@ -75,12 +85,40 @@ class CmsCompro extends Page
             'sample' => array_slice($formData, 0, 3, true),
         ]);
 
-        $this->form->fill($formData);
+        $this->data = $formData;
+    }
+
+    protected function convertRepeaterImageStringsToArrays(array $items): array
+    {
+        $imageKeys = ['foto', 'logo', 'gambar', 'background_image'];
+
+        return array_map(function ($item) use ($imageKeys) {
+            if (!is_array($item)) {
+                return $item;
+            }
+            foreach ($item as $fieldKey => $fieldValue) {
+                if (in_array($fieldKey, $imageKeys) && is_string($fieldValue) && $fieldValue !== '') {
+                    $item[$fieldKey] = [$fieldValue];
+                }
+            }
+            return $item;
+        }, $items);
     }
 
     public function save(): void
     {
-        $data = $this->form->getState();
+        $rawData = $this->form->getState();
+
+        $data = [];
+        foreach ($rawData as $section => $fields) {
+            if (is_array($fields)) {
+                foreach ($fields as $key => $value) {
+                    $data["{$section}.{$key}"] = $value;
+                }
+            } else {
+                $data[$section] = $fields;
+            }
+        }
 
         try {
             $service = app(ComproContentService::class);

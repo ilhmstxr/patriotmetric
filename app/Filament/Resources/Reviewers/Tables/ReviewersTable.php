@@ -37,6 +37,14 @@ class ReviewersTable
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'ACTIVE'      => 'gray',
+                        'IN_PROGRESS' => 'info',
+                        'SUBMITTED'   => 'warning',
+                        'GRADED'      => 'success',
+                        'PUBLISHED'   => 'success',
+                        default       => 'gray',
+                    })
                     ->searchable(),
             ])
             ->recordActions([])

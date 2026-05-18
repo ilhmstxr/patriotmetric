@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PengaturanCms\Tables;
 
+use App\Filament\Resources\PengaturanCms\PengaturanCmsResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -24,6 +25,7 @@ class PengaturanCmsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->recordUrl(fn ($record) => PengaturanCmsResource::getUrl('edit', ['record' => $record]))
             ->filters([
                 //
             ])

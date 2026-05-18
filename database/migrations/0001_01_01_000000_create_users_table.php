@@ -23,8 +23,8 @@ return new class extends Migration {
             // $table->string('telepon')->nullable();
             $table->enum(
                 'status',
-                ["ACTIVE", "IN_PROGRESS", "SUBMITTED", "GRADED"]
-            )->default("ACTIVE");
+                ["UNVERIFIED","ACTIVE", "IN_PROGRESS", "SUBMITTED", "GRADED"]
+            )->default("UNVERIFIED");
             $table->rememberToken();
             $table->timestamps();
         });

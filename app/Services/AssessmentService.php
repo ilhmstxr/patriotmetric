@@ -416,7 +416,7 @@ class AssessmentService extends BaseService
         $summary = [
             'total_tugas' => $assessments->count(),
             'menunggu_review' => $assessments->where('status', 'SUBMITTED')->count(),
-            'selesai_review' => $assessments->where('status', 'GRADED')->count(),
+            'selesai_review' => $assessments->whereIn('status', ['GRADED', 'PUBLISHED'])->count(),
             'yang_belum_direview' => $assessments->whereIn('status', ['ACTIVE', 'IN_PROGRESS', 'SUBMITTED'])->values(),
             'daftar_asesmen' => $assessments->values() // Reset key array
         ];
@@ -508,7 +508,7 @@ class AssessmentService extends BaseService
 
         // 4. Build jawaban map (pertanyaan_id => jawaban data) from peserta's answers
         $jawabanMap = [];
-        if (in_array($assessment->status, ['SUBMITTED', 'GRADED'])) {
+        if (in_array($assessment->status, ['SUBMITTED', 'GRADED', 'PUBLISHED'])) {
             foreach ($assessment->jawabans as $jawaban) {
                 $jawabanMap[$jawaban->pertanyaan_id] = [
                     'jawaban_id' => $jawaban->jawaban_id,
