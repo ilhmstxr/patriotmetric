@@ -21,7 +21,9 @@
       "PowerShell(php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Services\\\\ComproContentService.php\"; php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Filament\\\\Pages\\\\CmsCompro.php\"; php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Http\\\\Controllers\\\\CmsAssetController.php\")",
       "PowerShell(Copy-Item *)",
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\storage\\\\app\\\\private\\\\cms\\\\images\" -File | ForEach-Object { $_.Name })",
-      "PowerShell(php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\database\\\\seeders\\\\ComproContentSeeder.php\")"
+      "PowerShell(php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\database\\\\seeders\\\\ComproContentSeeder.php\")",
+      "PowerShell(php artisan tinker --execute=\"echo json_encode\\(\\\\App\\\\Models\\\\ComproContent::where\\('page','welcome'\\)->where\\('section','hero'\\)->where\\('key','background_image'\\)->first\\(['value','type']\\)->toArray\\(\\), JSON_PRETTY_PRINT\\);\")",
+      "PowerShell(php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Filament\\\\Pages\\\\ComproForms\\\\WelcomeForm.php\"; php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Filament\\\\Pages\\\\ComproForms\\\\ProfileForm.php\"; php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Filament\\\\Pages\\\\ComproForms\\\\PenghargaanForm.php\"; php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Filament\\\\Pages\\\\ComproForms\\\\PengumumanForm.php\"; php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Filament\\\\Pages\\\\ComproForms\\\\TimForm.php\")"
     ]
   }
 }

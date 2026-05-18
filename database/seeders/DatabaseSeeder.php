@@ -54,7 +54,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             KategoriSeeder::class,
             PertanyaanSeeder::class,
-            PengaturanCmsSeeder::class,
+            // PengaturanCmsSeeder::class,
             ComproContentSeeder::class,
             // InstitusiSeeder::class,
             // AssessmentSeeder::class,

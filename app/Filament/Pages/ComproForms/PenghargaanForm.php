@@ -22,6 +22,7 @@ class PenghargaanForm
                         ->image()
                         ->disk('cms')
                         ->directory('images')
+                        ->visibility('private')
                         ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                         ->maxSize(5120),
                 ]),
@@ -38,6 +39,7 @@ class PenghargaanForm
                                 ->image()
                                 ->disk('cms')
                                 ->directory('images')
+                                ->visibility('private')
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->maxSize(5120)
                                 ->required(),

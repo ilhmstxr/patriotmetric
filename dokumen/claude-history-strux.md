@@ -199,3 +199,106 @@ Frontend akses → url('cms-assets/images/filename.ext')
 - Cleanup file lama saat update: DONE
 - Halaman yang sudah di-update view-nya: welcome, compro-preview/welcome
 - Halaman lain (profile, tim, penghargaan, pengumuman): perlu update view juga
+
+---
+---
+
+# Claude History - 18 Mei 2026 (Sesi 3, 15:10 WIB)
+
+## Ringkasan Sesi
+
+Refactor CMS logic ke service layer, update semua form & view, fix seeder paths, naikkan max upload size.
+
+---
+
+## 5. Refactor: Pindahkan Logic CMS ke Service Layer
+
+### Motivasi:
+- Logic business (normalize, cleanup, save) sebelumnya ada di `CmsCompro.php` (Filament page)
+- Dipindahkan ke `ComproContentService` agar testable dan reusable
+
+### Perubahan:
+
+#### File: `app/Services/ComproContentService.php` — Ditambahkan:
+- `loadFormData(string $page): array` — Load dari DB, convert ke format Filament (wrap image ke array, convert repeater images)
+- `saveFormData(string $page, array $rawData): void` — Flatten form data, normalize images, cleanup file lama, persist ke DB dalam transaction
+- Private helpers dipindahkan dari CmsCompro:
+  - `flattenFormData()` — Convert nested array ke dot-notation keys
+  - `convertRepeaterImageStringsToArrays()` — Wrap image strings ke array untuk Filament
+  - `isRepeaterField()` / `isStaticImageField()` — Identifikasi field type
+  - `normalizeImageValue()` — Extract string dari array (Filament returns array)
+  - `normalizeRepeaterImages()` — Normalize semua image fields di repeater
+  - `cleanupOldImage()` — Hapus file lama saat static image diupdate
+  - `cleanupOldRepeaterImages()` — Hapus file lama saat repeater image diupdate/dihapus
+- Constants: `DISK`, `IMAGE_KEYS`, `REPEATER_KEYS`, `STATIC_IMAGE_KEYS`
+- `updateStaticContent()` dan `updateRepeaterContent()` disederhanakan (tanpa try-catch sendiri, ditangani di `saveFormData`)
+
+#### File: `app/Filament/Pages/CmsCompro.php` — Disederhanakan:
+- `mount()` → `service->loadFormData()` + `$this->form->fill()`
+- `save()` → `service->saveFormData()` + notification
+- Semua helper methods dihapus (sudah di service)
+- Import `Storage` dihapus (tidak perlu lagi)
+
+---
+
+## 6. Update FileUpload di Semua Form CMS
+
+### File yang diupdate:
+- `app/Filament/Pages/ComproForms/ProfileForm.php`
+- `app/Filament/Pages/ComproForms/TimForm.php`
+- `app/Filament/Pages/ComproForms/PenghargaanForm.php`
+- `app/Filament/Pages/ComproForms/PengumumanForm.php`
+
+### Perubahan per file:
+- Semua `FileUpload` ditambah `->disk('cms')->directory('images')`
+
+---
+
+## 7. Update Semua View untuk Pakai `/cms-assets/`
+
+### View publik:
+- `resources/views/tim.blade.php` — `asset('storage/' . $member['foto'])` → `url('cms-assets/' . $member['foto'])`
+- `resources/views/penghargaan.blade.php` — `asset($winner['logo'])` → `url('cms-assets/' . $winner['logo'])`
+- `resources/views/pengumuman.blade.php` — `asset('storage/' . $article['gambar'])` → `url('cms-assets/' . $article['gambar'])`
+
+### View compro-preview:
+- `resources/views/compro-preview/tim.blade.php` — sama
+- `resources/views/compro-preview/penghargaan.blade.php` — sama
+- `resources/views/compro-preview/pengumuman.blade.php` — sama
+
+---
+
+## 8. Update Seeder: Path & Auto-copy Images
+
+### File: `database/seeders/ComproContentSeeder.php`
+
+**Path diupdate:**
+- `assets/images/46257018...webp` → `images/46257018...webp`
+- `assets/images/bg.webp` → `images/bg.webp`
+- `assets/images/b4f942a6...webp` → `images/b4f942a6...webp`
+- `assets/images/199dc2eb...webp` → `images/199dc2eb...webp`
+- `assets/images/blank-profile-picture...webp` → `images/blank-profile-picture...webp`
+- Gambar yang tidak ada (ig-post, article) → dikosongkan (`''`)
+
+**Method baru: `seedCmsImages()`**
+- Otomatis copy file dari `public/assets/images/` ke disk `cms` (`storage/app/private/cms/images/`)
+- Idempotent — skip jika file sudah ada
+- Dipanggil sebelum seed data
+
+---
+
+## 9. Max Upload Size: 2MB → 5MB
+
+### File yang diupdate (semua ComproForms):
+- `WelcomeForm.php`, `ProfileForm.php`, `TimForm.php`, `PenghargaanForm.php`, `PengumumanForm.php`
+- `->maxSize(2048)` → `->maxSize(5120)`
+
+---
+
+## Status Akhir Sesi 3:
+- Refactor ke service layer: DONE
+- Semua form CMS pakai disk `cms`: DONE
+- Semua view publik + preview pakai `/cms-assets/`: DONE
+- Seeder path diupdate + auto-copy images: DONE
+- Max upload 5MB: DONE
+- File fisik sudah ada di `storage/app/private/cms/images/`: DONE

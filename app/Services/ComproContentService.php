@@ -114,6 +114,7 @@ class ComproContentService
         $data = $this->flattenFormData($rawData);
         $disk = Storage::disk(self::DISK);
 
+        $disk->makeDirectory('images');
         $staticData = [];
         $repeaterData = [];
 

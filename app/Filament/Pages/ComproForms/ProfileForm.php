@@ -23,6 +23,7 @@ class ProfileForm
                         ->image()
                         ->disk('cms')
                         ->directory('images')
+                        ->visibility('private')
                         ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                         ->maxSize(5120),
                 ]),
