@@ -32,7 +32,7 @@ class UserService extends BaseService
     }
     public function register(RegisterDTO $dto)
     {
-        return DB::transaction(function () use ($dto) {
+        $user = DB::transaction(function () use ($dto) {
             // 1. Buat User (PIC) melalui Repository
             // Password tidak perlu di-hash manual karena Model User memiliki cast 'hashed'
             $user = $this->repository->createUser([
@@ -62,19 +62,21 @@ class UserService extends BaseService
                 'no_hp_pic' => $dto->noHpPic,
             ]);
 
-            // 4. Kirim email verifikasi (wrap dalam try-catch agar registrasi tetap berhasil)
-            try {
-                $this->emailVerificationService->generateAndSendVerification($user, $dto->namaPt);
-            } catch (\Throwable $e) {
-                Log::error('Failed to send verification email during registration', [
-                    'user_id' => $user->id,
-                    'email' => $user->email,
-                    'error' => $e->getMessage(),
-                ]);
-            }
-
             return $user;
         });
+
+        // 4. Kirim email verifikasi SETELAH transaction commit (data sudah tersimpan)
+        try {
+            $this->emailVerificationService->generateAndSendVerification($user, $dto->namaPt);
+        } catch (\Throwable $e) {
+            Log::error('Failed to send verification email during registration', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return $user;
     }
 
     /**
