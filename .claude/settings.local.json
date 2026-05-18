@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(php *)",
-      "Bash(del *)"
+      "Bash(del *)",
+      "PowerShell(php -r \"require 'vendor/autoload.php'; $app = require_once 'bootstrap/app.php'; $app->make\\('Illuminate\\\\Contracts\\\\Console\\\\Kernel'\\)->bootstrap\\(\\); $record = App\\\\Models\\\\PengaturanCms::first\\(\\); if \\($record\\) { echo 'ID: ' . $record->id . PHP_EOL; echo 'Key: ' . $record->key . PHP_EOL; echo 'Value: ' . substr\\($record->value, 0, 100\\) . PHP_EOL; } else { echo 'No records found'; }\")",
+      "PowerShell(php artisan tinker --execute=\"$record = App\\\\Models\\\\PengaturanCms::first\\(\\); if \\($record\\) { echo 'ID: ' . $record->id . PHP_EOL . 'Key: ' . $record->key . PHP_EOL . 'Value: ' . substr\\($record->value ?? '', 0, 100\\) . PHP_EOL; } else { echo 'No records found'; }\")"
     ]
   }
 }

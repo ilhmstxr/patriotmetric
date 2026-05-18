@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('assessments', function (Blueprint $table) {
-            $table->id()->primary();
+            $table->id();
             $table->uuid('institution_id');
             $table->foreign('institution_id')->references('id')->on('institusis')->onUpdate('cascade')->onDelete('cascade');
 
