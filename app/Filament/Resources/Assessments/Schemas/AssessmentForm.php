@@ -20,6 +20,7 @@ class AssessmentForm
                     ->searchable(),
                 Select::make('status')
                     ->options([
+                        'UNVERIFIED' => 'Unverified',
                         'ACTIVE' => 'Active',
                         'IN_PROGRESS' => 'In Progress',
                         'SUBMITTED' => 'Submitted',

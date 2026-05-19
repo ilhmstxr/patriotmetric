@@ -168,11 +168,6 @@ class ReviewService extends BaseService
         // Simpan beramai-ramai sekaligus dengan DB Transaction (atau satuan update)
         $this->repository->updateReviewData($dto->submissionId, $sanitizedVerifications);
 
-        // Update status asesmen menjadi REVIEWING 
-        if ($submission && $submission->status !== 'REVIEWING') {
-            $submission->update(['status' => 'REVIEWING']);
-        }
-
         return true;
     }
 

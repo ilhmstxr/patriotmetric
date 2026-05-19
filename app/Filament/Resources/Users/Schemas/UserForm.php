@@ -53,6 +53,7 @@ class UserForm
                             ->options([
                                 'UNVERIFIED' => 'Unverified',
                                 'ACTIVE' => 'Active',
+                                'SUSPENDED' => 'Suspended',
                             ])
                             ->required()
                             ->visible(fn (string $operation): bool => $operation === 'edit'),

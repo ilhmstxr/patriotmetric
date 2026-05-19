@@ -75,7 +75,7 @@ class AuthController extends Controller
                 'user' => $user,
                 'token' => $token,
                 'user_status' => 'UNVERIFIED',
-                'assessment_status' => 'ACTIVE',
+                'assessment_status' => 'UNVERIFIED',
                 'redirect_to' => '/cek-email',
             ], 'Registrasi berhasil. Silakan verifikasi email Anda.', 201);
         } catch (\Throwable $th) {
@@ -122,12 +122,11 @@ class AuthController extends Controller
             $user = $result['user'];
             $assessment = $this->assessmentRepository->findActiveAssessmentByUserId($user->id);
 
-            // User status check (middleware-level flag)
             $redirectTo = '/dashboard';
             if ($user->status === 'UNVERIFIED') {
                 $redirectTo = '/cek-email';
-            } elseif ($assessment && in_array($assessment->status, ['SUBMITTED', 'GRADED', 'PUBLISHED'])) {
-                $redirectTo = '/dashboard/hasil';
+            } elseif ($assessment && $assessment->status === 'UNVERIFIED') {
+                $redirectTo = '/verifikasi';
             }
 
             // Include user role for reviewer redirect
@@ -233,7 +232,7 @@ class AuthController extends Controller
                         'user_id' => $user->id,
                         'institution_id' => $prevAssessment->institution_id,
                         'tahun_periode' => $activePeriod,
-                        'status' => 'IN_PROGRESS', // bypass verifikasi
+                        'status' => 'ACTIVE',
                         'nama_pic' => $prevAssessment->nama_pic,
                         'jabatan_pic' => $prevAssessment->jabatan_pic,
                         'no_hp_pic' => $prevAssessment->no_hp_pic,

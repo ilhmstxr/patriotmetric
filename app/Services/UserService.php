@@ -56,7 +56,7 @@ class UserService extends BaseService
                 'user_id' => $user->id,
                 'institution_id' => $institusi->id,
                 'tahun_periode' => date('Y'),
-                'status' => 'ACTIVE',
+                'status' => 'UNVERIFIED',
                 'nama_pic' => $dto->namaPic,
                 'jabatan_pic' => $dto->jabatanPic,
                 'no_hp_pic' => $dto->noHpPic,

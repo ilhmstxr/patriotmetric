@@ -46,6 +46,7 @@
                 localStorage.removeItem('auth_token');
                 localStorage.removeItem('auth_user');
                 localStorage.removeItem('user_status');
+                localStorage.removeItem('assessment_status');
                 localStorage.removeItem('profile_data_cache');
                 localStorage.removeItem('rubrik_questions_cache');
                 localStorage.removeItem('token_expires_at');
@@ -64,10 +65,16 @@
                 }
                 
                 // Jika peserta tapi user status masih UNVERIFIED, lempar ke /cek-email
+                // Jika assessment masih UNVERIFIED (explicitly set), lempar ke /verifikasi
                 if (user.role === 'PESERTA' || user.role === 'peserta') {
                     const userStatus = localStorage.getItem('user_status');
                     if (!userStatus || userStatus === 'UNVERIFIED') {
                         window.location.replace('/cek-email');
+                        return;
+                    }
+                    const assessmentStatus = localStorage.getItem('assessment_status');
+                    if (assessmentStatus === 'UNVERIFIED') {
+                        window.location.replace('/verifikasi');
                         return;
                     }
                 }

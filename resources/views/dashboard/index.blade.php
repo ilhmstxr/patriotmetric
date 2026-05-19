@@ -52,19 +52,19 @@
             },
 
             applyProfileData(data) {
-                this.profileData.Assessment = data.Assessment;
-                this.profileData.institusi   = data.Assessment?.institusi;
-                this.profileData.identitas   = data.Assessment?.identitas;
+                this.profileData.Assessment = data.assessment;
+                this.profileData.institusi   = data.assessment?.institusi;
+                this.profileData.identitas   = data.assessment?.identitas;
                 this.is_peserta_profile_edit_enabled = data.is_peserta_profile_edit_enabled ?? false;
 
                 const lockedStatuses = ['SUBMITTED', 'GRADED', 'PUBLISHED'];
-                if (data.Assessment && lockedStatuses.includes(data.Assessment.status)) {
+                if (data.assessment && lockedStatuses.includes(data.assessment.status)) {
                     this.is_peserta_profile_edit_enabled = false;
                 }
 
                 this.profileData.agamas = {};
-                if (data.Assessment?.agamas) {
-                    data.Assessment.agamas.forEach(a => {
+                if (data.assessment?.agamas) {
+                    data.assessment.agamas.forEach(a => {
                         this.profileData.agamas[a.agama.toLowerCase()] = a.jumlah;
                     });
                 }

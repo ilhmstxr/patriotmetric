@@ -150,17 +150,14 @@ class VerificationController extends Controller
             // Cari ID reviewer tester
             $testerReviewer = $this->userRepository->findByEmail('reviewer@admin.com');
             
-            // Update Assessment with PIC data
+            // Update Assessment status to ACTIVE after verification
             $this->assessmentRepository->update($assessment->id, [
                 'nama_pic' => $validated['nama_pic'],
                 'jabatan_pic' => $validated['jabatan_pic'],
                 'no_hp_pic' => $validated['no_hp_pic'],
-                'status' => 'IN_PROGRESS',
+                'status' => 'ACTIVE',
                 'reviewer_id' => $testerReviewer ? $testerReviewer->id : null,
             ]);
-
-            // Update User status to IN_PROGRESS
-            $this->userRepository->update($userId, ['status' => 'IN_PROGRESS']);
 
             // Create or update Identitas
             $identitas = $this->assessmentRepository->upsertIdentitas($assessment->id, [

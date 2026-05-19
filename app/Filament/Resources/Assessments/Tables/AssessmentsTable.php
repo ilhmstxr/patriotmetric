@@ -26,6 +26,7 @@ class AssessmentsTable
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
+                        'UNVERIFIED'  => 'danger',
                         'ACTIVE'      => 'gray',
                         'IN_PROGRESS' => 'info',
                         'SUBMITTED'   => 'warning',

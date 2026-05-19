@@ -1,5 +1,5 @@
 <x-layouts.app :hideNav="true" :hideFooter="true">
-    {{-- Guard: hanya yang ACTIVE yang boleh di sini --}}
+    {{-- Guard: hanya yang user ACTIVE dan assessment UNVERIFIED yang boleh di sini --}}
     <script>
         (function() {
             const token = localStorage.getItem('auth_token');
@@ -13,9 +13,14 @@
                 window.location.replace('/reviewer');
                 return;
             }
-            const status = localStorage.getItem('user_status') || 'ACTIVE';
-            if (status === 'UNVERIFIED') {
+            const userStatus = localStorage.getItem('user_status') || 'ACTIVE';
+            if (userStatus === 'UNVERIFIED') {
                 window.location.replace('/cek-email');
+                return;
+            }
+            const assessmentStatus = localStorage.getItem('assessment_status') || 'UNVERIFIED';
+            if (assessmentStatus !== 'UNVERIFIED') {
+                window.location.replace('/dashboard');
                 return;
             }
         })();
@@ -176,8 +181,10 @@
 
                 if (result.data.assessment) {
                     const p = result.data.assessment;
-                    if (['IN_PROGRESS', 'SUBMITTED', 'GRADED'].includes(p.status)) {
+                    if (p.status !== 'UNVERIFIED') {
+                        localStorage.setItem('assessment_status', p.status);
                         window.location.href = '/dashboard';
+                        return;
                     }
                     // Only fill from server if local draft is empty for these specific fields
                     if (!this.formData.nama_pt && p.institusi) {
@@ -322,7 +329,7 @@
                 this.clearDB();
                 
                 // UPDATE STATUS IN LOCAL STORAGE TO PREVENT REDIRECT LOOP
-                localStorage.setItem('user_status', 'ACTIVE');
+                localStorage.setItem('assessment_status', 'ACTIVE');
 
                 Swal.fire({
                     icon: 'success',

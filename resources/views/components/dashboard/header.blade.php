@@ -56,12 +56,12 @@
                         // 1. Check if redirection is needed for Peserta
                         if (role === 'peserta') {
                             const isAtVerifikasi = window.location.pathname.includes('/verifikasi');
-                            if (!p || p.status === 'ACTIVE') {
+                            if (!p || p.status === 'UNVERIFIED') {
                                 if (!isAtVerifikasi) {
                                     window.location.href = '/verifikasi';
                                     return true;
                                 }
-                            } else if (isAtVerifikasi && ['IN_PROGRESS', 'SUBMITTED', 'GRADED', 'PUBLISHED'].includes(p.status)) {
+                            } else if (isAtVerifikasi) {
                                 window.location.href = '/dashboard';
                                 return true;
                             }
@@ -99,7 +99,7 @@
                          if (cached) {
                              try {
                                  const result = JSON.parse(cached);
-                                 this.processUserData(result.user, result.Assessment);
+                                 this.processUserData(result.user, result.assessment || result.Assessment);
                              } catch (e) {}
                          }
 
@@ -113,7 +113,7 @@
                          const result = await res.json();
                          if (res.ok && result.success) {
                              localStorage.setItem('profile_data_cache', JSON.stringify(result.data));
-                             this.processUserData(result.data.user, result.data.Assessment);
+                             this.processUserData(result.data.user, result.data.assessment);
                          } else {
                              if (!window.location.pathname.includes('/reviewer')) {
                                  localStorage.removeItem('auth_token');
@@ -178,6 +178,7 @@
                                 localStorage.removeItem('auth_token');
                                 localStorage.removeItem('auth_user');
                                 localStorage.removeItem('user_status');
+                                localStorage.removeItem('assessment_status');
                                 localStorage.removeItem('rubrik_data_cache');
                                 localStorage.removeItem('profile_data_cache');
                                 localStorage.removeItem('profile_data_cache_at');

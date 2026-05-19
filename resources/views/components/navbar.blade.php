@@ -14,6 +14,7 @@
             localStorage.removeItem('auth_token');
             localStorage.removeItem('auth_user');
             localStorage.removeItem('user_status');
+            localStorage.removeItem('assessment_status');
             localStorage.removeItem('profile_data_cache');
             localStorage.removeItem('rubrik_questions_cache');
             localStorage.removeItem('rubrik_data_cache');

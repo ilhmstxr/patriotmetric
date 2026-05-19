@@ -302,3 +302,134 @@ Refactor CMS logic ke service layer, update semua form & view, fix seeder paths,
 - Seeder path diupdate + auto-copy images: DONE
 - Max upload 5MB: DONE
 - File fisik sudah ada di `storage/app/private/cms/images/`: DONE
+
+---
+---
+
+# Claude History - 19 Mei 2026 (Sesi 1, 12:44 WIB)
+
+## Ringkasan Sesi
+
+Fix status flow — pisahkan user status dari assessment status, fix redirect loop `/verifikasi` ↔ `/dashboard`.
+
+---
+
+## 10. Fix Status Flow: User vs Assessment
+
+### Masalah:
+- Status `UNVERIFIED` di assessment dihapus di sesi sebelumnya, padahal seharusnya assessment juga punya `UNVERIFIED` sebagai default
+- Redirect loop antara `/verifikasi` dan `/dashboard` karena logic guard yang salah
+
+### Status yang Benar:
+
+**User status** (flag untuk middleware/page access):
+| Status | Keterangan |
+|---|---|
+| `UNVERIFIED` | Default, belum verifikasi email |
+| `ACTIVE` | Sudah verifikasi email |
+| `SUSPENDED` | Di-suspend admin |
+
+**Assessment status** (flag tahapan pengisian):
+| Status | Keterangan |
+|---|---|
+| `UNVERIFIED` | Default, belum submit dokumen verifikasi |
+| `ACTIVE` | Sudah submit dokumen verifikasi |
+| `IN_PROGRESS` | Sedang mengisi rubrik |
+| `SUBMITTED` | Sudah submit rubrik |
+| `GRADED` | Sudah dinilai reviewer |
+| `PUBLISHED` | Hasil dipublikasikan |
+
+### Alur Lengkap:
+1. Daftar → user `UNVERIFIED`, assessment `UNVERIFIED` → redirect `/cek-email`
+2. Klik link email → user `ACTIVE` → redirect `/masuk?verified=1`
+3. Login → user `ACTIVE`, assessment `UNVERIFIED` → redirect `/verifikasi`
+4. Submit dokumen verifikasi → assessment `ACTIVE` → redirect `/dashboard`
+5. `/verifikasi` tidak bisa diakses lagi setelah assessment bukan `UNVERIFIED`
+
+### Perubahan:
+
+#### Backend:
+
+**`app/Services/UserService.php`**
+- Register: user status `UNVERIFIED`, assessment status `UNVERIFIED`
+
+**`app/Http/Controllers/EmailVerificationController.php`**
+- Verifikasi email: update `users.status` → `ACTIVE` (bukan assessment)
+- Hapus import `Assessment` model (tidak dipakai lagi)
+
+**`app/Http/Controllers/VerificationController.php`**
+- Submit verifikasi: assessment status → `ACTIVE` (bukan `IN_PROGRESS`)
+- Hapus update user status ke `IN_PROGRESS` (invalid)
+
+**`app/Http/Controllers/AuthController.php`**
+- Register response: `user_status: UNVERIFIED`, `assessment_status: UNVERIFIED`
+- Login redirect: cek user `UNVERIFIED` → `/cek-email`, assessment `UNVERIFIED` → `/verifikasi`, else → `/dashboard`
+- `/me` response: key `Assessment` → `assessment` (lowercase)
+- `/me` bypass tahun sebelumnya: assessment dibuat `ACTIVE` (bukan `IN_PROGRESS`)
+
+**`app/Services/ReviewService.php`**
+- Hapus update status ke `REVIEWING` (bukan valid enum)
+
+**`app/Filament/Resources/Assessments/`**
+- Form: tambah `UNVERIFIED` ke options
+- Table: tambah `UNVERIFIED` dengan warna `danger`
+
+**`app/Filament/Resources/Users/Schemas/UserForm.php`**
+- Tambah `SUSPENDED` ke options
+
+#### Frontend:
+
+**localStorage keys:**
+- `Assessment_status` → diganti jadi 2 key terpisah: `user_status` + `assessment_status`
+
+**`resources/views/auth/masuk.blade.php`**
+- Guard: cek `user_status` DAN `assessment_status`
+- `?verified=1`: clear semua localStorage termasuk `assessment_status`
+- Login success: simpan `user_status` + `assessment_status`, clear `profile_data_cache`
+
+**`resources/views/auth/daftar.blade.php`**
+- Guard: cek `user_status` DAN `assessment_status`
+- Register success: simpan `user_status` + `assessment_status`
+
+**`resources/views/auth/cek-email.blade.php`**
+- Guard: hanya user `UNVERIFIED` yang boleh di sini
+
+**`resources/views/auth/verifikasi.blade.php`**
+- Guard: hanya user `ACTIVE` DAN assessment `UNVERIFIED` yang boleh di sini
+- `/me` response: cek `result.data.assessment` (lowercase), redirect jika bukan `UNVERIFIED`
+- Success handler: set `assessment_status = 'ACTIVE'`
+
+**`resources/views/components/layouts/dashboard.blade.php`**
+- Guard: user `UNVERIFIED` → `/cek-email`, assessment `UNVERIFIED` (explicitly set) → `/verifikasi`
+- Tidak redirect jika `assessment_status` absent (mencegah loop)
+
+**`resources/views/components/dashboard/header.blade.php`**
+- `processUserData()`: cek `p.status === 'UNVERIFIED'` (bukan `ACTIVE`) untuk redirect ke `/verifikasi`
+- Fix key: `result.data.Assessment` → `result.data.assessment`
+- Cache fallback: `result.assessment || result.Assessment` (backward compat)
+
+**`resources/views/dashboard/index.blade.php`**
+- `applyProfileData()`: `data.Assessment` → `data.assessment`
+
+**Semua logout handlers** (navbar, header, dashboard layout):
+- Tambah `localStorage.removeItem('assessment_status')`
+
+#### Migration:
+- `database/migrations/2026_03_04_062813_create_assessments_table.php` — sudah benar: enum `UNVERIFIED, ACTIVE, IN_PROGRESS, SUBMITTED, GRADED, PUBLISHED` default `UNVERIFIED`
+- Migration `remove_unverified_status_from_assessments_table` dihapus
+
+---
+
+## Root Cause Redirect Loop:
+
+1. **`header.blade.php`** cek `p.status === 'ACTIVE'` untuk redirect ke `/verifikasi` — padahal `ACTIVE` sekarang berarti sudah verified
+2. **`header.blade.php`** baca `result.data.Assessment` (capital A) tapi API return `result.data.assessment` (lowercase) → `undefined` → trigger `!p` → redirect ke `/verifikasi`
+3. **Stale `profile_data_cache`** di localStorage masih punya key `Assessment` (capital A)
+
+---
+
+## Status:
+- Status flow user & assessment: FIXED
+- Redirect loop: FIXED
+- Frontend localStorage migration: DONE
+- Filament admin forms: UPDATED

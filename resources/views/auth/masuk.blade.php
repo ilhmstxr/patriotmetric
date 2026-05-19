@@ -2,6 +2,17 @@
     {{-- Guard: jika sudah login, redirect sesuai status --}}
     <script>
         (function() {
+            // If coming from email verification, clear old session
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('verified') === '1') {
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('auth_user');
+                localStorage.removeItem('user_status');
+                localStorage.removeItem('assessment_status');
+                localStorage.removeItem('token_expires_at');
+                return;
+            }
+
             const token = localStorage.getItem('auth_token');
             if (token) {
                 // Cek apakah token sudah expired
@@ -13,6 +24,7 @@
                         localStorage.removeItem('auth_token');
                         localStorage.removeItem('auth_user');
                         localStorage.removeItem('user_status');
+                        localStorage.removeItem('assessment_status');
                         localStorage.removeItem('token_expires_at');
                         return;
                     }
@@ -24,9 +36,12 @@
                     return;
                 }
 
-                const status = localStorage.getItem('user_status') || 'ACTIVE';
-                if (status === 'UNVERIFIED') {
+                const userStatus = localStorage.getItem('user_status') || 'ACTIVE';
+                const assessmentStatus = localStorage.getItem('assessment_status') || 'UNVERIFIED';
+                if (userStatus === 'UNVERIFIED') {
                     window.location.replace('/cek-email');
+                } else if (assessmentStatus === 'UNVERIFIED') {
+                    window.location.replace('/verifikasi');
                 } else {
                     window.location.replace('/dashboard');
                 }
@@ -103,22 +118,19 @@
                                 localStorage.removeItem('auth_user');
                                 localStorage.removeItem('auth_token');
                                 localStorage.removeItem('token_expires_at');
+                                localStorage.removeItem('profile_data_cache');
 
                                 // Simpan token untuk API calls selanjutnya
                                 localStorage.setItem('auth_token', result.data.token);
                                 localStorage.setItem('auth_user', JSON.stringify(result.data.user));
                                 localStorage.setItem('user_status', result.data.user_status || 'ACTIVE');
+                                localStorage.setItem('assessment_status', result.data.assessment_status || 'UNVERIFIED');
                                 if (result.data.token_expires_at) {
                                     localStorage.setItem('token_expires_at', result.data.token_expires_at);
                                 }
 
-                                // Redirect berdasarkan user status
-                                const userStatus = result.data.user_status || 'ACTIVE';
+                                // Redirect berdasarkan status
                                 let redirectTo = result.data.redirect_to || '/dashboard';
-
-                                if (userStatus === 'UNVERIFIED') {
-                                    redirectTo = '/cek-email';
-                                }
 
                                 Swal.fire({
                                     icon: 'success',
