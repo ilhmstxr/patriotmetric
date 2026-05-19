@@ -27,7 +27,7 @@
     <section class="relative overflow-hidden">
         <div class="absolute inset-0">
             @if($heroBackground)
-                <img src="{{ asset($heroBackground) }}" alt="" class="w-full h-full object-cover" />
+                <img src="{{ url('cms-assets/' . $heroBackground) }}" alt="" class="w-full h-full object-cover" />
             @else
                 <div class="w-full h-full bg-gradient-to-br from-[#1B5E20] to-[#2E7D32]"></div>
             @endif
