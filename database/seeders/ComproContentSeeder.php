@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\ComproContent;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ComproContentSeeder extends Seeder
 {
@@ -15,6 +16,8 @@ class ComproContentSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->seedCmsImages();
+
         DB::transaction(function () {
             $this->seedWelcomePage();
             $this->seedProfilePage();
@@ -29,6 +32,30 @@ class ComproContentSeeder extends Seeder
         $pages = ['welcome', 'profile', 'visi-misi', 'tim', 'penghargaan', 'panduan', 'pengumuman'];
         foreach ($pages as $page) {
             \Illuminate\Support\Facades\Cache::forget("compro_content.{$page}");
+        }
+    }
+
+    /**
+     * Copy default CMS images from public/assets/images to cms disk.
+     */
+    private function seedCmsImages(): void
+    {
+        $disk = Storage::disk('cms');
+        $sourceDir = public_path('assets/images');
+
+        $files = [
+            '46257018a5d0ac00852b82184ae3ed30ef9a74e4.webp',
+            'bg.webp',
+            'b4f942a6770a3928dc2f82d398369a3d39ba1fde.webp',
+            '199dc2ebf1e9cecf5218f4b20951209708831231.webp',
+            'blank-profile-picture-973460_1280.webp',
+        ];
+
+        foreach ($files as $file) {
+            $sourcePath = $sourceDir . DIRECTORY_SEPARATOR . $file;
+            if (file_exists($sourcePath) && !$disk->exists("images/{$file}")) {
+                $disk->put("images/{$file}", file_get_contents($sourcePath));
+            }
         }
     }
 
@@ -53,7 +80,7 @@ class ComproContentSeeder extends Seeder
         // Hero Section
         $this->createContent($page, 'hero', 'judul', 'text', 'Membangun Karakter Bangsa dari Kampus', 1);
         $this->createContent($page, 'hero', 'deskripsi', 'text', 'Sebuah inisiatif pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.', 2);
-        $this->createContent($page, 'hero', 'background_image', 'image', 'assets/images/46257018a5d0ac00852b82184ae3ed30ef9a74e4.webp', 3);
+        $this->createContent($page, 'hero', 'background_image', 'image', 'images/46257018a5d0ac00852b82184ae3ed30ef9a74e4.webp', 3);
 
         // About Section
         $this->createContent($page, 'about', 'judul', 'text', 'Patriot Metric', 1);
@@ -90,8 +117,8 @@ class ComproContentSeeder extends Seeder
         $this->createContent($page, 'instagram', 'judul', 'text', 'Ikuti Aktivitas Kami', 1);
         $this->createContent($page, 'instagram', 'deskripsi', 'text', 'Pantau perkembangan terbaru Patriot Metric melalui Instagram kami.', 2);
         $this->createContent($page, 'instagram', 'posts', 'repeater', [
-            ['url' => 'https://www.instagram.com/reel/DQ5YayFEtfN/', 'gambar' => 'assets/images/ig-post-1.webp', 'alt_text' => 'Post Instagram Patriot Metric 1'],
-            ['url' => 'https://www.instagram.com/p/DQssRuxksft/', 'gambar' => 'assets/images/ig-post-2.webp', 'alt_text' => 'Post Instagram Patriot Metric 2'],
+            ['url' => 'https://www.instagram.com/reel/DQ5YayFEtfN/', 'gambar' => '', 'alt_text' => 'Post Instagram Patriot Metric 1'],
+            ['url' => 'https://www.instagram.com/p/DQssRuxksft/', 'gambar' => '', 'alt_text' => 'Post Instagram Patriot Metric 2'],
         ], 3);
     }
 
@@ -105,7 +132,7 @@ class ComproContentSeeder extends Seeder
         // Hero Section
         $this->createContent($page, 'hero', 'judul', 'text', 'Membangun Karakter Bangsa dari Kampus', 1);
         $this->createContent($page, 'hero', 'deskripsi', 'text', 'Sebuah inisiatif pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.', 2);
-        $this->createContent($page, 'hero', 'background_image', 'image', 'assets/images/bg.webp', 3);
+        $this->createContent($page, 'hero', 'background_image', 'image', 'images/bg.webp', 3);
 
         // Latar Belakang Section
         $this->createContent($page, 'latar-belakang', 'judul', 'text', 'Latar Belakang', 1);
@@ -158,10 +185,10 @@ class ComproContentSeeder extends Seeder
 
         // Team Grid Section
         $this->createContent($page, 'team-grid', 'daftar', 'repeater', [
-            ['nama' => 'Lorem Ipsum', 'role' => 'Lorem Ipsum', 'foto' => 'assets/images/blank-profile-picture-973460_1280.webp'],
-            ['nama' => 'Lorem Ipsum', 'role' => 'Lorem Ipsum', 'foto' => 'assets/images/blank-profile-picture-973460_1280.webp'],
-            ['nama' => 'Lorem Ipsum', 'role' => 'Lorem Ipsum', 'foto' => 'assets/images/blank-profile-picture-973460_1280.webp'],
-            ['nama' => 'Lorem Ipsum', 'role' => 'Lorem Ipsum', 'foto' => 'assets/images/blank-profile-picture-973460_1280.webp'],
+            ['nama' => 'Lorem Ipsum', 'role' => 'Lorem Ipsum', 'foto' => 'images/blank-profile-picture-973460_1280.webp'],
+            ['nama' => 'Lorem Ipsum', 'role' => 'Lorem Ipsum', 'foto' => 'images/blank-profile-picture-973460_1280.webp'],
+            ['nama' => 'Lorem Ipsum', 'role' => 'Lorem Ipsum', 'foto' => 'images/blank-profile-picture-973460_1280.webp'],
+            ['nama' => 'Lorem Ipsum', 'role' => 'Lorem Ipsum', 'foto' => 'images/blank-profile-picture-973460_1280.webp'],
         ], 1);
     }
 
@@ -175,17 +202,17 @@ class ComproContentSeeder extends Seeder
         // Hero Section
         $this->createContent($page, 'hero', 'judul', 'text', 'Galeri Penghargaan', 1);
         $this->createContent($page, 'hero', 'deskripsi', 'text', 'Penghormatan tertinggi bagi institusi yang telah membuktikan dedikasinya dalam membangun karakter patriotik dan bela negara.', 2);
-        $this->createContent($page, 'hero', 'background_image', 'image', 'assets/images/b4f942a6770a3928dc2f82d398369a3d39ba1fde.webp', 3);
+        $this->createContent($page, 'hero', 'background_image', 'image', 'images/b4f942a6770a3928dc2f82d398369a3d39ba1fde.webp', 3);
 
         // Daftar Penerima Section
         $this->createContent($page, 'daftar-penerima', 'judul', 'text', 'Daftar Institusi Peraih Penghargaan', 1);
         $this->createContent($page, 'daftar-penerima', 'daftar', 'repeater', [
-            ['nama' => 'Lorem Ipsum', 'logo' => 'assets/images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 5],
-            ['nama' => 'Lorem Ipsum', 'logo' => 'assets/images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 5],
-            ['nama' => 'Lorem Ipsum', 'logo' => 'assets/images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 4.5],
-            ['nama' => 'Lorem Ipsum', 'logo' => 'assets/images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 4],
-            ['nama' => 'Lorem Ipsum', 'logo' => 'assets/images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 5],
-            ['nama' => 'Lorem Ipsum', 'logo' => 'assets/images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 4],
+            ['nama' => 'Lorem Ipsum', 'logo' => 'images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 5],
+            ['nama' => 'Lorem Ipsum', 'logo' => 'images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 5],
+            ['nama' => 'Lorem Ipsum', 'logo' => 'images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 4.5],
+            ['nama' => 'Lorem Ipsum', 'logo' => 'images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 4],
+            ['nama' => 'Lorem Ipsum', 'logo' => 'images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 5],
+            ['nama' => 'Lorem Ipsum', 'logo' => 'images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 4],
         ], 2);
     }
 
@@ -232,12 +259,12 @@ class ComproContentSeeder extends Seeder
 
         // Artikel Section
         $this->createContent($page, 'artikel', 'daftar', 'repeater', [
-            ['tanggal' => '2025-08-01', 'judul' => 'Cara Mendaftarkan Institusi Anda di Portal Patriot Metric', 'excerpt' => 'Panduan lengkap langkah-langkah pendaftaran institusi di portal Patriot Metric. Mulai dari pembuatan akun, pengisian data institusi, hingga penunjukan PIC yang bertanggung jawab.', 'gambar' => 'assets/images/article-registrasi.webp'],
-            ['tanggal' => '2025-09-01', 'judul' => 'Proses Validasi & Verifikasi Data Institusi', 'excerpt' => 'Ketahui dokumen apa saja yang diperlukan untuk validasi akun institusi dan bagaimana proses verifikasi dilakukan oleh tim kami untuk memastikan keabsahan data.', 'gambar' => 'assets/images/article-validasi.webp'],
-            ['tanggal' => '2025-09-16', 'judul' => 'Tips Pengisian Rubrik Penilaian yang Efektif', 'excerpt' => 'Strategi dan tips agar pengisian rubrik penilaian berjalan optimal. Termasuk jenis bukti pendukung yang direkomendasikan dan format yang diterima sistem.', 'gambar' => 'assets/images/article-rubrik.webp'],
-            ['tanggal' => '2025-11-01', 'judul' => 'Mekanisme Penilaian oleh Tim Reviewer', 'excerpt' => 'Bagaimana tim penilai memverifikasi dan mengevaluasi data institusi. Transparansi proses penilaian dan kriteria yang digunakan dalam evaluasi.', 'gambar' => 'assets/images/article-penilaian.webp'],
-            ['tanggal' => '2025-12-01', 'judul' => 'Metodologi Kalkulasi Skor Pemeringkatan', 'excerpt' => 'Penjelasan sistem scoring dan bobot penilaian Patriot Metric. Bagaimana skor akhir dihitung dari berbagai dimensi penilaian bela negara.', 'gambar' => 'assets/images/article-pengolahan.webp'],
-            ['tanggal' => '2026-08-17', 'judul' => 'Upacara Penghargaan Nasional Patriot Metric', 'excerpt' => 'Informasi seputar acara pengumuman dan penyerahan penghargaan bagi institusi terbaik dalam implementasi nilai-nilai bela negara di lingkungan kampus.', 'gambar' => 'assets/images/article-penghargaan.webp'],
+            ['tanggal' => '2025-08-01', 'judul' => 'Cara Mendaftarkan Institusi Anda di Portal Patriot Metric', 'excerpt' => 'Panduan lengkap langkah-langkah pendaftaran institusi di portal Patriot Metric. Mulai dari pembuatan akun, pengisian data institusi, hingga penunjukan PIC yang bertanggung jawab.', 'gambar' => ''],
+            ['tanggal' => '2025-09-01', 'judul' => 'Proses Validasi & Verifikasi Data Institusi', 'excerpt' => 'Ketahui dokumen apa saja yang diperlukan untuk validasi akun institusi dan bagaimana proses verifikasi dilakukan oleh tim kami untuk memastikan keabsahan data.', 'gambar' => ''],
+            ['tanggal' => '2025-09-16', 'judul' => 'Tips Pengisian Rubrik Penilaian yang Efektif', 'excerpt' => 'Strategi dan tips agar pengisian rubrik penilaian berjalan optimal. Termasuk jenis bukti pendukung yang direkomendasikan dan format yang diterima sistem.', 'gambar' => ''],
+            ['tanggal' => '2025-11-01', 'judul' => 'Mekanisme Penilaian oleh Tim Reviewer', 'excerpt' => 'Bagaimana tim penilai memverifikasi dan mengevaluasi data institusi. Transparansi proses penilaian dan kriteria yang digunakan dalam evaluasi.', 'gambar' => ''],
+            ['tanggal' => '2025-12-01', 'judul' => 'Metodologi Kalkulasi Skor Pemeringkatan', 'excerpt' => 'Penjelasan sistem scoring dan bobot penilaian Patriot Metric. Bagaimana skor akhir dihitung dari berbagai dimensi penilaian bela negara.', 'gambar' => ''],
+            ['tanggal' => '2026-08-17', 'judul' => 'Upacara Penghargaan Nasional Patriot Metric', 'excerpt' => 'Informasi seputar acara pengumuman dan penyerahan penghargaan bagi institusi terbaik dalam implementasi nilai-nilai bela negara di lingkungan kampus.', 'gambar' => ''],
         ], 1);
     }
 }

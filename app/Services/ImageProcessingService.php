@@ -12,8 +12,8 @@ class ImageProcessingService
 {
     private const MAX_WIDTH = 1920;
     private const MAX_HEIGHT = 1080;
-    private const STORAGE_DISK = 'public';
-    private const UPLOAD_PATH = 'compro-images';
+    private const STORAGE_DISK = 'cms';
+    private const UPLOAD_PATH = 'images';
 
     /**
      * Process and store an uploaded image.

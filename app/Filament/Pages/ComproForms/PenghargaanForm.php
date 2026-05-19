@@ -20,8 +20,10 @@ class PenghargaanForm
                     FileUpload::make('hero.background_image')
                         ->label('Background Image')
                         ->image()
+                        ->disk('cms')
+                        ->directory('images')
                         ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                        ->maxSize(2048),
+                        ->maxSize(5120),
                 ]),
 
             Section::make('Daftar Penerima')
@@ -34,8 +36,10 @@ class PenghargaanForm
                             FileUpload::make('logo')
                                 ->label('Logo Institusi')
                                 ->image()
+                                ->disk('cms')
+                                ->directory('images')
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                ->maxSize(2048)
+                                ->maxSize(5120)
                                 ->required(),
                             TextInput::make('rating')
                                 ->label('Rating Bintang')

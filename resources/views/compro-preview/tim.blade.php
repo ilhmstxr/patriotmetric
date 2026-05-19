@@ -45,7 +45,7 @@
                             <div class="p-4 pb-0">
                                 <div class="bg-[#f8fafc] rounded-xl overflow-hidden h-[280px]">
                                     @if(!empty($member['foto']))
-                                        <img src="{{ asset('storage/' . $member['foto']) }}" alt="{{ $member['nama'] ?? '' }}" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                                        <img src="{{ url('cms-assets/' . $member['foto']) }}" alt="{{ $member['nama'] ?? '' }}" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                     @else
                                         <div class="w-full h-full flex items-center justify-center bg-gray-200">
                                             <svg class="w-20 h-20 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
