@@ -83,7 +83,7 @@
                             Pengumuman
                         </a>
                         <a href="{{ url('/penghargaan') }}" @click="dropdownInfoOpen = false" class="block px-4 py-2.5 font-['Plus_Jakarta_Sans',sans-serif] text-[14px] transition-colors {{ request()->is('penghargaan') ? 'font-semibold text-[#1b5e20] bg-[rgba(27,94,32,0.05)]' : 'font-medium text-[#45556c] hover:text-[#1b5e20] hover:bg-[rgba(27,94,32,0.05)]' }}">
-                            Penghargaan 2025
+                            Penghargaan
                         </a>
                     </div>
                 </div>

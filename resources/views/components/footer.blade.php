@@ -54,7 +54,7 @@
                                 Pengumuman
                             </a>
                             <a href="{{ url('/penghargaan') }}" class="font-['Plus_Jakarta_Sans',sans-serif] font-normal leading-[20px] text-[13px] text-[#62748E] hover:text-[#1B5E20] hover:translate-x-1 transition-all">
-                                Penghargaan 2025
+                                Penghargaan
                             </a>
                         </div>
                     </div>
