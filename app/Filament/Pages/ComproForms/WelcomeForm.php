@@ -23,7 +23,7 @@ class WelcomeForm
                         ->image()
                         ->disk('cms')
                         ->directory('images')
-                        ->visibility('private')
+                        ->visibility('public')
                         ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                         ->maxSize(5120),
                 ]),
@@ -56,7 +56,7 @@ class WelcomeForm
                                 ->image()
                                 ->disk('cms')
                                 ->directory('images')
-                                ->visibility('private')
+                                ->visibility('public')
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->maxSize(5120)
                                 ->required(),
@@ -74,7 +74,7 @@ class WelcomeForm
                                 ->image()
                                 ->disk('cms')
                                 ->directory('images')
-                                ->visibility('private')
+                                ->visibility('public')
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->maxSize(5120)
                                 ->required(),
@@ -111,7 +111,7 @@ class WelcomeForm
                         ->label('Post Instagram')
                         ->schema([
                             TextInput::make('url')->label('URL Post')->url()->maxLength(255)->required(),
-                            FileUpload::make('gambar')->label('Gambar')->image()->disk('cms')->directory('images')->visibility('private')->maxSize(5120),
+                            FileUpload::make('gambar')->label('Gambar')->image()->disk('cms')->directory('images')->visibility('public')->maxSize(5120),
                             TextInput::make('alt_text')->label('Alt Text')->maxLength(255),
                         ])
                         ->maxItems(50)

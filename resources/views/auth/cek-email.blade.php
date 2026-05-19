@@ -7,9 +7,9 @@
                 window.location.replace('/masuk');
                 return;
             }
-            const status = localStorage.getItem('Assessment_status') || 'ACTIVE';
+            const status = localStorage.getItem('user_status') || 'ACTIVE';
             if (status !== 'UNVERIFIED') {
-                window.location.replace('/verifikasi');
+                window.location.replace('/dashboard');
                 return;
             }
         })();

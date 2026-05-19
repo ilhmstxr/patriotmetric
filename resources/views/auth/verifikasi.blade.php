@@ -13,13 +13,10 @@
                 window.location.replace('/reviewer');
                 return;
             }
-            const status = localStorage.getItem('Assessment_status') || 'ACTIVE';
+            const status = localStorage.getItem('user_status') || 'ACTIVE';
             if (status === 'UNVERIFIED') {
                 window.location.replace('/cek-email');
                 return;
-            }
-            if (status !== 'ACTIVE') {
-                window.location.replace('/dashboard');
             }
         })();
     </script>
@@ -177,10 +174,9 @@
                 this.user = { ...this.user, ...result.data.user };
                 localStorage.setItem('auth_user', JSON.stringify(this.user));
 
-                if (result.data.Assessment) {
-                    const p = result.data.Assessment;
+                if (result.data.assessment) {
+                    const p = result.data.assessment;
                     if (['IN_PROGRESS', 'SUBMITTED', 'GRADED'].includes(p.status)) {
-                        localStorage.setItem('Assessment_status', p.status);
                         window.location.href = '/dashboard';
                     }
                     // Only fill from server if local draft is empty for these specific fields
@@ -326,7 +322,7 @@
                 this.clearDB();
                 
                 // UPDATE STATUS IN LOCAL STORAGE TO PREVENT REDIRECT LOOP
-                localStorage.setItem('Assessment_status', 'IN_PROGRESS');
+                localStorage.setItem('user_status', 'ACTIVE');
 
                 Swal.fire({
                     icon: 'success',

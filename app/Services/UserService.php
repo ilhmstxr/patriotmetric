@@ -39,7 +39,7 @@ class UserService extends BaseService
                 'email' => $dto->email,
                 'password' => $dto->password,
                 'role' => 'PESERTA',
-                'status' => 'ACTIVE',
+                'status' => 'UNVERIFIED',
             ]);
 
             // 2. Buat Institusi terkait (simpan domain email untuk enforcement 1-instansi-1-akun)
@@ -51,12 +51,12 @@ class UserService extends BaseService
                 'logo_url' => $dto->logoUrl ?: 'assets/images/blank-profile-picture-973460_1280.webp',
             ]);
 
-            // 3. Buat Data Assessment (Assessment Record) wajib untuk tahun ini dengan status UNVERIFIED
+            // 3. Buat Data Assessment untuk tahun ini
             $this->repository->createAssessment([
                 'user_id' => $user->id,
                 'institution_id' => $institusi->id,
                 'tahun_periode' => date('Y'),
-                'status' => 'UNVERIFIED',
+                'status' => 'ACTIVE',
                 'nama_pic' => $dto->namaPic,
                 'jabatan_pic' => $dto->jabatanPic,
                 'no_hp_pic' => $dto->noHpPic,

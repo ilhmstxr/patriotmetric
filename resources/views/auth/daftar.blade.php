@@ -12,7 +12,7 @@
                     if (now > exp) {
                         localStorage.removeItem('auth_token');
                         localStorage.removeItem('auth_user');
-                        localStorage.removeItem('Assessment_status');
+                        localStorage.removeItem('user_status');
                         localStorage.removeItem('token_expires_at');
                         return;
                     }
@@ -24,13 +24,12 @@
                     return;
                 }
 
-                const status = localStorage.getItem('Assessment_status') || 'ACTIVE';
-                if (status === 'ACTIVE') {
-                    window.location.replace('/verifikasi');
-                } else if (status !== 'UNVERIFIED') {
+                const status = localStorage.getItem('user_status') || 'ACTIVE';
+                if (status === 'UNVERIFIED') {
+                    window.location.replace('/cek-email');
+                } else {
                     window.location.replace('/dashboard');
                 }
-                // UNVERIFIED: tetap di halaman daftar (user bisa daftar akun baru)
             }
         })();
     </script>
@@ -142,7 +141,7 @@
                     if (result.data && result.data.user) {
                         localStorage.setItem('auth_user', JSON.stringify(result.data.user));
                     }
-                    localStorage.setItem('Assessment_status', (result.data && result.data.Assessment_status) || 'UNVERIFIED');
+                    localStorage.setItem('user_status', (result.data && result.data.user_status) || 'UNVERIFIED');
                     if (result.data && result.data.token_expires_at) {
                         localStorage.setItem('token_expires_at', result.data.token_expires_at);
                     }

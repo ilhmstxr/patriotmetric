@@ -31,7 +31,7 @@ class TimForm
                                 ->image()
                                 ->disk('cms')
                                 ->directory('images')
-                                ->visibility('private')
+                                ->visibility('public')
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->maxSize(5120),
                         ])

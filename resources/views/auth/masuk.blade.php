@@ -12,7 +12,7 @@
                     if (now > exp) {
                         localStorage.removeItem('auth_token');
                         localStorage.removeItem('auth_user');
-                        localStorage.removeItem('Assessment_status');
+                        localStorage.removeItem('user_status');
                         localStorage.removeItem('token_expires_at');
                         return;
                     }
@@ -24,13 +24,12 @@
                     return;
                 }
 
-                const status = localStorage.getItem('Assessment_status') || 'ACTIVE';
-                if (status === 'ACTIVE') {
-                    window.location.replace('/verifikasi');
-                } else if (status !== 'UNVERIFIED') {
+                const status = localStorage.getItem('user_status') || 'ACTIVE';
+                if (status === 'UNVERIFIED') {
+                    window.location.replace('/cek-email');
+                } else {
                     window.location.replace('/dashboard');
                 }
-                // UNVERIFIED: tetap di halaman masuk (user bisa login ulang atau ke /cek-email manual)
             }
         })();
     </script>
@@ -108,17 +107,16 @@
                                 // Simpan token untuk API calls selanjutnya
                                 localStorage.setItem('auth_token', result.data.token);
                                 localStorage.setItem('auth_user', JSON.stringify(result.data.user));
-                                localStorage.setItem('Assessment_status', result.data.Assessment_status || 'ACTIVE');
+                                localStorage.setItem('user_status', result.data.user_status || 'ACTIVE');
                                 if (result.data.token_expires_at) {
                                     localStorage.setItem('token_expires_at', result.data.token_expires_at);
                                 }
 
-                                // Redirect berdasarkan status
-                                const assessmentStatus = result.data.Assessment_status || 'ACTIVE';
-                                let redirectTo = result.data.redirect_to || '/verifikasi';
+                                // Redirect berdasarkan user status
+                                const userStatus = result.data.user_status || 'ACTIVE';
+                                let redirectTo = result.data.redirect_to || '/dashboard';
 
-                                // Jika UNVERIFIED, paksa redirect ke /cek-email
-                                if (assessmentStatus === 'UNVERIFIED') {
+                                if (userStatus === 'UNVERIFIED') {
                                     redirectTo = '/cek-email';
                                 }
 

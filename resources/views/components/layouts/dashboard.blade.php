@@ -45,7 +45,7 @@
             if (expiresAt && Date.now() > new Date(expiresAt).getTime()) {
                 localStorage.removeItem('auth_token');
                 localStorage.removeItem('auth_user');
-                localStorage.removeItem('Assessment_status');
+                localStorage.removeItem('user_status');
                 localStorage.removeItem('profile_data_cache');
                 localStorage.removeItem('rubrik_questions_cache');
                 localStorage.removeItem('token_expires_at');
@@ -63,15 +63,11 @@
                     return;
                 }
                 
-                // Jika peserta tapi status masih ACTIVE (belum verifikasi), lempar ke /verifikasi
-                // Note: Kita cek status dari localStorage sebagai pertahanan pertama
-                // Sinkronisasi status yang lebih akurat dilakukan di header.blade.php via API
+                // Jika peserta tapi user status masih UNVERIFIED, lempar ke /cek-email
                 if (user.role === 'PESERTA' || user.role === 'peserta') {
-                    // Kita asumsikan jika tidak ada data Assessment di user object yang tersimpan, 
-                    // atau statusnya ACTIVE, maka harus verifikasi.
-                    const AssessmentStatus = localStorage.getItem('Assessment_status');
-                    if (!AssessmentStatus || AssessmentStatus === 'ACTIVE') {
-                        window.location.replace('/verifikasi');
+                    const userStatus = localStorage.getItem('user_status');
+                    if (!userStatus || userStatus === 'UNVERIFIED') {
+                        window.location.replace('/cek-email');
                         return;
                     }
                 }

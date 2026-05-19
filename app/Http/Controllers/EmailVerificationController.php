@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Assessment;
 use App\Models\User;
 use App\Services\EmailVerificationService;
 use App\Traits\ApiResponse;
@@ -29,17 +28,14 @@ class EmailVerificationController extends Controller
         $result = $this->emailVerificationService->verifyToken($token);
 
         if ($result['success']) {
-            // Find user's assessment with UNVERIFIED status and activate it
             $user = User::find($result['user_id']);
 
             if ($user) {
-                // Update assessment status UNVERIFIED → ACTIVE
-                Assessment::where('user_id', $user->id)
-                    ->where('status', 'UNVERIFIED')
-                    ->update(['status' => 'ACTIVE']);
-
-                // Set user's email_verified_at
-                $user->update(['email_verified_at' => now()]);
+                // Update user status UNVERIFIED → ACTIVE
+                $user->update([
+                    'status' => 'ACTIVE',
+                    'email_verified_at' => now(),
+                ]);
             }
 
             return redirect('/masuk?verified=1');

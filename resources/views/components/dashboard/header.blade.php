@@ -177,7 +177,7 @@
                             fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + localStorage.getItem('auth_token'), 'Accept': 'application/json' } }).finally(() => {
                                 localStorage.removeItem('auth_token');
                                 localStorage.removeItem('auth_user');
-                                localStorage.removeItem('Assessment_status');
+                                localStorage.removeItem('user_status');
                                 localStorage.removeItem('rubrik_data_cache');
                                 localStorage.removeItem('profile_data_cache');
                                 localStorage.removeItem('profile_data_cache_at');

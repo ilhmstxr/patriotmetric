@@ -74,7 +74,8 @@ class AuthController extends Controller
             return $this->successResponse([
                 'user' => $user,
                 'token' => $token,
-                'Assessment_status' => 'UNVERIFIED',
+                'user_status' => 'UNVERIFIED',
+                'assessment_status' => 'ACTIVE',
                 'redirect_to' => '/cek-email',
             ], 'Registrasi berhasil. Silakan verifikasi email Anda.', 201);
         } catch (\Throwable $th) {
@@ -117,15 +118,16 @@ class AuthController extends Controller
             $dto = new LoginDTO($validated);
             $result = $this->userService->login($dto, false);
 
-            // Determine redirect path based on user status
+            // Determine redirect path based on user status and assessment status
             $user = $result['user'];
             $assessment = $this->assessmentRepository->findActiveAssessmentByUserId($user->id);
-            
-            $redirectTo = '/verifikasi'; // Default: needs verification
-            if ($assessment && $assessment->status === 'UNVERIFIED') {
+
+            // User status check (middleware-level flag)
+            $redirectTo = '/dashboard';
+            if ($user->status === 'UNVERIFIED') {
                 $redirectTo = '/cek-email';
-            } elseif ($assessment && in_array($assessment->status, ['IN_PROGRESS', 'SUBMITTED', 'GRADED'])) {
-                $redirectTo = '/dashboard';
+            } elseif ($assessment && in_array($assessment->status, ['SUBMITTED', 'GRADED', 'PUBLISHED'])) {
+                $redirectTo = '/dashboard/hasil';
             }
 
             // Include user role for reviewer redirect
@@ -140,7 +142,8 @@ class AuthController extends Controller
                 'token' => $result['token'],
                 'token_expires_at' => $result['expires_at'] ?? null,
                 'redirect_to' => $redirectTo,
-                'Assessment_status' => $assessment?->status,
+                'user_status' => $user->status,
+                'assessment_status' => $assessment?->status,
             ], 'Login berhasil.', 200);
         } catch (\Throwable $th) {
             $code = (is_numeric($th->getCode()) && $th->getCode() >= 400 && $th->getCode() < 600) ? $th->getCode() : 401;
@@ -281,7 +284,7 @@ class AuthController extends Controller
                     'status' => $user->status,
                     'nama_institusi' => $assessment?->institusi?->nama_institusi,
                 ],
-                'Assessment' => $assessment ? [
+                'assessment' => $assessment ? [
                     'id' => $assessment->id,
                     'status' => $assessment->status,
                     'tahun_periode' => $assessment->tahun_periode,
