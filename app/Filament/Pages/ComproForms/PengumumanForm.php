@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\ComproForms;
 
+use App\Filament\Pages\ComproForms\Concerns\WebpFileUpload;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -11,6 +12,8 @@ use Filament\Schemas\Components\Section;
 
 class PengumumanForm
 {
+    use WebpFileUpload;
+
     public static function schema(): array
     {
         return [
@@ -28,14 +31,8 @@ class PengumumanForm
                             DatePicker::make('tanggal')->label('Tanggal')->required(),
                             TextInput::make('judul')->label('Judul Artikel')->maxLength(200)->required(),
                             Textarea::make('excerpt')->label('Ringkasan/Excerpt')->maxLength(500)->required(),
-                            FileUpload::make('gambar')
-                                ->label('Gambar Thumbnail')
-                                ->image()
-                                ->disk('cms')
-                                ->directory('images')
-                                ->visibility('public')
-                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                ->maxSize(5120),
+                            self::makeImageUpload('gambar')
+                                ->label('Gambar Thumbnail'),
                         ])
                         ->maxItems(50)
                         ->reorderable()

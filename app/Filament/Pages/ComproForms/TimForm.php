@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\ComproForms;
 
+use App\Filament\Pages\ComproForms\Concerns\WebpFileUpload;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
@@ -10,6 +11,8 @@ use Filament\Schemas\Components\Section;
 
 class TimForm
 {
+    use WebpFileUpload;
+
     public static function schema(): array
     {
         return [
@@ -26,14 +29,8 @@ class TimForm
                         ->schema([
                             TextInput::make('nama')->label('Nama')->maxLength(100)->required(),
                             TextInput::make('role')->label('Role/Jabatan')->maxLength(100)->required(),
-                            FileUpload::make('foto')
-                                ->label('Foto')
-                                ->image()
-                                ->disk('cms')
-                                ->directory('images')
-                                ->visibility('public')
-                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                ->maxSize(5120),
+                            self::makeImageUpload('foto')
+                                ->label('Foto'),
                         ])
                         ->maxItems(50)
                         ->reorderable()

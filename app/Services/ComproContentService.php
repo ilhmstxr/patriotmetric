@@ -147,6 +147,7 @@ class ComproContentService
             }
         });
 
+
         $this->clearCache($page);
     }
 
@@ -155,9 +156,14 @@ class ComproContentService
         foreach ($data as $sectionKey => $value) {
             [$section, $key] = explode('.', $sectionKey, 2);
 
+            $attributes = ['value' => $value];
+            if ($this->isStaticImageField($sectionKey)) {
+                $attributes['type'] = 'image';
+            }
+
             ComproContent::updateOrCreate(
                 ['page' => $page, 'section' => $section, 'key' => $key],
-                ['value' => $value]
+                $attributes
             );
         }
     }

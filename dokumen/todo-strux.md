@@ -444,3 +444,20 @@ untuk keagamaan apakah butuh dengan keputusan mk
 }
 
 buat flag setelah submit masih bisa di klik, harusnya tidak bisa
+
+
+monitoring assessment, + plotting reviewer + lihat detail data peserta + edit data profil + status
+show => data ditampilkan = profil, pdf 
+edit => email & password 
+
+untuk page monitoring assessment 
+index => langsung dicampur untuk plotting reviewer 
+jadi untuk kolomnya no, periode, nama instansi, nama pic, reviewer, status, action (edit & show)
+show =>
+a. informasi utama (nama institusi, nama pic, status, total skor sistem, total skor akhir)
+b. biodata instansi (profil data instansi: jenis instansi, jumlah mahasiswa, dosen, tendik, prodi, fakultas, nama pic, jabatan pic, no hp pic, visi, misi)
+c. jawaban rubrik (jawaban rubrik: pertanyaan, jawaban, skor sistem, skor reviewer, note reviewer)
+d. hasil dokumen (semua legal documents preview)
+
+rubrik tulisan seedernya diganti 
+yang agama yme di hapus
