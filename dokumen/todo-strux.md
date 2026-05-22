@@ -461,3 +461,5 @@ d. hasil dokumen (semua legal documents preview)
 
 rubrik tulisan seedernya diganti 
 yang agama yme di hapus
+
+nip di sisi hapus saja
