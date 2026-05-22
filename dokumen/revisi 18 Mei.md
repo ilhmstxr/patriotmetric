@@ -1,5 +1,5 @@
-- nambah kalender akademik di verifikasi
+- nambah upload kalender akademik di verifikasi
 - tulisan hero pindah ke kanan
-- field form pengisian reviewer jangan ikut ke strect kebawah mengikuti yang guide
+- field form pengisian reviewer jangan ikut ke stretch kebawah mengikuti yang guide
 - field catatan buat menjadi wajib juga karena itu juga sebagai indikator reviewer benar benar mencermati
-- fix bug update edit timeline yang menjadi published
+- verifikasi email di lupa password

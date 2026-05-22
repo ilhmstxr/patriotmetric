@@ -64,20 +64,20 @@
     files: {
         surat_pernyataan: null,
         sk_pendirian: null,
-        sk_akreditasi: null,
         profil_pt: null,
         logo_url: null,
-        struktur_organisasi: null
+        struktur_organisasi: null,
+        kalender_akademik: null
     },
-    
+
     // File Previews
     previews: {
         surat_pernyataan: '',
         sk_pendirian: '',
-        sk_akreditasi: '',
         profil_pt: '',
         logo_url: '',
-        struktur_organisasi: ''
+        struktur_organisasi: '',
+        kalender_akademik: ''
     },
 
     // --- IndexedDB Helper for Files ---
@@ -236,12 +236,14 @@
             }
         }
 
-        // Validasi max 5MB
-        if (file.size > 5 * 1024 * 1024) {
+        // Validasi max file size (default 5MB, kalender_akademik 2MB)
+        const maxSizeMB = (field === 'kalender_akademik') ? 2 : 5;
+        const maxSizeBytes = maxSizeMB * 1024 * 1024;
+        if (file.size > maxSizeBytes) {
             Swal.fire({
                 icon: 'warning',
                 title: 'File Terlalu Besar',
-                text: 'Ukuran file maksimal adalah 5MB.',
+                text: `Ukuran file maksimal adalah ${maxSizeMB}MB.`,
                 confirmButtonColor: '#1b5e20'
             });
             event.target.value = '';
@@ -270,7 +272,7 @@
     },
 
     get isFormComplete() {
-        const requiredFiles = ['surat_pernyataan', 'sk_pendirian', 'sk_akreditasi', 'profil_pt', 'logo_url', 'struktur_organisasi'];
+        const requiredFiles = ['surat_pernyataan', 'sk_pendirian', 'profil_pt', 'logo_url', 'struktur_organisasi', 'kalender_akademik'];
         const requiredData = ['nama_pt', 'jenis_pt', 'visi', 'misi', 'jumlah_fakultas', 'jumlah_prodi', 'jumlah_dosen', 'jumlah_tendik', 'jumlah_mahasiswa', 'jumlah_ormawa', 'jumlah_ukm', 'nama_pic', 'jabatan_pic', 'no_hp_pic', 'email_pic'];
         
         const filesComplete = requiredFiles.every(f => this.files[f] !== null);
@@ -504,14 +506,6 @@
                     <label class="font-semibold text-[#1d293d] text-[15px]">
                       2. Surat Keputusan (SK) Pendirian Perguruan Tinggi <span class="text-red-500">*</span>
                     </label>
-                    <a href="/templates/template-sk-pendirian.pdf" target="_blank"
-                       class="inline-flex items-center gap-[6px] text-[12px] font-semibold text-[#1b5e20] hover:text-[#15461c] bg-[#f0fdf4] hover:bg-[#dcfce7] border border-[#bbf7d0] px-[10px] py-[5px] rounded-[6px] transition-colors shrink-0">
-                        <svg class="w-[13px] h-[13px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                        </svg>
-                        Lihat Template
-                    </a>
                   </div>
                   <div class="mt-[4px] relative">
                       <div x-show="!previews.sk_pendirian" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
@@ -541,49 +535,6 @@
                   </div>
                 </div>
 
-                {{-- Field 3 --}}
-                <div class="flex flex-col gap-[8px]">
-                  <div class="flex items-center justify-between gap-2">
-                    <label class="font-semibold text-[#1d293d] text-[15px]">
-                      3. Surat Keputusan Akreditasi Institusi Perguruan Tinggi (AIPT) <span class="text-red-500">*</span>
-                    </label>
-                    <a href="/templates/template-sk-akreditasi.pdf" target="_blank"
-                       class="inline-flex items-center gap-[6px] text-[12px] font-semibold text-[#1b5e20] hover:text-[#15461c] bg-[#f0fdf4] hover:bg-[#dcfce7] border border-[#bbf7d0] px-[10px] py-[5px] rounded-[6px] transition-colors shrink-0">
-                        <svg class="w-[13px] h-[13px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                        </svg>
-                        Lihat Template
-                    </a>
-                  </div>
-                  <p class="text-[#62748e] text-[13px] leading-relaxed">Unggah SK AIPT yang masih berlaku.</p>
-                  <div class="mt-[4px] relative">
-                      <div x-show="!previews.sk_akreditasi" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
-                        <input type="file" accept=".pdf" x-ref="sk_akreditasi" @change="handleFileChange($event, 'sk_akreditasi', '.pdf')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
-                        <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
-                          <i data-lucide="upload" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#1b5e20]"></i>
-                        </div>
-                        <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah PDF</p>
-                        <p class="text-[#64748b] text-[12px]">Maks 5MB</p>
-                      </div>
-                      
-                      <!-- Preview PDF -->
-                      <div x-show="previews.sk_akreditasi" style="display: none;" class="border border-[#cbd5e1] rounded-[12px] p-[16px] bg-white flex items-center justify-between">
-                          <div class="flex items-center gap-3 overflow-hidden">
-                              <div class="bg-red-50 p-2 rounded-lg text-red-500 shrink-0">
-                                  <i data-lucide="file-text" class="w-6 h-6"></i>
-                              </div>
-                              <div class="truncate">
-                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="files.sk_akreditasi ? files.sk_akreditasi.name : ''"></p>
-                                  <p class="text-[12px] text-[#64748b]" x-text="files.sk_akreditasi ? (files.sk_akreditasi.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
-                              </div>
-                          </div>
-                          <button type="button" @click="removeFile('sk_akreditasi')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors shrink-0">
-                              <i data-lucide="trash-2" class="w-5 h-5"></i>
-                          </button>
-                      </div>
-                  </div>
-                </div>
 
                 <div class="pt-[24px] mt-[16px] flex justify-end">
                   <button 
@@ -711,6 +662,47 @@
                               </div>
                           </div>
                           <button type="button" @click="removeFile('struktur_organisasi')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors shrink-0">
+                              <i data-lucide="trash-2" class="w-5 h-5"></i>
+                          </button>
+                      </div>
+                  </div>
+                </div>
+
+                {{-- Field 7: Kalender Akademik --}}
+                <div class="flex flex-col gap-[8px]">
+                  <div class="flex items-center justify-between gap-2">
+                    <label class="font-semibold text-[#1d293d] text-[15px]">
+                      7. Kalender Akademik <span class="text-red-500">*</span>
+                    </label>
+                  </div>
+                  <p class="text-[#62748e] text-[13px] leading-relaxed">Unggah dokumen kalender akademik institusi (PDF/JPG/JPEG/PNG, maks 2MB).</p>
+                  <div class="mt-[4px] relative">
+                      <div x-show="!previews.kalender_akademik" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
+                        <input type="file" accept=".pdf,.jpg,.jpeg,.png" x-ref="kalender_akademik" @change="handleFileChange($event, 'kalender_akademik', '.pdf,.jpg,.jpeg,.png')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                        <div class="bg-[#f1f5f9] p-[12px] rounded-full group-hover:bg-[#e0f2fe] transition-colors mb-[12px]">
+                          <i data-lucide="upload" class="w-[24px] h-[24px] text-[#64748b] group-hover:text-[#1b5e20]"></i>
+                        </div>
+                        <p class="font-medium text-[#1d293d] text-[14px] mb-[4px]">Klik untuk mengunggah PDF/Gambar</p>
+                        <p class="text-[#64748b] text-[12px]">Maks 2MB (PDF/JPG/JPEG/PNG)</p>
+                      </div>
+                      
+                      <!-- Preview -->
+                      <div x-show="previews.kalender_akademik" style="display: none;" class="border border-[#cbd5e1] rounded-[12px] p-[16px] bg-white flex items-center justify-between">
+                          <div class="flex items-center gap-3 overflow-hidden">
+                              <template x-if="files.kalender_akademik && files.kalender_akademik.type.startsWith('image/')">
+                                <img :src="previews.kalender_akademik" alt="Preview Kalender Akademik" class="w-16 h-16 object-contain rounded-lg border border-[#e2e8f0] bg-[#f8fafc]" />
+                              </template>
+                              <template x-if="files.kalender_akademik && !files.kalender_akademik.type.startsWith('image/')">
+                                <div class="bg-red-50 p-2 rounded-lg text-red-500 shrink-0">
+                                    <i data-lucide="file-text" class="w-6 h-6"></i>
+                                </div>
+                              </template>
+                              <div class="truncate">
+                                  <p class="text-[14px] font-semibold text-[#1d293d] truncate" x-text="files.kalender_akademik ? files.kalender_akademik.name : ''"></p>
+                                  <p class="text-[12px] text-[#64748b]" x-text="files.kalender_akademik ? (files.kalender_akademik.size / 1024 / 1024).toFixed(2) + ' MB' : ''"></p>
+                              </div>
+                          </div>
+                          <button type="button" @click="removeFile('kalender_akademik')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors shrink-0">
                               <i data-lucide="trash-2" class="w-5 h-5"></i>
                           </button>
                       </div>
@@ -1055,9 +1047,9 @@
                     <template x-for="(label, key) in {
                       surat_pernyataan: 'Surat Pernyataan',
                       sk_pendirian: 'SK Pendirian',
-                      sk_akreditasi: 'SK Akreditasi',
                       profil_pt: 'Profil Perguruan Tinggi',
-                      struktur_organisasi: 'Struktur Organisasi'
+                      struktur_organisasi: 'Struktur Organisasi',
+                      kalender_akademik: 'Kalender Akademik'
                     }" :key="key">
                       <div class="flex flex-col gap-2">
                         <p class="font-semibold text-[#1d293d]" x-text="label"></p>

@@ -52,11 +52,11 @@ class VerificationController extends Controller
                 // Files — Section 1: Dokumen Legal
                 'surat_pernyataan' => 'required|file|mimes:pdf|max:5120',
                 'sk_pendirian' => 'required|file|mimes:pdf|max:5120',
-                'sk_akreditasi' => 'required|file|mimes:pdf|max:5120',
                 // Files — Section 2: Berkas Profil
                 'profil_pt' => 'required|file|mimes:pdf|max:5120',
                 'logo_url' => 'required|file|mimes:jpeg,jpg,png|max:5120',
                 'struktur_organisasi' => 'required|file|mimes:pdf|max:5120',
+                'kalender_akademik' => 'required|file|mimes:pdf,jpeg,jpg,png|max:2048',
                 // Data Institusi — Section 3
                 'nama_pt' => 'required|string|max:255',
                 'jenis_pt' => 'required|string|max:100',
@@ -90,7 +90,7 @@ class VerificationController extends Controller
 
             // Upload all PDF files
             $files = [];
-            $pdfFields = ['surat_pernyataan', 'sk_pendirian', 'sk_akreditasi', 'profil_pt', 'struktur_organisasi'];
+            $pdfFields = ['surat_pernyataan', 'sk_pendirian', 'profil_pt', 'struktur_organisasi'];
 
             foreach ($pdfFields as $field) {
                 if ($request->hasFile($field)) {
@@ -137,6 +137,52 @@ class VerificationController extends Controller
                     $fallbackName = time() . '_logo.' . $extension;
                     $fallbackPath = $logo->storeAs($directoryPath, $fallbackName, 'public');
                     $files['logo_url'] = '/storage/' . $fallbackPath;
+                }
+            }
+
+            // Upload kalender_akademik (PDF → store directly, Image → convert to WebP)
+            if ($request->hasFile('kalender_akademik')) {
+                $kalender = $request->file('kalender_akademik');
+                $kalenderExtension = strtolower($kalender->getClientOriginalExtension());
+
+                if ($kalenderExtension === 'pdf') {
+                    $kalenderName = time() . '_kalender-akademik.pdf';
+                    $storedPath = $kalender->storeAs($directoryPath, $kalenderName, 'public');
+                    $files['kalender_akademik'] = '/storage/' . $storedPath;
+                } else {
+                    // Image (JPG/PNG) → convert to WebP
+                    $kalenderName = time() . '_kalender-akademik.webp';
+                    $sourcePath = $kalender->getRealPath();
+                    $image = null;
+
+                    if ($kalenderExtension === 'jpeg' || $kalenderExtension === 'jpg') {
+                        $image = @imagecreatefromjpeg($sourcePath);
+                    } elseif ($kalenderExtension === 'png') {
+                        $image = @imagecreatefrompng($sourcePath);
+                        if ($image) {
+                            imagepalettetotruecolor($image);
+                            imagealphablending($image, true);
+                            imagesavealpha($image, true);
+                        }
+                    }
+
+                    $kalenderPath = $directoryPath . '/' . $kalenderName;
+                    $absolutePath = storage_path('app/public/' . $directoryPath);
+
+                    if (!file_exists($absolutePath)) {
+                        mkdir($absolutePath, 0755, true);
+                    }
+
+                    if ($image && function_exists('imagewebp')) {
+                        imagewebp($image, storage_path('app/public/' . $kalenderPath), 80);
+                        imagedestroy($image);
+                        $files['kalender_akademik'] = '/storage/' . $kalenderPath;
+                    } else {
+                        // Fallback to original format
+                        $fallbackName = time() . '_kalender-akademik.' . $kalenderExtension;
+                        $fallbackPath = $kalender->storeAs($directoryPath, $fallbackName, 'public');
+                        $files['kalender_akademik'] = '/storage/' . $fallbackPath;
+                    }
                 }
             }
 

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmailVerificationController;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewerController;
 use App\Http\Controllers\AssessmentController;
@@ -14,6 +15,8 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');
     Route::get('/check-institusi', [AuthController::class, 'checkInstitusi'])->name('api.auth.check-institusi');
     Route::get('/verify-email/{token}', [EmailVerificationController::class, 'verify'])->name('api.auth.verify-email');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('api.auth.forgot-password');
+    Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('api.auth.reset-password');
 });
 
 // --- Protected Routes ---

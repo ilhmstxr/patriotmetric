@@ -210,7 +210,7 @@
 
                         {{-- Forgot Password --}}
                         <div class="flex items-center justify-end">
-                            <a href="#" class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] text-[#1b5e20] hover:underline">
+                            <a href="/lupa-sandi" class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] text-[#1b5e20] hover:underline">
                                 Lupa sandi?
                             </a>
                         </div>

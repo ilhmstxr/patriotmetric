@@ -63,6 +63,10 @@ Route::get('/daftar', function () {
     return view('auth.daftar');
 });
 
+Route::get('/lupa-sandi', fn() => view('auth.lupa-sandi'));
+
+Route::get('/reset-password/{token}', fn($token) => view('auth.reset-password', compact('token')));
+
 Route::get('/verifikasi', function () {
     return view('auth.verifikasi');
 })->name('verifikasi');

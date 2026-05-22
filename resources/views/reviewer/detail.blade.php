@@ -30,6 +30,7 @@
         // Data Penilaian Reviewer
         reviewerScores: {},
         reviewerNotes: {},
+        unlockedQuestions: {},
 
         // Floating Drawer & Flags
         drawerOpen: false,
@@ -102,8 +103,35 @@
                 }, 1000);
             };
 
-            this.$watch('reviewerScores', value => autoSave(), { deep: true });
-            this.$watch('reviewerNotes', value => autoSave(), { deep: true });
+            // No global $watch — save is triggered per question via @blur
+        },
+
+        async saveQuestionScore(questionId) {
+            if (this.loading || this.isDone) return;
+            this.isSaving = true;
+            const scores = {};
+            const notes = {};
+            const skor = this.reviewerScores[questionId];
+            const note = this.reviewerNotes[questionId];
+            if (skor !== null && skor !== undefined && skor !== '') scores[questionId] = skor;
+            if (note && note.trim() !== '') notes[questionId] = note;
+            try {
+                await fetch(`/api/assessment/reviewer/tasks/${this.pesertaId}/save-scores`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ scores, notes })
+                });
+            } catch (e) {
+                console.error('Gagal menyimpan skor:', e);
+            } finally {
+                this.isSaving = false;
+                let d = new Date();
+                this.lastSaved = d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+            }
         },
 
         async saveScores() {
@@ -133,12 +161,12 @@
         get submissionStatus() {
             const s = this.Assessment.status;
             const map = {
-                'ACTIVE'      : { label: 'Belum Submit',     color: 'bg-slate-100 text-slate-600',  icon: 'clock' },
-                'IN_PROGRESS' : { label: 'Dalam Pengerjaan', color: 'bg-blue-100 text-blue-700',    icon: 'pen-line' },
-                'SUBMITTED'   : { label: 'Menunggu Review',  color: 'bg-amber-100 text-amber-700',  icon: 'hourglass' },
-                'GRADED'      : { label: 'Sudah Dinilai',    color: 'bg-green-100 text-green-700',  icon: 'check-circle-2' },
-                'PUBLISHED'   : { label: 'Published',        color: 'bg-emerald-100 text-emerald-800',  icon: 'globe' },
-                'REJECTED'    : { label: 'Ditolak',          color: 'bg-red-100 text-red-700',      icon: 'x-circle' },
+                'ACTIVE'      : { label: 'Belum Submit',     color: 'bg-slate-100 text-slate-600',       icon: 'clock' },
+                'IN_PROGRESS' : { label: 'Dalam Pengerjaan', color: 'bg-indigo-100 text-indigo-700',     icon: 'pen-line' },
+                'SUBMITTED'   : { label: 'Menunggu Review',  color: 'bg-violet-100 text-violet-700',     icon: 'hourglass' },
+                'GRADED'      : { label: 'Sudah Dinilai',    color: 'bg-teal-100 text-teal-700',         icon: 'check-circle-2' },
+                'PUBLISHED'   : { label: 'Published',        color: 'bg-sky-100 text-sky-700',           icon: 'globe' },
+                'REJECTED'    : { label: 'Ditolak',          color: 'bg-rose-100 text-rose-700',         icon: 'x-circle' },
             };
             return map[s] || { label: s || '...', color: 'bg-slate-100 text-slate-500', icon: 'info' };
         },
@@ -463,6 +491,79 @@
                     </div>
                 </div>
 
+                {{-- Group F: Dokumen Pendukung --}}
+                <div class="bg-white p-[24px] rounded-[12px] border border-[#cbd5e1] mb-6">
+                    <h3 class="font-bold text-[#1b5e20] text-[15px] mb-4 border-b border-[#e2e8f0] pb-2">F. Dokumen Pendukung</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                            <span class="text-[14px] text-[#64748b] font-medium">Surat Pernyataan</span>
+                            <template x-if="dokumenPendukung.surat_pernyataan">
+                                <a :href="dokumenPendukung.surat_pernyataan" target="_blank" class="text-[14px] font-semibold text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1">
+                                    <i data-lucide="external-link" class="w-[14px] h-[14px]"></i> Lihat Dokumen
+                                </a>
+                            </template>
+                            <template x-if="!dokumenPendukung.surat_pernyataan">
+                                <span class="text-[14px] text-[#94a3b8] italic">Belum diunggah</span>
+                            </template>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                            <span class="text-[14px] text-[#64748b] font-medium">SK Pendirian</span>
+                            <template x-if="dokumenPendukung.sk_pendirian">
+                                <a :href="dokumenPendukung.sk_pendirian" target="_blank" class="text-[14px] font-semibold text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1">
+                                    <i data-lucide="external-link" class="w-[14px] h-[14px]"></i> Lihat Dokumen
+                                </a>
+                            </template>
+                            <template x-if="!dokumenPendukung.sk_pendirian">
+                                <span class="text-[14px] text-[#94a3b8] italic">Belum diunggah</span>
+                            </template>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                            <span class="text-[14px] text-[#64748b] font-medium">SK Akreditasi</span>
+                            <template x-if="dokumenPendukung.sk_akreditasi">
+                                <a :href="dokumenPendukung.sk_akreditasi" target="_blank" class="text-[14px] font-semibold text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1">
+                                    <i data-lucide="external-link" class="w-[14px] h-[14px]"></i> Lihat Dokumen
+                                </a>
+                            </template>
+                            <template x-if="!dokumenPendukung.sk_akreditasi">
+                                <span class="text-[14px] text-[#94a3b8] italic">Belum diunggah</span>
+                            </template>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                            <span class="text-[14px] text-[#64748b] font-medium">Profil PT</span>
+                            <template x-if="dokumenPendukung.profil_pt">
+                                <a :href="dokumenPendukung.profil_pt" target="_blank" class="text-[14px] font-semibold text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1">
+                                    <i data-lucide="external-link" class="w-[14px] h-[14px]"></i> Lihat Dokumen
+                                </a>
+                            </template>
+                            <template x-if="!dokumenPendukung.profil_pt">
+                                <span class="text-[14px] text-[#94a3b8] italic">Belum diunggah</span>
+                            </template>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
+                            <span class="text-[14px] text-[#64748b] font-medium">Struktur Organisasi</span>
+                            <template x-if="dokumenPendukung.struktur_organisasi">
+                                <a :href="dokumenPendukung.struktur_organisasi" target="_blank" class="text-[14px] font-semibold text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1">
+                                    <i data-lucide="external-link" class="w-[14px] h-[14px]"></i> Lihat Dokumen
+                                </a>
+                            </template>
+                            <template x-if="!dokumenPendukung.struktur_organisasi">
+                                <span class="text-[14px] text-[#94a3b8] italic">Belum diunggah</span>
+                            </template>
+                        </div>
+                        <div class="flex justify-between items-center pb-2">
+                            <span class="text-[14px] text-[#64748b] font-medium">Kalender Akademik</span>
+                            <template x-if="dokumenPendukung.kalender_akademik">
+                                <a :href="dokumenPendukung.kalender_akademik" target="_blank" class="text-[14px] font-semibold text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1">
+                                    <i data-lucide="external-link" class="w-[14px] h-[14px]"></i> Lihat Dokumen
+                                </a>
+                            </template>
+                            <template x-if="!dokumenPendukung.kalender_akademik">
+                                <span class="text-[14px] text-[#94a3b8] italic">Belum diunggah</span>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             {{-- TAB: FORM PENILAIAN RUBRIK --}}
@@ -477,7 +578,7 @@
 
                   {{-- Questions --}}
                   <template x-for="q in categoryData.pertanyaan" :key="q.id">
-                    <div :id="'q-' + q.id" class="relative bg-white border rounded-[12px] p-[20px] md:p-[28px] flex flex-col md:flex-row gap-[20px] md:gap-[32px] overflow-hidden mb-[16px] transition-all duration-300" :class="isFlagged(q.id) ? 'border-red-500 ring-1 ring-red-100' : 'border-[#cbd5e1]'">
+                    <div :id="'q-' + q.id" class="relative bg-white border rounded-[12px] p-[20px] md:p-[28px] flex flex-col md:flex-row md:items-start gap-[20px] md:gap-[32px] overflow-hidden mb-[16px] transition-all duration-300" :class="isFlagged(q.id) ? 'border-red-500 ring-1 ring-red-100' : 'border-[#cbd5e1]'">
                       
                       {{-- ===== 🔖 Bookmark Flag ===== --}}
                       <button type="button"
@@ -533,7 +634,7 @@
                       </div>
 
                       {{-- Right Column: Answers & Scoring Form --}}
-                      <div class="flex-1 flex flex-col space-y-[20px] bg-[#f8fafc] border border-[#e2e8f0] rounded-[8px] p-[20px]">
+                      <div class="flex-1 md:self-start flex flex-col space-y-[20px] bg-[#f8fafc] border border-[#e2e8f0] rounded-[8px] p-[20px]">
                         
                         {{-- Peserta's Answer --}}
                         <div>
@@ -588,12 +689,12 @@
                                                     <span x-text="parseAnswerJson(answers[q.id]).raw_input || '-'"></span>
                                                 </div>
                                             </div>
-                                            <template x-if="parseAnswerJson(answers[q.id]).calculated_percentage || parseAnswerJson(answers[q.id]).label">
+                                            <template x-if="parseAnswerJson(answers[q.id]).calculated_percentage !== null && parseAnswerJson(answers[q.id]).calculated_percentage !== undefined || parseAnswerJson(answers[q.id]).label">
                                                 <div class="bg-[#f0fdf4] border border-[#bbf7d0] rounded-[8px] p-[12px] text-[#166534] font-bold text-[14px] flex items-start gap-2 shadow-sm border-l-4">
                                                     <i data-lucide="cpu" class="w-[18px] h-[18px] text-[#166534] shrink-0 mt-0.5"></i>
                                                     <div>
                                                         <p class="text-[10px] text-[#166534] font-bold uppercase mb-0.5">Kalkulasi Sistem</p>
-                                                        <span x-text="(parseAnswerJson(answers[q.id]).calculated_percentage ? parseAnswerJson(answers[q.id]).calculated_percentage + '% ' : '') + (parseAnswerJson(answers[q.id]).label || '')"></span>
+                                                        <span x-text="((parseAnswerJson(answers[q.id]).calculated_percentage !== null && parseAnswerJson(answers[q.id]).calculated_percentage !== undefined) ? parseAnswerJson(answers[q.id]).calculated_percentage + '%' : '') + ((parseAnswerJson(answers[q.id]).calculated_percentage !== null && parseAnswerJson(answers[q.id]).calculated_percentage !== undefined && parseAnswerJson(answers[q.id]).label) ? ' ' : '') + (parseAnswerJson(answers[q.id]).label || '')"></span>
                                                     </div>
                                                 </div>
                                             </template>
@@ -617,8 +718,17 @@
                         </div>
 
                         {{-- Reviewer Form Input --}}
-                        <div class="pt-[16px] border-t border-[#cbd5e1] mt-auto relative">
-                            
+                        <div class="pt-[16px] border-t border-[#cbd5e1] relative">
+
+                            {{-- Unlock overlay --}}
+                            <div x-show="!isDone && !unlockedQuestions[q.id] && !reviewerScores[q.id]"
+                                 @click="unlockedQuestions[q.id] = true"
+                                 class="absolute inset-0 z-10 bg-white/80 backdrop-blur-[1px] rounded-[8px] flex items-center justify-center cursor-pointer hover:bg-white/60 transition-all group">
+                                <div class="flex items-center gap-2 px-4 py-2 bg-white border border-[#cbd5e1] rounded-lg shadow-sm group-hover:border-[#1b5e20] group-hover:shadow-md transition-all">
+                                    <i data-lucide="mouse-pointer-click" class="w-4 h-4 text-[#64748b] group-hover:text-[#1b5e20]"></i>
+                                    <span class="text-[13px] font-semibold text-[#64748b] group-hover:text-[#1b5e20]">Klik untuk mulai menilai</span>
+                                </div>
+                            </div>
                             {{-- Input Score --}}
                             <div class="mb-[16px]">
                                 <h4 class="text-[13px] font-bold text-[#1d293d] mb-[8px] flex items-center gap-[6px]">
@@ -635,6 +745,7 @@
                                       :disabled="isDone"
                                       x-model="reviewerScores[q.id]"
                                       @input="if(reviewerScores[q.id] < 0) reviewerScores[q.id] = 0; if(reviewerScores[q.id] > 5) reviewerScores[q.id] = 5;"
+                                      @blur="saveQuestionScore(q.id)"
                                     />
                                     <span class="text-[13px] text-[#64748b] font-medium leading-tight max-w-[200px]">Maks 5. Ketik 0 jika bukti tidak valid.</span>
                                 </div>
@@ -645,13 +756,14 @@
                                 <h4 class="text-[13px] font-bold text-[#1d293d] mb-[8px]">
                                     Catatan Penilai / Alasan:
                                 </h4>
-                                <textarea 
+                                <textarea
                                     rows="3"
                                     placeholder="Tuliskan alasan mengapa skor diberikan, atau hal yang kurang dari bukti validasi..."
                                     class="w-full text-[14px] p-[12px] rounded-[8px] border-2 focus:outline-none focus:border-[#1b5e20] hover:border-[#1b5e20]/60 transition-colors resize-y"
                                     :class="isDone ? 'bg-[#f1f5f9] border-[#cbd5e1] text-[#94a3b8]' : (reviewerNotes[q.id] && reviewerNotes[q.id].length > 0 && reviewerNotes[q.id].length < 20 ? 'border-amber-400 bg-white text-[#1d293d]' : 'border-[#cbd5e1] text-[#1d293d] bg-white')"
                                     :disabled="isDone"
                                     x-model="reviewerNotes[q.id]"
+                                    @blur="saveQuestionScore(q.id)"
                                 ></textarea>
                                 {{-- Character counter + warning --}}
                                 <div class="flex items-center justify-between mt-[4px]">
@@ -809,10 +921,10 @@
 
               {{-- Legend --}}
               <div class="px-4 pt-3 pb-2 flex flex-wrap items-center gap-3 text-[10px] font-medium text-[#62748e] shrink-0">
-                  <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-[#1b5e20]"></span> Dinilai</span>
-                  <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-yellow-400"></span> Sebagian</span>
+                  <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-teal-600"></span> Dinilai</span>
+                  <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-indigo-400"></span> Sebagian</span>
                   <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-[#e0e0e0]"></span> Kosong</span>
-                  <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-red-500"></span> Flag</span>
+                  <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-violet-500"></span> Flag</span>
               </div>
 
               {{-- Question Grid --}}
@@ -827,8 +939,8 @@
                                       @click="scrollToQuestion(q.id)"
                                       :title="'Indikator ' + q.kode_pertanyaan + (isFlagged(q.id) ? ' (Flag)' : '') + (fillStatus(q.id) === 2 ? ' ✓' : fillStatus(q.id) === 1 ? ' (sebagian)' : '')"
                                       class="relative w-9 h-9 rounded text-[11px] font-bold transition-all duration-150 focus:outline-none hover:scale-110 hover:shadow-md overflow-hidden"
-                                       :class="isFlagged(q.id) ? 'text-white' : fillStatus(q.id) === 2 ? 'text-white' : fillStatus(q.id) === 1 ? 'text-[#1d293d]' : 'text-[#62748e]'"
-                                      :style="isFlagged(q.id) ? 'background:#ef4444;' : fillStatus(q.id) === 2 ? 'background:#1b5e20;' : fillStatus(q.id) === 1 ? 'background:#facc15;' : 'background:#e0e0e0;'"
+                                       :class="isFlagged(q.id) ? 'text-white' : fillStatus(q.id) === 2 ? 'text-white' : fillStatus(q.id) === 1 ? 'text-white' : 'text-[#62748e]'"
+                                      :style="isFlagged(q.id) ? 'background:#8b5cf6;' : fillStatus(q.id) === 2 ? 'background:#0d9488;' : fillStatus(q.id) === 1 ? 'background:#818cf8;' : 'background:#e0e0e0;'"
                                       x-text="q.kode_pertanyaan">
                                   </button>
                               </template>

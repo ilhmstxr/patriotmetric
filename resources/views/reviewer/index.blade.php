@@ -97,7 +97,7 @@
                     <h1 class="text-[18px] md:text-[20px] font-bold text-[#1d293d]">Selamat Datang, Tim Penilai!</h1>
                     <p class="text-[13px] text-[#62748e] mt-1">
                         Anda memiliki
-                        <span x-text="summary.menunggu_review" class="font-bold text-amber-600">0</span>
+                        <span x-text="summary.menunggu_review" class="font-bold text-violet-600">0</span>
                         tugas review yang belum diselesaikan. Mari selesaikan tenggat waktu penilaian.
                     </p>
                 </div>
@@ -122,7 +122,7 @@
                 {{-- Summary Cards --}}
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div class="bg-white rounded-lg p-5 border border-[#e0e0e0] flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-lg bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                        <div class="w-12 h-12 rounded-lg bg-violet-50 border border-violet-100 text-violet-600 flex items-center justify-center shrink-0">
                             <i data-lucide="clock" class="w-6 h-6"></i>
                         </div>
                         <div>
@@ -131,7 +131,7 @@
                         </div>
                     </div>
                     <div class="bg-white rounded-lg p-5 border border-[#e0e0e0] flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-lg bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                        <div class="w-12 h-12 rounded-lg bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
                             <i data-lucide="users" class="w-6 h-6"></i>
                         </div>
                         <div>
@@ -140,7 +140,7 @@
                         </div>
                     </div>
                     <div class="bg-white rounded-lg p-5 border border-[#e0e0e0] flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-lg bg-green-50 border border-green-100 text-green-600 flex items-center justify-center shrink-0">
+                        <div class="w-12 h-12 rounded-lg bg-teal-50 border border-teal-100 text-teal-600 flex items-center justify-center shrink-0">
                             <i data-lucide="check-circle" class="w-6 h-6"></i>
                         </div>
                         <div>
@@ -154,10 +154,10 @@
                 <div class="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden">
                     <div class="px-5 md:px-6 py-4 md:py-5 border-b border-[#e2e8f0] flex justify-between items-center bg-[#f8fafc]">
                         <h2 class="font-bold text-[#1b5e20] text-[15px] flex items-center gap-2">
-                            <i data-lucide="alert-circle" class="text-amber-500 w-[18px] h-[18px]"></i>
-                            Peserta Belum Direview <span class="text-amber-600">(Perlu Tindakan)</span>
+                            <i data-lucide="alert-circle" class="text-violet-500 w-[18px] h-[18px]"></i>
+                            Peserta Belum Direview <span class="text-violet-600">(Perlu Tindakan)</span>
                         </h2>
-                        <span class="text-[12px] font-bold bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full" x-text="pendingTasks.length + ' peserta'"></span>
+                        <span class="text-[12px] font-bold bg-violet-100 text-violet-700 px-2.5 py-1 rounded-full" x-text="pendingTasks.length + ' peserta'"></span>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
@@ -175,7 +175,7 @@
                                         <td class="py-4 px-6 text-[14px] text-[#1d293d] font-medium" x-text="index + 1"></td>
                                         <td class="py-4 px-6">
                                             <div class="flex items-center gap-3">
-                                                <div class="w-9 h-9 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-[13px] shrink-0"
+                                                <div class="w-9 h-9 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-bold text-[13px] shrink-0"
                                                      x-text="getInitials(task.institusi?.nama_institusi)"></div>
                                                 <span class="text-[14px] font-semibold text-[#1d293d]" x-text="task.institusi?.nama_institusi || 'Institusi Tidak Diketahui'"></span>
                                             </div>
@@ -191,7 +191,7 @@
                                 </template>
                                 <tr x-show="pendingTasks.length === 0">
                                     <td colspan="4" class="py-8 text-center text-[#64748b]">
-                                        <i data-lucide="check-circle-2" class="w-8 h-8 mx-auto text-green-500 mb-2"></i>
+                                        <i data-lucide="check-circle-2" class="w-8 h-8 mx-auto text-teal-500 mb-2"></i>
                                         <p class="text-[13px] font-medium">Hebat! Tidak ada tugas review yang tertunda.</p>
                                     </td>
                                 </tr>
@@ -235,7 +235,7 @@
                                         <td class="py-4 px-6">
                                             <div class="flex items-center gap-3">
                                                 <div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-[13px] shrink-0"
-                                                     :class="task.status === 'SUBMITTED' ? 'bg-amber-100 text-amber-600' : (task.status === 'GRADED' || task.status === 'PUBLISHED') ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-500'"
+                                                     :class="task.status === 'SUBMITTED' ? 'bg-violet-100 text-violet-600' : (task.status === 'GRADED' || task.status === 'PUBLISHED') ? 'bg-teal-100 text-teal-600' : 'bg-slate-100 text-slate-500'"
                                                      x-text="getInitials(task.institusi?.nama_institusi)"></div>
                                                 <div>
                                                     <p class="text-[14px] font-semibold text-[#1d293d]" x-text="task.institusi?.nama_institusi || '-'"></p>
@@ -250,19 +250,19 @@
                                                 <i data-lucide="circle" class="w-3 h-3"></i> Belum Mengisi
                                             </span>
                                             <span x-show="task.status === 'IN_PROGRESS'"
-                                                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 text-[11px] font-bold">
+                                                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-700 text-[11px] font-bold">
                                                 <i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Sedang Mengisi
                                             </span>
                                             <span x-show="task.status === 'SUBMITTED'"
-                                                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-[11px] font-bold">
+                                                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-violet-100 text-violet-700 text-[11px] font-bold">
                                                 <i data-lucide="clock" class="w-3 h-3"></i> Belum Dinilai
                                             </span>
                                             <span x-show="task.status === 'GRADED'"
-                                                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-[11px] font-bold">
+                                                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-teal-100 text-teal-700 text-[11px] font-bold">
                                                 <i data-lucide="check-circle-2" class="w-3 h-3"></i> Selesai
                                             </span>
                                             <span x-show="task.status === 'PUBLISHED'"
-                                                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold">
+                                                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-sky-100 text-sky-700 text-[11px] font-bold">
                                                 <i data-lucide="globe" class="w-3 h-3"></i> Published
                                             </span>
                                         </td>

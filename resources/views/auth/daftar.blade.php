@@ -99,8 +99,36 @@
                 }
             } catch (e) { /* silent */ }
         },
+        validateAndScroll() {
+            const fields = [
+                { key: 'nama_pt', label: 'Nama Perguruan Tinggi', name: 'nama_institusi' },
+                { key: 'jenis_pt', label: 'Jenis Perguruan Tinggi', name: 'jenis_institusi' },
+                { key: 'nama_pic', label: 'Nama PIC Peserta', name: 'nama_pic' },
+                { key: 'jabatan_pic', label: 'Jabatan PIC Peserta', name: 'jabatan_pic' },
+                { key: 'no_hp_pic', label: 'No HP/WhatsApp PIC', name: 'no_hp' },
+                { key: 'email', label: 'Email Institusi', name: 'email' },
+                { key: 'password', label: 'Password', name: 'password' },
+            ];
+            for (const field of fields) {
+                if (!this.formData[field.key] || this.formData[field.key].trim() === '') {
+                    this.errorMessage = 'Mohon isi field "' + field.label + '"';
+                    const el = this.$refs.form.querySelector('[name="' + field.name + '"]');
+                    if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        el.classList.add('!border-red-400', 'ring-2', 'ring-red-200');
+                        setTimeout(() => el.classList.remove('!border-red-400', 'ring-2', 'ring-red-200'), 3000);
+                    }
+                    return false;
+                }
+            }
+            if (!this.agree) {
+                this.errorMessage = 'Mohon centang persetujuan terlebih dahulu.';
+                return false;
+            }
+            return true;
+        },
         async register() {
-            if (!this.agree || !this.$refs.form.checkValidity()) return;
+            if (!this.validateAndScroll()) return;
 
             this.validateEmailDomain();
             if (this.emailDomainError) {
@@ -355,24 +383,16 @@
                     </div>
 
                     {{-- Agreement --}}
-                    <div class="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-5 flex gap-4">
+                    <div class="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-5 flex gap-4 items-start">
                         <input
                             type="checkbox"
                             x-model="agree"
                             required
-                            class="size-5 mt-1 accent-[#1b5e20] shrink-0"
+                            class="size-5 mt-0.5 accent-[#1b5e20] shrink-0"
                         />
-                        <div class="font-['Plus_Jakarta_Sans',sans-serif] text-[14px] leading-[22.75px] text-[#45556c]">
-                            <p class="font-medium mb-3">
-                                Sebelum menekan tombol submit, pastikan seluruh data yang Anda isi sudah benar dan lengkap. Setelah formulir dikirim, data tidak dapat diubah kembali.
-                            </p>
-                            <a href="https://bit.ly/PEDOMANPATRIOTMETRIC" target="_blank" class="mt-3 font-bold text-[#1b5e20]">
-                                Pedoman Patriot Metric UPN Veteran Jatim &rarr;
-                            </a>
-                            <p class="mt-3 font-medium">
-                                Dengan melanjutkan, Anda menyatakan bahwa data yang Anda berikan adalah benar dan bahwa Anda telah memahami isi handbook serta siap mengikuti proses assessment sesuai ketentuan yang berlaku.
-                            </p>
-                        </div>
+                        <label class="font-['Plus_Jakarta_Sans',sans-serif] text-[14px] leading-[22px] text-[#45556c] font-medium">
+                            Ya, data yang saya isi sudah benar & lengkap serta sudah membaca <a href="https://bit.ly/PEDOMANPATRIOTMETRIC" target="_blank" class="font-bold text-[#1b5e20] hover:underline">panduan Patriot Metric</a>.
+                        </label>
                     </div>
 
                     {{-- Submit --}}
@@ -381,7 +401,7 @@
                         class="w-full bg-[#1b5e20] text-white font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[18px] leading-[28px] py-4 rounded-[20px] shadow-[0px_20px_25px_0px_rgba(27,94,32,0.2)] hover:bg-[#174d1a] transition flex items-center justify-center gap-2 disabled:opacity-50"
                         x-bind:disabled="!agree || !isFormValid || isLoading || institusiCheckExists || emailDomainError !== '' || !passwordValid"
                     >
-                        <span x-show="!isLoading">Kirim Pendaftaran</span>
+                        <span x-show="!isLoading">Kirim</span>
                         <span x-show="isLoading" style="display: none;">Memproses...</span>
                     </button>
                 </form>

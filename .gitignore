@@ -23,9 +23,9 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 # AI tools & personal notes
-# /.claude
-# /.kiro
+/.claude
+/.kiro
 # /dokumen
-# /bruno-api
+/bruno-api
 # *.code-workspace
-# CLAUDE.md
+CLAUDE.md
