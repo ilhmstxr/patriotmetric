@@ -75,7 +75,7 @@
        :class="isActive('{{ route('dashboard.panduan', [], false) }}') ? 'text-[#1b5e20] font-semibold' : 'text-[#45556c] hover:text-[#1b5e20]'"
        class="flex items-center gap-2 px-4 h-[48px] text-[13px] font-medium transition-colors relative">
         <i data-lucide="help-circle" class="w-[15px] h-[15px]"></i>
-        Petunjuk Pengisian
+        Panduan Pengguna
         <span x-show="isActive('{{ route('dashboard.panduan', [], false) }}')"
               class="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#1b5e20] rounded-t"
               style="display:none;"></span>
@@ -119,7 +119,7 @@
            :class="isActive('{{ route('dashboard.panduan', [], false) }}') ? 'bg-[#e8f5e9] text-[#1b5e20] font-semibold' : 'text-[#45556c] hover:bg-[#f5f5f5]'"
            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors">
             <i data-lucide="help-circle" class="w-4 h-4"></i>
-            Petunjuk Pengisian
+            Panduan Pengguna
         </a>
     </div>
 </div>

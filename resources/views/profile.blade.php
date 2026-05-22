@@ -8,13 +8,13 @@
     $tujuanUtama = $content->get('tujuan-utama', collect());
 
     $heroJudul = $hero->firstWhere('key', 'judul')?->value ?? 'Membangun Karakter <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#d4af37] to-[#fff085]">Bangsa</span> dari Kampus';
-    $heroDeskripsi = $hero->firstWhere('key', 'deskripsi')?->value ?? 'Sebuah sistem pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.';
+    $heroDeskripsi = $hero->firstWhere('key', 'deskripsi')?->value ?? 'Sebuah inisiatif pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.';
     $heroBackground = $hero->firstWhere('key', 'background_image')?->value ?? '';
 
     $latarJudul = $latarBelakang->firstWhere('key', 'judul')?->value ?? 'Latar Belakang';
     $latarDeskripsi = $latarBelakang->firstWhere('key', 'deskripsi')?->value ?? '';
 
-    $tujuanJudul = $tujuanUtama->firstWhere('key', 'judul')?->value ?? 'Tujuan Utama Pemeringkatan';
+    $tujuanJudul = $tujuanUtama->firstWhere('key', 'judul')?->value ?? 'Tujuan Utama Program';
     $tujuanDeskripsi = $tujuanUtama->firstWhere('key', 'deskripsi')?->value ?? '';
     $tujuanDaftar = $tujuanUtama->firstWhere('key', 'daftar')?->value ?? [];
 @endphp

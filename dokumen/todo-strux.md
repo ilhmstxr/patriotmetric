@@ -463,16 +463,3 @@ rubrik tulisan seedernya diganti
 yang agama yme di hapus
 
 nip di sisi hapus saja
-
-
-Meningkatkan Kesadaran Bela Negara; Mendorong Perguruan Tinggi untuk mewujudkan dan meningkatkan karakter bela negara
-Membangun Jejaring dan Kolaborasi Nasional; Membuka peluang bagi perguruan tinggi peserta menjadi bagian dari jejaring Patriot Metric yang memungkinkan kolaborasi di tingkat nasional.
-Mendapatkan Pengakuan dan Reputasi; Meningkatkan citra dan reputasi perguruan tinggi sebagai kampus yang berkomitmen pada penguatan karakter bela negara.
-Mendorong Perubahan dan Aksi Sosial; Perguruan tinggi dapat melakukan perubahan karakter dalam segala aspek Tridharma Perguruan Tinggi.
-
-
-Menjadi Instrumen Evaluasi Pembinaan Kesadaran Bela Negara
-
-
-
-di profil = membangun karakter bangsa dari kampus => patriotmetric upn veteran jatim university ranking
