@@ -54,6 +54,12 @@
         <img src="{{ asset('assets/images/mhs.webp') }}" class="absolute inset-0 w-full h-full object-cover" alt="Background" />
         <div class="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
 
+        {{-- Tombol Kembali --}}
+        <a href="{{ url('/') }}" class="absolute top-6 left-6 md:top-8 md:left-8 z-20 flex items-center gap-2 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] md:text-[15px] text-white/80 hover:text-white transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4 md:w-5 md:h-5"></i>
+            Kembali ke Halaman Utama
+        </a>
+
         <div class="relative z-10 flex flex-col lg:flex-row w-full max-w-[1300px] mx-auto items-center justify-between px-6 lg:px-12 gap-12">
             {{-- Left Content --}}
             <div class="w-full lg:w-1/2 flex flex-col justify-center text-center lg:text-left">

@@ -6,7 +6,10 @@
 
 <div x-data="{
     currentPath: window.location.pathname,
-    isActive(path) { return this.currentPath === path || this.currentPath.startsWith(path + '/'); },
+    isActive(path) { 
+        if (path === '/reviewer') return this.currentPath === '/reviewer';
+        return this.currentPath === path || this.currentPath.startsWith(path + '/'); 
+    },
     init() {
         document.addEventListener('livewire:navigated', () => {
             this.currentPath = window.location.pathname;

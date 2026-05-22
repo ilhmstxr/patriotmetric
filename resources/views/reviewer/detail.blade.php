@@ -31,6 +31,7 @@
         reviewerScores: {},
         reviewerNotes: {},
         unlockedQuestions: {},
+        saveStatus: {},
 
         // Floating Drawer & Flags
         drawerOpen: false,
@@ -109,6 +110,7 @@
         async saveQuestionScore(questionId) {
             if (this.loading || this.isDone) return;
             this.isSaving = true;
+            this.saveStatus[questionId] = 'saving';
             const scores = {};
             const notes = {};
             const skor = this.reviewerScores[questionId];
@@ -125,8 +127,11 @@
                     },
                     body: JSON.stringify({ scores, notes })
                 });
+                this.saveStatus[questionId] = 'saved';
+                setTimeout(() => { if (this.saveStatus[questionId] === 'saved') this.saveStatus[questionId] = ''; }, 2000);
             } catch (e) {
                 console.error('Gagal menyimpan skor:', e);
+                this.saveStatus[questionId] = '';
             } finally {
                 this.isSaving = false;
                 let d = new Date();
@@ -731,9 +736,20 @@
                             </div>
                             {{-- Input Score --}}
                             <div class="mb-[16px]">
-                                <h4 class="text-[13px] font-bold text-[#1d293d] mb-[8px] flex items-center gap-[6px]">
-                                    Berikan Score Final <span class="text-red-500">*</span>
-                                </h4>
+                                <div class="flex items-center justify-between mb-[8px]">
+                                    <h4 class="text-[13px] font-bold text-[#1d293d] flex items-center gap-[6px] m-0">
+                                        Berikan Score Final <span class="text-red-500">*</span>
+                                    </h4>
+                                    {{-- Inline indicator kecil --}}
+                                    <div class="flex items-center">
+                                        <span x-show="saveStatus[q.id] === 'saving'" style="display:none;" class="text-[10px] text-amber-500 font-medium inline-flex items-center gap-1">
+                                            <i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Menyimpan
+                                        </span>
+                                        <span x-show="saveStatus[q.id] === 'saved'" style="display:none;" class="text-[10px] text-[#1b5e20] font-semibold inline-flex items-center gap-1">
+                                            <i data-lucide="check" class="w-3 h-3"></i> Tersimpan
+                                        </span>
+                                    </div>
+                                </div>
                                 <div class="flex items-center gap-[12px]">
                                     <input
                                       type="number"
