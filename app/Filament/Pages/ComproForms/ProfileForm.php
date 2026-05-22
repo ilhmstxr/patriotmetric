@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\ComproForms;
 
+use App\Filament\Pages\ComproForms\Concerns\WebpFileUpload;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
@@ -11,6 +12,8 @@ use Filament\Schemas\Components\Section;
 
 class ProfileForm
 {
+    use WebpFileUpload;
+
     public static function schema(): array
     {
         return [
@@ -18,14 +21,8 @@ class ProfileForm
                 ->schema([
                     TextInput::make('hero.judul')->label('Judul')->maxLength(255)->required(),
                     Textarea::make('hero.deskripsi')->label('Deskripsi')->maxLength(500)->required(),
-                    FileUpload::make('hero.background_image')
-                        ->label('Background Image')
-                        ->image()
-                        ->disk('cms')
-                        ->directory('images')
-                        ->visibility('public')
-                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                        ->maxSize(5120),
+                    self::makeImageUpload('hero.background_image')
+                        ->label('Background Image'),
                 ]),
 
             Section::make('Latar Belakang')

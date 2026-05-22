@@ -28,7 +28,12 @@
       "Bash(Select-Object -First 5)",
       "PowerShell(php artisan route:list --columns=method,uri,name 2>&1 | Select-Object -First 10)",
       "PowerShell(php artisan route:list 2>&1 | Select-Object -First 5)",
-      "PowerShell(php artisan route:list 2>&1 | Select-Object -First 3)"
+      "PowerShell(php artisan route:list 2>&1 | Select-Object -First 3)",
+      "PowerShell(php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\Concerns\\\\WebpFileUpload.php\")",
+      "PowerShell(php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\WelcomeForm.php\")",
+      "PowerShell(php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\TimForm.php\")",
+      "PowerShell(php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\ProfileForm.php\"; php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\PenghargaanForm.php\"; php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\PengumumanForm.php\")",
+      "PowerShell(php artisan test 2>&1 | Select-Object -First 50)"
     ]
   }
 }

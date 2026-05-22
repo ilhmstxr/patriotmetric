@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\ComproForms;
 
+use App\Filament\Pages\ComproForms\Concerns\WebpFileUpload;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
@@ -10,6 +11,8 @@ use Filament\Schemas\Components\Section;
 
 class PenghargaanForm
 {
+    use WebpFileUpload;
+
     public static function schema(): array
     {
         return [
@@ -17,14 +20,8 @@ class PenghargaanForm
                 ->schema([
                     TextInput::make('hero.judul')->label('Judul')->maxLength(255)->required(),
                     Textarea::make('hero.deskripsi')->label('Deskripsi')->maxLength(500)->required(),
-                    FileUpload::make('hero.background_image')
-                        ->label('Background Image')
-                        ->image()
-                        ->disk('cms')
-                        ->directory('images')
-                        ->visibility('public')
-                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                        ->maxSize(5120),
+                    self::makeImageUpload('hero.background_image')
+                        ->label('Background Image'),
                 ]),
 
             Section::make('Daftar Penerima')
@@ -34,14 +31,8 @@ class PenghargaanForm
                         ->label('Daftar Institusi Penerima')
                         ->schema([
                             TextInput::make('nama')->label('Nama Institusi')->maxLength(150)->required(),
-                            FileUpload::make('logo')
+                            self::makeImageUpload('logo')
                                 ->label('Logo Institusi')
-                                ->image()
-                                ->disk('cms')
-                                ->directory('images')
-                                ->visibility('public')
-                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                ->maxSize(5120)
                                 ->required(),
                             TextInput::make('rating')
                                 ->label('Rating Bintang')

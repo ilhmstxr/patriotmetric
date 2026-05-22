@@ -11,6 +11,7 @@ use Filament\Actions\BulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\SelectColumn;
 use Illuminate\Database\Eloquent\Collection;
 
 class AssessmentsTable
@@ -19,9 +20,24 @@ class AssessmentsTable
     {
         return $table
             ->columns([
+                TextColumn::make('index')
+                    ->label('No')
+                    ->rowIndex(),
+                TextColumn::make('tahun_periode')
+                    ->label('Periode')
+                    ->sortable(),
                 TextColumn::make('institusi.nama_institusi')
-                    ->label('Peserta')
+                    ->label('Nama Instansi')
                     ->searchable()
+                    ->sortable(),
+                TextColumn::make('nama_pic')
+                    ->label('Nama PIC')
+                    ->searchable()
+                    ->sortable(),
+                SelectColumn::make('reviewer_id')
+                    ->label('Reviewer')
+                    ->options(\App\Models\Reviewer::pluck('nama_lengkap', 'id'))
+                    ->placeholder('Pilih Reviewer')
                     ->sortable(),
                 TextColumn::make('status')
                     ->badge()
@@ -35,14 +51,6 @@ class AssessmentsTable
                         default       => 'gray',
                     })
                     ->sortable(),
-                TextColumn::make('total_skor_sistem')
-                    ->sortable(),
-                TextColumn::make('total_skor_akhir')
-                    ->sortable(),
-                TextColumn::make('reviewer.nama_lengkap')
-                    ->label('Reviewer')
-                    ->searchable()
-                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -51,23 +59,13 @@ class AssessmentsTable
             ->filters([
                 //
             ])
+            ->actions([
+                ViewAction::make(),
+                EditAction::make(),
+            ])
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                Action::make('assignReviewer')
-                    ->label('Tugaskan Reviewer')
-                    ->icon('heroicon-o-user-plus')
-                    ->form([
-                        Select::make('reviewer_id')
-                            ->label('Pilih Reviewer')
-                            ->options(\App\Models\Reviewer::pluck('nama_lengkap', 'id'))
-                            ->searchable()
-                            ->default(fn(\Illuminate\Database\Eloquent\Model $record) => $record->reviewer_id)
-                            ->required(),
-                    ])
-                    ->action(function (\Illuminate\Database\Eloquent\Model $record, array $data) {
-                        app(\App\Services\AssessmentService::class)->assignReviewer($record->id, $data['reviewer_id']);
-                    })
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

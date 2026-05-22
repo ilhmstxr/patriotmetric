@@ -78,7 +78,7 @@
                     </div>
                     <div class="flex gap-3 items-center">
                         <i data-lucide="phone" class="shrink-0 size-5 text-[#1B5E20]"></i>
-                        <p class="font-['Plus_Jakarta_Sans',sans-serif] font-normal leading-[20px] text-[14px] text-[#45556C]">+62-341-575797</p>
+                        <p class="font-['Plus_Jakarta_Sans',sans-serif] font-normal leading-[20px] text-[14px] text-[#45556C]">+62 822-4543-1648</p>
                     </div>
                     <div class="flex gap-3 items-center">
                         <i data-lucide="mail" class="shrink-0 size-5 text-[#1B5E20]"></i>

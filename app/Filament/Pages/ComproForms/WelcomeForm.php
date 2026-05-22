@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\ComproForms;
 
+use App\Filament\Pages\ComproForms\Concerns\WebpFileUpload;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
@@ -11,6 +12,8 @@ use Filament\Schemas\Components\Section;
 
 class WelcomeForm
 {
+    use WebpFileUpload;
+
     public static function schema(): array
     {
         return [
@@ -18,14 +21,8 @@ class WelcomeForm
                 ->schema([
                     TextInput::make('hero.judul')->label('Judul Utama')->maxLength(255)->required(),
                     Textarea::make('hero.deskripsi')->label('Deskripsi')->maxLength(500)->required(),
-                    FileUpload::make('hero.background_image')
-                        ->label('Background Image')
-                        ->image()
-                        ->disk('cms')
-                        ->directory('images')
-                        ->visibility('public')
-                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                        ->maxSize(5120),
+                    self::makeImageUpload('hero.background_image')
+                        ->label('Background Image'),
                 ]),
 
             Section::make('About')
@@ -51,14 +48,8 @@ class WelcomeForm
                         ->label('Daftar Institusi Baris 1')
                         ->schema([
                             TextInput::make('nama')->label('Nama Institusi')->maxLength(150)->required(),
-                            FileUpload::make('logo')
+                            self::makeImageUpload('logo')
                                 ->label('Logo Institusi')
-                                ->image()
-                                ->disk('cms')
-                                ->directory('images')
-                                ->visibility('public')
-                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                ->maxSize(5120)
                                 ->required(),
                         ])
                         ->maxItems(50)
@@ -69,14 +60,8 @@ class WelcomeForm
                         ->label('Daftar Institusi Baris 2')
                         ->schema([
                             TextInput::make('nama')->label('Nama Institusi')->maxLength(150)->required(),
-                            FileUpload::make('logo')
+                            self::makeImageUpload('logo')
                                 ->label('Logo Institusi')
-                                ->image()
-                                ->disk('cms')
-                                ->directory('images')
-                                ->visibility('public')
-                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                ->maxSize(5120)
                                 ->required(),
                         ])
                         ->maxItems(50)
@@ -111,7 +96,8 @@ class WelcomeForm
                         ->label('Post Instagram')
                         ->schema([
                             TextInput::make('url')->label('URL Post')->url()->maxLength(255)->required(),
-                            FileUpload::make('gambar')->label('Gambar')->image()->disk('cms')->directory('images')->visibility('public')->maxSize(5120),
+                            self::makeImageUpload('gambar')
+                                ->label('Gambar'),
                             TextInput::make('alt_text')->label('Alt Text')->maxLength(255),
                         ])
                         ->maxItems(50)

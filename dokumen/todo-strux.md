@@ -444,3 +444,35 @@ untuk keagamaan apakah butuh dengan keputusan mk
 }
 
 buat flag setelah submit masih bisa di klik, harusnya tidak bisa
+
+
+monitoring assessment, + plotting reviewer + lihat detail data peserta + edit data profil + status
+show => data ditampilkan = profil, pdf 
+edit => email & password 
+
+untuk page monitoring assessment 
+index => langsung dicampur untuk plotting reviewer 
+jadi untuk kolomnya no, periode, nama instansi, nama pic, reviewer, status, action (edit & show)
+show =>
+a. informasi utama (nama institusi, nama pic, status, total skor sistem, total skor akhir)
+b. biodata instansi (profil data instansi: jenis instansi, jumlah mahasiswa, dosen, tendik, prodi, fakultas, nama pic, jabatan pic, no hp pic, visi, misi)
+c. jawaban rubrik (jawaban rubrik: pertanyaan, jawaban, skor sistem, skor reviewer, note reviewer)
+d. hasil dokumen (semua legal documents preview)
+
+rubrik tulisan seedernya diganti 
+yang agama yme di hapus
+
+nip di sisi hapus saja
+
+
+Meningkatkan Kesadaran Bela Negara; Mendorong Perguruan Tinggi untuk mewujudkan dan meningkatkan karakter bela negara
+Membangun Jejaring dan Kolaborasi Nasional; Membuka peluang bagi perguruan tinggi peserta menjadi bagian dari jejaring Patriot Metric yang memungkinkan kolaborasi di tingkat nasional.
+Mendapatkan Pengakuan dan Reputasi; Meningkatkan citra dan reputasi perguruan tinggi sebagai kampus yang berkomitmen pada penguatan karakter bela negara.
+Mendorong Perubahan dan Aksi Sosial; Perguruan tinggi dapat melakukan perubahan karakter dalam segala aspek Tridharma Perguruan Tinggi.
+
+
+Menjadi Instrumen Evaluasi Pembinaan Kesadaran Bela Negara
+
+
+
+di profil = membangun karakter bangsa dari kampus => patriotmetric upn veteran jatim university ranking

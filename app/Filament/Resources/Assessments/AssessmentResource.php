@@ -43,8 +43,20 @@ class AssessmentResource extends Resource
             ->components([
                 Section::make('Informasi Utama')
                     ->schema([
-                        TextEntry::make('institusi.nama_institusi')->label('Nama Peserta'),
-                        TextEntry::make('status')->badge(),
+                        TextEntry::make('institusi.nama_institusi')->label('Nama Institusi'),
+                        TextEntry::make('nama_pic')->label('Nama PIC'),
+                        TextEntry::make('status')
+                            ->badge()
+                            ->color(fn (string $state): string => match ($state) {
+                                'UNVERIFIED'  => 'danger',
+                                'ACTIVE'      => 'gray',
+                                'IN_PROGRESS' => 'info',
+                                'SUBMITTED'   => 'warning',
+                                'GRADED'      => 'success',
+                                'PUBLISHED'   => 'success',
+                                default       => 'gray',
+                            }),
+                        TextEntry::make('total_skor_sistem')->label('Total Skor Sistem'),
                         TextEntry::make('total_skor_akhir')->label('Total Skor Akhir'),
                     ])->columns(3),
 
@@ -63,7 +75,7 @@ class AssessmentResource extends Resource
                         TextEntry::make('identitas.misi')->label('Misi')->columnSpanFull(),
                     ])->columns(3),
 
-                Section::make('Hasil Dokumen Setelah Verifikasi')
+                Section::make('Hasil Dokumen')
                     ->schema([
                         TextEntry::make('legal_documents_preview')
                             ->label('')
@@ -105,7 +117,47 @@ class AssessmentResource extends Resource
                             ->label('')
                             ->schema([
                                 TextEntry::make('pertanyaan.teks_pertanyaan')->label('Pertanyaan'),
-                                TextEntry::make('jawaban_teks')->label('Jawaban')->formatStateUsing(fn($state) => is_string($state) ? $state : json_encode($state)),
+                                TextEntry::make('jawaban_teks')
+                                    ->label('Jawaban')
+                                    ->formatStateUsing(function ($state) {
+                                        if (empty($state)) {
+                                            return '-';
+                                        }
+                                        
+                                        $decoded = is_string($state) ? json_decode($state, true) : $state;
+                                        
+                                        if (is_array($decoded)) {
+                                            if (isset($decoded['total_poin'])) {
+                                                $parts = [];
+                                                foreach (['lokal', 'regional', 'nasional', 'internasional'] as $skala) {
+                                                    if (isset($decoded[$skala])) {
+                                                        $nilai = is_array($decoded[$skala]) ? ($decoded[$skala]['nilai'] ?? 0) : $decoded[$skala];
+                                                        if ($nilai > 0) {
+                                                            $parts[] = ucfirst($skala) . ": " . $nilai;
+                                                        }
+                                                    }
+                                                }
+                                                return implode(', ', $parts) . " (Total Poin: " . ($decoded['total_poin'] ?? 0) . ")";
+                                            }
+
+                                            $raw = $decoded['raw_input'] ?? '';
+                                            $calc = $decoded['calculated_percentage'] ?? $decoded['calculated'] ?? '';
+
+                                            if ($raw !== '' && $calc !== '') {
+                                                return "{$raw} (Kalkulasi: {$calc}%)";
+                                            }
+                                            if ($raw !== '') {
+                                                return (string) $raw;
+                                            }
+                                            if ($calc !== '') {
+                                                return (string) $calc;
+                                            }
+                                            
+                                            return json_encode($decoded);
+                                        }
+                                        
+                                        return (string) $state;
+                                    }),
                                 TextEntry::make('tautan_bukti_drive')->label('Tautan Bukti')
                                     ->url(fn($state) => is_string($state) && filter_var($state, FILTER_VALIDATE_URL) ? $state : null)
                                     ->openUrlInNewTab()
