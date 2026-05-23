@@ -31,11 +31,11 @@
         reviewerScores: {},
         reviewerNotes: {},
         unlockedQuestions: {},
-        saveStatus: {},
 
         // Floating Drawer & Flags
         drawerOpen: false,
         flags: {},
+        saveStatus: {}, // 'saving' | 'saved' | '' per question
         toggleFlag(questionId) {
             if (this.isDone) return;
             this.flags[questionId] = !this.flags[questionId];
@@ -736,20 +736,16 @@
                             </div>
                             {{-- Input Score --}}
                             <div class="mb-[16px]">
-                                <div class="flex items-center justify-between mb-[8px]">
-                                    <h4 class="text-[13px] font-bold text-[#1d293d] flex items-center gap-[6px] m-0">
-                                        Berikan Score Final <span class="text-red-500">*</span>
-                                    </h4>
-                                    {{-- Inline indicator kecil --}}
-                                    <div class="flex items-center">
-                                        <span x-show="saveStatus[q.id] === 'saving'" style="display:none;" class="text-[10px] text-amber-500 font-medium inline-flex items-center gap-1">
-                                            <i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Menyimpan
-                                        </span>
-                                        <span x-show="saveStatus[q.id] === 'saved'" style="display:none;" class="text-[10px] text-[#1b5e20] font-semibold inline-flex items-center gap-1">
-                                            <i data-lucide="check" class="w-3 h-3"></i> Tersimpan
-                                        </span>
-                                    </div>
-                                </div>
+                                <h4 class="text-[13px] font-bold text-[#1d293d] mb-[8px] flex items-center justify-between gap-[6px]">
+                                    <span class="flex items-center gap-[6px]">Berikan Score Final <span class="text-red-500">*</span></span>
+                                    {{-- Inline save indicator kecil --}}
+                                    <span x-show="saveStatus[q.id] === 'saving'" style="display:none;" class="text-[10px] text-amber-500 font-medium inline-flex items-center gap-1">
+                                        <i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Menyimpan
+                                    </span>
+                                    <span x-show="saveStatus[q.id] === 'saved'" style="display:none;" class="text-[10px] text-[#1b5e20] font-semibold inline-flex items-center gap-1">
+                                        <i data-lucide="check" class="w-3 h-3"></i> Tersimpan
+                                    </span>
+                                </h4>
                                 <div class="flex items-center gap-[12px]">
                                     <input
                                       type="number"

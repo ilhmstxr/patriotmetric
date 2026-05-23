@@ -37,7 +37,7 @@
             }
         })();
     </script>
-    <div class="min-h-screen flex"    x-data="{ 
+    <div class="min-h-screen flex relative"    x-data="{ 
         agree: false, 
         isFormValid: false,
         isLoading: false,
@@ -111,8 +111,8 @@
             ];
             for (const field of fields) {
                 if (!this.formData[field.key] || this.formData[field.key].trim() === '') {
-                    this.errorMessage = 'Mohon isi field "' + field.label + '"';
-                    const el = this.$refs.form.querySelector('[name="' + field.name + '"]');
+                    this.errorMessage = 'Mohon isi field ' + field.label;
+                    const el = this.$refs.form.querySelector(`[name='${field.name}']`);
                     if (el) {
                         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         el.classList.add('!border-red-400', 'ring-2', 'ring-red-200');
@@ -213,17 +213,16 @@
             }
         }
     }">
+        {{-- Anchor: Kembali ke Halaman Utama — pojok kiri atas layar --}}
+        <a href="{{ url('/') }}" class="absolute top-5 left-5 z-20 inline-flex items-center gap-2 bg-white hover:border-[#1b5e20] text-[#1b5e20] hover:text-[#174d1a] px-4 py-2 rounded-full text-[13px] font-semibold shadow-sm hover:shadow-md transition-all duration-200 group">
+            <i data-lucide="arrow-left" class="w-4 h-4 transition-transform group-hover:-translate-x-0.5"></i>
+            Halaman Utama
+        </a>
+
         {{-- Left Panel --}}
         <div class="hidden lg:flex w-[45%] relative sticky top-0 h-screen overflow-hidden items-center">
             <img src="{{ asset('assets/images/mhs.webp') }}" class="absolute inset-0 w-full h-full object-cover" alt="Background" />
             <div class="absolute inset-0 bg-black/30"></div>
-            
-            {{-- Tombol Kembali (Desktop) --}}
-            <a href="{{ url('/') }}" class="absolute top-8 left-8 z-20 flex items-center gap-2 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[15px] text-white/80 hover:text-white transition-colors">
-                <i data-lucide="arrow-left" class="w-5 h-5"></i>
-                Kembali ke Halaman Utama
-            </a>
-
             <div class="relative px-16 py-16 z-10 w-full">
                 <div class="-mb-12 mt-4">
                     <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.webp') }}" alt="Logo Patriot Metric" class="h-100 w-auto object-contain object-left" />
@@ -238,14 +237,8 @@
         </div>
 
         {{-- Right Panel --}}
-        <div class="flex-1 flex items-start justify-center px-6 md:px-8 py-10 md:py-12 bg-white overflow-y-auto relative">
-            {{-- Tombol Kembali (Mobile) --}}
-            <a href="{{ url('/') }}" class="lg:hidden absolute top-6 left-6 z-20 flex items-center gap-2 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#45556c] hover:text-[#1b5e20] transition-colors">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                Kembali
-            </a>
-
-            <div class="w-full max-w-[576px] mt-6 lg:mt-0">
+        <div class="flex-1 flex items-start justify-center px-6 md:px-8 py-10 md:py-12 bg-white overflow-y-auto">
+            <div class="w-full max-w-[576px]">
                 <a href="{{ url('/masuk') }}" class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[14px] text-[#1B5E20] hover:underline">
                     Sudah punya akun? Masuk
                 </a>

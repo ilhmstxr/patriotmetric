@@ -14,13 +14,26 @@
     @livewireStyles
 </head>
 <body class="antialiased bg-[#f5f5f5]" style="font-family: 'Plus Jakarta Sans', sans-serif;"
-      x-data
+      x-data="{ mobileMenuOpen: false, showBar: true, lastPos: 0, threshold: 50 }"
+      @scroll.window="
+          const cur = window.pageYOffset;
+          if (cur < 10) { showBar = true; }
+          else if (cur < lastPos - threshold) { showBar = true; }
+          else if (cur > lastPos + 10) { showBar = false; }
+          lastPos = cur;
+      "
       x-init="$nextTick(() => { lucide.createIcons() })">
 
-    {{-- Re-init Lucide setelah Livewire navigate --}}
+    {{-- Re-init Lucide + reset scroll-hide state setelah Livewire navigate --}}
     <script>
         document.addEventListener('livewire:navigated', () => {
             if (window.lucide) window.lucide.createIcons();
+            // Reset lastPos & showBar agar navbar tidak nyangkut setelah navigasi
+            const bodyData = document.body._x_dataStack && document.body._x_dataStack[0];
+            if (bodyData) {
+                bodyData.lastPos = 0;
+                bodyData.showBar = true;
+            }
         });
     </script>
 
@@ -79,15 +92,7 @@
     {{-- HEADER: Bisa diedit di components/dashboard/header.blade.php --}}
     {{-- ============================================================ --}}
     @persist('dashboard-header')
-    <header x-data="{ mobileMenuOpen: false, showBar: true, lastPos: 0, threshold: 50 }"
-            @scroll.window="
-                const cur = window.pageYOffset;
-                if (cur < 10) { showBar = true; }
-                else if (cur < lastPos - threshold) { showBar = true; }
-                else if (cur > lastPos + 10) { showBar = false; }
-                lastPos = cur;
-            "
-            class="bg-white fixed top-0 left-0 w-full z-50 transition-transform duration-300"
+    <header class="bg-white fixed top-0 left-0 w-full z-50 transition-transform duration-300"
             :class="showBar ? 'translate-y-0' : '-translate-y-full'"
             style="box-shadow: 0 1px 0 #e0e0e0;">
         <x-dashboard.header />

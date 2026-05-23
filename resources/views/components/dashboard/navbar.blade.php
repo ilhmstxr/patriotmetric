@@ -13,6 +13,8 @@
     init() {
         document.addEventListener('livewire:navigated', () => {
             this.currentPath = window.location.pathname;
+            // Tutup mobile menu otomatis saat navigasi berpindah halaman
+            mobileMenuOpen = false;
         });
     }
 }">
@@ -99,24 +101,28 @@
     <div class="px-4 py-3 space-y-1">
         <a href="{{ route('dashboard.index') }}" wire:navigate
            :class="isActive('{{ route('dashboard.index', [], false) }}') ? 'bg-[#e8f5e9] text-[#1b5e20] font-semibold' : 'text-[#45556c] hover:bg-[#f5f5f5]'"
+           @click="mobileMenuOpen = false"
            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors">
             <i data-lucide="user" class="w-4 h-4"></i>
             Data Profil
         </a>
         <a href="{{ route('dashboard.rubrik') }}" wire:navigate
            :class="isActive('{{ route('dashboard.rubrik', [], false) }}') ? 'bg-[#e8f5e9] text-[#1b5e20] font-semibold' : 'text-[#45556c] hover:bg-[#f5f5f5]'"
+           @click="mobileMenuOpen = false"
            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors">
             <i data-lucide="file-text" class="w-4 h-4"></i>
             Form Rubrik
         </a>
         <a href="{{ route('dashboard.hasil') }}" wire:navigate
            :class="isActive('{{ route('dashboard.hasil', [], false) }}') ? 'bg-[#e8f5e9] text-[#1b5e20] font-semibold' : 'text-[#45556c] hover:bg-[#f5f5f5]'"
+           @click="mobileMenuOpen = false"
            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors">
             <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
             Hasil Penilaian
         </a>
         <a href="{{ route('dashboard.panduan') }}" wire:navigate
            :class="isActive('{{ route('dashboard.panduan', [], false) }}') ? 'bg-[#e8f5e9] text-[#1b5e20] font-semibold' : 'text-[#45556c] hover:bg-[#f5f5f5]'"
+           @click="mobileMenuOpen = false"
            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors">
             <i data-lucide="help-circle" class="w-4 h-4"></i>
             Panduan Pengguna
