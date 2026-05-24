@@ -60,11 +60,19 @@ class AssessmentsTable
                 //
             ])
             ->actions([
-                ViewAction::make(),
+                Action::make('view')
+                    ->label('View')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn ($record) => '/admin/assessment-detail/' . $record->id)
+                    ->openUrlInNewTab(),
                 EditAction::make(),
             ])
             ->recordActions([
-                ViewAction::make(),
+                Action::make('view')
+                    ->label('View')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn ($record) => '/admin/assessment-detail/' . $record->id)
+                    ->openUrlInNewTab(),
                 EditAction::make(),
             ])
             ->toolbarActions([

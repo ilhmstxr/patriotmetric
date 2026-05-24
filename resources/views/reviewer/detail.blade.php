@@ -1,8 +1,4 @@
-@if(isset($adminReadonly) && $adminReadonly)
-<x-layouts.app :hideNav="true" :hideFooter="true">
-@else
-<x-layouts.reviewer>
-@endif
+<x-dynamic-component :component="isset($adminReadonly) && $adminReadonly ? 'layouts.app' : 'layouts.reviewer'" :hideNav="isset($adminReadonly) && $adminReadonly" :hideFooter="isset($adminReadonly) && $adminReadonly">
     @php
         $reqId = isset($id) ? $id : request('id', '1');
     @endphp
@@ -398,7 +394,28 @@
             
             {{-- TAB: DATA PROFIL PESERTA --}}
             <div x-show="activeTab === 'profil'" x-transition.opacity.duration.300ms style="display: none;">
-                
+
+                {{-- Skor Overview --}}
+                <div class="bg-white p-[24px] rounded-[12px] border border-[#cbd5e1] mb-6">
+                  <h3 class="font-bold text-[#1b5e20] text-[15px] mb-4 border-b border-[#e2e8f0] pb-2">Ringkasan Skor</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-[24px]">
+                    <div class="bg-[#f8fafc] p-4 rounded-[8px] border border-[#e2e8f0] text-center">
+                        <p class="text-[12px] font-bold text-[#64748b] uppercase tracking-wider mb-1">Status</p>
+                        <span class="inline-flex items-center gap-[6px] px-[12px] py-[4px] rounded-full text-[13px] font-bold" :class="submissionStatus.color">
+                            <span x-text="submissionStatus.label"></span>
+                        </span>
+                    </div>
+                    <div class="bg-[#f8fafc] p-4 rounded-[8px] border border-[#e2e8f0] text-center">
+                        <p class="text-[12px] font-bold text-[#64748b] uppercase tracking-wider mb-1">Total Skor Sistem</p>
+                        <p class="text-[22px] font-bold text-[#1d293d]" x-text="Assessment.total_skor_sistem ?? 'N/A'"></p>
+                    </div>
+                    <div class="bg-[#f8fafc] p-4 rounded-[8px] border border-[#e2e8f0] text-center">
+                        <p class="text-[12px] font-bold text-[#64748b] uppercase tracking-wider mb-1">Total Skor Akhir (Reviewer)</p>
+                        <p class="text-[22px] font-bold text-[#1b5e20]" x-text="Assessment.total_skor_akhir ?? 'N/A'"></p>
+                    </div>
+                  </div>
+                </div>
+
                 {{-- Group A: Identitas Institusi --}}
                 <div class="bg-white p-[24px] rounded-[12px] border border-[#cbd5e1] mb-6">
                   <div class="flex flex-col md:flex-row justify-between items-start gap-4 mb-4 border-b border-[#e2e8f0] pb-2">
@@ -773,6 +790,10 @@
                                     </span>
                                 </h4>
                                 <div class="flex items-center gap-[12px]">
+                                    <template x-if="isDone && (!reviewerScores[q.id] && reviewerScores[q.id] !== 0)">
+                                        <span class="w-[80px] px-[12px] py-[10px] rounded-[8px] border-2 bg-[#f1f5f9] border-[#cbd5e1] text-[#94a3b8] text-[18px] font-bold text-center">N/A</span>
+                                    </template>
+                                    <template x-if="!isDone || reviewerScores[q.id] || reviewerScores[q.id] === 0">
                                     <input
                                       type="number"
                                       min="0"
@@ -785,6 +806,7 @@
                                       @input="if(reviewerScores[q.id] < 0) reviewerScores[q.id] = 0; if(reviewerScores[q.id] > 5) reviewerScores[q.id] = 5;"
                                       @blur="saveQuestionScore(q.id)"
                                     />
+                                    </template>
                                     <span class="text-[13px] text-[#64748b] font-medium leading-tight max-w-[200px]">Maks 5. Ketik 0 jika bukti tidak valid.</span>
                                 </div>
                             </div>
@@ -794,6 +816,10 @@
                                 <h4 class="text-[13px] font-bold text-[#1d293d] mb-[8px]">
                                     Catatan Penilai / Alasan:
                                 </h4>
+                                <template x-if="isDone && (!reviewerNotes[q.id] || reviewerNotes[q.id].trim() === '')">
+                                    <div class="w-full text-[14px] p-[12px] rounded-[8px] border-2 bg-[#f1f5f9] border-[#cbd5e1] text-[#94a3b8] italic">Belum diisi</div>
+                                </template>
+                                <template x-if="!isDone || (reviewerNotes[q.id] && reviewerNotes[q.id].trim() !== '')">
                                 <textarea
                                     rows="3"
                                     placeholder="Tuliskan alasan mengapa skor diberikan, atau hal yang kurang dari bukti validasi..."
@@ -803,6 +829,7 @@
                                     x-model="reviewerNotes[q.id]"
                                     @blur="saveQuestionScore(q.id)"
                                 ></textarea>
+                                </template>
                                 {{-- Character counter + warning --}}
                                 <div class="flex items-center justify-between mt-[4px]">
                                     <div x-show="reviewerNotes[q.id] && reviewerNotes[q.id].length > 0 && reviewerNotes[q.id].length < 20"
@@ -990,8 +1017,4 @@
       </div>
       </div>{{-- end !loading --}}
     </div>
-@if(isset($adminReadonly) && $adminReadonly)
-</x-layouts.app>
-@else
-</x-layouts.reviewer>
-@endif
+</x-dynamic-component>

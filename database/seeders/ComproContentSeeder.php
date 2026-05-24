@@ -79,12 +79,17 @@ class ComproContentSeeder extends Seeder
 
         // Hero Section
         $this->createContent($page, 'hero', 'judul', 'text', 'Membangun Karakter Bangsa dari Kampus', 1);
-        $this->createContent($page, 'hero', 'deskripsi', 'text', 'Sebuah inisiatif pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.', 2);
+        $this->createContent($page, 'hero', 'deskripsi', 'text', 'Sebuah sistem pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.', 2);
         $this->createContent($page, 'hero', 'background_image', 'image', 'images/46257018a5d0ac00852b82184ae3ed30ef9a74e4.webp', 3);
 
         // About Section
         $this->createContent($page, 'about', 'judul', 'text', 'Patriot Metric', 1);
-        $this->createContent($page, 'about', 'deskripsi', 'richtext', '<p>Patriot Metric adalah platform digital interaktif yang diinisiasi oleh Universitas Pembangunan Nasional "Veteran" Jawa Timur untuk mengukur, memvalidasi, dan memeringkat implementasi nilai-nilai bela negara di berbagai institusi akademis.</p><p>Dengan instrumen yang terstandar, kami memberikan gambaran objektif mengenai seberapa baik sebuah institusi mengintegrasikan patriotisme ke dalam kurikulum, kegiatan kemahasiswaan, dan budaya kampusnya.</p><ul><li>Sistem penilaian transparan &amp; objektif</li><li>Dashboard institusional terintegrasi</li><li>Sertifikat penghargaan nasional</li></ul>', 2);
+        $this->createContent($page, 'about', 'deskripsi', 'richtext', '<p>Patriot Metric University Ranking merupakan sistem pemeringkatan kinerja yang mengintegrasikan pengukuran capaian akademik, tata kelola institusi,dan pembentukan karakter Bela Negara ke dalam satu kerangka nilai yang utuh, melalui aspek kebijakan, kelembagaan, dan patriotisme peserta didik. </p>
+        <ul><li>Refleksi kinerja institusi berbasis nilai
+</li><li>Penguatan arah kebijakan dan tata kelola
+</li><li>Internalisasi nilai kebangsaan secara terukur
+</li><li>Jejaring dan pembelajaran antar institusi
+</li></ul>', 2);
         $this->createContent($page, 'about', 'video_url', 'url', 'https://www.youtube.com/embed/nB4YzOhnkBo?si=KXFTn2dRpO-TDdKc', 3);
 
         // Institusi Partisipan Section
@@ -130,22 +135,61 @@ class ComproContentSeeder extends Seeder
         $page = 'profile';
 
         // Hero Section
-        $this->createContent($page, 'hero', 'judul', 'text', 'Membangun Karakter Bangsa dari Kampus', 1);
-        $this->createContent($page, 'hero', 'deskripsi', 'text', 'Sebuah inisiatif pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.', 2);
+       $this->createContent($page, 'hero', 'judul', 'text', 'UPN VETERAN JATIMPATRIOT METRIC <br> <span class="text-[20px] sm:text-[28px] md:text-[32px] font-semibold text-white/90">UNIVERSITY RANKING</span>', 1);
+        $this->createContent($page, 'hero', 'deskripsi', 'text', 'Sebuah sistem pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.', 2);
         $this->createContent($page, 'hero', 'background_image', 'image', 'images/bg.webp', 3);
 
         // Latar Belakang Section
         $this->createContent($page, 'latar-belakang', 'judul', 'text', 'Latar Belakang', 1);
-        $this->createContent($page, 'latar-belakang', 'deskripsi', 'richtext', '<p>Di tengah arus globalisasi, nilai patriotisme menghadapi tantangan serius, mulai dari menurunnya pemahaman terhadap sejarah, derasnya arus disinformasi serta radikalisme digital yang memicu polarisasi, hingga meningkatnya individualisme yang melemahkan kepedulian sosial. Oleh karena itu, diperlukan instrumen yang terukur dan kredibel untuk menilai sejauh mana perguruan tinggi mampu menginternalisasikan nilai-nilai bela negara di seluruh elemennya.</p><p>Universitas Pembangunan Nasional "Veteran" Jawa Timur memprakarsai Patriot Metric UPN Veteran Jatim sebagai jawaban atas kebutuhan tersebut, yaitu sebuah sistem pemeringkatan perguruan tinggi berbasis indikator bela negara. Konsep Patriot Metric muncul dari kebutuhan untuk menghadirkan instrumen evaluasi yang objektif dan terstandar agar pembinaan kesadaran bela negara, khususnya dalam konteks nasionalisme dan patriotisme, dapat dianalisis, dievaluasi, serta dikembangkan secara berkelanjutan.</p>', 2);
+         $this->createContent($page, 'latar-belakang', 'deskripsi', 'richtext', '<p>Di tengah arus globalisasi, nilai patriotisme
+menghadapi tantangan serius, mulai dari
+menurunnya pemahaman sejarah, derasnya arus
+disinformasi dan radikalisme digital yang memicu
+polarisasi, hingga meningkatnya individualisme
+yang menggerus kepedulian sosial.</p><p>
+<strong>Patriot Metric</strong> hadir sebagai jawaban atas
+kebutuhan tersebut. Gagasan ini berangkat dari
+identitas historis UPN “Veteran” Jawa Timur
+sebagai kampus Bela Negara yang lahir dari
+semangat para pejuang kemerdekaan, dengan
+semboyan <i>Widya Mwat Yasa</i> – ilmu pengetahuan
+yang diabdikan untuk pembangunan bangsa.</p>
+<p><strong>Patriot Metric</strong> merupakan instrumen evaluasi yang objektif dan
+terstandarisasi, agar pembinaan kesadaran bela negara, khususnya
+dalam konteks nasionalisme dan patriotisme, dapat dianalisis,
+dievaluasi, dan dikembangkan secara berkelanjutan.</p>
+<p>Instrumen Patriot Metric dirancang berbasis konstruk psikososial
+sehingga tidak hanya dipahami secara normatif, tetapi juga dapat
+memotivasi institusi pendidikan tinggi melalui internalisasi,
+implementasi, dan pengembangan nilai-nilai bela negara serta
+karakter kebangsaan dalam Tridharma Perguruan Tinggi.</p>
+', 2);
 
         // Tujuan Utama Section
-        $this->createContent($page, 'tujuan-utama', 'judul', 'text', 'Tujuan Utama Program', 1);
-        $this->createContent($page, 'tujuan-utama', 'deskripsi', 'text', 'Empat pilar yang menjadi landasan pengembangan Patriot Metric.', 2);
-        $this->createContent($page, 'tujuan-utama', 'daftar', 'repeater', [
-            ['nomor' => '01', 'judul' => 'Instrumen Evaluasi', 'deskripsi' => 'Menilai internalisasi karakter bela negara secara terukur dan objektif di lingkungan perguruan tinggi.'],
-            ['nomor' => '02', 'judul' => 'Penguatan Ekosistem', 'deskripsi' => 'Memperkuat ekosistem pendidikan berbasis nilai kebangsaan melalui implementasi Tri Dharma.'],
-            ['nomor' => '03', 'judul' => 'Sinergi Antarperguruan Tinggi', 'deskripsi' => 'Mendorong kolaborasi dan sinergi antarperguruan tinggi dalam pembinaan bela negara.'],
-            ['nomor' => '04', 'judul' => 'Perbaikan Berkelanjutan', 'deskripsi' => 'Mendorong setiap perguruan tinggi untuk terus melakukan perbaikan dan inovasi berkelanjutan.'],
+      $this->createContent($page, 'tujuan-utama', 'judul', 'text', 'Tujuan Pemeringkatan', 1);
+        $this->createContent($page, 'tujuan-utama', 'deskripsi', 'text', ' ', 2);
+      $this->createContent($page, 'tujuan-utama', 'daftar', 'repeater', [
+            ['nomor' => '01', 'judul' => 'Menjadi Instrumen
+Evaluasi Pembinaan
+Kesadaran Bela Negara', 'deskripsi' => 'Menilai sejauh mana upaya
+pembinaan karakter bela negara
+telah diinternalisasikan melalui
+kebijakan dan program
+perguruan tinggi.'],
+            ['nomor' => '02', 'judul' => 'Memperkuat Ekosistem
+Perguruan Tinggi Berbasis
+Nilai-nilai Bela Negara', 'deskripsi' => 'Tercipta ekosistem perguruan
+tinggi yang lebih kuat dalam
+menanamkan nilai-nilai bela
+negara dan tanggung jawab
+sosial melalui berbagai aspek
+Tridharma Perguruan Tinggi.'],
+            ['nomor' => '03', 'judul' => 'Mendorong Sinergi
+Antar-Perguruan Tinggi', 'deskripsi' => 'Perguruan Tinggi dapat saling
+memotivasi, bersama-sama
+membangun generasi muda
+yang berdaya saing global,
+adaptif, dan patriotik.'],
         ], 3);
     }
 
@@ -234,7 +278,7 @@ class ComproContentSeeder extends Seeder
             ['label' => 'Langkah 1', 'judul' => 'Input Data', 'deskripsi' => 'Peserta mengisi formulir pemeringkatan secara daring dan mengunggah dokumen pendukung.', 'icon' => 'user-plus'],
             ['label' => 'Langkah 2', 'judul' => 'Validasi', 'deskripsi' => 'Proses validasi oleh Tim Evaluator untuk memastikan keabsahan data, termasuk wawancara & visitasi lapangan.', 'icon' => 'file-check'],
             ['label' => 'Langkah 3', 'judul' => 'Penilaian', 'deskripsi' => 'Penilaian untuk setiap indikator berbentuk skor angka dan diolah secara statistik.', 'icon' => 'trending-up'],
-            ['label' => 'Langkah 4', 'judul' => 'Pengumuman dan Klasifikasi', 'deskripsi' => 'Hasil akhir ditetapkan berdasarkan skor kumulatif dan disampaikan dalam bentuk peringkat bintang.', 'icon' => 'check-circle'],
+            ['label' => 'Langkah 4', 'judul' => 'Pengumuman', 'deskripsi' => 'Hasil akhir ditetapkan berdasarkan skor kumulatif dan disampaikan dalam bentuk peringkat bintang.', 'icon' => 'check-circle'],
         ], 1);
 
         // FAQ Section
