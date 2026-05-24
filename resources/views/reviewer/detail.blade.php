@@ -176,6 +176,30 @@
             return map[s] || { label: s || '...', color: 'bg-slate-100 text-slate-500', icon: 'info' };
         },
 
+        validateBeforeFinalize() {
+            const unanswered = this.allQuestions.filter(q => {
+                const score = this.reviewerScores[q.id];
+                return score === null || score === undefined || score === '';
+            });
+            if (unanswered.length > 0) {
+                const firstQ = unanswered[0];
+                const el = document.getElementById('q-' + firstQ.id);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.classList.add('ring-2', 'ring-red-400', 'ring-offset-2');
+                    setTimeout(() => el.classList.remove('ring-2', 'ring-red-400', 'ring-offset-2'), 3000);
+                }
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Belum Lengkap',
+                    text: 'Masih ada ' + unanswered.length + ' pertanyaan yang belum dinilai. Silakan lengkapi terlebih dahulu.',
+                    confirmButtonColor: '#1b5e20'
+                });
+                return;
+            }
+            this.showLockConfirm = true;
+        },
+
         async lockReview() {
             this.isLocking = true;
             this.showLockConfirm = false;
@@ -339,12 +363,12 @@
             <div class="mt-4 md:mt-0 px-[16px] py-[8px] bg-slate-50 border border-slate-200 rounded-[8px] inline-flex items-center gap-[8px] min-w-[180px]">
                 <template x-if="isSaving">
                     <span class="flex items-center gap-[6px] text-[13px] font-semibold text-amber-600">
-                        <i data-lucide="loader-2" class="w-[14px] h-[14px] animate-spin"></i> Menyimpan draft...
+                        <i data-lucide="loader-2" class="w-[14px] h-[14px] animate-spin"></i> Menyimpan...
                     </span>
                 </template>
                 <template x-if="!isSaving && lastSaved">
                     <span class="flex items-center gap-[6px] text-[13px] font-semibold text-green-600">
-                        <i data-lucide="check" class="w-[14px] h-[14px]"></i> Tersimpan <span x-text="lastSaved"></span>
+                        <i data-lucide="check" class="w-[14px] h-[14px]"></i> Tersimpan
                     </span>
                 </template>
                 <template x-if="!isSaving && !lastSaved">
@@ -378,10 +402,10 @@
                 {{-- Group A: Identitas Institusi --}}
                 <div class="bg-white p-[24px] rounded-[12px] border border-[#cbd5e1] mb-6">
                   <div class="flex flex-col md:flex-row justify-between items-start gap-4 mb-4 border-b border-[#e2e8f0] pb-2">
-                    <h3 class="font-bold text-[#1b5e20] text-[15px]">A. Identitas Institusi</h3>
+                    <h3 class="font-bold text-[#1b5e20] text-[15px]">A. Identitas Perguruan Tinggi</h3>
                     <template x-if="logoUrl">
                         <a :href="logoUrl" target="_blank" class="block w-16 h-16 overflow-hidden rounded-full bg-white border-2 border-slate-200 p-1 hover:border-[#1b5e20] transition-colors shadow-sm">
-                            <img :src="logoUrl" class="w-full h-full object-contain" alt="Logo Institusi">
+                            <img :src="logoUrl" class="w-full h-full object-contain" alt="Logo Perguruan Tinggi">
                         </a>
                     </template>
                   </div>
@@ -522,6 +546,7 @@
                                 <span class="text-[14px] text-[#94a3b8] italic">Belum diunggah</span>
                             </template>
                         </div>
+                        {{-- SK Akreditasi AIPT - dinonaktifkan
                         <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
                             <span class="text-[14px] text-[#64748b] font-medium">SK Akreditasi</span>
                             <template x-if="dokumenPendukung.sk_akreditasi">
@@ -533,6 +558,7 @@
                                 <span class="text-[14px] text-[#94a3b8] italic">Belum diunggah</span>
                             </template>
                         </div>
+                        --}}
                         <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
                             <span class="text-[14px] text-[#64748b] font-medium">Profil PT</span>
                             <template x-if="dokumenPendukung.profil_pt">
@@ -816,7 +842,7 @@
             <div class="flex items-center gap-[10px]">
                 {{-- Finalisasi Penilaian --}}
                 <button
-                  @click="showLockConfirm = true"
+                  @click="validateBeforeFinalize()"
                   :disabled="isLocking"
                   class="w-full sm:w-auto bg-[#1b5e20] hover:bg-[#15461c] disabled:opacity-60 text-white px-[24px] py-[10px] rounded-[8px] text-[14px] font-bold flex items-center justify-center gap-[8px] transition-colors shadow-sm focus:ring-4 focus:ring-[#1b5e20]/30 outline-none">
                   <i data-lucide="lock" class="w-[16px] h-[16px]"></i>

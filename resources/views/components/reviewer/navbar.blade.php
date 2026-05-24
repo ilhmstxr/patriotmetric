@@ -24,15 +24,6 @@
 {{-- DESKTOP NAV --}}
 <nav class="hidden md:flex items-center px-6 md:px-10 h-[48px] gap-1">
 
-    {{-- Role Indicator --}}
-    <div class="flex items-center gap-[8px] mr-2">
-        <div class="h-[24px] px-[8px] bg-[#1b5e20] text-white text-[11px] font-bold rounded flex items-center justify-center uppercase tracking-wider">
-            Reviewer
-        </div>
-    </div>
-
-    <div class="w-px h-[20px] bg-[#e0e0e0] mx-1"></div>
-
     {{-- Panduan Penilaian --}}
     <a href="{{ route('reviewer.panduan') }}" wire:navigate
         :class="isActive('{{ route('reviewer.panduan', [], false) }}') ? 'text-[#1b5e20] font-semibold' : 'text-[#45556c] hover:text-[#1b5e20]'"
@@ -60,12 +51,7 @@
 
 {{-- MOBILE NAV TOGGLE --}}
 <div class="md:hidden flex items-center justify-between px-4 h-[48px] border-t border-[#e0e0e0]">
-    <div class="flex items-center gap-[8px]">
-        <div class="h-[20px] px-[6px] bg-[#1b5e20] text-white text-[10px] font-bold rounded flex items-center justify-center uppercase">
-            REV
-        </div>
-        <span class="text-[13px] font-semibold text-[#1d293d]">Reviewer Area</span>
-    </div>
+    <span class="text-[13px] font-semibold text-[#1d293d]">Reviewer Area</span>
     <button @click="mobileMenuOpen = !mobileMenuOpen"
         class="p-2 text-[#45556c] hover:text-[#1b5e20] transition-colors">
         <i data-lucide="menu" x-show="!mobileMenuOpen" class="w-5 h-5"></i>

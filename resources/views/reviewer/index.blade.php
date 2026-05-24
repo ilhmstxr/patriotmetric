@@ -164,7 +164,7 @@
                             <thead>
                                 <tr class="bg-[#f8fafc] border-b border-[#e2e8f0]">
                                     <th class="py-4 px-6 font-semibold text-[#64748b] text-[12px] uppercase tracking-wider w-12">No</th>
-                                    <th class="py-4 px-6 font-semibold text-[#64748b] text-[12px] uppercase tracking-wider">Nama Institusi</th>
+                                    <th class="py-4 px-6 font-semibold text-[#64748b] text-[12px] uppercase tracking-wider">Nama Perguruan Tinggi</th>
                                     <th class="py-4 px-6 font-semibold text-[#64748b] text-[12px] uppercase tracking-wider">Tgl Submit</th>
                                     <th class="py-4 px-6 font-semibold text-[#64748b] text-[12px] uppercase tracking-wider text-right">Aksi</th>
                                 </tr>
@@ -177,7 +177,7 @@
                                             <div class="flex items-center gap-3">
                                                 <div class="w-9 h-9 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-bold text-[13px] shrink-0"
                                                      x-text="getInitials(task.institusi?.nama_institusi)"></div>
-                                                <span class="text-[14px] font-semibold text-[#1d293d]" x-text="task.institusi?.nama_institusi || 'Institusi Tidak Diketahui'"></span>
+                                                <span class="text-[14px] font-semibold text-[#1d293d]" x-text="task.institusi?.nama_institusi || 'Perguruan Tinggi Tidak Diketahui'"></span>
                                             </div>
                                         </td>
                                         <td class="py-4 px-6 text-[13px] text-[#64748b]" x-text="formatDate(task.updated_at)"></td>
@@ -223,7 +223,7 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-[#f8fafc] border-b border-[#e2e8f0]">
-                                    <th class="py-4 px-6 font-semibold text-[#64748b] text-[12px] uppercase tracking-wider">Nama Institusi</th>
+                                    <th class="py-4 px-6 font-semibold text-[#64748b] text-[12px] uppercase tracking-wider">Nama Perguruan Tinggi</th>
                                     <th class="py-4 px-6 font-semibold text-[#64748b] text-[12px] uppercase tracking-wider">Tgl Submit</th>
                                     <th class="py-4 px-6 font-semibold text-[#64748b] text-[12px] uppercase tracking-wider">Status</th>
                                     <th class="py-4 px-6 font-semibold text-[#64748b] text-[12px] uppercase tracking-wider text-right">Aksi</th>

@@ -128,6 +128,11 @@
                  }
              }" 
              @click.outside="userMenuOpen = false">
+            <template x-if="userData.nama_pt === 'Reviewer Patriot Metric'">
+                <div class="h-[24px] px-[8px] bg-[#1b5e20] text-white text-[11px] font-bold rounded flex items-center justify-center uppercase tracking-wider hidden sm:flex">
+                    Reviewer
+                </div>
+            </template>
             <div class="text-right hidden sm:block">
                 <p class="font-bold text-[#1d293d] text-[14px] leading-[20px]" x-text="userData.nama_pic"></p>
                 <p class="font-medium text-[#62748e] text-[11px] leading-[16px] uppercase tracking-wide" x-text="userData.nama_pt"></p>
