@@ -34,17 +34,7 @@
 
         {{-- Flag State (persisted in sessionStorage) --}}
         flags: {},
-        openCategories: {},
-        initCategories() {
-            this.categories.forEach((cat, idx) => {
-                if (this.openCategories[idx] === undefined) {
-                    this.openCategories[idx] = (idx === 0);
-                }
-            });
-        },
-        toggleCategory(idx) {
-            this.openCategories[idx] = !this.openCategories[idx];
-        },
+       
 
         toggleFlag(questionId) {
             if (!this.is_edit_enabled) return;
@@ -135,7 +125,6 @@
             this.answers = {};
             this.links = {};
             this.categories = this.groupByCategory(data.questions);
-            this.initCategories();
 
             // Pre-initialize all question keys for Alpine.js reactivity
             // This ensures fillStatus() triggers reactive updates in the Floating Quiz Drawer
@@ -596,18 +585,13 @@
                     <template x-if="!loading">
                         <template x-for="(categoryData, cIdx) in categories" :key="cIdx">
                             <div class="space-y-4">
-
-                            {{-- Category Header (Accordion Trigger) --}}
-                            <div @click="toggleCategory(cIdx)" class="flex items-center justify-between border-b border-[#e0e0e0] pb-2 cursor-pointer select-none group">
-                                <div class="flex items-center gap-[8px]">
-                                    <i data-lucide="chevron-right" class="w-[16px] h-[16px] text-[#1d293d] transition-transform duration-300" :class="openCategories[cIdx] ? 'rotate-90' : ''"></i>
-                                    <h2 class="text-[15px] font-bold text-[#1d293d] uppercase tracking-wide group-hover:text-[#1b5e20] transition-colors" x-text="categoryData.category"></h2>
-                                </div>
+                            {{-- Category Header --}}
+                            <div class="flex items-center justify-between border-b border-[#e0e0e0] pb-2">
+                                <h2 class="text-[15px] font-bold text-[#1d293d] uppercase tracking-wide" x-text="categoryData.category"></h2>
                                 <span class="text-[12px] font-semibold text-[#62748e]" x-text="'Bobot: ' + categoryData.weight"></span>
                             </div>
 
                             {{-- Questions (Accordion Content) --}}
-                            <div x-show="openCategories[cIdx]" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
                             <template x-for="q in categoryData.questions" :key="q.id">
                                 {{-- 🏷️ Question Card — id anchor for scroll targeting + relative for flag ribbon --}}
                                 <div :id="'q-' + q.id"
@@ -848,7 +832,6 @@
                                     </div>
                                 </div>
                             </template>
-                            </div>
                         </div>
                         </template>
                     </template>

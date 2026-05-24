@@ -1,6 +1,10 @@
+@if(isset($adminReadonly) && $adminReadonly)
+<x-layouts.app :hideNav="true" :hideFooter="true">
+@else
 <x-layouts.reviewer>
-    @php 
-        $reqId = request('id', '1');
+@endif
+    @php
+        $reqId = isset($id) ? $id : request('id', '1');
     @endphp
     <x-slot:title>DETAIL PENILAIAN PESERTA</x-slot:title>
     <div x-data="{
@@ -8,6 +12,7 @@
         isSaving: false,
         lastSaved: '',
         isDone: false,
+        adminReadonly: {{ isset($adminReadonly) && $adminReadonly ? 'true' : 'false' }},
         loading: true,
         isLocking: false,
         showLockConfirm: false,
@@ -36,17 +41,7 @@
         drawerOpen: false,
         flags: {},
         saveStatus: {}, // 'saving' | 'saved' | '' per question
-        openCategories: {},
-        initCategories() {
-            this.rubrikData.forEach((cat, idx) => {
-                if (this.openCategories[idx] === undefined) {
-                    this.openCategories[idx] = (idx === 0);
-                }
-            });
-        },
-        toggleCategory(idx) {
-            this.openCategories[idx] = !this.openCategories[idx];
-        },
+      
         toggleFlag(questionId) {
             if (this.isDone) return;
             this.flags[questionId] = !this.flags[questionId];
@@ -247,13 +242,13 @@
             this.institusi      = data.institusi      || {};
             this.profil_peserta = data.profil_peserta || {};
             this.rubrikData     = data.rubrik         || [];
-            this.initCategories();
             this.nama_pic       = data.nama_pic;
             this.jabatan_pic    = data.jabatan_pic;
             this.email_pic      = data.email_pic;
             this.no_hp_pic      = data.no_hp_pic;
             // isDone = true jika status GRADED, PUBLISHED, atau REJECTED
             this.isDone = ['GRADED', 'PUBLISHED', 'REJECTED'].includes(this.Assessment.status);
+            if (this.adminReadonly) this.isDone = true;
             this.rubrikData.forEach(kategori => {
                 kategori.pertanyaan.forEach(q => {
                     if (q.jawaban_peserta) {
@@ -271,13 +266,15 @@
 
         async fetchData() {
             const cacheKey = 'reviewer_detail_cache_' + this.pesertaId;
+            const apiUrl = this.adminReadonly
+                ? `/admin/api/assessment/${this.pesertaId}`
+                : `/api/assessment/reviewer/tasks/detail/${this.pesertaId}`;
             try {
-                const response = await fetch(`/api/assessment/reviewer/tasks/detail/${this.pesertaId}`, {
-                    headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
-                        'Accept': 'application/json'
-                    }
-                });
+                const headers = { 'Accept': 'application/json' };
+                if (!this.adminReadonly) {
+                    headers['Authorization'] = 'Bearer ' + localStorage.getItem('auth_token');
+                }
+                const response = await fetch(apiUrl, { headers });
                 const result = await response.json();
                 if (response.ok && result.success) {
                     try { sessionStorage.setItem(cacheKey, JSON.stringify(result.data)); } catch(e) {}
@@ -353,9 +350,16 @@
       <div x-show="!loading" x-cloak class="flex-1 flex flex-col h-full">
       {{-- Page Header --}}
       <div class="bg-white border-b border-[#e2e8f0] px-[20px] md:px-[40px] pt-[20px] md:pt-[28px] shadow-sm">
-        <a href="{{ route('reviewer.dashboard') }}" wire:navigate class="inline-flex items-center gap-[6px] text-[#62748e] hover:text-[#1b5e20] text-[13px] font-semibold mb-[8px] transition-colors">
-          <i data-lucide="arrow-left" class="w-[14px] h-[14px]"></i> Kembali ke Daftar Plotting
-        </a>
+        <template x-if="!adminReadonly">
+            <a href="{{ route('reviewer.dashboard') }}" wire:navigate class="inline-flex items-center gap-[6px] text-[#62748e] hover:text-[#1b5e20] text-[13px] font-semibold mb-[8px] transition-colors">
+              <i data-lucide="arrow-left" class="w-[14px] h-[14px]"></i> Kembali ke Daftar Plotting
+            </a>
+        </template>
+        <template x-if="adminReadonly">
+            <a href="/admin/assessments" class="inline-flex items-center gap-[6px] text-[#62748e] hover:text-[#1b5e20] text-[13px] font-semibold mb-[8px] transition-colors">
+              <i data-lucide="arrow-left" class="w-[14px] h-[14px]"></i> Kembali ke Admin Panel
+            </a>
+        </template>
         
         <div class="flex flex-col md:flex-row items-start justify-between md:items-end mb-[20px]">
             <div>
@@ -597,17 +601,13 @@
             <div x-show="activeTab === 'penilaian'" x-transition.opacity.duration.300ms class="space-y-[24px] md:space-y-[32px]">
               <template x-for="(categoryData, cIdx) in rubrikData" :key="cIdx">
                 <div class="space-y-[16px]">
-                  {{-- Category Header (Accordion Trigger) --}}
-                  <div @click="toggleCategory(cIdx)" class="flex items-center justify-between border-b-[2px] border-[#e2e8f0] pb-[8px] mb-[16px] cursor-pointer select-none group">
-                    <div class="flex items-center gap-[10px]">
-                        <i data-lucide="chevron-right" class="w-[18px] h-[18px] text-[#1b5e20] transition-transform duration-300" :class="openCategories[cIdx] ? 'rotate-90' : ''"></i>
-                        <h2 class="text-[18px] font-bold text-[#1b5e20] uppercase group-hover:text-[#15461c] transition-colors" x-text="categoryData.kategori"></h2>
-                    </div>
+                          {{-- Category Header --}}
+                  <div class="flex items-center justify-between border-b-[2px] border-[#e2e8f0] pb-[8px] mb-[16px]">
+                    <h2 class="text-[18px] font-bold text-[#1b5e20] uppercase" x-text="categoryData.kategori"></h2>
                     <span class="text-[14px] font-bold text-[#62748e] bg-white border border-[#e2e8f0] px-[12px] py-[4px] rounded-full shadow-sm" x-text="'Max: ' + categoryData.bobot_maksimal + ' pts'"></span>
                   </div>
 
                   {{-- Questions (Accordion Content) --}}
-                  <div x-show="openCategories[cIdx]" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
                   <template x-for="q in categoryData.pertanyaan" :key="q.id">
                     <div :id="'q-' + q.id" class="relative bg-white border rounded-[12px] p-[20px] md:p-[28px] flex flex-col md:flex-row md:items-start gap-[20px] md:gap-[32px] overflow-hidden mb-[16px] transition-all duration-300" :class="isFlagged(q.id) ? 'border-red-500 ring-1 ring-red-100' : 'border-[#cbd5e1]'">
                       
@@ -823,7 +823,6 @@
 
                     </div>
                   </template>
-                  </div>
                 </div>
               </template>
             </div>
@@ -991,4 +990,8 @@
       </div>
       </div>{{-- end !loading --}}
     </div>
+@if(isset($adminReadonly) && $adminReadonly)
+</x-layouts.app>
+@else
 </x-layouts.reviewer>
+@endif
