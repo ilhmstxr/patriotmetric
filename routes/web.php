@@ -101,12 +101,12 @@ Route::prefix('dashboard')->group(function () {
 // Reviewer pages
 Route::prefix('reviewer')->group(function () {
     Route::get('/', function () {
-        return view('reviewer.index');
+        return view('reviewer.panduan');
     })->name('reviewer.index');
 
-    Route::get('/panduan', function () {
-        return view('reviewer.panduan');
-    })->name('reviewer.panduan');
+    Route::get('/dashboard', function () {
+        return view('reviewer.index');
+    })->name('reviewer.dashboard');
 
     Route::get('/peserta/{id}', function ($id) {
         return view('reviewer.detail', compact('id'));

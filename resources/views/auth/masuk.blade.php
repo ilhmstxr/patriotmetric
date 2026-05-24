@@ -232,7 +232,7 @@
                     </form>
 
                     <p class="mt-6 text-center font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[14px] text-[#45556c]">
-                        Belum mendaftarkan institusi?
+                        Belum mendaftarkan Perguruan Tinggi?
                         <a href="{{ url('/daftar') }}" class="font-bold text-[#1b5e20] hover:underline">Daftar di sini</a>
                     </p>
                 </div>

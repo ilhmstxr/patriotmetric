@@ -34,7 +34,7 @@
                 </p>
                 <div class="mt-10 flex flex-col sm:flex-row gap-4">
                     <a href="{{ url('/daftar') }}" class="w-full sm:w-auto bg-[#d4af37] text-[#1d293d] font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] px-8 py-4 rounded-2xl shadow-lg hover:brightness-110 transition flex items-center justify-center gap-2">
-                        Daftarkan Institusi Anda
+                        Daftarkan Perguruan Tinggi Anda
                         <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     </a>
                     <a href="{{ url('/panduan') }}" class="w-full sm:w-auto border border-white/30 text-white font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[16px] px-8 py-4 rounded-2xl hover:bg-white/10 transition flex items-center justify-center">

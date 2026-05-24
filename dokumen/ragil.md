@@ -18,15 +18,15 @@ button nya dari kirim pendaftaran => kirim
 backgroundnya foto kegiatan 
 foregroundnya tulisan kegiatan
 - page daftar
-daftarkan institusi => daftarkan perguruan tinggi anda (ilham)
+daftarkan institusi => daftarkan perguruan tinggi anda (ilham) done
 gajadi
 - page verifikasi
 yang butuh template:  surat pernyataan resmi
-surat akreditasi AIPT dihapus (ilham)
+surat akreditasi AIPT dihapus (ilham) done
 - urutan di reviewer
-panduan & dashboard peserta (ilham)
-untuk keterangan role reviewer dipindah ke kiri sebelah nama akun (ilham)
+panduan & dashboard peserta (ilham) done
+untuk keterangan role reviewer dipindah ke kiri sebelah nama akun (ilham) done
 - untuk warnanya di variable, dan warnanya soft , tapi jangan warna merah kuning hijau. warnanya per variable
 - untuk di sisi reviewer bisa di rubah agar tidak accidental clickable
-- untuk di sisi reviewer menyimpannya sama konsepnya seperti di peserta (bukan pakai timestamp) tapi per rubrik / pertanyaan (ilham)
+- untuk di sisi reviewer menyimpannya sama konsepnya seperti di peserta (bukan pakai timestamp) tapi per rubrik / pertanyaan (ilham) done
 - untuk flag => (didiskuskikan besok)

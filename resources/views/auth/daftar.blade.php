@@ -231,7 +231,7 @@
                     Jadilah Bagian dari Perubahan
                 </h1>
                 <p class="mt-8 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[25px] leading-[29.25px] text-[rgba(255,255,255,0.8)] max-w-[500px]">
-                    Dengan mendaftarkan institusi Anda, Anda telah mengambil langkah nyata dalam membina karakter bela negara generasi penerus bangsa.
+                    Dengan mendaftarkan Perguruan Tinggi Anda, Anda telah mengambil langkah nyata dalam membina karakter bela negara generasi penerus bangsa.
                 </p>
             </div>
         </div>
@@ -243,7 +243,7 @@
                     Sudah punya akun? Masuk
                 </a>
 
-                <h2 class="mt-6 font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[24px] md:text-[30px] leading-[36px] text-[#1d293d]">Daftarkan Institusi</h2>
+                <h2 class="mt-6 font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[24px] md:text-[30px] leading-[36px] text-[#1d293d]">Daftarkan Perguruan Tinggi</h2>
                 <p class="mt-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[14px] md:text-[16px] leading-[24px] text-[#62748e]">
                     Lengkapi data berikut untuk membuat akun institusi.
                 </p>
