@@ -27,6 +27,11 @@ class PertanyaanForm
                     ->columnSpanFull(),
                 RichEditor::make('kebutuhan_bukti')
                     ->label('Kebutuhan Bukti (Evidence)')
+                    ->toolbarButtons([
+                        'bulletList', 'orderedList',
+                        'bold', 'italic',
+                        'undo', 'redo',
+                    ])
                     ->columnSpanFull(),
                 Select::make('tipe')
                     ->label('Tipe Jawaban')

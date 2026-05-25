@@ -27,17 +27,13 @@ class ReviewerForm
                     ->label('Nama Lengkap')
                     ->required()
                     ->maxLength(255),
-                TextInput::make('nip')
-                    ->label('NIP / NIDN')
-                    ->maxLength(255)
-                    ->helperText('Opsional.'),
                 TextInput::make('password')
                     ->label('Password')
                     ->password()
                     ->revealable()
                     ->maxLength(255)
-                    ->dehydrated(fn ($state) => filled($state))
-                    ->helperText(fn (string $operation): string => $operation === 'create'
+                    ->dehydrated(fn($state) => filled($state))
+                    ->helperText(fn(string $operation): string => $operation === 'create'
                         ? 'Kosongkan untuk men-generate password otomatis (akan ditampilkan setelah disimpan).'
                         : 'Kosongkan jika tidak ingin mengganti password.'),
             ]);

@@ -46,7 +46,6 @@ class CreateUser extends CreateRecord
                 Reviewer::create([
                     'user_id' => $user->id,
                     'nama_lengkap' => $data['nama_lengkap'],
-                    'nip' => $data['nip'] ?? null,
                 ]);
 
                 Notification::make()

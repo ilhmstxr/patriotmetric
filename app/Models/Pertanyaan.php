@@ -20,9 +20,7 @@ class Pertanyaan extends Model
         // 'skor_maksimal'
     ];
 
-    protected $casts = [
-        'kebutuhan_bukti' => 'json',
-    ];
+    protected $casts = [];
 
     public function kategori()
     {

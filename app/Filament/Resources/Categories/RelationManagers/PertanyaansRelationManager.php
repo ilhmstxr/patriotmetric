@@ -38,12 +38,18 @@ class PertanyaansRelationManager extends RelationManager
                     ->columnSpanFull(),
                 RichEditor::make('kebutuhan_bukti')
                     ->label('Kebutuhan Bukti (Evidence)')
+                    ->toolbarButtons([
+                        'bulletList', 'orderedList',
+                        'bold', 'italic',
+                        'undo', 'redo',
+                    ])
                     ->columnSpanFull(),
                 Select::make('tipe')
                     ->label('Tipe Jawaban')
                     ->options([
                         'pilihan_ganda' => 'Pilihan Ganda',
-                        'teks_singkat' => 'Teks Singkat',
+                        'isian_singkat' => 'Isian Singkat',
+                        'otomatis_sistem' => 'Otomatis Sistem',
                     ])
                     ->live()
                     ->required(),

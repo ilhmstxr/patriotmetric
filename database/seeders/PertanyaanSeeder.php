@@ -732,9 +732,9 @@ class PertanyaanSeeder extends Seeder
             $opsiJawabanData = $p['opsi_jawaban'] ?? null;
             unset($p['opsi_jawaban'], $p['deskripsi']);
 
-            // Konversi array kebutuhan_bukti menjadi string karena cast json sudah dilepas
+            // Konversi array kebutuhan_bukti menjadi HTML list
             if (isset($p['kebutuhan_bukti']) && is_array($p['kebutuhan_bukti'])) {
-                $p['kebutuhan_bukti'] = implode(', ', $p['kebutuhan_bukti']);
+                $p['kebutuhan_bukti'] = '<ul>' . implode('', array_map(fn($item) => '<li>' . e($item) . '</li>', $p['kebutuhan_bukti'])) . '</ul>';
             }
 
             $createdPertanyaan = Pertanyaan::create($p);

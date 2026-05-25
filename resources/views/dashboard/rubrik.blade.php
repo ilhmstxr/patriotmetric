@@ -238,7 +238,7 @@
                         this.answers[item.id] = existingJawaban.jawaban_id;
                     } else {
                         {{-- jawaban_teks dari API bisa berupa object/array (karena cast 'array' di model Laravel) --}}
-                        {{-- Ekstrak raw_input jika object, agar input tidak menampilkan "[object Object]" --}}
+                        {{-- Ekstrak raw_input jika object, agar input tidak menampilkan [object Object] --}}
                         const jt = existingJawaban.jawaban_teks;
                         const isB13 = item.kode_pertanyaan === 'B.13';
                         if (jt && typeof jt === 'object') {
@@ -273,6 +273,7 @@
                     id: item.id,
                     code: item.kode_pertanyaan,
                     title: item.teks_pertanyaan,
+                    evidenceRequirementsRaw: item.kebutuhan_bukti,
                     evidenceRequirements: (function(val) {
                         if (Array.isArray(val)) return val;
                         if (typeof val === 'string') return val.split(',').map(s => s.trim()).filter(s => s !== '');
@@ -311,6 +312,11 @@
         isValidDriveLink(url) {
             if (!url || url.trim() === '') return true;
             return url.includes('drive.google.com') || url.includes('docs.google.com');
+        },
+
+        isHtml(val) {
+            if (typeof val !== 'string') return false;
+            return /<[a-z][\s\S]*>/i.test(val);
         },
 
         scheduleAutoSave(qId) {
@@ -627,10 +633,17 @@
                                             {{-- Evidence requirements --}}
                                             <div class="bg-[#fafafa] border border-[#e0e0e0] rounded p-3 space-y-1.5">
                                                 <p class="text-[10px] font-bold text-[#62748e] uppercase tracking-wider mb-2">Syarat Bukti:</p>
-                                                <template x-for="(req, rIdx) in q.evidenceRequirements" :key="rIdx">
-                                                    <div class="flex gap-2 items-start">
-                                                        <span class="shrink-0 mt-1.5 w-1 h-1 bg-[#90a1b9] rounded-full"></span>
-                                                        <span class="text-[12px] font-medium text-[#62748e] leading-snug" x-text="req"></span>
+                                                <template x-if="isHtml(q.evidenceRequirementsRaw)">
+                                                    <div class="text-[12px] font-medium text-[#62748e] leading-snug richtext-content" x-html="q.evidenceRequirementsRaw"></div>
+                                                </template>
+                                                <template x-if="!isHtml(q.evidenceRequirementsRaw)">
+                                                    <div class="space-y-1.5">
+                                                        <template x-for="(req, rIdx) in q.evidenceRequirements" :key="rIdx">
+                                                            <div class="flex gap-2 items-start">
+                                                                <span class="shrink-0 mt-1.5 w-1 h-1 bg-[#90a1b9] rounded-full"></span>
+                                                                <span class="text-[12px] font-medium text-[#62748e] leading-snug" x-text="req"></span>
+                                                            </div>
+                                                        </template>
                                                     </div>
                                                 </template>
                                             </div>

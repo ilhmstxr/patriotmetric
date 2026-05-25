@@ -46,6 +46,10 @@
         isFlagged(questionId) {
             return !!this.flags[questionId];
         },
+        isHtml(val) {
+            if (typeof val !== 'string') return false;
+            return /<[a-z][\s\S]*>/i.test(val);
+        },
         scrollToQuestion(qId) {
             const el = document.getElementById('q-' + qId);
             if (el) {
@@ -396,6 +400,7 @@
             <div x-show="activeTab === 'profil'" x-transition.opacity.duration.300ms style="display: none;">
 
                 {{-- Skor Overview --}}
+                @if(isset($adminReadonly) && $adminReadonly)
                 <div class="bg-white p-[24px] rounded-[12px] border border-[#cbd5e1] mb-6">
                   <h3 class="font-bold text-[#1b5e20] text-[15px] mb-4 border-b border-[#e2e8f0] pb-2">Ringkasan Skor</h3>
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-[24px]">
@@ -415,6 +420,7 @@
                     </div>
                   </div>
                 </div>
+                @endif
 
                 {{-- Group A: Identitas Institusi --}}
                 <div class="bg-white p-[24px] rounded-[12px] border border-[#cbd5e1] mb-6">
@@ -655,14 +661,19 @@
 
                         <div class="bg-amber-50 border border-amber-200 rounded-[8px] p-[16px] ml-[52px]">
                           <h4 class="text-[12px] font-bold text-amber-800 mb-[8px] uppercase tracking-[0.4px]">Syarat Bukti Valid:</h4>
-                          <ul class="text-[13px] font-semibold text-amber-900/80 space-y-[6px]">
-                            <template x-for="(req, rIdx) in parseEvidence(q.kebutuhan_bukti)" :key="rIdx">
-                              <li class="flex gap-[6px] items-start">
-                                <span class="mt-[2px] w-[4px] h-[4px] bg-amber-500 rounded-full shrink-0"></span>
-                                <span class="leading-[18px]" x-text="req"></span>
-                              </li>
-                            </template>
-                          </ul>
+                          <template x-if="isHtml(q.kebutuhan_bukti)">
+                            <div class="text-[13px] font-semibold text-amber-900/80 leading-[18px] richtext-content" x-html="q.kebutuhan_bukti"></div>
+                          </template>
+                          <template x-if="!isHtml(q.kebutuhan_bukti)">
+                            <ul class="text-[13px] font-semibold text-amber-900/80 space-y-[6px]">
+                              <template x-for="(req, rIdx) in parseEvidence(q.kebutuhan_bukti)" :key="rIdx">
+                                <li class="flex gap-[6px] items-start">
+                                  <span class="mt-[2px] w-[4px] h-[4px] bg-amber-500 rounded-full shrink-0"></span>
+                                  <span class="leading-[18px]" x-text="req"></span>
+                                </li>
+                              </template>
+                            </ul>
+                          </template>
                           
                           <template x-if="q.opsi_jawaban && q.opsi_jawaban.length > 0">
                             <div class="mt-[16px] pt-[12px] border-t border-amber-200/50">

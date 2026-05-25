@@ -254,3 +254,23 @@
 .marquee-wrapper:hover .marquee-content {
   animation-play-state: paused;
 }
+
+/* Styling for RichText content from Admin */
+.richtext-content ul {
+  list-style-type: disc !important;
+  padding-left: 1.25rem !important;
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.richtext-content ol {
+  list-style-type: decimal !important;
+  padding-left: 1.25rem !important;
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.richtext-content p {
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+}
