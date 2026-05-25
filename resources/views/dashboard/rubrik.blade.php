@@ -453,10 +453,10 @@
                 const p = parseFloat(this.profil.jml_prodi) || 0;
                 
                 if (val === 0) return { label: 'Tidak ada', color: 'text-gray-700', bg: 'bg-gray-100' };
-                if (val > 0 && val < f) return { label: 'jumlah mahasiswa < jumlah fakultas', color: 'text-amber-700', bg: 'bg-amber-100' };
+                if (val > 0 && val < f) return { label: 'jumlah mahasiswa < jumlah fakultas', color: 'text-orange-600', bg: 'bg-orange-50' };
                 if (val > 0 && val === f) return { label: 'jumlah mahasiswa = jumlah fakultas PT', color: 'text-blue-700', bg: 'bg-blue-100' };
                 if (val > f && val < p) return { label: 'jumlah mahasiswa yang terlibat > jumlah fakultas dan < dibandingkan jumlah prodi PT', color: 'text-emerald-700', bg: 'bg-emerald-100' };
-                if (val > 0 && val === p) return { label: 'jumlah mahasiswa yang terlibat sama banyak dibandingkan jumlah prodi PT', color: 'text-indigo-700', bg: 'bg-indigo-100' };
+                if (val > 0 && val === p) return { label: 'jumlah mahasiswa yang terlibat sama banyak dibandingkan jumlah prodi PT', color: 'text-blue-600', bg: 'bg-blue-50' };
                 if (val > p) return { label: 'jumlah mahasiswa yang terlibat lebih banyak dibandingkan jumlah prodi PT', color: 'text-purple-700', bg: 'bg-purple-100' };
             }
             return null;
@@ -641,7 +641,7 @@
                                             <div class="flex items-center justify-between mb-1">
                                                 <p class="text-[10px] font-bold text-[#62748e] uppercase tracking-wider">Jawaban:</p>
                                                 {{-- Inline indicator kecil (toast global menangani notifikasi besar) --}}
-                                                <span x-show="saveStatus[q.id] === 'saving'" style="display:none;" class="text-[10px] text-amber-500 font-medium inline-flex items-center gap-1">
+                                                <span x-show="saveStatus[q.id] === 'saving'" style="display:none;" class="text-[10px] text-orange-500 font-medium inline-flex items-center gap-1">
                                                     <i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Menyimpan
                                                 </span>
                                                 <span x-show="saveStatus[q.id] === 'saved'" style="display:none;" class="text-[10px] text-[#1b5e20] font-semibold inline-flex items-center gap-1">
@@ -679,6 +679,7 @@
                                                             class="w-[100px] px-3.5 py-2.5 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
                                                             x-model="answers[q.id]"
                                                             @input="if(answers[q.id] < 0) answers[q.id] = 0; scheduleAutoSave(q.id)"
+                                                            @wheel.prevent
                                                         />
                                                         {{-- Gunakan keterangan sebagai unit (Cth: 10 skema KKN) --}}
                                                         <span class="text-[12px] font-semibold text-[#45556c] shrink-0" x-text="q.keterangan" x-show="q.keterangan"></span>
@@ -760,7 +761,8 @@
                                                                 :disabled="!is_edit_enabled || status === 'SUBMITTED' || status === 'GRADED'"
                                                                 class="w-[80px] px-2.5 py-2 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
                                                                 x-model="b13.lokal"
-                                                                @input="if(b13.lokal < 0) b13.lokal=0; saveB13(q.id)"/>
+                                                                @input="if(b13.lokal < 0) b13.lokal=0; saveB13(q.id)"
+                                                                @wheel.prevent/>
                                                             <span class="text-[12px] text-[#45556c]">Skala lokal / kota kabupaten / internal institusi</span>
                                                         </div>
                                                         <div class="flex items-center gap-3">
@@ -768,7 +770,8 @@
                                                                 :disabled="!is_edit_enabled || status === 'SUBMITTED' || status === 'GRADED'"
                                                                 class="w-[80px] px-2.5 py-2 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
                                                                 x-model="b13.regional"
-                                                                @input="if(b13.regional < 0) b13.regional=0; saveB13(q.id)"/>
+                                                                @input="if(b13.regional < 0) b13.regional=0; saveB13(q.id)"
+                                                                @wheel.prevent/>
                                                             <span class="text-[12px] text-[#45556c]">Skala regional / provinsi</span>
                                                         </div>
                                                         <div class="flex items-center gap-3">
@@ -776,7 +779,8 @@
                                                                 :disabled="!is_edit_enabled || status === 'SUBMITTED' || status === 'GRADED'"
                                                                 class="w-[80px] px-2.5 py-2 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
                                                                 x-model="b13.nasional"
-                                                                @input="if(b13.nasional < 0) b13.nasional=0; saveB13(q.id)"/>
+                                                                @input="if(b13.nasional < 0) b13.nasional=0; saveB13(q.id)"
+                                                                @wheel.prevent/>
                                                             <span class="text-[12px] text-[#45556c]">Skala nasional</span>
                                                         </div>
                                                         <div class="flex items-center gap-3">
@@ -784,7 +788,8 @@
                                                                 :disabled="!is_edit_enabled || status === 'SUBMITTED' || status === 'GRADED'"
                                                                 class="w-[80px] px-2.5 py-2 rounded border border-[#e0e0e0] text-[12px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] bg-white placeholder-[#90a1b9] disabled:bg-[#f5f5f5] disabled:text-[#90a1b9]"
                                                                 x-model="b13.internasional"
-                                                                @input="if(b13.internasional < 0) b13.internasional=0; saveB13(q.id)"/>
+                                                                @input="if(b13.internasional < 0) b13.internasional=0; saveB13(q.id)"
+                                                                @wheel.prevent/>
                                                             <span class="text-[12px] text-[#45556c]">Skala internasional</span>
                                                         </div>
                                                     </div>
@@ -909,7 +914,7 @@
                             <span class="font-semibold text-[#1b5e20]" x-text="totalAnswered"></span>
                             / <span x-text="allQuestions.length"></span> terjawab
                             <template x-if="totalFlagged > 0">
-                                <span class="ml-2 text-amber-600 font-semibold">
+                                <span class="ml-2 text-orange-600 font-semibold">
                                     · <span x-text="totalFlagged"></span> flag
                                 </span>
                             </template>
@@ -994,7 +999,7 @@
              class="fixed top-[136px] right-4 z-[60] max-w-[340px] shadow-2xl rounded-xl border overflow-hidden flex items-start gap-3 p-3.5 bg-white"
              :class="{
                 'border-[#1b5e20]/30': toast.type === 'success',
-                'border-amber-300': toast.type === 'warning',
+                'border-orange-200': toast.type === 'warning',
                 'border-red-300': toast.type === 'error',
                 'border-blue-300': toast.type === 'info'
              }"
@@ -1002,7 +1007,7 @@
             <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
                  :class="{
                     'bg-[#e8f5e9] text-[#1b5e20]': toast.type === 'success',
-                    'bg-amber-50 text-amber-600': toast.type === 'warning',
+                    'bg-orange-50 text-orange-600': toast.type === 'warning',
                     'bg-red-50 text-red-600': toast.type === 'error',
                     'bg-blue-50 text-blue-600': toast.type === 'info'
                  }">

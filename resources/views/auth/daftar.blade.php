@@ -245,7 +245,7 @@
 
                 <h2 class="mt-6 font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[24px] md:text-[30px] leading-[36px] text-[#1d293d]">Daftarkan Perguruan Tinggi</h2>
                 <p class="mt-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[14px] md:text-[16px] leading-[24px] text-[#62748e]">
-                    Lengkapi data berikut untuk membuat akun institusi.
+                    Lengkapi data berikut untuk membuat akun perguruan tinggi.
                 </p>
 
                 <form class="mt-8 space-y-8" @submit.prevent="register" x-ref="form" @input="isFormValid = $refs.form.checkValidity()" @change="isFormValid = $refs.form.checkValidity()">

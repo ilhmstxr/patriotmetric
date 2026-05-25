@@ -41,7 +41,7 @@ class IdentitasSeeder extends Seeder
             );
 
             // Seed Agama
-            $agamas = ['islam', 'kristen', 'katolik', 'hindu', 'buddha', 'konghucu', 'Kepercayaan Terhadap Tuhan YME'];
+            $agamas = ['islam', 'kristen', 'katolik', 'hindu', 'buddha', 'konghucu'];
             foreach ($agamas as $agama) {
                 \App\Models\Agama::updateOrCreate(
                     [

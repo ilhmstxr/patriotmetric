@@ -13,7 +13,7 @@
 
     <div class="p-5 md:p-6">
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <template x-for="agama in ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Konghucu', 'Kepercayaan Terhadap Tuhan YME']">
+            <template x-for="agama in ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Konghucu']">
                 <div>
                     <label class="text-[12px] font-medium text-[#62748e] mb-1.5 block" x-text="agama"></label>
                     {{-- VIEW --}}

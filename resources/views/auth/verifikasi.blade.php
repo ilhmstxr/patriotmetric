@@ -53,7 +53,6 @@
         agama_hindu: 0,
         agama_buddha: 0,
         agama_konghucu: 0,
-        agama_kepercayaan: 0,
         nama_pic: '',
         jabatan_pic: '',
         no_hp_pic: '',
@@ -423,7 +422,7 @@
               Selamat Datang, <span x-text="formData.nama_pt || user.nama_institusi || user.email || 'Peserta'"></span>
             </h1>
             <p class="text-[#64748b] text-[15px] md:text-[16px] max-w-[600px] mx-auto">
-              Lengkapi formulir di bawah ini untuk mengonfirmasi partisipasi institusi Anda dalam kegiatan 
+              Lengkapi formulir di bawah ini untuk mengonfirmasi partisipasi perguruan tinggi Anda dalam kegiatan 
               <strong class="text-[#1d293d] font-semibold"> Patriot Metric University Ranking 2026</strong>.
             </p>
           </div>
@@ -551,7 +550,7 @@
               {{-- SECTION 2: Profil Institusi --}}
               <div x-show="activeSection === 2" style="display: none;" x-transition.opacity.duration.500ms class="space-y-[32px]">
                 <div class="pb-[16px] border-b border-[#e2e8f0] mb-[32px]">
-                  <h2 class="text-[22px] font-bold text-[#1d293d]">Bagian 2: Berkas Profil Institusi</h2>
+                  <h2 class="text-[22px] font-bold text-[#1d293d]">Bagian 2: Berkas Profil Perguruan Tinggi</h2>
                   <p class="text-[#64748b] text-[15px] mt-[4px]">Unggah dokumen profil, logo, struktur, dan SK Tim.</p>
                 </div>
 
@@ -675,7 +674,7 @@
                       7. Kalender Akademik <span class="text-red-500">*</span>
                     </label>
                   </div>
-                  <p class="text-[#62748e] text-[13px] leading-relaxed">Unggah dokumen kalender akademik institusi (PDF/JPG/JPEG/PNG, maks 2MB).</p>
+                  <p class="text-[#62748e] text-[13px] leading-relaxed">Unggah dokumen kalender akademik perguruan tinggi (PDF/JPG/JPEG/PNG, maks 2MB).</p>
                   <div class="mt-[4px] relative">
                       <div x-show="!previews.kalender_akademik" class="border-2 border-dashed border-[#cbd5e1] rounded-[12px] p-[24px] hover:border-[#1b5e20] hover:bg-[#f8fafc] transition-all group flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden bg-white relative">
                         <input type="file" accept=".pdf,.jpg,.jpeg,.png" x-ref="kalender_akademik" @change="handleFileChange($event, 'kalender_akademik', '.pdf,.jpg,.jpeg,.png')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
@@ -720,13 +719,13 @@
               {{-- SECTION 3: Data Profil Institusi --}}
               <div x-show="activeSection === 3" style="display: none;" x-transition.opacity.duration.500ms class="space-y-[32px]">
                 <div class="pb-[16px] border-b border-[#e2e8f0] mb-[32px]">
-                  <h2 class="text-[22px] font-bold text-[#1d293d]">Bagian 3: Data Profil Institusi</h2>
+                  <h2 class="text-[22px] font-bold text-[#1d293d]">Bagian 3: Data Profil Perguruan Tinggi</h2>
                   <p class="text-[#64748b] text-[15px] mt-[4px]">Lengkapi data identitas, akademik, kemahasiswaan, dan demografi.</p>
                 </div>
 
                 {{-- Group A: Identitas Institusi --}}
                 <div class="bg-[#f8fafc] p-6 rounded-xl border border-[#cbd5e1] space-y-6">
-                  <h3 class="font-bold text-[#1b5e20] text-[16px] mb-2 border-b border-[#e2e8f0] pb-2">A. Identitas Institusi</h3>
+                  <h3 class="font-bold text-[#1b5e20] text-[16px] mb-2 border-b border-[#e2e8f0] pb-2">A. Identitas Perguruan Tinggi</h3>
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
                     <div class="flex flex-col gap-[8px]">
                       <label class="font-semibold text-[#1d293d] text-[15px]">8. Nama Perguruan Tinggi <span class="text-red-500">*</span></label>
@@ -813,10 +812,6 @@
                         <label class="font-semibold text-[#1d293d] text-[15px]">Katolik</label>
                         <input type="number" x-model="formData.agama_katolik" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                       </div>
-                      <div class="flex flex-col gap-[8px]">
-                        <label class="font-semibold text-[#1d293d] text-[15px]">Hindu</label>
-                        <input type="number" x-model="formData.agama_hindu" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
-                      </div>
                     </div>
                     <!-- Kolom Kanan: 3 baris -->
                     <div class="space-y-[20px]">
@@ -829,8 +824,8 @@
                         <input type="number" x-model="formData.agama_konghucu" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                       </div>
                       <div class="flex flex-col gap-[8px]">
-                        <label class="font-semibold text-[#1d293d] text-[15px]">Kepercayaan Terhadap Tuhan YME</label>
-                        <input type="number" x-model="formData.agama_kepercayaan" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
+                        <label class="font-semibold text-[#1d293d] text-[15px]">Hindu</label>
+                        <input type="number" x-model="formData.agama_hindu" required min="0" class="w-full border border-[#cbd5e1] rounded-[10px] h-[48px] px-[16px] focus:outline-none focus:border-[#1b5e20] focus:ring-4 focus:ring-[#1b5e20]/10 text-[15px]" />
                       </div>
                     </div>
                   </div>
@@ -883,7 +878,7 @@
                 <div class="bg-white border border-[#e2e8f0] rounded-xl overflow-hidden">
                   <div class="flex items-center gap-3 px-5 py-3 bg-[#f0fdf4] border-b border-[#e2e8f0]">
                     <i data-lucide="building-2" class="w-4 h-4 text-[#1b5e20]"></i>
-                    <h3 class="font-bold text-[#1b5e20] text-[14px] uppercase tracking-wide">A. Identitas Institusi</h3>
+                    <h3 class="font-bold text-[#1b5e20] text-[14px] uppercase tracking-wide">A. Identitas Perguruan Tinggi</h3>
                   </div>
                   <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 text-[14px]">
                     <div>
@@ -989,10 +984,6 @@
                         <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
                           <span class="text-[14px] text-[#64748b] font-medium">Konghucu</span>
                           <span class="text-[15px] text-[#1d293d] font-bold" x-text="formData.agama_konghucu || 0"></span>
-                        </div>
-                        <div class="flex justify-between items-center border-b border-dashed border-[#e2e8f0] pb-2">
-                          <span class="text-[14px] text-[#64748b] font-medium">Kepercayaan Terhadap Tuhan YME</span>
-                          <span class="text-[15px] text-[#1d293d] font-bold" x-text="formData.agama_kepercayaan || 0"></span>
                         </div>
                       </div>
                     </div>

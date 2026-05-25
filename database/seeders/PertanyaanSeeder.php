@@ -298,7 +298,7 @@ class PertanyaanSeeder extends Seeder
             [
                 'kode_pertanyaan' => 'B.13',
                 'category_id' => 2,
-                'kebutuhan_bukti' => ['Dokumen laporan kegiatan', 'terpublikasi di media massa (cetak', 'online)/website kampus'],
+                'kebutuhan_bukti' => ['Dokumen laporan kegiatan', 'terpublikasi di media massa (cetak', 'online)/website perguruan tinggi'],
                 // 'skor_maksimal' => 0,
                 'teks_pertanyaan' => 'Jumlah penyelenggaraan kompetisi yang bertema nilai-nilai bela negara',
                 'tipe' => 'isian_singkat',
@@ -467,7 +467,7 @@ class PertanyaanSeeder extends Seeder
                 'category_id' => 2,
                 'kebutuhan_bukti' => ['Surat Keputusan (SK)', 'laporan', 'data identitas agama mahasiswa', 'dan Dokumentasi'],
                 // 'skor_maksimal' => 0,
-                'teks_pertanyaan' => 'Jumlah UKM Keagamaan terhadap jumlah agama dan aliran kepercayaan yang dianut oleh mahasiswa',
+                'teks_pertanyaan' => 'Jumlah UKM Keagamaan terhadap jumlah agama yang dianut oleh mahasiswa',
                 'tipe' => 'isian_singkat',
                 'keterangan' => 'UKM keagamaan',
                 'opsi_jawaban' => [

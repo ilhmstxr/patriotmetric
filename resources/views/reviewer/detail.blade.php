@@ -173,11 +173,11 @@
             const s = this.Assessment.status;
             const map = {
                 'ACTIVE'      : { label: 'Belum Submit',     color: 'bg-slate-100 text-slate-600',       icon: 'clock' },
-                'IN_PROGRESS' : { label: 'Dalam Pengerjaan', color: 'bg-indigo-100 text-indigo-700',     icon: 'pen-line' },
-                'SUBMITTED'   : { label: 'Menunggu Review',  color: 'bg-violet-100 text-violet-700',     icon: 'hourglass' },
-                'GRADED'      : { label: 'Sudah Dinilai',    color: 'bg-teal-100 text-teal-700',         icon: 'check-circle-2' },
-                'PUBLISHED'   : { label: 'Published',        color: 'bg-sky-100 text-sky-700',           icon: 'globe' },
-                'REJECTED'    : { label: 'Ditolak',          color: 'bg-rose-100 text-rose-700',         icon: 'x-circle' },
+                'IN_PROGRESS' : { label: 'Dalam Pengerjaan', color: 'bg-blue-50 text-blue-600',          icon: 'pen-line' },
+                'SUBMITTED'   : { label: 'Menunggu Review',  color: 'bg-purple-50 text-purple-600',      icon: 'hourglass' },
+                'GRADED'      : { label: 'Sudah Dinilai',    color: 'bg-emerald-50 text-emerald-600',    icon: 'check-circle-2' },
+                'PUBLISHED'   : { label: 'Published',        color: 'bg-cyan-50 text-cyan-600',          icon: 'globe' },
+                'REJECTED'    : { label: 'Ditolak',          color: 'bg-rose-50 text-rose-600',          icon: 'x-circle' },
             };
             return map[s] || { label: s || '...', color: 'bg-slate-100 text-slate-500', icon: 'info' };
         },
@@ -296,8 +296,7 @@
                 'katolik': 'Katolik',
                 'hindu': 'Hindu',
                 'buddha': 'Buddha',
-                'konghucu': 'Konghucu',
-                'kepercayaan terhadap tuhan yang maha esa': 'Kepercayaan Terhadap Tuhan YME'
+                'konghucu': 'Konghucu'
             };
             return Object.entries(this.profil_peserta.agama).map(([name, count]) => ({
                 name: labels[name.toLowerCase()] || (name.charAt(0).toUpperCase() + name.slice(1)),
@@ -636,24 +635,24 @@
                           </div>
                         </div>
 
-                        <div class="bg-amber-50 border border-amber-200 rounded-[8px] p-[16px] ml-[52px]">
-                          <h4 class="text-[12px] font-bold text-amber-800 mb-[8px] uppercase tracking-[0.4px]">Syarat Bukti Valid:</h4>
-                          <ul class="text-[13px] font-semibold text-amber-900/80 space-y-[6px]">
+                        <div class="bg-orange-50 border border-orange-100 rounded-[8px] p-[16px] ml-[52px]">
+                          <h4 class="text-[12px] font-bold text-orange-700 mb-[8px] uppercase tracking-[0.4px]">Syarat Bukti Valid:</h4>
+                          <ul class="text-[13px] font-semibold text-orange-800/80 space-y-[6px]">
                             <template x-for="(req, rIdx) in parseEvidence(q.kebutuhan_bukti)" :key="rIdx">
                               <li class="flex gap-[6px] items-start">
-                                <span class="mt-[2px] w-[4px] h-[4px] bg-amber-500 rounded-full shrink-0"></span>
+                                <span class="mt-[2px] w-[4px] h-[4px] bg-orange-400 rounded-full shrink-0"></span>
                                 <span class="leading-[18px]" x-text="req"></span>
                               </li>
                             </template>
                           </ul>
-                          
+
                           <template x-if="q.opsi_jawaban && q.opsi_jawaban.length > 0">
-                            <div class="mt-[16px] pt-[12px] border-t border-amber-200/50">
-                                <h4 class="text-[12px] font-bold text-amber-800 mb-[8px] uppercase tracking-[0.4px]">Daftar Panduan / Skor:</h4>
-                                <ul class="text-[13px] font-medium text-amber-900/80 space-y-[4px]">
+                            <div class="mt-[16px] pt-[12px] border-t border-orange-100/50">
+                                <h4 class="text-[12px] font-bold text-orange-700 mb-[8px] uppercase tracking-[0.4px]">Daftar Panduan / Skor:</h4>
+                                <ul class="text-[13px] font-medium text-orange-800/80 space-y-[4px]">
                                   <template x-for="(opt, oIdx) in q.opsi_jawaban" :key="oIdx">
                                     <li class="leading-[18px] flex gap-[6px] items-start">
-                                      <span class="shrink-0 mt-[2px] inline-flex items-center justify-center min-w-[44px] px-[6px] py-[1px] rounded-full text-[11px] font-bold bg-amber-200 text-amber-900"
+                                      <span class="shrink-0 mt-[2px] inline-flex items-center justify-center min-w-[44px] px-[6px] py-[1px] rounded-full text-[11px] font-bold bg-orange-100 text-orange-700"
                                             x-text="(q.tipe === 'isian_singkat' ? Number(opt.opsi_jawaban) : Math.min(opt.value !== null && opt.value !== undefined ? Number(opt.value) : Number(opt.opsi_jawaban), 5)) + ' Poin'"></span>
                                       <span x-text="opt.keterangan || opt.opsi_jawaban || '-'"></span>
                                     </li>
@@ -765,7 +764,7 @@
                                 <h4 class="text-[13px] font-bold text-[#1d293d] mb-[8px] flex items-center justify-between gap-[6px]">
                                     <span class="flex items-center gap-[6px]">Berikan Score Final <span class="text-red-500">*</span></span>
                                     {{-- Inline save indicator kecil --}}
-                                    <span x-show="saveStatus[q.id] === 'saving'" style="display:none;" class="text-[10px] text-amber-500 font-medium inline-flex items-center gap-1">
+                                    <span x-show="saveStatus[q.id] === 'saving'" style="display:none;" class="text-[10px] text-orange-500 font-medium inline-flex items-center gap-1">
                                         <i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Menyimpan
                                     </span>
                                     <span x-show="saveStatus[q.id] === 'saved'" style="display:none;" class="text-[10px] text-[#1b5e20] font-semibold inline-flex items-center gap-1">
@@ -784,6 +783,7 @@
                                       x-model="reviewerScores[q.id]"
                                       @input="if(reviewerScores[q.id] < 0) reviewerScores[q.id] = 0; if(reviewerScores[q.id] > 5) reviewerScores[q.id] = 5;"
                                       @blur="saveQuestionScore(q.id)"
+                                      @wheel.prevent
                                     />
                                     <span class="text-[13px] text-[#64748b] font-medium leading-tight max-w-[200px]">Maks 5. Ketik 0 jika bukti tidak valid.</span>
                                 </div>
@@ -807,14 +807,14 @@
                                 <div class="flex items-center justify-between mt-[4px]">
                                     <div x-show="reviewerNotes[q.id] && reviewerNotes[q.id].length > 0 && reviewerNotes[q.id].length < 20"
                                          style="display:none;"
-                                         class="flex items-center gap-[4px] text-amber-600">
+                                         class="flex items-center gap-[4px] text-orange-600">
                                         <svg class="w-[12px] h-[12px] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                                         </svg>
                                         <span class="text-[11px] font-medium">Minimal 20 karakter diperlukan</span>
                                     </div>
                                     <span class="text-[11px] font-medium ml-auto"
-                                          :class="reviewerNotes[q.id] && reviewerNotes[q.id].length > 0 && reviewerNotes[q.id].length < 20 ? 'text-amber-600' : 'text-[#94a3b8]'"
+                                          :class="reviewerNotes[q.id] && reviewerNotes[q.id].length > 0 && reviewerNotes[q.id].length < 20 ? 'text-orange-600' : 'text-[#94a3b8]'"
                                           x-text="(reviewerNotes[q.id] ? reviewerNotes[q.id].length : 0) + ' karakter'"></span>
                                 </div>
                             </div>
@@ -862,8 +862,8 @@
            x-transition:leave-end="opacity-0">
           <div class="bg-white rounded-[16px] shadow-2xl w-full max-w-[420px] p-[28px] border border-[#e2e8f0]">
               <div class="flex items-center gap-3 mb-[16px]">
-                  <div class="w-[44px] h-[44px] rounded-full bg-amber-100 flex items-center justify-center shrink-0">
-                      <i data-lucide="alert-triangle" class="w-[22px] h-[22px] text-amber-600"></i>
+                  <div class="w-[44px] h-[44px] rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+                      <i data-lucide="alert-triangle" class="w-[22px] h-[22px] text-orange-500"></i>
                   </div>
                   <div>
                       <h3 class="font-bold text-[#1d293d] text-[16px]">Finalisasi Penilaian?</h3>
@@ -959,7 +959,7 @@
 
               {{-- Legend --}}
               <div class="px-4 pt-3 pb-2 flex flex-wrap items-center gap-3 text-[10px] font-medium text-[#62748e] shrink-0">
-                  <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-teal-600"></span> Dinilai</span>
+                  <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-emerald-600"></span> Dinilai</span>
                   <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-indigo-400"></span> Sebagian</span>
                   <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-[#e0e0e0]"></span> Kosong</span>
                   <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-violet-500"></span> Flag</span>

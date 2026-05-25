@@ -76,7 +76,6 @@ class VerificationController extends Controller
                 'agama_hindu' => 'required|integer|min:0',
                 'agama_buddha' => 'required|integer|min:0',
                 'agama_konghucu' => 'required|integer|min:0',
-                'agama_kepercayaan' => 'required|integer|min:0',
                 // PIC
                 'nama_pic' => 'required|string|max:255',
                 'jabatan_pic' => 'required|string|max:255',
@@ -228,7 +227,6 @@ class VerificationController extends Controller
                 'hindu' => $validated['agama_hindu'],
                 'buddha' => $validated['agama_buddha'],
                 'konghucu' => $validated['agama_konghucu'],
-                'Kepercayaan Terhadap Tuhan YME' => $validated['agama_kepercayaan'],
             ];
 
             foreach ($agamaData as $namaAgama => $jumlah) {

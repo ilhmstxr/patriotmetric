@@ -24,7 +24,7 @@
             <textarea x-show="isEditMode" style="display:none;"
                 x-model="editForm.visi"
                 rows="3"
-                placeholder="Tuliskan visi institusi..."
+                placeholder="Tuliskan visi perguruan tinggi..."
                 class="w-full bg-white border border-[#1b5e20]/40 rounded px-4 py-3 text-[13px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition leading-relaxed resize-none"></textarea>
         </div>
 
@@ -39,7 +39,7 @@
             <textarea x-show="isEditMode" style="display:none;"
                 x-model="editForm.misi"
                 rows="5"
-                placeholder="Tuliskan misi institusi (pisahkan tiap misi dengan baris baru)..."
+                placeholder="Tuliskan misi perguruan tinggi (pisahkan tiap misi dengan baris baru)..."
                 class="w-full bg-white border border-[#1b5e20]/40 rounded px-4 py-3 text-[13px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition leading-relaxed resize-none"></textarea>
         </div>
     </div>

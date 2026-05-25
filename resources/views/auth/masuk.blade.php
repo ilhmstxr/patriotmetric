@@ -70,7 +70,7 @@
                     Selamat Datang di Patriot Metric
                 </h1>
                 <p class="mt-6 md:mt-8 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[18px] md:text-[22px] leading-relaxed text-[rgba(255,255,255,0.9)] max-w-[500px] mx-auto lg:mx-0">
-                    Masuk untuk mengakses dashboard institusi Anda, memperbarui data rubrik, dan memantau perkembangan nilai bela negara kampus.
+                    Masuk untuk mengakses dashboard perguruan tinggi Anda, memperbarui data rubrik, dan memantau perkembangan nilai bela negara perguruan tinggi.
                 </p>
             </div>
 
@@ -171,7 +171,7 @@
                 <div class="w-full">
                     <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[24px] md:text-[30px] leading-[36px] text-[#1d293d]">Masuk Akun</h2>
                     <p class="mt-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] leading-[24px] text-[#62748e]">
-                        Silakan masukkan kredensial institusi Anda.
+                        Silakan masukkan kredensial perguruan tinggi Anda.
                     </p>
 
                     <form class="mt-8 space-y-6" @submit.prevent="login">
@@ -188,7 +188,7 @@
                                 placeholder=" "
                                 class="peer w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[20px] pl-12 pr-4 pt-6 pb-2 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
                             <label class="absolute left-12 top-4 font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[14px] text-[#62748e] transition-all peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-[12px] peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-[12px] pointer-events-none">
-                                Email Resmi Institusi / PIC
+                                Email Resmi Perguruan Tinggi / PIC
                             </label>
                         </div>
 

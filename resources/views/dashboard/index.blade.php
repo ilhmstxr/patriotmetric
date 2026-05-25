@@ -107,8 +107,7 @@
                         'katolik':         this.profileData.agamas['katolik']         || '',
                         'hindu':           this.profileData.agamas['hindu']           || '',
                         'buddha':          this.profileData.agamas['buddha']          || '',
-                        'konghucu':        this.profileData.agamas['konghucu']        || '',
-                        'kepercayaan terhadap tuhan yme': this.profileData.agamas['kepercayaan terhadap tuhan yme'] || '',
+                        'konghucu':        this.profileData.agamas['konghucu']        || ''
                     }
                 };
                 this.saveProfileError   = '';
