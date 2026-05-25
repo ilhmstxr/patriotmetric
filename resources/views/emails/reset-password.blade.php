@@ -12,8 +12,11 @@
                 <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                     {{-- Header --}}
                     <tr>
-                        <td style="background-color: #1b5e20; padding: 32px 40px; text-align: center;">
-                            <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 700;">Patriot Metric</h1>
+                        <td style="padding: 0; line-height: 0; font-size: 0;">
+                            <img src="{{ asset('assets/images/Banner Email Patriot Metric.png') }}"
+                                 alt="Patriot Metric"
+                                 width="600"
+                                 style="display: block; width: 100%; max-width: 600px; height: auto; border: 0;" />
                         </td>
                     </tr>
 

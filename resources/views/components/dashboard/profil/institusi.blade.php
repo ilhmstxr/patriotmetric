@@ -10,7 +10,7 @@
         <div class="w-[32px] h-[32px] bg-[#f5f5f5] rounded-lg flex items-center justify-center shrink-0 border border-[#e0e0e0]">
             <i data-lucide="building-2" class="w-[17px] h-[17px] text-[#314158]"></i>
         </div>
-        <h2 class="font-bold text-[#1d293d] text-[14px] tracking-wider uppercase">Data Institusi</h2>
+        <h2 class="font-bold text-[#1d293d] text-[14px] tracking-wider uppercase">Data Perguruan Tinggi</h2>
     </div>
 
     <div class="p-5 md:p-6 space-y-4">
@@ -20,7 +20,7 @@
             <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center">
                 <p class="text-[13px] font-medium text-[#45556c] truncate" x-text="profileData.institusi?.nama_institusi || '-'"></p>
             </div>
-            <p x-show="isEditMode" style="display:none;" class="text-[10px] text-[#90a1b9] mt-1">* Nama institusi tidak dapat diubah.</p>
+            <p x-show="isEditMode" style="display:none;" class="text-[10px] text-[#90a1b9] mt-1">* Nama perguruan tinggi tidak dapat diubah.</p>
         </div>
 
         {{-- Jenis PT — selalu read-only --}}
@@ -29,7 +29,7 @@
             <div class="bg-[#fafafa] border border-[#e0e0e0] rounded px-4 h-[42px] flex items-center w-full md:w-1/2">
                 <p class="text-[13px] font-medium text-[#45556c]" x-text="profileData.institusi?.jenis_institusi || '-'"></p>
             </div>
-            <p x-show="isEditMode" style="display:none;" class="text-[10px] text-[#90a1b9] mt-1">* Jenis institusi tidak dapat diubah.</p>
+            <p x-show="isEditMode" style="display:none;" class="text-[10px] text-[#90a1b9] mt-1">* Jenis perguruan tinggi tidak dapat diubah.</p>
         </div>
 
         {{-- Jumlah Fakultas & Prodi --}}

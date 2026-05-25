@@ -7,7 +7,7 @@
     $latarBelakang = $content->get('latar-belakang', collect());
     $tujuanUtama = $content->get('tujuan-utama', collect());
 
-    $heroJudul = $hero->firstWhere('key', 'judul')?->value ?? 'Membangun Karakter <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#d4af37] to-[#fff085]">Bangsa</span> dari Kampus';
+    $heroJudul = $hero->firstWhere('key', 'judul')?->value ?? 'Membangun Karakter <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#d4af37] to-[#fff085]">Bangsa</span> dari Perguruan Tinggi';
     $heroDeskripsi = $hero->firstWhere('key', 'deskripsi')?->value ?? 'Sebuah inisiatif pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.';
     $heroBackground = $hero->firstWhere('key', 'background_image')?->value ?? '';
 
@@ -37,12 +37,19 @@
             </div>
             <div class="absolute top-16 right-16 w-80 h-80 bg-[#d4af37]/5 rounded-full blur-3xl"></div>
             <div class="relative max-w-[1200px] mx-auto px-6 md:px-8 py-20 md:py-32">
-                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] sm:text-[48px] md:text-[56px] leading-[1.15] text-white max-w-[700px]">
-                    {!! $heroJudul !!}
-                </h1>
-                <p class="mt-5 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[17px] md:text-[19px] leading-[30px] text-white/75 max-w-[580px]">
-                    {{ $heroDeskripsi }}
-                </p>
+                <div class="flex items-start justify-between gap-8">
+                    <div class="flex-1">
+                        <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] sm:text-[48px] md:text-[56px] leading-[1.15] text-white max-w-[700px]">
+                            {!! $heroJudul !!}
+                        </h1>
+                        <p class="mt-5 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[17px] md:text-[19px] leading-[30px] text-white/75 max-w-[580px]">
+                            {{ $heroDeskripsi }}
+                        </p>
+                    </div>
+                    <div class="hidden lg:block shrink-0">
+                        <img src="{{ asset('assets/images/logo.webp') }}" alt="Patriot Metric Logo" class="w-32 h-32 object-contain opacity-90" />
+                    </div>
+                </div>
             </div>
         </section>
 

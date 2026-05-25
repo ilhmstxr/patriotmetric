@@ -9,7 +9,7 @@
     $heroBackground = $heroSection->firstWhere('key', 'background_image')?->value ?? '';
 
     $daftarSection = $content->get('daftar-penerima', collect());
-    $daftarJudul = $daftarSection->firstWhere('key', 'judul')?->value ?? 'Daftar Institusi Peraih Penghargaan';
+    $daftarJudul = $daftarSection->firstWhere('key', 'judul')?->value ?? 'Daftar Perguruan Tinggi Peraih Penghargaan';
     $daftarPenerima = $daftarSection->firstWhere('key', 'daftar')?->value ?? [];
 @endphp
 

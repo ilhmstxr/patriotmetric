@@ -141,7 +141,7 @@ class AssessmentService extends BaseService
             if (!empty($dto->dataAgama)) {
                 foreach ($dto->dataAgama as $namaAgama => $jumlah) {
                     // Validasi Enum sebelum insert untuk mencegah SQL Error
-                    $allowedAgama = ['islam', 'kristen', 'katolik', 'hindu', 'buddha', 'konghucu', 'kepercayaan terhadap tuhan yme'];
+                    $allowedAgama = ['islam', 'kristen', 'katolik', 'hindu', 'buddha', 'konghucu'];
                     if (in_array(strtolower($namaAgama), $allowedAgama)) {
                         $this->repository->upsertAgama($identitas->id, strtolower($namaAgama), $jumlah);
                     }
@@ -222,7 +222,7 @@ class AssessmentService extends BaseService
             'jml_ukm' => $identitas?->jml_ukm ?? 0,
             'jml_fakultas' => $identitas?->jml_fakultas ?? 0,
             'jml_ormawa' => $identitas?->jml_ormawa ?? 0,
-            // Jumlah jenis agama/kepercayaan yang memiliki penganut > 0 (untuk B.20)
+            // Jumlah jenis agama yang memiliki penganut > 0 (untuk B.20)
             'jml_agama_aktif' => $identitas
                 ? $identitas->agamas->where('jumlah', '>', 0)->count()
                 : 0,

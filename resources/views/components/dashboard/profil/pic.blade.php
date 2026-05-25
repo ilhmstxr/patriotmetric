@@ -79,10 +79,10 @@
                         x-model="editForm.email"
                         pattern="^[^@\s]+@[A-Za-z0-9.-]+\.ac\.id$"
                         title="Gunakan email berdomain .ac.id"
-                        placeholder="dosen@institusi.ac.id"
+                        placeholder="dosen@perguruan-tinggi.ac.id"
                         class="w-full bg-white border border-[#1b5e20]/40 rounded pl-9 pr-4 h-[42px] text-[13px] font-medium text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
                 </div>
-                <p x-show="isEditMode" style="display:none;" class="text-[10px] text-[#90a1b9] mt-1">* Email harus berdomain institusi resmi (.ac.id) dan akan menjadi alamat login akun Anda.</p>
+                <p x-show="isEditMode" style="display:none;" class="text-[10px] text-[#90a1b9] mt-1">* Email harus berdomain perguruan tinggi resmi (.ac.id) dan akan menjadi alamat login akun Anda.</p>
             </div>
         </div>
     </div>

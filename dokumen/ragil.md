@@ -30,3 +30,18 @@ untuk keterangan role reviewer dipindah ke kiri sebelah nama akun (ilham) done
 - untuk di sisi reviewer bisa di rubah agar tidak accidental clickable
 - untuk di sisi reviewer menyimpannya sama konsepnya seperti di peserta (bukan pakai timestamp) tapi per rubrik / pertanyaan (ilham) done
 - untuk flag => (didiskuskikan besok)
+
+
+
+- button simpan finalisasi penilaian, di edit profil
+- di reviewer masih bisa isi skor dengan scroll mouse atau touchpad
+- logo patriotmetric di profil di kanan Title di hero section
+- panduan peserta 
+
+
+- Hapus halaman visi dan misi di company profile
+- pindah FAQ ke halaman home compro
+- # atas timeline 
+- semua kalimat kampus dan institusi diganti dengan perguruan tinggi *done
+- bagian syarat dan ketentuan di halaman daftar disesuaikan lagi isinya dengan ketentuan. Ya, data yang saya isi sudah benar & lengkap serta sudah membaca panduan patriotmetric
+- 

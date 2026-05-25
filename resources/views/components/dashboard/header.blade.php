@@ -32,7 +32,7 @@
                              const p = result.pengumpulan;
                              const role = (user.role || '').toLowerCase();
                              if (p) {
-                                 const namaPt = p.institusi ? p.institusi.nama_institusi : 'Institusi Terdaftar';
+                                 const namaPt = p.institusi ? p.institusi.nama_institusi : 'Perguruan Tinggi Terdaftar';
                                  return {
                                      nama_pic: p.nama_pic || user.email || '',
                                      nama_pt: namaPt,
@@ -70,7 +70,7 @@
                      // 2. Map user data for display
                         if (p) {
                             this.userData.nama_pic = p.nama_pic || user.email;
-                            this.userData.nama_pt = p.institusi ? p.institusi.nama_institusi : 'Institusi Terdaftar';
+                            this.userData.nama_pt = p.institusi ? p.institusi.nama_institusi : 'Perguruan Tinggi Terdaftar';
                             this.userData.avatar = this.userData.nama_pt.substring(0, 2).toUpperCase();
                             this.userData.logo_url = (p.institusi && p.institusi.logo_url_full) ? p.institusi.logo_url_full : null;
                         } else {

@@ -47,7 +47,7 @@
                 <div class="bg-[#f0fdf4] border border-[#bbf7d0] rounded-xl p-3 flex gap-2.5 items-start">
                     <i data-lucide="info" class="w-4 h-4 text-[#16a34a] shrink-0 mt-0.5"></i>
                     <p class="text-[12px] text-[#166534] leading-snug">
-                        Data yang dapat diedit adalah informasi kontak PIC. Data institusi tidak dapat diubah.
+                        Data yang dapat diedit adalah informasi kontak PIC. Data perguruan tinggi tidak dapat diubah.
                     </p>
                 </div>
 
@@ -79,7 +79,7 @@
                         </div>
                         <input type="text"
                             x-model="editForm.jabatan_pic"
-                            placeholder="Jabatan PIC di institusi"
+                            placeholder="Jabatan PIC di perguruan tinggi"
                             class="w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-xl pl-10 pr-4 py-2.5 text-[13px] text-[#1d293d] focus:outline-none focus:border-[#1b5e20] transition" />
                     </div>
                 </div>
