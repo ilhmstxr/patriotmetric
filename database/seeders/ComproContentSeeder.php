@@ -44,7 +44,7 @@ class ComproContentSeeder extends Seeder
         $sourceDir = public_path('assets/images');
 
         $files = [
-            '46257018a5d0ac00852b82184ae3ed30ef9a74e4.webp',
+            'Group 1.webp',
             'bg.webp',
             'b4f942a6770a3928dc2f82d398369a3d39ba1fde.webp',
             '199dc2ebf1e9cecf5218f4b20951209708831231.webp',
@@ -80,7 +80,7 @@ class ComproContentSeeder extends Seeder
         // Hero Section
         $this->createContent($page, 'hero', 'judul', 'text', 'Membangun Karakter Bangsa dari Kampus', 1);
         $this->createContent($page, 'hero', 'deskripsi', 'text', 'Sebuah sistem pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.', 2);
-        $this->createContent($page, 'hero', 'background_image', 'image', 'images/46257018a5d0ac00852b82184ae3ed30ef9a74e4.webp', 3);
+        $this->createContent($page, 'hero', 'background_image', 'image', 'images/Group 1.webp', 3);
 
         // About Section
         $this->createContent($page, 'about', 'judul', 'text', 'Patriot Metric', 1);
