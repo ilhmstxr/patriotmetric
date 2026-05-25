@@ -21,7 +21,7 @@
                 @if($heroBackground)
                     <img src="{{ url('cms-assets/' . $heroBackground) }}" alt="" class="w-full h-full object-cover" />
                 @else
-                    <img src="{{ asset('assets/images/b4f942a6770a3928dc2f82d398369a3d39ba1fde.webp') }}" alt="" class="w-full h-full object-cover" />
+                    <img src="{{ asset('assets/penghargaan/hero-bg.webp') }}" alt="" class="w-full h-full object-cover" />
                 @endif
             </div>
             <div class="relative max-w-[900px] mx-auto px-6 md:px-8 py-20 md:py-28 text-center">
@@ -55,7 +55,7 @@
                                     @if(!empty($winner['logo']))
                                         <img src="{{ url('cms-assets/' . $winner['logo']) }}" alt="{{ $winner['nama'] ?? '' }}" class="w-14 h-14 object-contain" />
                                     @else
-                                        <img src="{{ asset('assets/images/199dc2ebf1e9cecf5218f4b20951209708831231.webp') }}" alt="" class="w-14 h-14 object-contain" />
+                                        <img src="{{ asset('assets/welcome/logo-upn.webp') }}" alt="" class="w-14 h-14 object-contain" />
                                     @endif
                                 </div>
 

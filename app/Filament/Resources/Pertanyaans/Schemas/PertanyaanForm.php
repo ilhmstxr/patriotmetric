@@ -32,7 +32,8 @@ class PertanyaanForm
                     ->label('Tipe Jawaban')
                     ->options([
                         'pilihan_ganda' => 'Pilihan Ganda',
-                        'teks_singkat' => 'Teks Singkat',
+                        'isian_singkat' => 'Isian Singkat',
+                        'otomatis_sistem' => 'Otomatis Sistem',
                     ])
                     ->live()
                     ->required(),
@@ -42,6 +43,7 @@ class PertanyaanForm
                     ->default(0)
                     ->required(), */
                 Repeater::make('OpsiJawaban')
+                    ->relationship()
                     ->label('Opsi Pilihan')
                     ->schema([
                         Select::make('opsi_jawaban')

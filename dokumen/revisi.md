@@ -19,3 +19,6 @@ Meningkatkan Kesadaran Bela Negara; Mendorong Perguruan Tinggi untuk mewujudkan 
 Membangun Jejaring dan Kolaborasi Nasional; Membuka peluang bagi perguruan tinggi peserta menjadi bagian dari jejaring Patriot Metric yang memungkinkan kolaborasi di tingkat nasional.
 Mendapatkan Pengakuan dan Reputasi; Meningkatkan citra dan reputasi perguruan tinggi sebagai kampus yang berkomitmen pada penguatan karakter bela negara.
 Mendorong Perubahan dan Aksi Sosial; Perguruan tinggi dapat melakukan perubahan karakter dalam segala aspek Tridharma Perguruan Tinggi.
+
+rubrik penilaian
+waktu ngesave pertanyaan masih error

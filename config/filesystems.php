@@ -49,8 +49,8 @@ return [
 
         'cms' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/images/cms'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage/images/cms',
+            'root' => public_path('assets'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/assets',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,

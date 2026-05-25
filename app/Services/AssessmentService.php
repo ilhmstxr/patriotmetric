@@ -612,12 +612,6 @@ class AssessmentService extends BaseService
             throw new Exception("Sesi asesmen aktif tidak ditemukan.", 404);
         }
 
-        // Peserta hanya bisa lihat hasil jika sudah submit (minimal IN_PROGRESS tidak cukup)
-        // IN_PROGRESS = masih mengisi, belum submit → belum ada hasil
-        if ($assessment->status === 'ACTIVE') {
-            throw new Exception("Silakan lengkapi dan submit rubrik terlebih dahulu untuk melihat hasil.", 403);
-        }
-
         // Tentukan apakah ini hasil final (PUBLISHED) atau draft
         $isPublished = $assessment->status === 'PUBLISHED';
 

@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\ComproContent;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class ComproContentSeeder extends Seeder
 {
@@ -16,12 +15,9 @@ class ComproContentSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->seedCmsImages();
-
         DB::transaction(function () {
             $this->seedWelcomePage();
             $this->seedProfilePage();
-            $this->seedVisiMisiPage();
             $this->seedTimPage();
             $this->seedPenghargaanPage();
             $this->seedPanduanPage();
@@ -29,33 +25,9 @@ class ComproContentSeeder extends Seeder
         });
 
         // Clear all compro content cache after seeding
-        $pages = ['welcome', 'profile', 'visi-misi', 'tim', 'penghargaan', 'panduan', 'pengumuman'];
+        $pages = ['welcome', 'profile', 'tim', 'penghargaan', 'panduan', 'pengumuman'];
         foreach ($pages as $page) {
             \Illuminate\Support\Facades\Cache::forget("compro_content.{$page}");
-        }
-    }
-
-    /**
-     * Copy default CMS images from public/assets/images to cms disk.
-     */
-    private function seedCmsImages(): void
-    {
-        $disk = Storage::disk('cms');
-        $sourceDir = public_path('assets/images');
-
-        $files = [
-            'homepage-bg-1.webp',
-            'bg.webp',
-            'b4f942a6770a3928dc2f82d398369a3d39ba1fde.webp',
-            '199dc2ebf1e9cecf5218f4b20951209708831231.webp',
-            'blank-profile-picture-973460_1280.webp',
-        ];
-
-        foreach ($files as $file) {
-            $sourcePath = $sourceDir . DIRECTORY_SEPARATOR . $file;
-            if (file_exists($sourcePath) && !$disk->exists("images/{$file}")) {
-                $disk->put("images/{$file}", file_get_contents($sourcePath));
-            }
         }
     }
 
@@ -80,7 +52,7 @@ class ComproContentSeeder extends Seeder
         // Hero Section
         $this->createContent($page, 'hero', 'judul', 'text', 'Membangun Karakter Bangsa dari Kampus', 1);
         $this->createContent($page, 'hero', 'deskripsi', 'text', 'Sebuah sistem pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.', 2);
-        $this->createContent($page, 'hero', 'background_image', 'image', 'images/homepage-bg-1.webp', 3);
+        $this->createContent($page, 'hero', 'background_image', 'image', 'welcome/homepage-bg-1.webp', 3);
 
         // About Section
         $this->createContent($page, 'about', 'judul', 'text', 'Patriot Metric', 1);
@@ -96,14 +68,14 @@ class ComproContentSeeder extends Seeder
         $this->createContent($page, 'institusi', 'judul', 'text', 'Institusi yang Telah Berpartisipasi', 1);
         $this->createContent($page, 'institusi', 'deskripsi', 'text', 'Bergabung bersama perguruan tinggi terbaik Indonesia dalam mewujudkan kampus berkarakter bela negara.', 2);
         $this->createContent($page, 'institusi', 'daftar_baris_1', 'repeater', [
-            ['nama' => 'UPN "Veteran" Jawa Timur', 'logo' => ''],
-            ['nama' => 'Universitas Negeri Surabaya', 'logo' => ''],
-            ['nama' => 'Universitas 17 Agustus', 'logo' => ''],
+            ['nama' => 'UPN "Veteran" Jawa Timur', 'logo' => 'welcome/institusi-upn-veteran-jatim.webp'],
+            ['nama' => 'Universitas Negeri Surabaya', 'logo' => 'welcome/institusi-unesa.webp'],
+            ['nama' => 'Universitas 17 Agustus', 'logo' => 'welcome/institusi-untag.webp'],
         ], 3);
         $this->createContent($page, 'institusi', 'daftar_baris_2', 'repeater', [
-            ['nama' => 'UPN "Veteran" Yogyakarta', 'logo' => ''],
-            ['nama' => 'Universitas Bhayangkara Jakarta Raya', 'logo' => ''],
-            ['nama' => 'Universitas Mega Buana Palopo', 'logo' => ''],
+            ['nama' => 'UPN "Veteran" Yogyakarta', 'logo' => 'welcome/institusi-upn-yogya.webp'],
+            ['nama' => 'Universitas Bhayangkara Jakarta Raya', 'logo' => 'welcome/institusi-ubhara.webp'],
+            ['nama' => 'Universitas Mega Buana Palopo', 'logo' => 'welcome/mega-buana-palopo.webp'],
         ], 4);
 
         // Timeline Section
@@ -137,7 +109,7 @@ class ComproContentSeeder extends Seeder
         // Hero Section
        $this->createContent($page, 'hero', 'judul', 'text', 'UPN VETERAN JATIMPATRIOT METRIC <br> <span class="text-[20px] sm:text-[28px] md:text-[32px] font-semibold text-white/90">UNIVERSITY RANKING</span>', 1);
         $this->createContent($page, 'hero', 'deskripsi', 'text', 'Sebuah sistem pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.', 2);
-        $this->createContent($page, 'hero', 'background_image', 'image', 'images/bg.webp', 3);
+        $this->createContent($page, 'hero', 'background_image', 'image', 'profile/bg.webp', 3);
 
         // Latar Belakang Section
         $this->createContent($page, 'latar-belakang', 'judul', 'text', 'Latar Belakang', 1);
@@ -203,29 +175,6 @@ adaptif, dan patriotik.'],
     }
 
     /**
-     * Seed Visi & Misi page content.
-     */
-    private function seedVisiMisiPage(): void
-    {
-        $page = 'visi-misi';
-
-        // Hero Section
-        $this->createContent($page, 'hero', 'judul', 'text', 'Visi & Misi', 1);
-        $this->createContent($page, 'hero', 'deskripsi', 'text', 'Arah dan strategi Patriot Metric dalam membangun ekosistem bela negara di perguruan tinggi Indonesia.', 2);
-
-        // Visi Section
-        $this->createContent($page, 'visi', 'teks', 'text', 'Menjadi platform pemeringkatan dan barometer paling prestisius di Indonesia dalam mengukur, mengembangkan, dan mengapresiasi implementasi nilai-nilai bela negara di perguruan tinggi.', 1);
-
-        // Misi Section
-        $this->createContent($page, 'misi', 'judul', 'text', 'Misi Strategis', 1);
-        $this->createContent($page, 'misi', 'daftar', 'repeater', [
-            ['nomor' => '01', 'judul' => 'Internalisasi', 'deskripsi' => 'Proses penanaman dan integrasi nilai-nilai bela negara ke dalam budaya, kebijakan, kurikulum, serta program pengembangan mahasiswa.'],
-            ['nomor' => '02', 'judul' => 'Implementasi', 'deskripsi' => 'Perwujudan nyata dari proses internalisasi dalam bentuk tindakan, aktivitas, dan keterlibatan aktif sivitas akademika dalam kegiatan bertema kebangsaan dan bela negara.'],
-            ['nomor' => '03', 'judul' => 'Pengembangan', 'deskripsi' => 'Upaya inovatif untuk memperkaya dan memperluas penerapan nilai-nilai bela negara, baik melalui penelitian, pengabdian kepada masyarakat, maupun kemitraan strategis.'],
-        ], 2);
-    }
-
-    /**
      * Seed Tim page content.
      */
     private function seedTimPage(): void
@@ -238,10 +187,10 @@ adaptif, dan patriotik.'],
 
         // Team Grid Section
         $this->createContent($page, 'team-grid', 'daftar', 'repeater', [
-            ['nama' => 'Lorem Ipsum', 'role' => 'Lorem Ipsum', 'foto' => 'images/blank-profile-picture-973460_1280.webp'],
-            ['nama' => 'Lorem Ipsum', 'role' => 'Lorem Ipsum', 'foto' => 'images/blank-profile-picture-973460_1280.webp'],
-            ['nama' => 'Lorem Ipsum', 'role' => 'Lorem Ipsum', 'foto' => 'images/blank-profile-picture-973460_1280.webp'],
-            ['nama' => 'Lorem Ipsum', 'role' => 'Lorem Ipsum', 'foto' => 'images/blank-profile-picture-973460_1280.webp'],
+            ['nama' => 'Lorem Ipsum', 'role' => 'Lorem Ipsum', 'foto' => 'tim/blank-profile.webp'],
+            ['nama' => 'Lorem Ipsum', 'role' => 'Lorem Ipsum', 'foto' => 'tim/blank-profile.webp'],
+            ['nama' => 'Lorem Ipsum', 'role' => 'Lorem Ipsum', 'foto' => 'tim/blank-profile.webp'],
+            ['nama' => 'Lorem Ipsum', 'role' => 'Lorem Ipsum', 'foto' => 'tim/blank-profile.webp'],
         ], 1);
     }
 
@@ -255,17 +204,17 @@ adaptif, dan patriotik.'],
         // Hero Section
         $this->createContent($page, 'hero', 'judul', 'text', 'Galeri Penghargaan', 1);
         $this->createContent($page, 'hero', 'deskripsi', 'text', 'Penghormatan tertinggi bagi institusi yang telah membuktikan dedikasinya dalam membangun karakter patriotik dan bela negara.', 2);
-        $this->createContent($page, 'hero', 'background_image', 'image', 'images/b4f942a6770a3928dc2f82d398369a3d39ba1fde.webp', 3);
+        $this->createContent($page, 'hero', 'background_image', 'image', 'penghargaan/hero-bg.webp', 3);
 
         // Daftar Penerima Section
         $this->createContent($page, 'daftar-penerima', 'judul', 'text', 'Daftar Institusi Peraih Penghargaan', 1);
         $this->createContent($page, 'daftar-penerima', 'daftar', 'repeater', [
-            ['nama' => 'Lorem Ipsum', 'logo' => 'images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 5],
-            ['nama' => 'Lorem Ipsum', 'logo' => 'images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 5],
-            ['nama' => 'Lorem Ipsum', 'logo' => 'images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 4.5],
-            ['nama' => 'Lorem Ipsum', 'logo' => 'images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 4],
-            ['nama' => 'Lorem Ipsum', 'logo' => 'images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 5],
-            ['nama' => 'Lorem Ipsum', 'logo' => 'images/199dc2ebf1e9cecf5218f4b20951209708831231.webp', 'rating' => 4],
+            ['nama' => 'Lorem Ipsum', 'logo' => 'welcome/logo-upn.webp', 'rating' => 5],
+            ['nama' => 'Lorem Ipsum', 'logo' => 'welcome/logo-upn.webp', 'rating' => 5],
+            ['nama' => 'Lorem Ipsum', 'logo' => 'welcome/logo-upn.webp', 'rating' => 4.5],
+            ['nama' => 'Lorem Ipsum', 'logo' => 'welcome/logo-upn.webp', 'rating' => 4],
+            ['nama' => 'Lorem Ipsum', 'logo' => 'welcome/logo-upn.webp', 'rating' => 5],
+            ['nama' => 'Lorem Ipsum', 'logo' => 'welcome/logo-upn.webp', 'rating' => 4],
         ], 2);
     }
 

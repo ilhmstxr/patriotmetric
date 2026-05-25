@@ -31,7 +31,7 @@
                 @if($heroBackground)
                     <img src="{{ url('cms-assets/' . $heroBackground) }}" alt="" class="w-full h-full object-cover opacity-20" />
                 @else
-                    <img src="{{ asset('assets/images/bg.webp') }}" alt="" class="w-full h-full object-cover opacity-20" />
+                    <img src="{{ asset('assets/profile/bg.webp') }}" alt="" class="w-full h-full object-cover opacity-20" />
                 @endif
                 <div class="absolute inset-0 bg-gradient-to-b from-[rgba(27,94,32,0.85)] to-[#0f172b]/90"></div>
             </div>
