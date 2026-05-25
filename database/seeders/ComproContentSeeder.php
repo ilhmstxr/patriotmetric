@@ -44,7 +44,7 @@ class ComproContentSeeder extends Seeder
         $sourceDir = public_path('assets/images');
 
         $files = [
-            'Group 1.webp',
+            'homepage-bg-1.webp',
             'bg.webp',
             'b4f942a6770a3928dc2f82d398369a3d39ba1fde.webp',
             '199dc2ebf1e9cecf5218f4b20951209708831231.webp',
@@ -80,7 +80,7 @@ class ComproContentSeeder extends Seeder
         // Hero Section
         $this->createContent($page, 'hero', 'judul', 'text', 'Membangun Karakter Bangsa dari Kampus', 1);
         $this->createContent($page, 'hero', 'deskripsi', 'text', 'Sebuah sistem pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.', 2);
-        $this->createContent($page, 'hero', 'background_image', 'image', 'images/Group 1.webp', 3);
+        $this->createContent($page, 'hero', 'background_image', 'image', 'images/homepage-bg-1.webp', 3);
 
         // About Section
         $this->createContent($page, 'about', 'judul', 'text', 'Patriot Metric', 1);
@@ -191,6 +191,15 @@ membangun generasi muda
 yang berdaya saing global,
 adaptif, dan patriotik.'],
         ], 3);
+
+        // Manfaat Pemeringkatan Section
+        $this->createContent($page, 'manfaat-pemeringkatan', 'judul', 'text', 'Manfaat Pemeringkatan', 1);
+        $this->createContent($page, 'manfaat-pemeringkatan', 'daftar', 'repeater', [
+            ['nomor' => '01', 'judul' => 'Meningkatkan Kesadaran Bela Negara', 'deskripsi' => 'Mendorong Perguruan Tinggi untuk mewujudkan dan meningkatkan karakter bela negara.'],
+            ['nomor' => '02', 'judul' => 'Membangun Jejaring dan Kolaborasi Nasional', 'deskripsi' => 'Membuka peluang bagi perguruan tinggi peserta menjadi bagian dari jejaring Patriot Metric yang memungkinkan kolaborasi di tingkat nasional.'],
+            ['nomor' => '03', 'judul' => 'Mendapatkan Pengakuan dan Reputasi', 'deskripsi' => 'Meningkatkan citra dan reputasi perguruan tinggi sebagai kampus yang berkomitmen pada penguatan karakter bela negara.'],
+            ['nomor' => '04', 'judul' => 'Mendorong Perubahan dan Aksi Sosial', 'deskripsi' => 'Perguruan tinggi dapat melakukan perubahan karakter dalam segala aspek Tridharma Perguruan Tinggi.'],
+        ], 2);
     }
 
     /**

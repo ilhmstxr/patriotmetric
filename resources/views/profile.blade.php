@@ -17,6 +17,10 @@
     $tujuanJudul = $tujuanUtama->firstWhere('key', 'judul')?->value ?? 'Tujuan Utama Program';
     $tujuanDeskripsi = $tujuanUtama->firstWhere('key', 'deskripsi')?->value ?? '';
     $tujuanDaftar = $tujuanUtama->firstWhere('key', 'daftar')?->value ?? [];
+
+    $manfaat = $content->get('manfaat-pemeringkatan', collect());
+    $manfaatJudul = $manfaat->firstWhere('key', 'judul')?->value ?? 'Manfaat Pemeringkatan';
+    $manfaatDaftar = $manfaat->firstWhere('key', 'daftar')?->value ?? [];
 @endphp
 
 <x-layouts.app>
@@ -68,6 +72,30 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     @foreach($tujuanDaftar as $item)
                         <div class="bg-white rounded-2xl border border-[#f1f5f9] p-7 hover:shadow-lg hover:border-[#1B5E20]/10 transition-all duration-300">
+                            <div class="flex items-start gap-4">
+                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[28px] text-[#d4af37]/40 leading-none">{{ $item['nomor'] ?? '' }}</span>
+                                <div>
+                                    <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[17px] text-[#1d293d]">{{ $item['judul'] ?? '' }}</h3>
+                                    <p class="mt-2 font-['Plus_Jakarta_Sans',sans-serif] text-[15px] leading-[24px] text-[#45556c]">{{ $item['deskripsi'] ?? '' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        @endif
+
+        {{-- Manfaat Pemeringkatan --}}
+        @if(is_array($manfaatDaftar) && count($manfaatDaftar) > 0)
+        <section class="py-16 md:py-20 bg-white">
+            <div class="max-w-[1100px] mx-auto px-6 md:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[26px] md:text-[32px] text-[#1d293d]">{{ $manfaatJudul }}</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    @foreach($manfaatDaftar as $item)
+                        <div class="bg-[#f8fafc] rounded-2xl border border-[#f1f5f9] p-7 hover:shadow-lg hover:border-[#1B5E20]/10 transition-all duration-300">
                             <div class="flex items-start gap-4">
                                 <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[28px] text-[#d4af37]/40 leading-none">{{ $item['nomor'] ?? '' }}</span>
                                 <div>

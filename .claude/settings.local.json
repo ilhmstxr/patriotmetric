@@ -33,7 +33,8 @@
       "PowerShell(php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\WelcomeForm.php\")",
       "PowerShell(php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\TimForm.php\")",
       "PowerShell(php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\ProfileForm.php\"; php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\PenghargaanForm.php\"; php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\PengumumanForm.php\")",
-      "PowerShell(php artisan test 2>&1 | Select-Object -First 50)"
+      "PowerShell(php artisan test 2>&1 | Select-Object -First 50)",
+      "PowerShell(php artisan db:seed --class=ComproContentSeeder)"
     ]
   }
 }

@@ -18,12 +18,12 @@
 <x-layouts.app>
     <div class="bg-white">
         {{-- Hero Section --}}
-        <section class="relative bg-[#0f172b] overflow-hidden">
+        <section class="relative bg-[#0f172b]">
             <div class="absolute inset-0">
                 @if($getValue($hero, 'background_image'))
-                    <img src="{{ url('cms-assets/' . $getValue($hero, 'background_image')) }}" alt="" class="w-full h-full object-cover opacity-30" />
+                    <img src="{{ url('cms-assets/' . $getValue($hero, 'background_image')) }}" alt="" class="w-full h-full object-cover" />
                 @endif
-                <div class="absolute inset-0 bg-gradient-to-r from-[rgba(27,94,32,0.9)] via-[rgba(27,94,32,0.2)] to-transparent"></div>
+                <!-- <div class="absolute inset-0 bg-gradient-to-r from-[rgba(27,94,32,0.9)] via-[rgba(27,94,32,0.2)] to-transparent"></div> -->
             </div>
             <div class="relative max-w-[1536px] mx-auto px-6 md:px-8 py-24 md:py-44 flex flex-col items-end text-right">
                 <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] sm:text-[48px] md:text-[60px] leading-[1.2] text-white max-w-[768px]">

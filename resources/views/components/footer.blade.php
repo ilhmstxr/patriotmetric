@@ -32,9 +32,6 @@
                             <a href="{{ url('/profile') }}" class="font-['Plus_Jakarta_Sans',sans-serif] font-normal leading-[20px] text-[13px] text-[#62748E] hover:text-[#1B5E20] hover:translate-x-1 transition-all">
                                 Profil
                             </a>
-                            <a href="{{ url('/visi-misi') }}" class="font-['Plus_Jakarta_Sans',sans-serif] font-normal leading-[20px] text-[13px] text-[#62748E] hover:text-[#1B5E20] hover:translate-x-1 transition-all">
-                                Visi &amp; Misi
-                            </a>
                             <a href="{{ url('/tim') }}" class="font-['Plus_Jakarta_Sans',sans-serif] font-normal leading-[20px] text-[13px] text-[#62748E] hover:text-[#1B5E20] hover:translate-x-1 transition-all">
                                 Tim
                             </a>

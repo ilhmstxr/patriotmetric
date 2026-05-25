@@ -29,10 +29,6 @@ Route::get('/profile', function () {
     return view('profile');
 });
 
-Route::get('/visi-misi', function () {
-    return view('visi-misi');
-});
-
 Route::get('/tim', function () {
     return view('tim');
 });
