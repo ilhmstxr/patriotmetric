@@ -24,11 +24,11 @@
                     <img src="{{ url('cms-assets/' . $getValue($hero, 'background_image')) }}" alt="" class="w-full h-full object-cover" />
                 @endif
             </div>
-            <div class="relative max-w-[1536px] mx-auto px-6 md:px-8 py-24 md:py-44 flex flex-col items-end text-right">
-                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] sm:text-[48px] md:text-[60px] leading-[1.2] text-white max-w-[768px]">
+            <div class="relative max-w-[1536px] mx-auto px-6 md:px-8 py-24 md:py-44 flex flex-col items-start">
+                <h1 class="inline-block bg-[#0f172b]/60 backdrop-blur-sm px-6 py-4 font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] sm:text-[48px] md:text-[60px] leading-[1.2] text-white max-w-[768px]">
                     {{ $getValue($hero, 'judul') ?? 'Membangun Karakter Bangsa dari Perguruan Tinggi' }}
                 </h1>
-                <p class="mt-6 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[18px] md:text-[20px] leading-[32.5px] text-[rgba(255,255,255,0.8)] max-w-[616px]">
+                <p class="mt-6 inline-block bg-[#0f172b]/60 backdrop-blur-sm px-6 py-4 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[18px] md:text-[20px] leading-[32.5px] text-[rgba(255,255,255,0.8)] max-w-[616px]">
                     {{ $getValue($hero, 'deskripsi') ?? '' }}
                 </p>
                 <div class="mt-10 flex flex-col sm:flex-row gap-4">
