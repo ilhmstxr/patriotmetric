@@ -51,7 +51,7 @@
 
             {{-- Tentang Kami Dropdown --}}
             <div class="relative" @mouseenter="dropdownOpen = true" @mouseleave="dropdownOpen = false" x-data="{ dropdownOpen: false }">
-                <button class="flex items-center gap-1 px-3 py-2 rounded-2xl font-['Plus_Jakarta_Sans',sans-serif] text-[14px] whitespace-nowrap transition-colors {{ request()->is('profile') || request()->is('visi-misi') || request()->is('tim') ? 'font-semibold text-[#1b5e20]' : 'font-medium text-[#45556c] hover:text-[#1b5e20]' }}">
+                <button class="flex items-center gap-1 px-3 py-2 rounded-2xl font-['Plus_Jakarta_Sans',sans-serif] text-[14px] whitespace-nowrap transition-colors {{ request()->is('profile') || request()->is('tim') ? 'font-semibold text-[#1b5e20]' : 'font-medium text-[#45556c] hover:text-[#1b5e20]' }}">
                     Tentang Kami
                     <i data-lucide="chevron-down" class="w-4 h-4 transition-transform opacity-50" :class="dropdownOpen ? 'rotate-180' : ''"></i>
                 </button>
@@ -60,9 +60,6 @@
                     <div class="bg-white rounded-xl shadow-lg border border-[#f1f5f9] py-2 min-w-[180px]">
                         <a href="{{ url('/profile') }}" @click="dropdownOpen = false" class="block px-4 py-2.5 font-['Plus_Jakarta_Sans',sans-serif] text-[14px] transition-colors {{ request()->is('profile') ? 'font-semibold text-[#1b5e20] bg-[rgba(27,94,32,0.05)]' : 'font-medium text-[#45556c] hover:text-[#1b5e20] hover:bg-[rgba(27,94,32,0.05)]' }}">
                             Profile
-                        </a>
-                        <a href="{{ url('/visi-misi') }}" @click="dropdownOpen = false" class="block px-4 py-2.5 font-['Plus_Jakarta_Sans',sans-serif] text-[14px] transition-colors {{ request()->is('visi-misi') ? 'font-semibold text-[#1b5e20] bg-[rgba(27,94,32,0.05)]' : 'font-medium text-[#45556c] hover:text-[#1b5e20] hover:bg-[rgba(27,94,32,0.05)]' }}">
-                            Visi & Misi
                         </a>
                         <a href="{{ url('/tim') }}" @click="dropdownOpen = false" class="block px-4 py-2.5 font-['Plus_Jakarta_Sans',sans-serif] text-[14px] transition-colors {{ request()->is('tim') ? 'font-semibold text-[#1b5e20] bg-[rgba(27,94,32,0.05)]' : 'font-medium text-[#45556c] hover:text-[#1b5e20] hover:bg-[rgba(27,94,32,0.05)]' }}">
                             Tim
@@ -142,7 +139,6 @@
                 </button>
                 <div x-show="mobileDropdown" class="flex flex-col gap-2 pl-4 mt-2" style="display: none;">
                     <a href="{{ url('/profile') }}" class="font-['Plus_Jakarta_Sans',sans-serif] py-1 text-[14px] font-medium text-[#45556c] hover:text-[#1b5e20]">Profile</a>
-                    <a href="{{ url('/visi-misi') }}" class="font-['Plus_Jakarta_Sans',sans-serif] py-1 text-[14px] font-medium text-[#45556c] hover:text-[#1b5e20]">Visi & Misi</a>
                     <a href="{{ url('/tim') }}" class="font-['Plus_Jakarta_Sans',sans-serif] py-1 text-[14px] font-medium text-[#45556c] hover:text-[#1b5e20]">Tim</a>
                 </div>
             </div>

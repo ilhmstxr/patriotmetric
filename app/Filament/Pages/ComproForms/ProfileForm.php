@@ -55,6 +55,22 @@ class ProfileForm
                         ->collapsible()
                         ->itemLabel(fn(array $state) => ($state['nomor'] ?? '') . ' - ' . ($state['judul'] ?? 'Item Baru')),
                 ]),
+
+            Section::make('Manfaat Pemeringkatan')
+                ->schema([
+                    TextInput::make('manfaat-pemeringkatan.judul')->label('Judul Section')->maxLength(255)->required(),
+                    Repeater::make('manfaat-pemeringkatan.daftar')
+                        ->label('Daftar Manfaat')
+                        ->schema([
+                            TextInput::make('nomor')->label('Nomor')->maxLength(10)->required(),
+                            TextInput::make('judul')->label('Judul')->maxLength(150)->required(),
+                            Textarea::make('deskripsi')->label('Deskripsi')->maxLength(500)->required(),
+                        ])
+                        ->maxItems(50)
+                        ->reorderable()
+                        ->collapsible()
+                        ->itemLabel(fn(array $state) => ($state['nomor'] ?? '') . ' - ' . ($state['judul'] ?? 'Item Baru')),
+                ]),
         ];
     }
 }

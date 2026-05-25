@@ -18,10 +18,10 @@
 <x-layouts.app>
     <div class="bg-white">
         {{-- Hero Section --}}
-        <section class="relative bg-[#0f172b] overflow-hidden">
+        <section class="relative bg-[#0f172b]">
             <div class="absolute inset-0">
                 @if($getValue($hero, 'background_image'))
-                    <img src="{{ url('cms-assets/' . $getValue($hero, 'background_image')) }}" alt="" class="w-full h-full object-cover opacity-30" />
+                    <img src="{{ url('cms-assets/' . $getValue($hero, 'background_image')) }}" alt="" class="w-full h-full object-cover" />
                 @endif
             </div>
             <div class="relative max-w-[1536px] mx-auto px-6 md:px-8 py-24 md:py-44 flex flex-col items-end text-right">
