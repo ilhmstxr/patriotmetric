@@ -23,9 +23,9 @@
                 <span class="text-[24px] font-bold text-[#1b5e20]">1</span>
               </div>
               <div class="space-y-[12px] pt-[4px]">
-                <h3 class="text-[20px] font-bold text-[#1d293d]">Pilih Institusi dari Daftar Plotting</h3>
+                <h3 class="text-[20px] font-bold text-[#1d293d]">Pilih Perguruan Tinggi dari Daftar Plotting</h3>
                 <p class="text-[#62748e] text-[15px] font-medium leading-[24px]">
-                  Buka menu <span class="font-bold text-[#1d293d]">Dashboard Utama</span> dan lihat daftar Institusi/Peserta yang telah di-plotting kepada Anda. Klik tombol <span class="font-bold text-[#1d293d]">Lihat Detail</span> atau <span class="font-bold text-[#1d293d]">Nilai Sekarang</span> untuk mulai memeriksa isian rubrik dari peserta terkait.
+                  Buka menu <span class="font-bold text-[#1d293d]">Dashboard Utama</span> dan lihat daftar Perguruan Tinggi/Peserta yang telah di-plotting kepada Anda. Klik tombol <span class="font-bold text-[#1d293d]">Lihat Detail</span> atau <span class="font-bold text-[#1d293d]">Nilai Sekarang</span> untuk mulai memeriksa isian rubrik dari peserta terkait.
                 </p>
               </div>
             </div>
@@ -63,7 +63,7 @@
               <div class="space-y-[16px] pt-[4px] w-full">
                 <h3 class="text-[20px] font-bold text-[#1d293d]">Berikan Penilaian Akhir (Skoring)</h3>
                 <p class="text-[#62748e] text-[15px] font-medium leading-[24px]">
-                  Berdasarkan validasi Anda, tentukan skor final untuk setiap indikator. Setelah semua indikator dinilai secara keseluruhan, sistem akan secara otomatis menghitung akumulasi total nilai untuk Institusi tersebut pada bagian <span class="font-bold text-[#1d293d]">Hasil Penilaian</span>.
+                  Berdasarkan validasi Anda, tentukan skor final untuk setiap indikator. Setelah semua indikator dinilai secara keseluruhan, sistem akan secara otomatis menghitung akumulasi total nilai untuk Perguruan Tinggi tersebut pada bagian <span class="font-bold text-[#1d293d]">Hasil Penilaian</span>.
                 </p>
 
                 <div class="bg-[#FFFBEB] border border-[#FDE68A] rounded-[8px] p-[20px] flex gap-[16px]">

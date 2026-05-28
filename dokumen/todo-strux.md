@@ -78,24 +78,24 @@ Tabel,Kolom Baru / Revisi,Penjelasan
 institutions,"id, nama_institusi, jenis_institusi, alamat, status_verifikasi"
 identitas_institusi,"institution_id, jml_mahasiswa, jml_dosen, jml_prodi, baseline_json"
 pertanyaans,"formula_config (JSON), benchmark_value"
-pengumpulans,"periode_tahun, is_published"
-pengumpulan_jawabans,"verified_details (JSON), skor_normalisasi"
+Assessments,"periode_tahun, is_published"
+respon_assessments,"verified_details (JSON), skor_normalisasi"
 
 untuk rubrik
 
-- TODO: edit pengumpulan & pengumpulan -> user => peserta, view reviewer ga muncul
+- TODO: edit Assessment & Assessment -> user => peserta, view reviewer ga muncul
 - TODO: tugaskan reviewer masih belum konek
 - TODO: fw ketika successful create
 - TODO: password di pengaturan cms kosong
-- TODO: delete pengumpulan
+- TODO: delete Assessment
 - TODO: plottingan peserta & reviewer
 
 Tabel,Kolom Baru / Revisi,Penjelasan
 institutions,"id, nama_institusi, jenis_institusi, alamat, status_verifikasi"
 identitas_institusi,"institution_id, jml_mahasiswa, jml_dosen, jml_prodi, baseline_json"
 pertanyaans,"formula_config (JSON), benchmark_value"
-pengumpulans,"periode_tahun, is_published"
-pengumpulan_jawabans,"verified_details (JSON), skor_normalisasi"
+Assessments,"periode_tahun, is_published"
+respon_assessments,"verified_details (JSON), skor_normalisasi"
 
 untuk rubrik
 
@@ -118,7 +118,7 @@ CHECK
    DONE
 3. diinject
 4. untuk rumus perhitungan dibuat di frontend, jadi tinggal terima hasil nya lalu di lempar ke api
-   DONE 5. untuk pengumpulan_jawabans diisi foreign di opsi jawaban + jawaban_teks
+   DONE 5. untuk respon_assessments diisi foreign di opsi jawaban + jawaban_teks
 5. qa revisi tampilan peserta
    DONE 7. nambahin label isian singkat / pilihan ganda
 
@@ -126,7 +126,7 @@ DONE
 contoh
 fetch harus
 fetch pertanyaan_id
-fetch submission_id
+fetch assessment_id
 
 kondisi 1
 ketika mengklik tipe pilihan_ganda, maka akan fetch jawaban_id
@@ -232,8 +232,234 @@ no hp pic
 email pic
 password
 
-dikarenakan tabel pengumpulan wajib ada
+dikarenakan tabel Assessment wajib ada
 tahun_periode maka otomatis masukkan tahun sekarang
 
 dikarenakan tabel user juga wajib ada
 role => PESERTA, jika registrasi otomatis ke role peserta
+
+1. Up pdf
+2. Perhitungan rumus rubrik
+3. Preview setelah submit (presentase) 
+4.
+
+DONE 1 instansi 1 akun aktif email pic per tahun
+DONE Api buat nembak opsi jawaban (get per rubrik)
+Ngitung biar masuk value yang mana di jawaban_teks / yang mengisi
+
+- CHECK Plotting akun reviewer n peserta
+- CHECK Timeline lock submission
+- CHECK bikin akun reviewer
+- DONE pemetaan fix status pengerjaan
+
+rumus perhitungan masuk ke skor mana ditaruh sekalian di service 
+
+
+jika isian singkat + rumus = jawaban teks + calculated precentage
+jika isian singkat = jawaban teks 
+
+
+
+rumus, hardcode disimpan berdasarkan calculated presentage 
+contoh output jsonnya
+// Contoh format payload yang harus dikirim ke API
+const payload = {
+    pertanyaanId: 10,
+    jawabanTeks: JSON.stringify({
+        raw_input: 15000000,
+        calculated_percentage: 85.5
+    }),
+    tautanBukti: "https://drive.google.com/..."
+};
+
+
+1. File Migrasi (Mengubah Kolom ke JSON)
+Jika tabel sudah ada, buat file migrasi baru untuk memodifikasi tipe kolom. Jalankan perintah ini di terminal:
+php artisan make:migration change_jawaban_teks_to_json_on_jawabans_table
+
+Isi file migrasi tersebut dengan kode berikut:
+
+PHP
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('jawabans', function (Blueprint $table) {
+            // Ubah tipe data menjadi JSON. 
+            // Pastikan Anda menggunakan Laravel versi modern atau memiliki doctrine/dbal terinstal jika versi lama.
+            $table->json('jawaban_teks')->nullable()->change();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('jawabans', function (Blueprint $table) {
+            $table->text('jawaban_teks')->nullable()->change();
+        });
+    }
+};
+2. Model (Konfigurasi Casting)
+Pastikan Model Anda secara otomatis melakukan serialisasi/deserialisasi array ke JSON.
+
+PHP
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Jawaban extends Model
+{
+    protected $fillable = [
+        'pertanyaan_id',
+        'jawaban_teks',
+        'tautan_bukti'
+    ];
+
+    // Memicu konversi otomatis: Array (PHP) <-> JSON (Database)
+    protected $casts = [
+        'jawaban_teks' => 'array',
+    ];
+}
+3. Layer Service (Defensive Parsing & Normalization)
+Karena Frontend Anda menggunakan JSON.stringify(), payload yang ditangkap oleh Laravel untuk jawabanTeks akan berupa tipe String. Kita harus mengekstraknya menggunakan json_decode() secara aman, lalu menormalisasinya agar struktur tabel selalu konsisten.
+
+PHP
+namespace App\Services;
+
+use App\Models\Jawaban;
+
+class EvaluasiService
+{
+    public function simpanJawaban(array $payload)
+    {
+        $rawJawabanTeks = $payload['jawabanTeks'] ?? null;
+        $decodedJawaban = null;
+
+        // 1. Defensive Parsing: Coba decode stringified JSON dari FE
+        if (is_string($rawJawabanTeks)) {
+            $decoded = json_decode($rawJawabanTeks, true);
+            
+            // Periksa apakah decoding sukses (misal FE kirim JSON.stringify) 
+            // atau gagal (misal FE kirim string teks murni untuk isian singkat tunggal)
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $decodedJawaban = $decoded;
+            } else {
+                $decodedJawaban = $rawJawabanTeks; // Fallback ke string murni
+            }
+        } elseif (is_array($rawJawabanTeks)) {
+            // Antisipasi jika payload sudah berupa array dari HTTP Request (FE tidak memakai stringify)
+            $decodedJawaban = $rawJawabanTeks;
+        }
+
+        // 2. Normalisasi Struktur: Paksa masuk ke kerangka baku
+        $normalizedJawaban = [
+            'raw_input' => is_array($decodedJawaban) 
+                ? ($decodedJawaban['raw_input'] ?? null) 
+                : $decodedJawaban, // Jika isian tunggal (string murni), taruh di sini
+                
+            'calculated_percentage' => is_array($decodedJawaban) 
+                ? ($decodedJawaban['calculated_percentage'] ?? null) 
+                : null,
+        ];
+
+        // 3. Eksekusi Penyimpanan
+        // Menggunakan updateOrCreate untuk mencegah duplikasi data jika 1 pertanyaan = 1 jawaban per sesi
+        return Jawaban::updateOrCreate(
+            ['pertanyaan_id' => $payload['pertanyaanId']],
+            [
+                'jawaban_teks' => $normalizedJawaban, // Model cast akan otomatis menjadikannya JSON
+                'tautan_bukti' => $payload['tautanBukti'] ?? null
+            ]
+        );
+    }
+}
+Analisis Trade-off Logika di Atas:
+Plus: Sangat tangguh (robust). Logika json_last_error() memastikan bahwa jika suatu saat Frontend lupa melakukan JSON.stringify() atau mengirim isian teks biasa secara langsung (misal: "Ini adalah jawaban teks saja"), sistem tidak akan crash dan tetap akan menyimpannya ke dalam struktur {"raw_input": "Ini adalah jawaban teks saja", "calculated_percentage": null}.
+
+Minus: Terdapat sedikit overhead pada proses komputasi saat evaluasi is_string dan json_decode, namun sangat dapat diabaikan di level aplikasi modern demi tercapainya integritas data 100%.
+
+Pastikan naming convention nama tabel (jawabans atau jawaban) disesuaikan dengan skema database asli Anda saat menjalankan migrasi.
+
+
+
+untuk verifikasi masih nyantol kalau pakai seeder
+datanya masih kesimpen di local storage
+
+
+```json
+{
+  "pertanyaan_id": 42,
+  "jawaban_id": null,
+  "jawaban_teks": "{
+  \"lokal\":2,
+  \"regional\":1,
+  \"nasional\":0,
+  \"internasional\":1,
+  
+  \"poin_lokal\":2,
+  \"poin_regional\":2,
+  \"poin_nasional\":0,
+  \"poin_internasional\":4,
+
+  \"total_poin\":8}",
+  "tautan_bukti": "https://drive.google.com/..."
+}
+```
+
+bobot, dihapus
+lepas hubungan dihapus
+hapus dihapus
+
+kelola opsi
+kelola pertanyaan
+syarat bukti
+
+note tanya bu sri
+untuk keagamaan apakah butuh dengan keputusan mk
+
+- fitur cek pdf per peserta
+- untuk create user tidak bisa dibuatkan via admin untuk pembuatan & verifikasi akunnya
+
+{
+    "lokal": {
+        "label": "Skala lokal / kota kabupaten / internal institusi",
+        "nilai": 1
+    },
+    "nasional": {
+        "label": "Skala nasional",
+        "nilai": 3
+    },
+    "regional": {
+        "label": "Skala regional / provinsi",
+        "nilai": 2
+    },
+    "total_poin": 30,
+    "internasional": {
+        "label": "Skala internasional",
+        "nilai": 4
+    }
+}
+
+buat flag setelah submit masih bisa di klik, harusnya tidak bisa
+
+
+monitoring assessment, + plotting reviewer + lihat detail data peserta + edit data profil + status
+show => data ditampilkan = profil, pdf 
+edit => email & password 
+
+untuk page monitoring assessment 
+index => langsung dicampur untuk plotting reviewer 
+jadi untuk kolomnya no, periode, nama instansi, nama pic, reviewer, status, action (edit & show)
+show =>
+a. informasi utama (nama institusi, nama pic, status, total skor sistem, total skor akhir)
+b. biodata instansi (profil data instansi: jenis instansi, jumlah mahasiswa, dosen, tendik, prodi, fakultas, nama pic, jabatan pic, no hp pic, visi, misi)
+c. jawaban rubrik (jawaban rubrik: pertanyaan, jawaban, skor sistem, skor reviewer, note reviewer)
+d. hasil dokumen (semua legal documents preview)
+
+rubrik tulisan seedernya diganti 
+yang agama yme di hapus
+
+nip di sisi hapus saja

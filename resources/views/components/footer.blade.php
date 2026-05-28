@@ -6,7 +6,7 @@
             <div class="flex flex-col items-start">
                 <div class="h-[81px] w-[322px] relative">
                     <div class="absolute inset-0 overflow-hidden pointer-events-none">
-                        <img alt="Patriot Metric" class="absolute h-[236.75%] left-[-0.11%] max-w-none top-[-58.29%] w-full" src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.png') }}" />
+                        <img alt="Patriot Metric" class="absolute h-[236.75%] left-[-0.11%] max-w-none top-[-58.29%] w-full" src="{{ asset('assets/welcome/logo-patriot-metric.webp') }}" />
                     </div>
                 </div>
             </div>
@@ -32,9 +32,6 @@
                             <a href="{{ url('/profile') }}" class="font-['Plus_Jakarta_Sans',sans-serif] font-normal leading-[20px] text-[13px] text-[#62748E] hover:text-[#1B5E20] hover:translate-x-1 transition-all">
                                 Profil
                             </a>
-                            <a href="{{ url('/visi-misi') }}" class="font-['Plus_Jakarta_Sans',sans-serif] font-normal leading-[20px] text-[13px] text-[#62748E] hover:text-[#1B5E20] hover:translate-x-1 transition-all">
-                                Visi &amp; Misi
-                            </a>
                             <a href="{{ url('/tim') }}" class="font-['Plus_Jakarta_Sans',sans-serif] font-normal leading-[20px] text-[13px] text-[#62748E] hover:text-[#1B5E20] hover:translate-x-1 transition-all">
                                 Tim
                             </a>
@@ -50,8 +47,11 @@
                             <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-300 text-[#45556C] opacity-60" :class="infoOpen ? 'rotate-180' : ''"></i>
                         </button>
                         <div x-show="infoOpen" x-transition.opacity.duration.300ms class="flex flex-col gap-2.5 pl-[20px] border-l-2 border-[#f1f5f9] ml-[2px] mt-2 mb-1" style="display: none;">
+                            <a href="{{ url('/pengumuman') }}" class="font-['Plus_Jakarta_Sans',sans-serif] font-normal leading-[20px] text-[13px] text-[#62748E] hover:text-[#1B5E20] hover:translate-x-1 transition-all">
+                                Pengumuman
+                            </a>
                             <a href="{{ url('/penghargaan') }}" class="font-['Plus_Jakarta_Sans',sans-serif] font-normal leading-[20px] text-[13px] text-[#62748E] hover:text-[#1B5E20] hover:translate-x-1 transition-all">
-                                Penghargaan 2025
+                                Penghargaan
                             </a>
                         </div>
                     </div>

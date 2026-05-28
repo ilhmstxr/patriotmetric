@@ -30,10 +30,7 @@ class UserFactory extends Factory
             'role' => fake()->randomElement(['ADMIN', 'REVIEWER', 'PESERTA']),
             'status' => fake()->randomElement([
                 "UNVERIFIED",
-                "PENDING",
                 "ACTIVE",
-                "SUSPENDED",
-                "BANNED",
             ]),
             'remember_token' => Str::random(10),
         ];

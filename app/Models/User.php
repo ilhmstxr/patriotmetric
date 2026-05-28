@@ -5,13 +5,14 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Filament\Panel;
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements HasName
+class User extends Authenticatable implements HasName, FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
@@ -56,19 +57,14 @@ class User extends Authenticatable implements HasName
         ];
     }
 
-    public function pengumpulans()
-    {
-        return $this->hasMany(Pengumpulan::class, 'user_id');
-    }
-
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->role === 'admin';
+        return strtoupper($this->role) === 'ADMIN' && strtoupper($this->status) === 'ACTIVE';
     }
 
     public function reviews()
     {
-        return $this->hasMany(Pengumpulan::class, 'reviewer_id');
+        return $this->hasMany(Assessment::class, 'reviewer_id');
     }
 
     public function assessments()

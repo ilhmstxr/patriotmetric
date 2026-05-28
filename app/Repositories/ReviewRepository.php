@@ -3,13 +3,13 @@
 namespace App\Repositories;
 
 use App\Models\Kategori;
-use App\Models\Pengumpulan;
-use App\Models\PengumpulanJawaban;
+use App\Models\Assessment;
+use App\Models\ResponAssessment;
 use App\Models\Pertanyaan;
 
 class ReviewRepository extends BaseRepository
 {
-    public function __construct(Pengumpulan $model)
+    public function __construct(Assessment $model)
     {
         parent::__construct($model);
     }
@@ -28,7 +28,7 @@ class ReviewRepository extends BaseRepository
 
     public function getAnswerBySubmissionAndQuestion($submissionId, $questionId)
     {
-        return PengumpulanJawaban::where('submission_id', $submissionId)
+        return ResponAssessment::where('assessment_id', $submissionId)
             ->where('question_id', $questionId)
             ->first();
     }
@@ -38,7 +38,7 @@ class ReviewRepository extends BaseRepository
         // Completeness Check (Zero-Gap Validation): Pengecekan silang antara total pertanyaan vs total jawaban yang sudah diberikan manual_score
         $totalQuestions = Pertanyaan::count();
         
-        $verifiedAnswers = PengumpulanJawaban::where('submission_id', $submissionId)
+        $verifiedAnswers = ResponAssessment::where('assessment_id', $submissionId)
             ->whereNotNull('manual_score')
             ->count();
 
@@ -48,34 +48,34 @@ class ReviewRepository extends BaseRepository
 
     public function sumVerifiedScore($submissionId)
     {
-        return \App\Models\PengumpulanJawaban::where('submission_id', $submissionId)
+        return \App\Models\ResponAssessment::where('assessment_id', $submissionId)
             ->sum('manual_score'); // Or whatever the valid fallback is
     }
 
     public function updateStatus($id, $status, $calculatedTotal)
     {
-        $pengumpulan = $this->model->findOrFail($id);
-        $pengumpulan->update([
+        $Assessment = $this->model->findOrFail($id);
+        $Assessment->update([
             'status' => $status,
             'final_score' => $calculatedTotal,
             // (opsional: Timestamping jika direquire)
             'reviewed_at' => now(),
         ]);
-        return $pengumpulan;
+        return $Assessment;
     }
 
     public function publishStatus($submissionId)
     {
-        $pengumpulan = $this->model->findOrFail($submissionId);
-        $pengumpulan->update([
+        $Assessment = $this->model->findOrFail($submissionId);
+        $Assessment->update([
             'status' => 'PUBLISHED'
         ]);
-        return $pengumpulan;
+        return $Assessment;
     }
 
     public function getVerifiedAnswers($submissionId)
     {
-        return PengumpulanJawaban::where('submission_id', $submissionId)
+        return ResponAssessment::where('assessment_id', $submissionId)
             ->where('skor_validasi_reviewer', '>', 0)
             ->get();
     }
@@ -85,7 +85,7 @@ class ReviewRepository extends BaseRepository
         return Kategori::withCount([
             'pertanyaans as questions_count',
             'jawabans as answers_count' => function ($query) use ($submissionId) {
-                $query->where('submission_id', $submissionId)
+                $query->where('assessment_id', $submissionId)
                       ->whereNotNull('skor_validasi_reviewer');
             }
         ])->get();
@@ -95,14 +95,14 @@ class ReviewRepository extends BaseRepository
     {
         return Pertanyaan::where('category_id', $categoryId)
             ->with(['jawaban' => function($q) use ($submissionId) {
-                $q->where('submission_id', $submissionId);
+                $q->where('assessment_id', $submissionId);
             }])
             ->get();
     }
 
     public function getWithReviewerContext($subId, $catId)
     {
-        return PengumpulanJawaban::where('submission_id', $subId)
+        return ResponAssessment::where('assessment_id', $subId)
             ->whereHas('question', function ($q) use ($catId) {
                 $q->where('category_id', $catId);
             })
@@ -115,9 +115,9 @@ class ReviewRepository extends BaseRepository
         \Illuminate\Support\Facades\DB::transaction(function () use ($submissionId, $verifications) {
             foreach ($verifications as $ver) {
                 // Sesuai dokumen "AssessmentAnswer::where('id', $id)->update(['reviewer_scale' => $scale, 'manual_score' => $score, 'verified_at' => now()])"
-                // Mengubah existing answer dari tabel pengumpulan_jawaban
-                PengumpulanJawaban::where('id', $ver['id'])
-                    ->where('submission_id', $submissionId) // Mengunci untuk re-verify assessment yg tepat
+                // Mengubah existing answer dari tabel respon_assessment
+                ResponAssessment::where('id', $ver['id'])
+                    ->where('assessment_id', $submissionId) // Mengunci untuk re-verify assessment yg tepat
                     ->update([
                         'reviewer_scale' => $ver['scale_choice'],
                         'manual_score' => $ver['manual_score'],
@@ -131,7 +131,7 @@ class ReviewRepository extends BaseRepository
 
     public function getAnswersByCategory($submissionId, $categoryId)
     {
-        return PengumpulanJawaban::where('submission_id', $submissionId)
+        return ResponAssessment::where('assessment_id', $submissionId)
             ->whereHas('question', function ($q) use ($categoryId) {
                 $q->where('category_id', $categoryId);
             })->get();

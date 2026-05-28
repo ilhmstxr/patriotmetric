@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\kategori;
+use App\Models\Kategori;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,7 +13,7 @@ class KategoriSeeder extends Seeder
      */
     public function run(): void
     {
-        // kategori::factory(10)->create();
+        // Kategori::factory(10)->create();
         $kategori = [
             [
                 'nama_kategori' => 'A. VARIABEL PATRIOTISME KEBIJAKAN',
@@ -26,6 +26,6 @@ class KategoriSeeder extends Seeder
             ],
         ];
 
-        kategori::insert($kategori);
+        Kategori::insert($kategori);
     }
 }

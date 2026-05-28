@@ -17,20 +17,14 @@ return new class extends Migration {
             $table->string('password');
             $table->enum('role', ["ADMIN", "REVIEWER", "PESERTA"])->default("PESERTA");
             // $table->string('last_session_id')->nullable(); // Untuk Single Session logic
-            // $table->string('name');
+            $table->string('name')->nullable();
             // $table->string('nama_institusi')->nullable();
             // $table->text('alamat')->nullable();
             // $table->string('telepon')->nullable();
             $table->enum(
                 'status',
-                [
-                    "UNVERIFIED",
-                    "PENDING",
-                    "ACTIVE",
-                    "SUSPENDED",
-                    "BANNED",
-                ]
-            );
+                ["UNVERIFIED","ACTIVE","SUSPENDED"]
+            )->default("UNVERIFIED");
             $table->rememberToken();
             $table->timestamps();
         });

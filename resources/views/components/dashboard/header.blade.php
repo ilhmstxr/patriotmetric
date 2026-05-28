@@ -12,28 +12,143 @@
         @php
             $logoLink = request()->is('reviewer*') || request()->routeIs('reviewer.*') ? route('reviewer.index') : route('dashboard.index');
         @endphp
-        <a href="{{ $logoLink }}" class="flex items-center shrink-0">
+        <a href="{{ $logoLink }}" wire:navigate class="flex items-center shrink-0">
             <div class="h-[48px] lg:h-[73px] w-[81px] lg:w-[124px] relative shrink-0">
-                <img alt="Patriot Metric" class="absolute inset-0 max-w-none object-cover lg:object-contain pointer-events-none size-full" src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.png') }}" />
+                <img alt="Patriot Metric" class="absolute inset-0 max-w-none object-cover lg:object-contain pointer-events-none size-full" src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.webp') }}" />
             </div>
         </a>
 
         {{-- User Info kanan + Avatar Dropdown --}}
-        <div class="flex items-center gap-3 shrink-0" x-data="{ userMenuOpen: false }" @click.outside="userMenuOpen = false">
+        <div class="flex items-center gap-3 shrink-0" 
+             x-data="{ 
+                 userMenuOpen: false,
+                 userData: (function() {
+                     // Baca cache synchronous sebelum Alpine init agar tidak ada flash '...'
+                     try {
+                         const cached = localStorage.getItem('profile_data_cache');
+                         if (cached) {
+                             const result = JSON.parse(cached);
+                             const user = result.user || {};
+                             const p = result.pengumpulan;
+                             const role = (user.role || '').toLowerCase();
+                             if (p) {
+                                 const namaPt = p.institusi ? p.institusi.nama_institusi : 'Perguruan Tinggi Terdaftar';
+                                 return {
+                                     nama_pic: p.nama_pic || user.email || '',
+                                     nama_pt: namaPt,
+                                     avatar: namaPt.substring(0, 2).toUpperCase(),
+                                     logo_url: (p.institusi && p.institusi.logo_url_full) ? p.institusi.logo_url_full : null
+                                 };
+                             } else if (role === 'reviewer') {
+                                 return {
+                                     nama_pic: user.name || user.email || '',
+                                     nama_pt: 'Reviewer Patriot Metric',
+                                     avatar: (user.name || 'RV').substring(0, 2).toUpperCase(),
+                                     logo_url: null
+                                 };
+                             }
+                         }
+                     } catch(e) {}
+                     return { nama_pic: '', nama_pt: '', avatar: '', logo_url: null };
+                 })(),
+                    processUserData(user, p) {
+                        const role = (user.role || '').toLowerCase();
+                        // 1. Check if redirection is needed for Peserta
+                        if (role === 'peserta') {
+                            const isAtVerifikasi = window.location.pathname.includes('/verifikasi');
+                            if (!p || p.status === 'UNVERIFIED') {
+                                if (!isAtVerifikasi) {
+                                    window.location.href = '/verifikasi';
+                                    return true;
+                                }
+                            } else if (isAtVerifikasi) {
+                                window.location.href = '/dashboard';
+                                return true;
+                            }
+                        }
+
+                     // 2. Map user data for display
+                        if (p) {
+                            this.userData.nama_pic = p.nama_pic || user.email;
+                            this.userData.nama_pt = p.institusi ? p.institusi.nama_institusi : 'Perguruan Tinggi Terdaftar';
+                            this.userData.avatar = this.userData.nama_pt.substring(0, 2).toUpperCase();
+                            this.userData.logo_url = (p.institusi && p.institusi.logo_url_full) ? p.institusi.logo_url_full : null;
+                        } else {
+                           this.userData.nama_pic = user.name || user.email;
+                           if (role === 'reviewer') {
+                               this.userData.nama_pt = 'Reviewer Patriot Metric';
+                               this.userData.avatar = (user.name || 'RV').substring(0, 2).toUpperCase();
+                               this.userData.logo_url = null;
+                           }
+                        }
+                     return false;
+                 },
+
+                 async init() {
+                     try {
+                         const token = localStorage.getItem('auth_token');
+                         if (!token) {
+                             if (!window.location.pathname.includes('/reviewer')) {
+                                 window.location.href = '/masuk';
+                             }
+                             return;
+                         }
+
+                         // Selalu tampilkan data dari cache terlebih dahulu (tidak ada flash)
+                         const cached = localStorage.getItem('profile_data_cache');
+                         if (cached) {
+                             try {
+                                 const result = JSON.parse(cached);
+                                 this.processUserData(result.user, result.assessment || result.Assessment);
+                             } catch (e) {}
+                         }
+
+                         // Hanya fetch API sekali per sesi browser (skip saat wire:navigate)
+                         if (window._headerApiInitDone) return;
+                         window._headerApiInitDone = true;
+
+                         const res = await fetch('/api/auth/me', {
+                             headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' }
+                         });
+                         const result = await res.json();
+                         if (res.ok && result.success) {
+                             localStorage.setItem('profile_data_cache', JSON.stringify(result.data));
+                             this.processUserData(result.data.user, result.data.assessment);
+                         } else {
+                             if (!window.location.pathname.includes('/reviewer')) {
+                                 localStorage.removeItem('auth_token');
+                                 localStorage.removeItem('auth_user');
+                                 localStorage.removeItem('profile_data_cache');
+                                 localStorage.removeItem('profile_data_cache_at');
+                                 sessionStorage.clear();
+                                 window.location.href = '/masuk';
+                             }
+                         }
+                     } catch (e) { console.error(e); }
+                 }
+             }" 
+             @click.outside="userMenuOpen = false">
+            <template x-if="userData.nama_pt === 'Reviewer Patriot Metric'">
+                <div class="h-[24px] px-[8px] bg-[#1b5e20] text-white text-[11px] font-bold rounded flex items-center justify-center uppercase tracking-wider hidden sm:flex">
+                    Reviewer
+                </div>
+            </template>
             <div class="text-right hidden sm:block">
-                {{-- ✏️ Ganti: nama user --}}
-                <p class="font-bold text-[#1d293d] text-[14px] leading-[20px]">Euis Nurul Hidayah</p>
-                {{-- ✏️ Ganti: nama institusi --}}
-                <p class="font-medium text-[#62748e] text-[11px] leading-[16px] uppercase tracking-wide">
-                    Universitas Pembangunan Nasional Veteran Jawa Timur
-                </p>
+                <p class="font-bold text-[#1d293d] text-[14px] leading-[20px]" x-text="userData.nama_pic"></p>
+                <p class="font-medium text-[#62748e] text-[11px] leading-[16px] uppercase tracking-wide" x-text="userData.nama_pt"></p>
             </div>
 
             {{-- Avatar Dropdown Trigger --}}
             <div class="relative">
                 <button @click="userMenuOpen = !userMenuOpen"
-                        class="w-[40px] h-[40px] bg-[#1b5e20] rounded-full flex items-center justify-center shrink-0 hover:bg-[#155017] transition-colors ring-2 ring-transparent hover:ring-[#1b5e20]/20 focus:outline-none">
-                    <span class="text-white font-bold text-[13px] tracking-wide">UPN</span>
+                        class="w-[40px] h-[40px] bg-[#e8f5e9] rounded-full flex items-center justify-center shrink-0 hover:opacity-80 transition-opacity ring-2 ring-[#1b5e20]/20 focus:outline-none overflow-hidden">
+                    <img :src="userData.logo_url"
+                         alt="Logo Instansi"
+                         class="w-full h-full object-cover"
+                         x-show="userData.logo_url">
+                    <span x-show="!userData.logo_url"
+                          class="w-full h-full flex items-center justify-center bg-[#1b5e20] text-white font-bold text-[14px] rounded-full"
+                          x-text="userData.avatar ? userData.avatar.substring(0, 2).toUpperCase() : 'RV'"></span>
                 </button>
 
                 {{-- Dropdown Menu --}}
@@ -48,8 +163,8 @@
                      style="display:none;">
                     {{-- User info in dropdown (mobile) --}}
                     <div class="sm:hidden px-4 py-2.5 border-b border-[#f1f5f9] mb-1">
-                        <p class="font-bold text-[#1d293d] text-[13px] leading-[18px]">Euis Nurul Hidayah</p>
-                        <p class="text-[#62748e] text-[11px] leading-[14px]">UPN Veteran Jawa Timur</p>
+                        <p class="font-bold text-[#1d293d] text-[13px] leading-[18px]" x-text="userData.nama_pic"></p>
+                        <p class="text-[#62748e] text-[11px] leading-[14px]" x-text="userData.nama_pt"></p>
                     </div>
 
                     {{-- Ganti Password Option --}}
@@ -62,14 +177,25 @@
                     <div class="border-t border-[#f1f5f9] mx-3 my-1"></div>
 
                     {{-- Keluar Option --}}
-                    <a href="{{ url('/') }}"
-                       class="w-full flex items-center gap-2.5 px-4 py-2.5 text-[13px] font-medium text-[#e53935] hover:text-[#b71c1c] hover:bg-red-50 transition-colors">
+                    <button 
+                        @click="
+                            fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + localStorage.getItem('auth_token'), 'Accept': 'application/json' } }).finally(() => {
+                                localStorage.removeItem('auth_token');
+                                localStorage.removeItem('auth_user');
+                                localStorage.removeItem('user_status');
+                                localStorage.removeItem('assessment_status');
+                                localStorage.removeItem('rubrik_data_cache');
+                                localStorage.removeItem('profile_data_cache');
+                                localStorage.removeItem('profile_data_cache_at');
+                                sessionStorage.clear();
+                                window.location.href = '/masuk';
+                            });
+                        "
+                        class="w-full flex items-center gap-2.5 px-4 py-2.5 text-[13px] font-medium text-[#e53935] hover:text-[#b71c1c] hover:bg-red-50 transition-colors">
                         <i data-lucide="log-out" class="w-4 h-4"></i>
                         Keluar
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-</div>
-

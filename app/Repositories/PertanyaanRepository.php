@@ -22,7 +22,7 @@ class PertanyaanRepository extends BaseRepository
             'OpsiJawaban', // <--- WAJIB DITAMBAHKAN AGAR OPSI PILIHAN GANDA MUNCUL DI JSON
             'jawaban' => function ($query) use ($assessment) {
                 // Filter jawaban spesifik untuk submission ini
-                $query->where('submission_id', $assessment->id);
+                $query->where('assessment_id', $assessment->id);
             }
         ])->get();
     }
@@ -42,10 +42,28 @@ class PertanyaanRepository extends BaseRepository
      */
     public function findMatchingOpsiByValue($pertanyaanId, $inputValue)
     {
-        return OpsiJawaban::where('pertanyaan_id', $pertanyaanId)
-            ->where('value', '<=', (int) $inputValue)
-            ->orderBy('value', 'desc')
+        $input = (int) $inputValue;
+
+        if ($input <= 0) {
+            return OpsiJawaban::where('pertanyaan_id', $pertanyaanId)
+                ->whereNull('value')
+                ->first();
+        }
+
+        $match = OpsiJawaban::where('pertanyaan_id', $pertanyaanId)
+            ->whereNotNull('value')
+            ->where('value', '>=', $input)
+            ->orderBy('value', 'asc')
             ->first();
+
+        if (!$match) {
+            $match = OpsiJawaban::where('pertanyaan_id', $pertanyaanId)
+                ->whereNotNull('value')
+                ->orderBy('value', 'desc')
+                ->first();
+        }
+
+        return $match;
     }
 
     public function getPertanyaanWithOpsiJawaban()
@@ -68,5 +86,14 @@ class PertanyaanRepository extends BaseRepository
     {
         // Sesuaikan jika ada pertanyaan yang tidak wajib (is_mandatory = false)
         return $this->model->count();
+    }
+    public function getLatestPertanyaanUpdate()
+    {
+        return $this->model->max('updated_at');
+    }
+
+    public function getAllCategoriesWithPertanyaans()
+    {
+        return \App\Models\Kategori::with('pertanyaans')->get();
     }
 }

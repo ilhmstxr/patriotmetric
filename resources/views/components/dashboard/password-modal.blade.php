@@ -1,5 +1,45 @@
 {{-- Password Change Modal --}}
-<div x-data="{ showPasswordModal: false, showOld: false, showNew: false, showConfirm: false, error: '', success: false }"
+<div x-data="{
+        showPasswordModal: false, showOld: false, showNew: false, showConfirm: false,
+        error: '', success: false, isLoading: false,
+        async submitChange(form) {
+            const old = form.querySelector('[name=old_password]').value;
+            const newp = form.querySelector('[name=new_password]').value;
+            const conf = form.querySelector('[name=confirm_password]').value;
+            this.error = '';
+            if (!old || !newp || !conf) { this.error = 'Semua kolom harus diisi.'; return; }
+            if (newp.length < 8) { this.error = 'Password baru minimal 8 karakter.'; return; }
+            if (newp !== conf) { this.error = 'Konfirmasi password tidak cocok.'; return; }
+
+            this.isLoading = true;
+            try {
+                const res = await fetch('/api/auth/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        current_password: old,
+                        new_password: newp,
+                        new_password_confirmation: conf
+                    })
+                });
+                const result = await res.json();
+                if (res.ok && result.success) {
+                    this.success = true;
+                    form.reset();
+                } else {
+                    this.error = result.message || 'Gagal mengubah kata sandi.';
+                }
+            } catch (e) {
+                this.error = 'Terjadi kesalahan jaringan. Silakan coba lagi.';
+            } finally {
+                this.isLoading = false;
+            }
+        }
+     }"
      @open-password-modal.window="showPasswordModal = true; error = ''; success = false"
      x-cloak>
 
@@ -69,16 +109,8 @@
                 </div>
 
                 {{-- Form --}}
-                <form x-show="!success" style="display:none;" @submit.prevent="
-                    const old = $el.querySelector('[name=old_password]').value;
-                    const newp = $el.querySelector('[name=new_password]').value;
-                    const conf = $el.querySelector('[name=confirm_password]').value;
-                    error = '';
-                    if (!old || !newp || !conf) { error = 'Semua kolom harus diisi.'; return; }
-                    if (newp.length < 8) { error = 'Password baru minimal 8 karakter.'; return; }
-                    if (newp !== conf) { error = 'Konfirmasi password tidak cocok.'; return; }
-                    success = true;
-                    $el.reset();"
+                <form x-show="!success" style="display:none;"
+                      @submit.prevent="submitChange($el)"
                       class="space-y-4">
                     {{-- Old Password --}}
                     <div class="flex flex-col gap-1.5">
@@ -132,9 +164,10 @@
                     </div>
 
                     {{-- Submit Button --}}
-                    <button type="submit"
-                            class="w-full h-[44px] bg-[#1b5e20] hover:bg-[#155017] active:bg-[#0f3b15] text-white font-semibold text-[14px] rounded-xl transition-colors shadow-sm mt-2 flex items-center justify-center gap-2">
-                       Simpan Password Baru
+                    <button type="submit" :disabled="isLoading"
+                            class="w-full h-[44px] bg-[#1b5e20] hover:bg-[#155017] active:bg-[#0f3b15] text-white font-semibold text-[14px] rounded-xl transition-colors shadow-sm mt-2 flex items-center justify-center gap-2 disabled:opacity-60">
+                       <span x-show="!isLoading">Simpan Password Baru</span>
+                       <span x-show="isLoading" style="display:none;">Memproses...</span>
                     </button>
                 </form>
             </div>

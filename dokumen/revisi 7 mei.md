@@ -1,0 +1,44 @@
+- background gambar masuk daftar warnanya
+- password pakai kekuatan simbol, angka, huruf kecil, dan huruf besar
+- link template berkas di verifikasi
+- gaperlu SK Tim Pemeringkatan di verifikasi
+- FE untuk layout Kepercayaan Terhadap YME kolom 4 dan 2 baris
+- FE dikasih keputusan MK dalam kurung untuk field Kepercayaan Terhadap YME
+- FE tambahkan preview agama di halaman tinjauan akhir halaman verifikasi
+- FE sudah diisi hijau, setengah kuning, kosong tetap TIDAK DIGANTI WARNANYA, dan flag merah
+- FE mengisi satuan disemua indikator yang mengisi *done
+- FE B9 lama beroperasi pusat konseling berapa bulan
+- FE B10 tenaga kependidikan bukan
+- CHECK B13 ada 4 untuk kolom field untuk membedah "Skor = (Jumlah kegiatan kompetisi/lomba) x (skala kegiatan). 1: untuk skala lokal / kota kabupaten/ internal institusi. 2: skala regional / provinsi. 3: skala nasional. 4: skala internasional."
+- FE semua yang persentase diubah menjadi jumlah
+- DONE ilham informasi semua ada ditulis jumlah
+- FE dikasih disclaimer poin draft belum final "hasil penilaian sementara, nilai akhir ditentukan oleh reviewer"
+- ilham edit tidak bisa jika sudah tutup dan status Assessmentnya sedang di review nyangkut 
+- ilham minimal 20 karakter dan wajib diisi untuk catatan penilaian spasi dihitung
+- DONE ilham super admin ajah
+- DONE ilham foto diganti
+- ilham pedoman peserta dan pedoman reviewer
+- PROGRESS USECASE dan CDM PDM
+- CHECK ilham timeline untuk permission edit di sisi peserta, serta timeline peserta dapat melihat hasilnya di menggunakkan model submission_timeline
+
+
+
+
+- LOCK READONLY DI RUBRIK BERUBAH DARI STATUS PENGUMPULAN YANG AWALNYA IN_PROGRESS MENJADI SUBMITTED BUKAN WAKTU
+- Bug di Hasil Penilaian dibagian Disclaimer dipindah ke kiri atas didalam Banner Total Penilaian
+- Lazy loading untuk gambar profile kanan atas kan juga tidak ada fitur ganti logo instansi jadi ngga akan berubah kenapa tiap ganti halaman profile juga terload ulang
+- perbaiki Header di reviwewer selalu terload ketika ganti halaman lain
+- kenapa ada poin yang melebihi 5 padahal nilai maksimal poinnya adalah 5 dibagian guide ditiap soal mengisi di sisi reviewer
+- masih ada bug navbar ngebling ngebling saat scroll keatas dibagian reviewer, buat logikanya sama dengan yang ada di peserta
+- validasi minimal input 20 karakter di catatan sisi reviewer belum ada warningnya jadi buat warningnya ketika kurang dari 20 karakter
+- hapus tombol simpan draft di sisi reviewer karena sudah ada fitur auto save
+- fitur ganti password belum bisa
+- Ubah profile di reviewer menjadi 2 huruf depannya saja jangan menggunaakan asset gambar
+- BERIKAN TOMBOL UNTUK BAGIAN VERIFIKASI DITIAP FILE YANG HARUS UPLOAD FILE ITU JIKA DI KLIK ADA PREVIEW FILE TEMPLATE YANG AKAN SAYA SEDIAKAN DI FOLDER PUBLIK JADI SIAPKAN PATH DAN NAMA FILENYA DAN AKAN TERBUKA DI TAB BROWSER BARU UNTUK PREVIEW PDF TEMPLATENYA
+- ADA TAMBAHAN/PERUBAHAN YAKNI STATUS AWAL USER JIKA CREATE 
+
+- IMAGE PROFILE USER DIUBAH MENJADI WEBP SEBELUM DI SIMPAN DI STORAGE
+- INDIKATOR DATA PROFILE NAVBAR ACTIVE NYA NYANGKUT
+- KENAPA TIBA TIBA RELOAD SENDIRI UNTUK HALAMAN HASIL PENILAIAN DAN FOTO PROFILE IKUT TERLOAD ULANG JUGA?? 
+- DI C.6 KENAPA LANGSUNG MUNCUL POINNYA PADAHAL POIN ITU MENUNGGU 2 2 NYA DIISI YAKNI JAWABAN DAN TAUTAN BUKTI
+- KENAPA TIDAK JADI 1 UNTUK TAMPILAN POINNYA KENAPA ADA YANG 0.00/5 DAN 0/5 BUAT SEMUA SERAGAM MENJADI 0/5

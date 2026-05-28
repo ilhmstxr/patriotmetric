@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\pertanyaan;
+use App\Models\Pertanyaan;
 use Illuminate\Http\Request;
 
 class PertanyaanController extends Controller
@@ -34,7 +34,7 @@ class PertanyaanController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(pertanyaan $pertanyaan)
+    public function show(Pertanyaan $pertanyaan)
     {
         //
     }
@@ -42,7 +42,7 @@ class PertanyaanController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(pertanyaan $pertanyaan)
+    public function edit(Pertanyaan $pertanyaan)
     {
         //
     }
@@ -50,7 +50,7 @@ class PertanyaanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, pertanyaan $pertanyaan)
+    public function update(Request $request, Pertanyaan $pertanyaan)
     {
         //
     }
@@ -58,7 +58,7 @@ class PertanyaanController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(pertanyaan $pertanyaan)
+    public function destroy(Pertanyaan $pertanyaan)
     {
         //
     }

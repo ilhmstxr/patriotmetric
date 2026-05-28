@@ -3,27 +3,22 @@
 namespace Database\Seeders;
 
 use App\Models\Institusi;
-use App\Models\pengumpulan;
+use App\Models\Assessment;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class PengumpulanSeeder extends Seeder
+class AssessmentSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        // pengumpulan::factory(15)->create();
+        // Assessment::factory(15)->create();
 
         $emails = [
-            'user1@admin.com',
-            'user2@admin.com',
-            'user3@admin.com',
-            'user4@admin.com',
-            'user5@admin.com',
-            'user6@admin.com',
+            'peserta@test.com',
         ];
 
         $users = User::whereIn('email', $emails)->get();
@@ -41,17 +36,17 @@ class PengumpulanSeeder extends Seeder
 
             $institusi = $institusis->get($index);
 
-            pengumpulan::create([
+            Assessment::create([
                 'user_id' => $user->id,
                 'institution_id' => $institusi->id,
                 'nama_pic' => 'PIC Default',
                 'jabatan_pic' => null,
                 'no_hp_pic' => '081234567890',
                 'tahun_periode' => 2026,
-                'status' => 'ACTIVE',
+                'status' => 'IN_PROGRESS',
                 'total_skor_sistem' => 0,
                 'total_skor_akhir' => 0,
-                'reviewer_id' => 8
+                'reviewer_id' => null
             ]);
         }
     }

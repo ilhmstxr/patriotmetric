@@ -10,10 +10,16 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\DissociateAction;
 use Filament\Actions\DissociateBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
+use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 
 class PertanyaansRelationManager extends RelationManager
@@ -24,39 +30,50 @@ class PertanyaansRelationManager extends RelationManager
     {
         return $schema
             ->components([
-                \Filament\Forms\Components\TextInput::make('kode_pertanyaan')
+                TextInput::make('kode_pertanyaan')
                     ->label('Kode/Indikator (Cth: PU1)'),
-                \Filament\Forms\Components\Textarea::make('teks_pertanyaan')
+                Textarea::make('teks_pertanyaan')
                     ->label('Teks Pertanyaan')
                     ->required()
                     ->columnSpanFull(),
-                \Filament\Forms\Components\Textarea::make('deskripsi')
-                    ->label('Deskripsi Penjelasan')
-                    ->columnSpanFull(),
-                \Filament\Forms\Components\RichEditor::make('kebutuhan_bukti')
+                RichEditor::make('kebutuhan_bukti')
                     ->label('Kebutuhan Bukti (Evidence)')
+                    ->toolbarButtons([
+                        'bulletList', 'orderedList',
+                        'bold', 'italic',
+                        'undo', 'redo',
+                    ])
                     ->columnSpanFull(),
-                \Filament\Forms\Components\Select::make('tipe')
+                Select::make('tipe')
                     ->label('Tipe Jawaban')
                     ->options([
                         'pilihan_ganda' => 'Pilihan Ganda',
-                        'teks_singkat' => 'Teks Singkat',
+                        'isian_singkat' => 'Isian Singkat',
+                        'otomatis_sistem' => 'Otomatis Sistem',
                     ])
                     ->live()
                     ->required(),
-                \Filament\Forms\Components\TextInput::make('skor_maksimal')
+                /* TextInput::make('skor_maksimal')
                     ->label('Skor Maksimal')
                     ->numeric()
                     ->default(0)
-                    ->required(),
-                \Filament\Forms\Components\Repeater::make('OpsiJawaban')
+                    ->required(), */
+                Repeater::make('OpsiJawaban')
                     ->label('Opsi Pilihan')
                     ->schema([
-                        \Filament\Forms\Components\TextInput::make('teks')
-                            ->label('Teks Opsi')
-                            ->placeholder('Cth: Sangat Baik')
+                        Select::make('opsi_jawaban')
+                            ->label('Label')
+                            ->options(['0'=>'0','1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5'])
+                            ->required(),
+                        TextInput::make('value')
+                            ->label('Skor')
+                            ->numeric()
+                            ->required(),
+                        TextInput::make('keterangan')
+                            ->label('Keterangan')
                             ->required(),
                     ])
+                    ->columns(3)
                     ->visible(fn ($get): bool => $get('tipe') === 'pilihan_ganda')
                     ->columnSpanFull(),
             ]);
@@ -66,12 +83,11 @@ class PertanyaansRelationManager extends RelationManager
     {
         return $table
             ->headerActions([
-                CreateAction::make()->label('Tambah Pertanyaan'),
-                AssociateAction::make()->label('Hubungkan Pertanyaan'),
+                //
             ])
             ->recordTitleAttribute('teks_pertanyaan')
             ->columns([
-                \Filament\Tables\Columns\TextColumn::make('kode_pertanyaan')
+                TextColumn::make('kode_pertanyaan')
                     ->label('Kode')
                     ->searchable()
                     ->sortable(),
@@ -82,34 +98,35 @@ class PertanyaansRelationManager extends RelationManager
                 TextColumn::make('tipe')
                     ->label('Tipe Jawaban')
                     ->badge(),
-                \Filament\Tables\Columns\TextColumn::make('skor_maksimal')
+                /* TextColumn::make('skor_maksimal')
                     ->label('Skor Maksimal')
-                    ->sortable(),
+                    ->sortable(), */
             ])
             ->filters([
                 //
             ])
             ->groups([
-                \Filament\Tables\Grouping\Group::make('kategori.nama_kategori')
+                Group::make('kategori.nama_kategori')
                     ->label('Kategori')
                     ->collapsible()
                     ->titlePrefixedWithLabel(false),
             ])
             ->defaultGroup('kategori.nama_kategori')
-            ->collapsedGroupsByDefault(true)
+            ->collapsedGroupsByDefault(false)
             ->headerActions([
-                CreateAction::make(),
-                AssociateAction::make(),
+                //
             ])
             ->recordActions([
-                EditAction::make()->label('Ubah'),
-                DissociateAction::make()->label('Lepas Hubungan'),
-                DeleteAction::make()->label('Hapus'),
+                Action::make('manageOptions')
+                    ->label('Kelola Opsi')
+                    ->icon('heroicon-o-list-bullet')
+                    ->color('info')
+                    ->url(fn ($record) => \App\Filament\Resources\Pertanyaans\PertanyaanResource::getUrl('edit', ['record' => $record])),
             ])
+            ->defaultPaginationPageOption(5)
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DissociateBulkAction::make()->label('Lepas Terpilih'),
-                    DeleteBulkAction::make()->label('Hapus Terpilih'),
+                    //
                 ])->label('Aksi Massal'),
             ]);
     }

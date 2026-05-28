@@ -16,7 +16,7 @@ class MakeArchitectureCommand extends Command
     {
         $name = $this->argument('name');
 
-        $this->generateFile($name, 'DTO', 'app/DTOs');
+        $this->generateFile($name, 'DTO', 'app/DTO');
         $this->generateFile($name, 'Service', 'app/Services');
         $this->generateFile($name, 'Repository', 'app/Repositories');
 
@@ -57,7 +57,7 @@ class MakeArchitectureCommand extends Command
         
         $namespace = "App\\" . Str::plural($suffix);
         if ($suffix === 'DTO')
-            $namespace = "App\\DTOs";
+            $namespace = "App\\DTO";
 
         return "<?php\n\nnamespace {$namespace};\n\nclass {$name}{$suffix}\n{\n    // Logic untuk {$name}{$suffix}\n}\n";
     }

@@ -27,65 +27,40 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('admin'),
             'role' => 'ADMIN',
             'status' => 'ACTIVE',
+            'email_verified_at' => now(),
         ]);
 
-        User::create([
-            'email' => "user1@admin.com",
-            'password' => bcrypt('user'),
-            'role' => 'PESERTA',
-            'status' => 'ACTIVE',
-        ]);
+        // User::create([
+        //     'email' => "peserta@test.com",
+        //     'password' => bcrypt('peserta123'),
+        //     'role' => 'PESERTA',
+        //     'status' => 'ACTIVE',
+        // ]);
+
+        // User::create([
+        //     'email' => "reviewer@admin.com",
+        //     'password' => bcrypt('reviewer'),
+        //     'role' => 'REVIEWER',
+        //     'status' => 'ACTIVE',
+        // ]);
 
         User::create([
-            'email' => "user2@admin.com",
-            'password' => bcrypt('user'),
+            'email' => "upn@pic.com",
+            'password' => bcrypt('upn123'),
             'role' => 'PESERTA',
-            'status' => 'ACTIVE',
-        ]);
-        User::create([
-            'email' => "user3@admin.com",
-            'password' => bcrypt('user'),
-            'role' => 'PESERTA',
-            'status' => 'ACTIVE',
-        ]);
-
-        User::create([
-            'email' => "user4@admin.com",
-            'password' => bcrypt('user'),
-            'role' => 'PESERTA',
-            'status' => 'ACTIVE',
-        ]);
-        User::create([
-            'email' => "user5@admin.com",
-            'password' => bcrypt('user'),
-            'role' => 'PESERTA',
-            'status' => 'ACTIVE',
-        ]);
-
-        User::create([
-            'email' => "user6@admin.com",
-            'password' => bcrypt('user'),
-            'role' => 'PESERTA',
-            'status' => 'ACTIVE',
-        ]);
-
-        User::create([
-            'email' => "reviewer@admin.com",
-            'password' => bcrypt('reviewer'),
-            'role' => 'REVIEWER',
             'status' => 'ACTIVE',
         ]);
 
         $this->call([
-            InstitusiSeeder::class,
-            // AssessmentSeeder::class,
-            PengumpulanSeeder::class,
-            IdentitasSeeder::class,
-
             KategoriSeeder::class,
             PertanyaanSeeder::class,
-            PengumpulanJawabanSeeder::class,
-            PengaturanCmsSeeder::class,
+            // PengaturanCmsSeeder::class,
+            ComproContentSeeder::class,
+            // InstitusiSeeder::class,
+            // AssessmentSeeder::class,
+            // IdentitasSeeder::class,
+            // ResponAssessmentSeeder::class,
+            // ReviewerSeeder::class,
         ]);
 
 
@@ -94,8 +69,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // KategoriSeeder::class,
             // PertanyaanSeeder::class,
-            // PengumpulanSeeder::class,
-            // PengumpulanJawabanSeeder::class,
+            // AssessmentSeeder::class,
+            // ResponAssessmentSeeder::class,
             // PengaturanCmsSeeder::class,
 
         ]);

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\kategori;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 
 class KategoriController extends Controller
@@ -34,7 +34,7 @@ class KategoriController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(kategori $kategori)
+    public function show(Kategori $kategori)
     {
         //
     }
@@ -42,7 +42,7 @@ class KategoriController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(kategori $kategori)
+    public function edit(Kategori $kategori)
     {
         //
     }
@@ -50,7 +50,7 @@ class KategoriController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, kategori $kategori)
+    public function update(Request $request, Kategori $kategori)
     {
         //
     }
@@ -58,7 +58,7 @@ class KategoriController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(kategori $kategori)
+    public function destroy(Kategori $kategori)
     {
         //
     }

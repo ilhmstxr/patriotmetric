@@ -1,58 +1,120 @@
+@inject('comproService', 'App\Services\ComproContentService')
+
+@php
+    $content = $comproService->getPageContent('profile');
+
+    $hero = $content->get('hero', collect());
+    $latarBelakang = $content->get('latar-belakang', collect());
+    $tujuanUtama = $content->get('tujuan-utama', collect());
+
+    $heroJudul = $hero->firstWhere('key', 'judul')?->value ?? 'Membangun Karakter <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#d4af37] to-[#fff085]">Bangsa</span> dari Perguruan Tinggi';
+    $heroDeskripsi = $hero->firstWhere('key', 'deskripsi')?->value ?? 'Sebuah inisiatif pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.';
+    $heroBackground = $hero->firstWhere('key', 'background_image')?->value ?? '';
+
+    $latarJudul = $latarBelakang->firstWhere('key', 'judul')?->value ?? 'Latar Belakang';
+    $latarDeskripsi = $latarBelakang->firstWhere('key', 'deskripsi')?->value ?? '';
+
+    $tujuanJudul = $tujuanUtama->firstWhere('key', 'judul')?->value ?? 'Tujuan Utama Program';
+    $tujuanDeskripsi = $tujuanUtama->firstWhere('key', 'deskripsi')?->value ?? '';
+    $tujuanDaftar = $tujuanUtama->firstWhere('key', 'daftar')?->value ?? [];
+
+    $manfaat = $content->get('manfaat-pemeringkatan', collect());
+    $manfaatJudul = $manfaat->firstWhere('key', 'judul')?->value ?? 'Manfaat Pemeringkatan';
+    $manfaatDaftar = $manfaat->firstWhere('key', 'daftar')?->value ?? [];
+@endphp
+
 <x-layouts.app>
     <div class="bg-white">
         {{-- Hero --}}
         <section class="relative bg-[#0f172b] overflow-hidden">
             <div class="absolute inset-0">
-                <img src="{{ asset('assets/images/bg.jpeg') }}" alt="" class="w-full h-full object-cover opacity-30" />
-                <div class="absolute inset-0 bg-gradient-to-r from-[rgba(27,94,32,0.9)] via-[rgba(27,94,32,0.3)] to-transparent"></div>
+                @if($heroBackground)
+                    <img src="{{ url('cms-assets/' . $heroBackground) }}" alt="" class="w-full h-full object-cover opacity-20" />
+                @else
+                    <img src="{{ asset('assets/profile/bg.webp') }}" alt="" class="w-full h-full object-cover opacity-20" />
+                @endif
+                <div class="absolute inset-0 bg-gradient-to-b from-[rgba(27,94,32,0.85)] to-[#0f172b]/90"></div>
             </div>
-            <div class="relative max-w-[1536px] mx-auto px-6 md:px-8 py-24 md:py-40">
-                <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] sm:text-[48px] md:text-[60px] leading-[1.2] text-white max-w-[768px]">
-                    Membangun Karakter
-                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#d4af37] to-[#fff085]">Bangsa</span>
-                    dari Kampus
-                </h1>
-                <p class="mt-4 md:mt-6 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] md:text-[20px] leading-[32.5px] text-[rgba(255,255,255,0.8)] max-w-[616px]">
-                    Sebuah inisiatif pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.
-                </p>
-            </div>
-        </section>
-
-        {{-- Content --}}
-        <section class="py-16 md:py-24 bg-white">
-            <div class="max-w-[1200px] mx-auto px-6 md:px-8">
-                <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[24px] md:text-[30px] leading-[36px] text-[#1d293d]">Latar Belakang</h2>
-                <p class="mt-4 md:mt-6 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] md:text-[18px] leading-[26px] md:leading-[29.25px] text-[#45556c] text-justify md:text-left">
-                    Di tengah arus globalisasi, nilai patriotisme menghadapi tantangan serius, mulai dari menurunnya pemahaman terhadap sejarah, derasnya arus disinformasi serta radikalisme digital yang memicu polarisasi, hingga meningkatnya individualisme yang melemahkan kepedulian sosial. Oleh karena itu, diperlukan instrumen yang terukur dan kredibel untuk menilai sejauh mana perguruan tinggi mampu menginternalisasikan nilai-nilai bela negara di seluruh elemennya.
-                </p>
-                <p class="mt-4 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] md:text-[18px] leading-[26px] md:leading-[29.25px] text-[#45556c] text-justify md:text-left">
-                    Universitas Pembangunan Nasional “Veteran” Jawa Timur memprakarsai Patriot Metric UPN Veteran Jatim sebagai jawaban atas kebutuhan tersebut, yaitu sebuah sistem pemeringkatan perguruan tinggi berbasis indikator bela negara. Konsep Patriot Metric muncul dari kebutuhan untuk menghadirkan instrumen evaluasi yang objektif dan terstandar agar pembinaan kesadaran bela negara, khususnya dalam konteks nasionalisme dan patriotisme, dapat dianalisis, dievaluasi, serta dikembangkan secara berkelanjutan.
-                </p>
-
-                {{-- Tujuan Utama --}}
-                <div class="mt-12 md:mt-16 bg-white border border-[#f1f5f9] rounded-3xl shadow-lg p-6 md:p-10 max-w-[832px] mx-auto relative overflow-hidden">
-                    <div class="absolute top-0 right-0 bg-[rgba(27,94,32,0.05)] rounded-bl-full size-24 md:size-32"></div>
-                    <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[20px] md:text-[24px] leading-[32px] text-[#1d293d] mb-6 md:mb-8 relative z-10">Tujuan Utama Program</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 relative z-10">
-                        @php
-                        $tujuan = [
-                        ['num' => "1", 'text' => "Instrumen Evaluasi Kelembagaan untuk menilai internalisasi karakter bela negara."],
-                        ['num' => "2", 'text' => "Penguatan Ekosistem Pendidikan Berbasis Nilai Kebangsaan melalui Tri Dharma/."],
-                        ['num' => "3", 'text' => "Peningkatan Sinergi dan kolaborasi Antarperguruan Tinggi."],
-                        ['num' => "4", 'text' => "Mendorong setiap perguruan tinggi untuk perbaikan berkelanjutan."]
-                        ];
-                        @endphp
-                        @foreach($tujuan as $item)
-                        <div class="flex gap-4">
-                            <div class="bg-[rgba(212,175,55,0.1)] rounded-full size-8 flex items-center justify-center shrink-0 mt-0.5">
-                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] text-[#d4af37]">{{ $item['num'] }}</span>
-                            </div>
-                            <p class="font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[16px] leading-[26px] text-[#45556c]">{{ $item['text'] }}</p>
-                        </div>
-                        @endforeach
+            <div class="absolute top-16 right-16 w-80 h-80 bg-[#d4af37]/5 rounded-full blur-3xl"></div>
+            <div class="relative max-w-[1200px] mx-auto px-6 md:px-8 py-20 md:py-32">
+                <div class="flex items-start justify-between gap-8">
+                    <div class="flex-1">
+                        <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] sm:text-[48px] md:text-[56px] leading-[1.15] text-white max-w-[700px]">
+                            {!! $heroJudul !!}
+                        </h1>
+                        <p class="mt-5 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[17px] md:text-[19px] leading-[30px] text-white/75 max-w-[580px]">
+                            {{ $heroDeskripsi }}
+                        </p>
+                    </div>
+                    <div class="hidden lg:block shrink-0">
+                        <img src="{{ asset('assets/images/logo.webp') }}" alt="Patriot Metric Logo" class="w-32 h-32 object-contain opacity-90" />
                     </div>
                 </div>
             </div>
         </section>
+
+        {{-- Latar Belakang --}}
+        <section class="py-16 md:py-24 bg-white">
+            <div class="max-w-[860px] mx-auto px-6 md:px-8">
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="w-1 h-8 bg-[#1B5E20] rounded-full"></div>
+                    <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[26px] md:text-[32px] text-[#1d293d]">{{ $latarJudul }}</h2>
+                </div>
+                <div class="space-y-5 font-['Plus_Jakarta_Sans',sans-serif] text-[16px] md:text-[17px] leading-[28px] md:leading-[30px] text-[#45556c]">
+                    {!! $latarDeskripsi !!}
+                </div>
+            </div>
+        </section>
+
+        {{-- Tujuan Utama --}}
+        @if(is_array($tujuanDaftar) && count($tujuanDaftar) > 0)
+        <section class="py-16 md:py-20 bg-[#f8fafc]">
+            <div class="max-w-[1100px] mx-auto px-6 md:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[26px] md:text-[32px] text-[#1d293d]">{{ $tujuanJudul }}</h2>
+                    @if($tujuanDeskripsi)
+                        <p class="mt-3 font-['Plus_Jakarta_Sans',sans-serif] text-[16px] text-[#64748b] max-w-[500px] mx-auto">{{ $tujuanDeskripsi }}</p>
+                    @endif
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    @foreach($tujuanDaftar as $item)
+                        <div class="bg-white rounded-2xl border border-[#f1f5f9] p-7 hover:shadow-lg hover:border-[#1B5E20]/10 transition-all duration-300">
+                            <div class="flex items-start gap-4">
+                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[28px] text-[#d4af37]/40 leading-none">{{ $item['nomor'] ?? '' }}</span>
+                                <div>
+                                    <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[17px] text-[#1d293d]">{{ $item['judul'] ?? '' }}</h3>
+                                    <p class="mt-2 font-['Plus_Jakarta_Sans',sans-serif] text-[15px] leading-[24px] text-[#45556c]">{{ $item['deskripsi'] ?? '' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        @endif
+
+        {{-- Manfaat Pemeringkatan --}}
+        @if(is_array($manfaatDaftar) && count($manfaatDaftar) > 0)
+        <section class="py-16 md:py-20 bg-white">
+            <div class="max-w-[1100px] mx-auto px-6 md:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[26px] md:text-[32px] text-[#1d293d]">{{ $manfaatJudul }}</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    @foreach($manfaatDaftar as $item)
+                        <div class="bg-[#f8fafc] rounded-2xl border border-[#f1f5f9] p-7 hover:shadow-lg hover:border-[#1B5E20]/10 transition-all duration-300">
+                            <div class="flex items-start gap-4">
+                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[28px] text-[#d4af37]/40 leading-none">{{ $item['nomor'] ?? '' }}</span>
+                                <div>
+                                    <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[17px] text-[#1d293d]">{{ $item['judul'] ?? '' }}</h3>
+                                    <p class="mt-2 font-['Plus_Jakarta_Sans',sans-serif] text-[15px] leading-[24px] text-[#45556c]">{{ $item['deskripsi'] ?? '' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        @endif
     </div>
 </x-layouts.app>

@@ -202,4 +202,75 @@
   .placeholder-hide-on-blur:focus::placeholder {
     opacity: 1;
   }
+
+  /* Global interactive elements cursor */
+  button, 
+  [role="button"],
+  a,
+  select,
+  summary,
+  [onclick],
+  input[type="submit"],
+  input[type="reset"],
+  input[type="button"],
+  input[type="checkbox"],
+  input[type="radio"],
+  .clickable {
+    cursor: pointer;
+  }
+}
+
+/* Marquee animation - infinite seamless scroll */
+@keyframes scroll-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes scroll-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+.marquee-wrapper {
+  overflow: hidden;
+  padding: 8px 0;
+}
+
+.marquee-content {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  will-change: transform;
+}
+
+.marquee-content--left {
+  animation: scroll-left 100s linear infinite;
+}
+
+.marquee-content--right {
+  animation: scroll-right 100s linear infinite;
+}
+
+.marquee-wrapper:hover .marquee-content {
+  animation-play-state: paused;
+}
+
+/* Styling for RichText content from Admin */
+.richtext-content ul {
+  list-style-type: disc !important;
+  padding-left: 1.25rem !important;
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.richtext-content ol {
+  list-style-type: decimal !important;
+  padding-left: 1.25rem !important;
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.richtext-content p {
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
 }

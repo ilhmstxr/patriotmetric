@@ -14,9 +14,9 @@ getRubrikStructure(): Mengambil seluruh kategori beserta indikator dan opsi jawa
 
 getCategoryMetadata(): Mengambil informasi bobot dan jumlah indikator aktif per kategori langsung dari database.
 
-validateRubrikConsistency(): Memastikan total bobot seluruh kategori mencapai 100% sebelum sistem dibuka untuk pengumpulan.
+validateRubrikConsistency(): Memastikan total bobot seluruh kategori mencapai 100% sebelum sistem dibuka untuk Assessment.
 
-3. SubmissionService (Pengumpulan & Jawaban)
+3. SubmissionService (Assessment & Jawaban)
 getTaskDetails(): Mengambil data pertanyaan sekaligus jawaban yang sudah diisi oleh peserta untuk ditampilkan kembali pada form.
 
 saveDraft(): Menyimpan jawaban secara masal (bulk) ke dalam tabel jawaban setiap kali terjadi autosave di frontend.

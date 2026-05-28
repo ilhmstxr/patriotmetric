@@ -1,7 +1,43 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git add *)"
+      "Bash(php *)",
+      "Bash(del *)",
+      "PowerShell(php -r \"require 'vendor/autoload.php'; $app = require_once 'bootstrap/app.php'; $app->make\\('Illuminate\\\\Contracts\\\\Console\\\\Kernel'\\)->bootstrap\\(\\); $record = App\\\\Models\\\\PengaturanCms::first\\(\\); if \\($record\\) { echo 'ID: ' . $record->id . PHP_EOL; echo 'Key: ' . $record->key . PHP_EOL; echo 'Value: ' . substr\\($record->value, 0, 100\\) . PHP_EOL; } else { echo 'No records found'; }\")",
+      "PowerShell(php artisan tinker --execute=\"$record = App\\\\Models\\\\PengaturanCms::first\\(\\); if \\($record\\) { echo 'ID: ' . $record->id . PHP_EOL . 'Key: ' . $record->key . PHP_EOL . 'Value: ' . substr\\($record->value ?? '', 0, 100\\) . PHP_EOL; } else { echo 'No records found'; }\")",
+      "PowerShell(Remove-Item *)",
+      "PowerShell(php artisan tinker --execute=\"echo json_encode\\(\\\\App\\\\Models\\\\ComproContent::where\\('type', 'image'\\)->orWhere\\('type', 'repeater'\\)->limit\\(5\\)->get\\(['section','key','type','value']\\)->toArray\\(\\), JSON_PRETTY_PRINT\\);\")",
+      "PowerShell(php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Filament\\\\Pages\\\\CmsCompro.php\")",
+      "PowerShell(php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Filament\\\\Pages\\\\ComproForms\\\\WelcomeForm.php\")",
+      "PowerShell(php artisan route:list --name=storage 2>&1)",
+      "PowerShell(php artisan tinker --execute=\"echo json_encode\\(\\\\App\\\\Models\\\\ComproContent::where\\('type', 'image'\\)->orWhere\\('type', 'repeater'\\)->whereNotNull\\('value'\\)->limit\\(3\\)->get\\(['section','key','type','value']\\)->toArray\\(\\), JSON_PRETTY_PRINT\\);\")",
+      "PowerShell(New-Item *)",
+      "PowerShell(php artisan tinker --execute=\"echo \\\\Illuminate\\\\Support\\\\Facades\\\\Storage::disk\\('cms'\\)->path\\('images/test.txt'\\);\")",
+      "PowerShell(php artisan route:list --path=cms-assets 2>&1)",
+      "PowerShell(php artisan tinker --execute=\"echo \\\\Illuminate\\\\Support\\\\Facades\\\\Storage::disk\\('cms'\\)->exists\\('images/01KRWYSHSBNA02ECNV6XM7DGYP.jpg'\\) ? 'EXISTS' : 'NOT FOUND';\")",
+      "PowerShell(php artisan tinker --execute=\"echo \\\\Illuminate\\\\Support\\\\Facades\\\\Storage::disk\\('cms'\\)->path\\('images/01KRWYSHSBNA02ECNV6XM7DGYP.jpg'\\);\")",
+      "PowerShell(php artisan config:clear 2>&1)",
+      "PowerShell(php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Filament\\\\Pages\\\\CmsCompro.php\"; php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Services\\\\ComproContentService.php\")",
+      "PowerShell(php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Services\\\\ComproContentService.php\"; php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Filament\\\\Pages\\\\CmsCompro.php\"; php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Http\\\\Controllers\\\\CmsAssetController.php\")",
+      "PowerShell(Copy-Item *)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\storage\\\\app\\\\private\\\\cms\\\\images\" -File | ForEach-Object { $_.Name })",
+      "PowerShell(php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\database\\\\seeders\\\\ComproContentSeeder.php\")",
+      "PowerShell(php artisan tinker --execute=\"echo json_encode\\(\\\\App\\\\Models\\\\ComproContent::where\\('page','welcome'\\)->where\\('section','hero'\\)->where\\('key','background_image'\\)->first\\(['value','type']\\)->toArray\\(\\), JSON_PRETTY_PRINT\\);\")",
+      "PowerShell(php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Filament\\\\Pages\\\\ComproForms\\\\WelcomeForm.php\"; php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Filament\\\\Pages\\\\ComproForms\\\\ProfileForm.php\"; php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Filament\\\\Pages\\\\ComproForms\\\\PenghargaanForm.php\"; php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Filament\\\\Pages\\\\ComproForms\\\\PengumumanForm.php\"; php -l \"C:\\\\Users\\\\Ilhamstxr\\\\Documents\\\\laragon\\\\www\\\\htdocs\\\\patriotmetric\\\\app\\\\Filament\\\\Pages\\\\ComproForms\\\\TimForm.php\")",
+      "PowerShell(php artisan tinker --execute=\"echo \\\\Illuminate\\\\Support\\\\Facades\\\\Storage::disk\\('cms'\\)->url\\('images/46257018a5d0ac00852b82184ae3ed30ef9a74e4.webp'\\);\")",
+      "Bash(Select-Object -First 5)",
+      "PowerShell(php artisan route:list --columns=method,uri,name 2>&1 | Select-Object -First 10)",
+      "PowerShell(php artisan route:list 2>&1 | Select-Object -First 5)",
+      "PowerShell(php artisan route:list 2>&1 | Select-Object -First 3)",
+      "PowerShell(php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\Concerns\\\\WebpFileUpload.php\")",
+      "PowerShell(php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\WelcomeForm.php\")",
+      "PowerShell(php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\TimForm.php\")",
+      "PowerShell(php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\ProfileForm.php\"; php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\PenghargaanForm.php\"; php -l \"app\\\\Filament\\\\Pages\\\\ComproForms\\\\PengumumanForm.php\")",
+      "PowerShell(php artisan test 2>&1 | Select-Object -First 50)",
+      "PowerShell(php artisan db:seed --class=ComproContentSeeder)",
+      "PowerShell(php artisan cache:clear)",
+      "PowerShell(php artisan make:migration convert_kebutuhan_bukti_to_html --table=pertanyaans)",
+      "PowerShell(php artisan migrate)"
     ]
   }
 }

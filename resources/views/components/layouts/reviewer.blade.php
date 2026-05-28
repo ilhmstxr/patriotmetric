@@ -4,18 +4,57 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Patriot Metric Reviewer - {{ $title ?? 'Dashboard' }}</title>
-    <link rel="icon" type="image/png" href="{{ asset('assets/images/logo.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/logo.webp') }}" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>[x-cloak] { display: none !important; }</style>
+    @livewireStyles
 </head>
 <body class="antialiased bg-[#f5f5f5]" style="font-family: 'Plus Jakarta Sans', sans-serif;"
-      x-data="{ mobileMenuOpen: false, showBar: true, lastPos: 0, threshold: 25 }"
-      @scroll.window="showBar = (window.pageYOffset < lastPos - threshold || window.pageYOffset < 150); lastPos = window.pageYOffset"
+      x-data="{ mobileMenuOpen: false, showBar: true, lastPos: 0, threshold: 50 }"
+      @scroll.window="
+          const cur = window.pageYOffset;
+          if (cur < 10) { showBar = true; }
+          else if (cur < lastPos - threshold) { showBar = true; }
+          else if (cur > lastPos + 10) { showBar = false; }
+          lastPos = cur;
+      "
       x-init="$nextTick(() => { lucide.createIcons() })">
+
+    {{-- Re-init Lucide + reset scroll-hide state setelah Livewire navigate --}}
+    <script>
+        document.addEventListener('livewire:navigated', () => {
+            if (window.lucide) window.lucide.createIcons();
+            // Reset lastPos & showBar agar navbar tidak nyangkut setelah navigasi
+            const bodyData = document.body._x_dataStack && document.body._x_dataStack[0];
+            if (bodyData) {
+                bodyData.lastPos = 0;
+                bodyData.showBar = true;
+            }
+        });
+    </script>
+
+    {{-- ⚡ Immediate auth guard --}}
+    <script>
+        (function() {
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                window.location.replace('/masuk');
+                return;
+            }
+            const expiresAt = localStorage.getItem('token_expires_at');
+            if (expiresAt && Date.now() > new Date(expiresAt).getTime()) {
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('auth_user');
+                localStorage.removeItem('token_expires_at');
+                sessionStorage.clear();
+                window.location.replace('/masuk');
+            }
+        })();
+    </script>
 
     {{-- ============================================================ --}}
     {{-- HEADER (Bisa pakai header yang sama dengan dashboard)         --}}
@@ -41,5 +80,6 @@
     {{-- Global Modals --}}
     <x-dashboard.password-modal />
 
+    @livewireScripts
 </body>
 </html>
