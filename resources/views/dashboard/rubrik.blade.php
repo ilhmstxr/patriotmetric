@@ -52,13 +52,17 @@
         },
 
         scrollToQuestion(qId) {
-            const el = document.getElementById('q-' + qId);
-            if (el) {
-                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                // Briefly highlight
-                el.classList.add('ring-2', 'ring-[#1b5e20]', 'ring-offset-2');
-                setTimeout(() => el.classList.remove('ring-2', 'ring-[#1b5e20]', 'ring-offset-2'), 1500);
-            }
+            const catIdx = this.categories.findIndex(c => c.questions.some(q => q.id == qId));
+            if (catIdx !== -1) this.openCategories[catIdx] = true;
+
+            this.$nextTick(() => {
+                const el = document.getElementById('q-' + qId);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.classList.add('ring-2', 'ring-[#1b5e20]', 'ring-offset-2');
+                    setTimeout(() => el.classList.remove('ring-2', 'ring-[#1b5e20]', 'ring-offset-2'), 1500);
+                }
+            });
             this.drawerOpen = false;
         },
 
@@ -125,6 +129,7 @@
             this.answers = {};
             this.links = {};
             this.categories = this.groupByCategory(data.questions);
+            this.initOpenCategories();
 
             // Pre-initialize all question keys for Alpine.js reactivity
             // This ensures fillStatus() triggers reactive updates in the Floating Quiz Drawer
@@ -555,6 +560,20 @@
             } finally {
                 this.isSaving = false;
             }
+        },
+
+        openCategories: {},
+
+        initOpenCategories() {
+            this.categories.forEach((_, idx) => { this.openCategories[idx] = true; });
+        },
+
+        toggleCategory(idx) {
+            this.openCategories[idx] = !this.openCategories[idx];
+        },
+
+        isCategoryOpen(idx) {
+            return this.openCategories[idx] !== false;
         }
     }" class="bg-[#f5f5f5] min-h-full font-['Plus_Jakarta_Sans',sans-serif]">
 
@@ -592,12 +611,30 @@
                         <template x-for="(categoryData, cIdx) in categories" :key="cIdx">
                             <div class="space-y-4">
                             {{-- Category Header --}}
-                            <div class="flex items-center justify-between border-b border-[#e0e0e0] pb-2">
-                                <h2 class="text-[15px] font-bold text-[#1d293d] uppercase tracking-wide" x-text="categoryData.category"></h2>
+                            <button type="button"
+                                @click="toggleCategory(cIdx)"
+                                class="w-full flex items-center justify-between border-b border-[#e0e0e0] pb-2 cursor-pointer group">
+                                <div class="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="w-4 h-4 text-[#62748e] transition-transform duration-300"
+                                         :class="isCategoryOpen(cIdx) ? 'rotate-90' : 'rotate-0'"
+                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="9 18 15 12 9 6"/>
+                                    </svg>
+                                    <h2 class="text-[15px] font-bold text-[#1d293d] uppercase tracking-wide group-hover:text-[#1b5e20] transition-colors" x-text="categoryData.category"></h2>
+                                </div>
                                 <span class="text-[12px] font-semibold text-[#62748e]" x-text="'Bobot: ' + categoryData.weight"></span>
-                            </div>
+                            </button>
 
                             {{-- Questions (Accordion Content) --}}
+                            <div x-show="isCategoryOpen(cIdx)"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0"
+                                 x-transition:enter-end="opacity-100"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100"
+                                 x-transition:leave-end="opacity-0"
+                                 class="space-y-4">
                             <template x-for="q in categoryData.questions" :key="q.id">
                                 {{-- 🏷️ Question Card — id anchor for scroll targeting + relative for flag ribbon --}}
                                 <div :id="'q-' + q.id"
@@ -850,6 +887,7 @@
                                     </div>
                                 </div>
                             </template>
+                            </div>
                         </div>
                         </template>
                     </template>

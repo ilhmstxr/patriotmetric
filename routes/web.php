@@ -41,6 +41,10 @@ Route::get('/pengumuman', function () {
     return view('pengumuman');
 });
 
+Route::get('/berita', function () {
+    return view('berita');
+});
+
 Route::get('/panduan', function () {
     return view('panduan');
 });

@@ -18,7 +18,7 @@ class ComproPreviewController extends Controller
      */
     public function show(Request $request, string $page): View
     {
-        $validPages = ['welcome', 'profile', 'tim', 'penghargaan', 'panduan', 'pengumuman'];
+        $validPages = ['welcome', 'profile', 'tim', 'penghargaan', 'panduan', 'pengumuman', 'berita'];
 
         abort_unless(in_array($page, $validPages), 404);
 

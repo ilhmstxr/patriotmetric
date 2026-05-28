@@ -234,7 +234,7 @@ class PertanyaanSeeder extends Seeder
             [
                 'kode_pertanyaan' => 'B.10',
                 'category_id' => 2,
-                'kebutuhan_bukti' => '<ul><li><p>Dokumen administrasi / internal kelembagaan</p></li><li><p>kartu anggota KOMCAD</p></li><li><p>Dokumen identas sivitas akademika (kartu tanda mahasiswa / kartu pegawai)</p></li></ul>',
+                'kebutuhan_bukti' => '<ul><li><p>Dokumen administrasi / internal kelembagaan</p></li><li><p>kartu anggota KOMCAD</p></li><li><p>Dokumen identitas sivitas akademika (kartu tanda mahasiswa / kartu pegawai)</p></li></ul>',
                 'teks_pertanyaan' => 'Jumlah pegawai institusi sebagai anggota komponen cadangan (KOMCAD)',
                 'tipe' => 'isian_singkat',
                 'keterangan' => 'pegawai',
@@ -457,7 +457,7 @@ class PertanyaanSeeder extends Seeder
             [
                 'kode_pertanyaan' => 'C.1',
                 'category_id' => 3,
-                'kebutuhan_bukti' => '<ul><li><p>Dokumen Administrasi / Kelembagaan</p></li><li><p>kartu anggota KOMCAD</p></li><li><p>dokumen identas (kartu tanda mahasiswa)</p></li></ul>',
+                'kebutuhan_bukti' => '<ul><li><p>Dokumen Administrasi / Kelembagaan</p></li><li><p>kartu anggota KOMCAD</p></li><li><p>dokumen identitas (kartu tanda mahasiswa)</p></li></ul>',
                 'teks_pertanyaan' => 'Jumlah mahasiswa aktif sebagai anggota komponen cadangan (KOMCAD)',
                 'tipe' => 'isian_singkat',
                 'keterangan' => 'mahasiswa',

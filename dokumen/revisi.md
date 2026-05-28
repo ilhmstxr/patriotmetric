@@ -20,5 +20,5 @@ Membangun Jejaring dan Kolaborasi Nasional; Membuka peluang bagi perguruan tingg
 Mendapatkan Pengakuan dan Reputasi; Meningkatkan citra dan reputasi perguruan tinggi sebagai kampus yang berkomitmen pada penguatan karakter bela negara.
 Mendorong Perubahan dan Aksi Sosial; Perguruan tinggi dapat melakukan perubahan karakter dalam segala aspek Tridharma Perguruan Tinggi.
 
-rubrik penilaian
-waktu ngesave pertanyaan masih error
+rubrik penilaian done
+waktu ngesave pertanyaan masih error done

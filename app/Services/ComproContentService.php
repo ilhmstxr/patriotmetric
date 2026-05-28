@@ -18,7 +18,7 @@ class ComproContentService
         'institusi.daftar_baris_1', 'institusi.daftar_baris_2',
         'timeline.daftar', 'instagram.posts', 'tujuan-utama.daftar',
         'misi.daftar', 'team-grid.daftar', 'daftar-penerima.daftar',
-        'steps.daftar', 'faq.daftar', 'artikel.daftar',
+        'steps.daftar', 'faq.daftar', 'artikel.daftar', 'berita.daftar',
     ];
     private const STATIC_IMAGE_KEYS = ['hero.background_image'];
 
