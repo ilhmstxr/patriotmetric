@@ -29,13 +29,16 @@
                 @if($getValue($hero, 'background_image'))
                     <img src="{{ url('cms-assets/' . $getValue($hero, 'background_image')) }}" alt="" class="w-full h-full object-cover" />
                 @endif
+                <div class="absolute inset-0 bg-gradient-to-r from-[#0f172b]/30 via-[#0f172b]/50 to-[#0f172b]/90"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0f172b]/80 via-transparent to-transparent"></div>
             </div>
-            <div class="relative max-w-[1536px] mx-auto px-6 md:px-8 pt-40 md:pt-56 pb-12 md:pb-16 flex flex-col items-end">
-                <div class="flex flex-col items-start max-w-[768px]">
-                    <h1 class="inline-block bg-[#0f172b]/60 backdrop-blur-sm px-6 py-4 font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] sm:text-[48px] md:text-[60px] leading-[1.2] text-white">
+            <div class="relative max-w-[1536px] mx-auto px-6 md:px-8 pt-40 md:pt-56 pb-16 md:pb-20 flex flex-col items-end">
+                <div class="flex flex-col items-start max-w-[700px]">
+                    <div class="w-16 h-1 bg-[#d4af37] rounded-full mb-6"></div>
+                    <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[32px] sm:text-[44px] md:text-[56px] leading-[1.15] text-white [text-shadow:_0_2px_12px_rgba(0,0,0,0.4)]">
                         {{ $getValue($hero, 'judul') ?? 'Membangun Karakter Bangsa dari Perguruan Tinggi' }}
                     </h1>
-                    <p class="mt-6 inline-block bg-[#0f172b]/60 backdrop-blur-sm px-6 py-4 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[18px] md:text-[20px] leading-[32.5px] text-[rgba(255,255,255,0.8)] max-w-[616px]">
+                    <p class="mt-5 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] md:text-[18px] leading-[28px] md:leading-[30px] text-white/80 max-w-[560px] [text-shadow:_0_1px_6px_rgba(0,0,0,0.3)]">
                         {{ $getValue($hero, 'deskripsi') ?? '' }}
                     </p>
                     <div class="mt-10 flex flex-col sm:flex-row gap-4">
@@ -184,9 +187,9 @@
             $timelineItems = $getValue($timeline, 'daftar') ?? [];
         @endphp
         @if(count($timelineItems) > 0)
-        <section class="relative bg-white py-14 overflow-hidden">
-            <div class="relative max-w-[1536px] mx-auto px-6 md:px-8">
-                <div class="text-center max-w-[672px] mx-auto mb-10">
+        <section class="relative bg-white py-16 md:py-24 overflow-hidden">
+            <div class="relative max-w-[1100px] mx-auto px-6 md:px-8">
+                <div class="text-center max-w-[672px] mx-auto mb-14">
                     <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[28px] md:text-[36px] leading-[40px] text-[#1d293d]">{{ $getValue($timeline, 'judul') ?? '' }}</h2>
                     <p class="mt-3 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] leading-[26px] text-[#45556c]">
                         {{ $getValue($timeline, 'deskripsi') ?? '' }}
@@ -194,20 +197,20 @@
                 </div>
 
                 {{-- Mobile: vertical layout --}}
-                <div class="md:hidden relative max-w-[900px] mx-auto">
-                    <div class="absolute left-[20px] top-0 bottom-0 w-0.5 bg-gradient-to-b from-[rgba(27,94,32,0.1)] via-[#1b5e20] to-[rgba(27,94,32,0.1)] rounded-full -translate-x-1/2"></div>
+                <div class="md:hidden relative">
+                    <div class="absolute left-[20px] top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#1b5e20] to-[#1b5e20]/20 rounded-full -translate-x-1/2"></div>
                     @foreach($timelineItems as $index => $item)
-                        <div class="relative flex mb-5 last:mb-0">
-                            <div class="absolute left-[20px] -translate-x-1/2 bg-white border-2 border-[#1b5e20] rounded-full size-[32px] flex items-center justify-center z-10">
-                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[13px] text-[#1b5e20]">{{ $item['nomor'] ?? '' }}</span>
+                        <div class="relative flex mb-6 last:mb-0">
+                            <div class="absolute left-[20px] -translate-x-1/2 bg-[#1b5e20] rounded-full size-[36px] flex items-center justify-center z-10 shadow-md shadow-[#1b5e20]/20">
+                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[13px] text-white">{{ $item['nomor'] ?? '' }}</span>
                             </div>
-                            <div class="w-full pl-[52px]">
-                                <div class="bg-white rounded-lg p-4 shadow-sm border border-[#f1f5f9] hover:shadow-md hover:border-[#1B5E20]/10 transition-all duration-300">
-                                    <div class="inline-block bg-[rgba(212,175,55,0.1)] rounded-full px-2.5 py-0.5 mb-1">
+                            <div class="w-full pl-[56px]">
+                                <div class="bg-white rounded-xl p-5 shadow-sm border border-[#e2e8f0] hover:shadow-md hover:border-[#1B5E20]/20 transition-all duration-300">
+                                    <div class="inline-block bg-[#d4af37]/10 rounded-full px-3 py-1 mb-2">
                                         <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[11px] text-[#d4af37] uppercase tracking-wider">{{ $item['tanggal'] ?? '' }}</span>
                                     </div>
-                                    <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[15px] leading-[22px] text-[#1d293d]">{{ $item['judul'] ?? '' }}</h3>
-                                    <p class="mt-0.5 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[13px] leading-[20px] text-[#45556c]">{{ $item['deskripsi'] ?? '' }}</p>
+                                    <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] leading-[24px] text-[#1d293d]">{{ $item['judul'] ?? '' }}</h3>
+                                    <p class="mt-1 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[14px] leading-[22px] text-[#45556c]">{{ $item['deskripsi'] ?? '' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -215,44 +218,42 @@
                 </div>
 
                 {{-- Desktop: horizontal layout with alternating top/bottom --}}
-                <div class="hidden md:block relative mx-auto overflow-x-auto pb-4">
-                    <div class="relative flex items-center" style="min-width: {{ count($timelineItems) * 220 }}px;">
+                <div class="hidden md:block relative">
+                    <div class="relative grid grid-cols-4 items-center">
                         {{-- Horizontal line --}}
-                        <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-gradient-to-r from-[rgba(27,94,32,0.1)] via-[#1b5e20] to-[rgba(27,94,32,0.1)] rounded-full"></div>
+                        <div class="absolute left-[12.5%] right-[12.5%] top-1/2 -translate-y-1/2 h-[3px] bg-gradient-to-r from-[#1b5e20]/30 via-[#1b5e20] to-[#1b5e20]/30 rounded-full"></div>
 
-                        <div class="relative w-full flex justify-between">
-                            @foreach($timelineItems as $index => $item)
-                                @php $isTop = $index % 2 === 0; @endphp
-                                <div class="relative flex flex-col items-center" style="width: {{ 100 / count($timelineItems) }}%;">
-                                    {{-- Top content (visible for even items, invisible spacer for odd) --}}
-                                    <div class="mb-4 px-2 w-full {{ $isTop ? '' : 'invisible' }}">
-                                        <div class="bg-white rounded-lg p-4 shadow-sm border border-[#f1f5f9] hover:shadow-md hover:border-[#1B5E20]/10 transition-all duration-300">
-                                            <div class="inline-block bg-[rgba(212,175,55,0.1)] rounded-full px-2.5 py-0.5 mb-1">
-                                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[11px] text-[#d4af37] uppercase tracking-wider">{{ $item['tanggal'] ?? '' }}</span>
-                                            </div>
-                                            <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[14px] leading-[20px] text-[#1d293d]">{{ $item['judul'] ?? '' }}</h3>
-                                            <p class="mt-0.5 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[12px] leading-[18px] text-[#45556c]">{{ $item['deskripsi'] ?? '' }}</p>
+                        @foreach($timelineItems as $index => $item)
+                            @php $isTop = $index % 2 === 0; @endphp
+                            <div class="relative flex flex-col items-center">
+                                {{-- Top content --}}
+                                <div class="mb-5 px-3 w-full {{ $isTop ? '' : 'invisible pointer-events-none' }}">
+                                    <div class="bg-white rounded-xl p-5 shadow-sm border border-[#e2e8f0] hover:shadow-lg hover:border-[#1B5E20]/20 transition-all duration-300">
+                                        <div class="inline-block bg-[#d4af37]/10 rounded-full px-3 py-1 mb-2">
+                                            <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[11px] text-[#d4af37] uppercase tracking-wider">{{ $item['tanggal'] ?? '' }}</span>
                                         </div>
-                                    </div>
-
-                                    {{-- Circle node --}}
-                                    <div class="bg-white border-2 border-[#1b5e20] rounded-full size-[32px] flex items-center justify-center z-10 shrink-0">
-                                        <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[13px] text-[#1b5e20]">{{ $item['nomor'] ?? '' }}</span>
-                                    </div>
-
-                                    {{-- Bottom content (visible for odd items, invisible spacer for even) --}}
-                                    <div class="mt-4 px-2 w-full {{ !$isTop ? '' : 'invisible' }}">
-                                        <div class="bg-white rounded-lg p-4 shadow-sm border border-[#f1f5f9] hover:shadow-md hover:border-[#1B5E20]/10 transition-all duration-300">
-                                            <div class="inline-block bg-[rgba(212,175,55,0.1)] rounded-full px-2.5 py-0.5 mb-1">
-                                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[11px] text-[#d4af37] uppercase tracking-wider">{{ $item['tanggal'] ?? '' }}</span>
-                                            </div>
-                                            <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[14px] leading-[20px] text-[#1d293d]">{{ $item['judul'] ?? '' }}</h3>
-                                            <p class="mt-0.5 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[12px] leading-[18px] text-[#45556c]">{{ $item['deskripsi'] ?? '' }}</p>
-                                        </div>
+                                        <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[15px] leading-[22px] text-[#1d293d]">{{ $item['judul'] ?? '' }}</h3>
+                                        <p class="mt-1 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[13px] leading-[20px] text-[#45556c]">{{ $item['deskripsi'] ?? '' }}</p>
                                     </div>
                                 </div>
-                            @endforeach
-                        </div>
+
+                                {{-- Circle node --}}
+                                <div class="bg-[#1b5e20] rounded-full size-[38px] flex items-center justify-center z-10 shrink-0 shadow-md shadow-[#1b5e20]/25">
+                                    <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[14px] text-white">{{ $item['nomor'] ?? '' }}</span>
+                                </div>
+
+                                {{-- Bottom content --}}
+                                <div class="mt-5 px-3 w-full {{ !$isTop ? '' : 'invisible pointer-events-none' }}">
+                                    <div class="bg-white rounded-xl p-5 shadow-sm border border-[#e2e8f0] hover:shadow-lg hover:border-[#1B5E20]/20 transition-all duration-300">
+                                        <div class="inline-block bg-[#d4af37]/10 rounded-full px-3 py-1 mb-2">
+                                            <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[11px] text-[#d4af37] uppercase tracking-wider">{{ $item['tanggal'] ?? '' }}</span>
+                                        </div>
+                                        <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[15px] leading-[22px] text-[#1d293d]">{{ $item['judul'] ?? '' }}</h3>
+                                        <p class="mt-1 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[13px] leading-[20px] text-[#45556c]">{{ $item['deskripsi'] ?? '' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -301,13 +302,6 @@
                             <span class="font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[12px] text-white/70 mb-1">Coming Soon</span>
                             <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] text-white leading-tight">Berita akan segera tersedia</h3>
                         </div>
-                    </a>
-                </div>
-
-                <div class="text-center">
-                    <a href="{{ url('/berita') }}" class="inline-flex items-center gap-2 bg-[#1B5E20] text-white font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] px-8 py-4 rounded-2xl shadow-lg hover:bg-[#145214] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-                        Lihat Lainnya
-                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     </a>
                 </div>
             </div>
