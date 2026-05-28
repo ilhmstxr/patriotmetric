@@ -45,6 +45,10 @@ Route::get('/panduan', function () {
     return view('panduan');
 });
 
+Route::get('/berita', function () {
+    return view('berita');
+});
+
 // Admin preview route for compro pages (authenticated only)
 Route::get('/admin/compro-preview/{page}', [ComproPreviewController::class, 'show'])
     ->middleware(['auth', 'verified'])

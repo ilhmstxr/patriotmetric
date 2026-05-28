@@ -83,6 +83,9 @@
                         <a href="{{ url('/penghargaan') }}" @click="dropdownInfoOpen = false" class="block px-4 py-2.5 font-['Plus_Jakarta_Sans',sans-serif] text-[14px] transition-colors {{ request()->is('penghargaan') ? 'font-semibold text-[#1b5e20] bg-[rgba(27,94,32,0.05)]' : 'font-medium text-[#45556c] hover:text-[#1b5e20] hover:bg-[rgba(27,94,32,0.05)]' }}">
                             Penghargaan
                         </a>
+                        <a href="{{ url('/berita') }}" @click="dropdownInfoOpen = false" class="block px-4 py-2.5 font-['Plus_Jakarta_Sans',sans-serif] text-[14px] transition-colors {{ request()->is('berita') ? 'font-semibold text-[#1b5e20] bg-[rgba(27,94,32,0.05)]' : 'font-medium text-[#45556c] hover:text-[#1b5e20] hover:bg-[rgba(27,94,32,0.05)]' }}">
+                            Berita
+                        </a>
                     </div>
                 </div>
             </div>
@@ -151,6 +154,7 @@
                 <div x-show="mobileInfo" class="flex flex-col gap-2 pl-4 mt-2" style="display: none;">
                     <a href="{{ url('/pengumuman') }}" class="font-['Plus_Jakarta_Sans',sans-serif] py-1 text-[14px] font-medium text-[#45556c] hover:text-[#1b5e20]">Pengumuman</a>
                     <a href="{{ url('/penghargaan') }}" class="font-['Plus_Jakarta_Sans',sans-serif] py-1 text-[14px] font-medium text-[#45556c] hover:text-[#1b5e20]">Penghargaan 2026</a>
+                    <a href="{{ url('/berita') }}" class="font-['Plus_Jakarta_Sans',sans-serif] py-1 text-[14px] font-medium text-[#45556c] hover:text-[#1b5e20]">Berita</a>
                 </div>
             </div>
 
