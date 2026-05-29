@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\CmsAssetController;
 use App\Http\Controllers\ComproPreviewController;
 use App\Http\Controllers\ProfileController;
@@ -41,16 +42,11 @@ Route::get('/pengumuman', function () {
     return view('pengumuman');
 });
 
-Route::get('/berita', function () {
-    return view('berita');
-});
+Route::get('/berita', [BeritaController::class, 'index']);
+Route::get('/berita/{slug}', [BeritaController::class, 'show'])->name('berita.show');
 
 Route::get('/panduan', function () {
     return view('panduan');
-});
-
-Route::get('/berita', function () {
-    return view('berita');
 });
 
 // Admin preview route for compro pages (authenticated only)

@@ -13,12 +13,12 @@ class ComproContentService
 {
     private const CACHE_TTL = 3600;
     private const DISK = 'cms';
-    private const IMAGE_KEYS = ['foto', 'logo', 'gambar', 'background_image'];
+    private const IMAGE_KEYS = ['foto', 'logo', 'gambar', 'background_image', 'dokumen'];
     private const REPEATER_KEYS = [
         'institusi.daftar_baris_1', 'institusi.daftar_baris_2',
         'timeline.daftar', 'instagram.posts', 'tujuan-utama.daftar',
         'misi.daftar', 'team-grid.daftar', 'daftar-penerima.daftar',
-        'steps.daftar', 'faq.daftar', 'artikel.daftar', 'berita.daftar',
+        'steps.daftar', 'faq.daftar', 'artikel.daftar',
     ];
     private const STATIC_IMAGE_KEYS = ['hero.background_image'];
 

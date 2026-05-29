@@ -23,21 +23,26 @@ class PengumumanForm
                     Textarea::make('hero.deskripsi')->label('Deskripsi')->maxLength(500)->required(),
                 ]),
 
-            Section::make('Artikel')
+            Section::make('Dokumen')
                 ->schema([
                     Repeater::make('artikel.daftar')
-                        ->label('Daftar Artikel')
+                        ->label('Daftar Dokumen')
                         ->schema([
                             DatePicker::make('tanggal')->label('Tanggal')->required(),
-                            TextInput::make('judul')->label('Judul Artikel')->maxLength(200)->required(),
-                            Textarea::make('excerpt')->label('Ringkasan/Excerpt')->maxLength(500)->required(),
-                            self::makeImageUpload('gambar')
-                                ->label('Gambar Thumbnail'),
+                            TextInput::make('judul')->label('Judul Dokumen')->maxLength(200)->required(),
+                            Textarea::make('excerpt')->label('Keterangan (opsional)')->maxLength(500),
+                            FileUpload::make('dokumen')
+                                ->label('File Dokumen (PDF)')
+                                ->disk('cms')
+                                ->directory('documents')
+                                ->visibility('public')
+                                ->acceptedFileTypes(['application/pdf'])
+                                ->maxSize(10240),
                         ])
                         ->maxItems(50)
                         ->reorderable()
                         ->collapsible()
-                        ->itemLabel(fn(array $state) => ($state['tanggal'] ?? '') . ' - ' . ($state['judul'] ?? 'Artikel Baru')),
+                        ->itemLabel(fn(array $state) => ($state['tanggal'] ?? '') . ' - ' . ($state['judul'] ?? 'Dokumen Baru')),
                 ]),
         ];
     }

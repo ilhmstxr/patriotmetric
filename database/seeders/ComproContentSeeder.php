@@ -256,16 +256,16 @@ adaptif, dan patriotik.'],
 
         // Hero Section
         $this->createContent($page, 'hero', 'judul', 'text', 'Pengumuman', 1);
-        $this->createContent($page, 'hero', 'deskripsi', 'text', 'Informasi terbaru seputar Patriot Metric.', 2);
+        $this->createContent($page, 'hero', 'deskripsi', 'text', 'Dokumen resmi dan surat edaran Patriot Metric.', 2);
 
-        // Artikel Section
+        // Dokumen Section
         $this->createContent($page, 'artikel', 'daftar', 'repeater', [
-            ['tanggal' => '2025-08-01', 'judul' => 'Cara Mendaftarkan Institusi Anda di Portal Patriot Metric', 'excerpt' => 'Panduan lengkap langkah-langkah pendaftaran institusi di portal Patriot Metric. Mulai dari pembuatan akun, pengisian data institusi, hingga penunjukan PIC yang bertanggung jawab.', 'gambar' => ''],
-            ['tanggal' => '2025-09-01', 'judul' => 'Proses Validasi & Verifikasi Data Institusi', 'excerpt' => 'Ketahui dokumen apa saja yang diperlukan untuk validasi akun institusi dan bagaimana proses verifikasi dilakukan oleh tim kami untuk memastikan keabsahan data.', 'gambar' => ''],
-            ['tanggal' => '2025-09-16', 'judul' => 'Tips Pengisian Rubrik Penilaian yang Efektif', 'excerpt' => 'Strategi dan tips agar pengisian rubrik penilaian berjalan optimal. Termasuk jenis bukti pendukung yang direkomendasikan dan format yang diterima sistem.', 'gambar' => ''],
-            ['tanggal' => '2025-11-01', 'judul' => 'Mekanisme Penilaian oleh Tim Reviewer', 'excerpt' => 'Bagaimana tim penilai memverifikasi dan mengevaluasi data institusi. Transparansi proses penilaian dan kriteria yang digunakan dalam evaluasi.', 'gambar' => ''],
-            ['tanggal' => '2025-12-01', 'judul' => 'Metodologi Kalkulasi Skor Pemeringkatan', 'excerpt' => 'Penjelasan sistem scoring dan bobot penilaian Patriot Metric. Bagaimana skor akhir dihitung dari berbagai dimensi penilaian bela negara.', 'gambar' => ''],
-            ['tanggal' => '2026-08-17', 'judul' => 'Upacara Penghargaan Nasional Patriot Metric', 'excerpt' => 'Informasi seputar acara pengumuman dan penyerahan penghargaan bagi institusi terbaik dalam implementasi nilai-nilai bela negara di lingkungan kampus.', 'gambar' => ''],
+            ['tanggal' => '2025-07-01', 'judul' => 'Surat Edaran Pendaftaran Patriot Metric 2025', 'excerpt' => 'Surat edaran resmi untuk seluruh perguruan tinggi', 'dokumen' => ''],
+            ['tanggal' => '2025-08-15', 'judul' => 'Panduan Pengisian Rubrik Penilaian Bela Negara', 'excerpt' => 'Petunjuk teknis pengisian rubrik', 'dokumen' => ''],
+            ['tanggal' => '2025-09-01', 'judul' => 'SK Penetapan Tim Reviewer Patriot Metric 2025', 'excerpt' => 'Surat keputusan penetapan tim penilai', 'dokumen' => ''],
+            ['tanggal' => '2025-10-01', 'judul' => 'Jadwal Pelaksanaan Penilaian Periode 2025-2026', 'excerpt' => 'Timeline resmi kegiatan penilaian', 'dokumen' => ''],
+            ['tanggal' => '2025-11-15', 'judul' => 'Surat Edaran Perpanjangan Batas Waktu Pengumpulan Data', 'excerpt' => 'Perpanjangan deadline pengumpulan dokumen', 'dokumen' => ''],
+            ['tanggal' => '2026-01-10', 'judul' => 'Pengumuman Hasil Pemeringkatan Patriot Metric 2025', 'excerpt' => 'Hasil resmi pemeringkatan nasional', 'dokumen' => ''],
         ], 1);
     }
 

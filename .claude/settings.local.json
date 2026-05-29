@@ -37,7 +37,18 @@
       "PowerShell(php artisan db:seed --class=ComproContentSeeder)",
       "PowerShell(php artisan cache:clear)",
       "PowerShell(php artisan make:migration convert_kebutuhan_bukti_to_html --table=pertanyaans)",
-      "PowerShell(php artisan migrate)"
+      "PowerShell(php artisan migrate)",
+      "PowerShell(php artisan route:list --path=berita 2>$null)",
+      "PowerShell(php artisan route:list --path=pengumuman 2>$null)",
+      "Bash(node -e ' *)",
+      "PowerShell(php artisan route:list --path=berita)",
+      "Bash(node *)",
+      "Bash(not exist *)",
+      "PowerShell(php artisan route:list --path=pengumuman)",
+      "PowerShell(try { $response = Invoke-WebRequest -Uri \"http://127.0.0.1:8000/pengumuman\" -UseBasicParsing -ErrorAction Stop; Write-Output \"Status: $\\($response.StatusCode\\)\"; Write-Output \"Length: $\\($response.Content.Length\\) chars\" } catch { Write-Output \"Error: $\\($_.Exception.Message\\)\" })",
+      "PowerShell($response = Invoke-WebRequest -Uri \"http://127.0.0.1:8000/pengumuman\" -UseBasicParsing; $html = $response.Content; if \\($html -match \"Pengumuman\"\\) { Write-Output \"Hero title: OK\" }; if \\($html -match \"Dokumen resmi\"\\) { Write-Output \"Hero description: OK\" }; if \\($html -match \"Surat Edaran\"\\) { Write-Output \"Document items: OK\" }; if \\($html -match \"Unduh\"\\) { Write-Output \"Download button: OK\" }; if \\($html -match \"Lihat\"\\) { Write-Output \"View button: OK\" }; if \\($html -match \"Belum ada dokumen\"\\) { Write-Output \"Empty state visible \\(no seeded data\\)\" })",
+      "PowerShell(php artisan tinker --execute=\"echo json_encode\\(\\\\App\\\\Models\\\\ComproContent::where\\('page','pengumuman'\\)->where\\('section','artikel'\\)->first\\(\\)?->value\\);\")",
+      "PowerShell($response = Invoke-WebRequest -Uri \"http://127.0.0.1:8000/pengumuman\" -UseBasicParsing; $html = $response.Content; if \\($html -match \"Cara Mendaftarkan\"\\) { Write-Output \"Document items rendering: OK\" }; if \\($html -match \"Belum ada dokumen\"\\) { Write-Output \"Empty state showing instead\" }; if \\($html -match \"space-y-3\"\\) { Write-Output \"Document list container: OK\" })"
     ]
   }
 }

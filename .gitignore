@@ -25,6 +25,7 @@ Thumbs.db
 # AI tools & personal notes
 /.claude
 /.kiro
+/graphify-out
 # /dokumen
 /bruno-api
 # *.code-workspace
