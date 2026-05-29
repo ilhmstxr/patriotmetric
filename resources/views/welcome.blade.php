@@ -2,12 +2,18 @@
 
 @php
     $content = $comproService->getPageContent('welcome');
+    $panduanContent = $comproService->getPageContent('panduan');
 
     $hero = $content->get('hero', collect());
     $about = $content->get('about', collect());
     $institusi = $content->get('institusi', collect());
     $timeline = $content->get('timeline', collect());
     $instagram = $content->get('instagram', collect());
+
+    // FAQ from panduan page
+    $faq = $panduanContent->get('faq', collect());
+    $faqJudul = $faq->firstWhere('key', 'judul')?->value ?? 'Tanya Jawab (FAQ)';
+    $faqDaftar = $faq->firstWhere('key', 'daftar')?->value ?? [];
 
     // Helper to get value by key from a section collection
     $getValue = function($section, $key) {
@@ -18,24 +24,29 @@
 <x-layouts.app>
     <div class="bg-white">
         {{-- Hero Section --}}
-        <section class="relative bg-[#0f172b]">
+        <section class="relative bg-[#0f172b] min-h-[600px] md:min-h-[700px]">
             <div class="absolute inset-0">
                 @if($getValue($hero, 'background_image'))
                     <img src="{{ url('cms-assets/' . $getValue($hero, 'background_image')) }}" alt="" class="w-full h-full object-cover" />
                 @endif
+                <div class="absolute inset-0 bg-gradient-to-r from-[#0f172b]/30 via-[#0f172b]/50 to-[#0f172b]/90"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0f172b]/80 via-transparent to-transparent"></div>
             </div>
-            <div class="relative max-w-[1536px] mx-auto px-6 md:px-8 py-24 md:py-44 flex flex-col items-start">
-                <h1 class="inline-block bg-[#0f172b]/60 backdrop-blur-sm px-6 py-4 font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] sm:text-[48px] md:text-[60px] leading-[1.2] text-white max-w-[768px]">
-                    {{ $getValue($hero, 'judul') ?? 'Membangun Karakter Bangsa dari Perguruan Tinggi' }}
-                </h1>
-                <p class="mt-6 inline-block bg-[#0f172b]/60 backdrop-blur-sm px-6 py-4 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[18px] md:text-[20px] leading-[32.5px] text-[rgba(255,255,255,0.8)] max-w-[616px]">
-                    {{ $getValue($hero, 'deskripsi') ?? '' }}
-                </p>
-                <div class="mt-10 flex flex-col sm:flex-row gap-4">
-                    <a href="{{ url('/daftar') }}" class="w-full sm:w-auto bg-[#d4af37] text-[#1d293d] font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] px-8 py-4 rounded-2xl shadow-lg hover:brightness-110 transition flex items-center justify-center gap-2">
-                        Daftarkan Perguruan Tinggi Anda
-                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    </a>
+            <div class="relative max-w-[1536px] mx-auto px-6 md:px-8 pt-40 md:pt-56 pb-16 md:pb-20 flex flex-col items-end">
+                <div class="flex flex-col items-start max-w-[700px]">
+                    <div class="w-16 h-1 bg-[#d4af37] rounded-full mb-6"></div>
+                    <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[32px] sm:text-[44px] md:text-[56px] leading-[1.15] text-white [text-shadow:_0_2px_12px_rgba(0,0,0,0.4)]">
+                        {{ $getValue($hero, 'judul') ?? 'Membangun Karakter Bangsa dari Perguruan Tinggi' }}
+                    </h1>
+                    <p class="mt-5 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] md:text-[18px] leading-[28px] md:leading-[30px] text-white/80 max-w-[560px] [text-shadow:_0_1px_6px_rgba(0,0,0,0.3)]">
+                        {{ $getValue($hero, 'deskripsi') ?? '' }}
+                    </p>
+                    <div class="mt-10 flex flex-col sm:flex-row gap-4">
+                        <a href="{{ url('/daftar') }}" class="w-full sm:w-auto bg-[#d4af37] text-[#1d293d] font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] px-8 py-4 rounded-2xl shadow-lg hover:brightness-110 transition flex items-center justify-center gap-2">
+                            Daftarkan Perguruan Tinggi Anda
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -171,56 +182,138 @@
         </section>
         @endif
 
-        {{-- Timeline Section --}}
+        {{-- Timeline Section (Horizontal) --}}
         @php
             $timelineItems = $getValue($timeline, 'daftar') ?? [];
         @endphp
         @if(count($timelineItems) > 0)
-        <section class="relative bg-white py-14 overflow-hidden">
-            <div class="relative max-w-[1536px] mx-auto px-6 md:px-8">
-                <div class="text-center max-w-[672px] mx-auto mb-10">
+        <section class="relative bg-white py-16 md:py-24 overflow-hidden">
+            <div class="relative max-w-[1100px] mx-auto px-6 md:px-8">
+                <div class="text-center max-w-[672px] mx-auto mb-14">
                     <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[28px] md:text-[36px] leading-[40px] text-[#1d293d]">{{ $getValue($timeline, 'judul') ?? '' }}</h2>
                     <p class="mt-3 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] leading-[26px] text-[#45556c]">
                         {{ $getValue($timeline, 'deskripsi') ?? '' }}
                     </p>
                 </div>
 
-                <div class="relative max-w-[900px] mx-auto">
-                    {{-- Timeline line --}}
-                    <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[rgba(27,94,32,0.1)] via-[#1b5e20] to-[rgba(27,94,32,0.1)] rounded-full -translate-x-1/2"></div>
-                    <div class="md:hidden absolute left-[20px] top-0 bottom-0 w-0.5 bg-gradient-to-b from-[rgba(27,94,32,0.1)] via-[#1b5e20] to-[rgba(27,94,32,0.1)] rounded-full -translate-x-1/2"></div>
-
+                {{-- Mobile: vertical layout --}}
+                <div class="md:hidden relative">
+                    <div class="absolute left-[20px] top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#1b5e20] to-[#1b5e20]/20 rounded-full -translate-x-1/2"></div>
                     @foreach($timelineItems as $index => $item)
-                        @php $isRight = $index % 2 === 0; @endphp
-                        <div class="relative flex md:items-start mb-5 last:mb-0">
-                            {{-- Circle --}}
-                            <div class="absolute left-[20px] md:left-1/2 -translate-x-1/2 bg-white border-2 border-[#1b5e20] rounded-full size-[32px] flex items-center justify-center z-10">
-                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[13px] text-[#1b5e20]">{{ $item['nomor'] ?? '' }}</span>
+                        <div class="relative flex mb-6 last:mb-0">
+                            <div class="absolute left-[20px] -translate-x-1/2 bg-[#1b5e20] rounded-full size-[36px] flex items-center justify-center z-10 shadow-md shadow-[#1b5e20]/20">
+                                <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[13px] text-white">{{ $item['nomor'] ?? '' }}</span>
                             </div>
-                            {{-- Content --}}
-                            <div class="w-full pl-[52px] md:pl-0 md:w-[calc(50%-40px)] {{ $isRight ? 'md:ml-auto md:pl-6 text-left' : 'md:mr-auto md:pr-6 text-left md:text-right' }}">
-                                <div class="bg-white rounded-lg p-4 shadow-sm border border-[#f1f5f9] hover:shadow-md hover:border-[#1B5E20]/10 transition-all duration-300">
-                                    <div class="inline-block bg-[rgba(212,175,55,0.1)] rounded-full px-2.5 py-0.5 mb-1">
+                            <div class="w-full pl-[56px]">
+                                <div class="bg-white rounded-xl p-5 shadow-sm border border-[#e2e8f0] hover:shadow-md hover:border-[#1B5E20]/20 transition-all duration-300">
+                                    <div class="inline-block bg-[#d4af37]/10 rounded-full px-3 py-1 mb-2">
                                         <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[11px] text-[#d4af37] uppercase tracking-wider">{{ $item['tanggal'] ?? '' }}</span>
                                     </div>
-                                    <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[15px] leading-[22px] text-[#1d293d]">{{ $item['judul'] ?? '' }}</h3>
-                                    <p class="mt-0.5 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[13px] leading-[20px] text-[#45556c]">{{ $item['deskripsi'] ?? '' }}</p>
+                                    <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] leading-[24px] text-[#1d293d]">{{ $item['judul'] ?? '' }}</h3>
+                                    <p class="mt-1 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[14px] leading-[22px] text-[#45556c]">{{ $item['deskripsi'] ?? '' }}</p>
                                 </div>
                             </div>
                         </div>
                     @endforeach
                 </div>
+
+                {{-- Desktop: horizontal layout with alternating top/bottom --}}
+                <div class="hidden md:block relative">
+                    <div class="relative grid grid-cols-4 items-center">
+                        {{-- Horizontal line --}}
+                        <div class="absolute left-[12.5%] right-[12.5%] top-1/2 -translate-y-1/2 h-[3px] bg-gradient-to-r from-[#1b5e20]/30 via-[#1b5e20] to-[#1b5e20]/30 rounded-full"></div>
+
+                        @foreach($timelineItems as $index => $item)
+                            @php $isTop = $index % 2 === 0; @endphp
+                            <div class="relative flex flex-col items-center">
+                                {{-- Top content --}}
+                                <div class="mb-5 px-3 w-full {{ $isTop ? '' : 'invisible pointer-events-none' }}">
+                                    <div class="bg-white rounded-xl p-5 shadow-sm border border-[#e2e8f0] hover:shadow-lg hover:border-[#1B5E20]/20 transition-all duration-300">
+                                        <div class="inline-block bg-[#d4af37]/10 rounded-full px-3 py-1 mb-2">
+                                            <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[11px] text-[#d4af37] uppercase tracking-wider">{{ $item['tanggal'] ?? '' }}</span>
+                                        </div>
+                                        <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[15px] leading-[22px] text-[#1d293d]">{{ $item['judul'] ?? '' }}</h3>
+                                        <p class="mt-1 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[13px] leading-[20px] text-[#45556c]">{{ $item['deskripsi'] ?? '' }}</p>
+                                    </div>
+                                </div>
+
+                                {{-- Circle node --}}
+                                <div class="bg-[#1b5e20] rounded-full size-[38px] flex items-center justify-center z-10 shrink-0 shadow-md shadow-[#1b5e20]/25">
+                                    <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[14px] text-white">{{ $item['nomor'] ?? '' }}</span>
+                                </div>
+
+                                {{-- Bottom content --}}
+                                <div class="mt-5 px-3 w-full {{ !$isTop ? '' : 'invisible pointer-events-none' }}">
+                                    <div class="bg-white rounded-xl p-5 shadow-sm border border-[#e2e8f0] hover:shadow-lg hover:border-[#1B5E20]/20 transition-all duration-300">
+                                        <div class="inline-block bg-[#d4af37]/10 rounded-full px-3 py-1 mb-2">
+                                            <span class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[11px] text-[#d4af37] uppercase tracking-wider">{{ $item['tanggal'] ?? '' }}</span>
+                                        </div>
+                                        <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[15px] leading-[22px] text-[#1d293d]">{{ $item['judul'] ?? '' }}</h3>
+                                        <p class="mt-1 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[13px] leading-[20px] text-[#45556c]">{{ $item['deskripsi'] ?? '' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </section>
         @endif
 
-        {{-- Berita / Kegiatan Section --}}
+        {{-- Berita Terbaru Section --}}
+        <section class="relative bg-[#f8fafc] py-20">
+            <div class="max-w-[1200px] mx-auto px-6 md:px-8">
+                <div class="text-center max-w-[672px] mx-auto mb-12">
+                    <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[28px] md:text-[36px] leading-[40px] text-[#1d293d]">Berita Terbaru</h2>
+                    <p class="mt-3 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] leading-[26px] text-[#45556c]">
+                        Informasi dan berita terkini seputar kegiatan Patriot Metric
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    {{-- Card Berita 1 --}}
+                    <a href="{{ url('/berita') }}" class="group relative block w-full overflow-hidden rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 aspect-[4/3]">
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#1B5E20]/30 to-[#0f172b]/50 flex items-center justify-center">
+                            <i data-lucide="newspaper" class="w-12 h-12 text-white/40"></i>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-5">
+                            <span class="font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[12px] text-white/70 mb-1">Coming Soon</span>
+                            <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] text-white leading-tight">Berita akan segera tersedia</h3>
+                        </div>
+                    </a>
+
+                    {{-- Card Berita 2 --}}
+                    <a href="{{ url('/berita') }}" class="group relative block w-full overflow-hidden rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 aspect-[4/3]">
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#d4af37]/20 to-[#0f172b]/50 flex items-center justify-center">
+                            <i data-lucide="newspaper" class="w-12 h-12 text-white/40"></i>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-5">
+                            <span class="font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[12px] text-white/70 mb-1">Coming Soon</span>
+                            <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] text-white leading-tight">Berita akan segera tersedia</h3>
+                        </div>
+                    </a>
+
+                    {{-- Card Berita 3 --}}
+                    <a href="{{ url('/berita') }}" class="group relative block w-full overflow-hidden rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 aspect-[4/3]">
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#1B5E20]/20 to-[#0f172b]/40 flex items-center justify-center">
+                            <i data-lucide="newspaper" class="w-12 h-12 text-white/40"></i>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-5">
+                            <span class="font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[12px] text-white/70 mb-1">Coming Soon</span>
+                            <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] text-white leading-tight">Berita akan segera tersedia</h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        {{-- Kegiatan / Instagram Section --}}
         @php
             $instagramPosts = $getValue($instagram, 'posts') ?? [];
         @endphp
         @if(count($instagramPosts) > 0)
         <section class="relative bg-[#f8fafc] py-20 overflow-hidden">
-            <div class="relative max-w-[1536px] mx-auto px-6 md:px-8">
+            <div class="relative max-w-[900px] mx-auto px-6 md:px-8">
                 <div class="text-center max-w-[672px] mx-auto mb-12">
                     <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[28px] md:text-[36px] leading-[40px] text-[#1d293d]">{{ $getValue($instagram, 'judul') ?? 'Kegiatan Kami' }}</h2>
                     <p class="mt-4 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[18px] leading-[28px] text-[#45556c]">
@@ -228,19 +321,18 @@
                     </p>
                 </div>
 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-                    @foreach($instagramPosts as $post)
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10 max-w-[700px] mx-auto">
+                    @foreach(array_slice($instagramPosts, 0, 2) as $post)
                         <a href="{{ $post['url'] ?? '#' }}" target="_blank" rel="noopener noreferrer"
-                           class="group relative block w-full overflow-hidden rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-                           style="height: 280px;">
+                           class="group relative block w-full overflow-hidden rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 aspect-[4/5]">
                             @if(!empty($post['gambar']))
                                 <img
                                     src="{{ url('cms-assets/' . $post['gambar']) }}"
                                     alt="{{ $post['alt_text'] ?? '' }}"
-                                    class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                                    class="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                                 />
                             @else
-                                <div class="w-full h-full bg-gradient-to-br from-[#1B5E20]/20 to-[#d4af37]/10 flex items-center justify-center">
+                                <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-[#1B5E20]/20 to-[#d4af37]/10 flex items-center justify-center">
                                     <i data-lucide="image" class="w-10 h-10 text-gray-300"></i>
                                 </div>
                             @endif
@@ -263,6 +355,35 @@
                 </div>
             </div>
         </section>
+        @endif
+
+        {{-- FAQ Section --}}
+        @if(is_array($faqDaftar) && count($faqDaftar) > 0)
+            <section class="py-16 md:py-24 bg-white" x-data="{ openFaq: 0 }">
+                <div class="max-w-[768px] mx-auto px-8">
+                    <h2 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[30px] leading-[36px] text-[#1d293d] text-center mb-10">{{ $faqJudul }}</h2>
+                    <div class="flex flex-col gap-4">
+                        @foreach($faqDaftar as $i => $faqItem)
+                            <div class="bg-white rounded-2xl border border-[#f1f5f9] shadow-sm overflow-hidden">
+                                <button
+                                    @click="openFaq = openFaq === {{ $i }} ? -1 : {{ $i }}"
+                                    class="w-full flex items-center justify-between px-6 py-5 focus:outline-none"
+                                >
+                                    <span class="font-['Plus_Jakarta_Sans',sans-serif] font-semibold text-[18px] leading-[28px] text-[#1d293d] text-left">{{ $faqItem['pertanyaan'] ?? '' }}</span>
+                                    <div class="bg-[rgba(27,94,32,0.1)] rounded-full size-8 flex items-center justify-center shrink-0 ml-4 transition-transform" :class="openFaq === {{ $i }} ? 'rotate-180' : ''">
+                                        <i data-lucide="chevron-down" class="w-5 h-5 text-[#1B5E20]"></i>
+                                    </div>
+                                </button>
+                                <div x-show="openFaq === {{ $i }}" x-collapse.duration.300ms>
+                                    <div class="px-6 pb-5 border-t border-[#f8fafc]">
+                                        <p class="pt-3 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[16px] leading-[26px] text-[#45556c]">{{ $faqItem['jawaban'] ?? '' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </section>
         @endif
     </div>
 </x-layouts.app>

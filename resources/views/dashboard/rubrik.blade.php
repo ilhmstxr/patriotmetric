@@ -638,8 +638,9 @@
                             <template x-for="q in categoryData.questions" :key="q.id">
                                 {{-- 🏷️ Question Card — id anchor for scroll targeting + relative for flag ribbon --}}
                                 <div :id="'q-' + q.id"
-                                     class="relative bg-white border border-[#e0e0e0] rounded-lg overflow-hidden transition-all duration-300"
-                                     :class="isFlagged(q.id) ? 'border-red-500 ring-1 ring-red-200' : ''">
+                                     class="relative border rounded-lg overflow-hidden transition-all duration-300"
+                                     :class="isFlagged(q.id) ? 'border-red-500 ring-1 ring-red-200' : 'border-[#e0e0e0]'"
+                                     :style="'background-color:' + ['#eff6ff','#f0f0ff','#ecfeff'][cIdx % 3]">
 
                                     {{-- ===== 🔖 Bookmark Flag ===== --}}
                                     <button type="button"

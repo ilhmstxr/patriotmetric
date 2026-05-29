@@ -29,3 +29,4 @@ Thumbs.db
 /bruno-api
 # *.code-workspace
 CLAUDE.md
+/database/seeders/PesertaSeeder.php

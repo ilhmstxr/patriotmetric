@@ -37,7 +37,7 @@ class ComproContentSeeder extends Seeder
      */
     private function createContent(string $page, string $section, string $key, string $type, mixed $value, int $order = 0): void
     {
-        ComproContent::firstOrCreate(
+        ComproContent::updateOrCreate(
             ['page' => $page, 'section' => $section, 'key' => $key],
             ['type' => $type, 'value' => is_array($value) ? json_encode($value) : $value, 'order' => $order]
         );
@@ -83,12 +83,10 @@ class ComproContentSeeder extends Seeder
         $this->createContent($page, 'timeline', 'judul', 'text', 'Timeline Patriot Metric', 1);
         $this->createContent($page, 'timeline', 'deskripsi', 'text', 'Jadwal dan tahapan proses pemeringkatan institusi Anda.', 2);
         $this->createContent($page, 'timeline', 'daftar', 'repeater', [
-            ['nomor' => '01', 'tanggal' => '1 - 31 Agustus', 'judul' => 'Pembukaan Registrasi', 'deskripsi' => 'Periode pendaftaran institusi melalui portal Patriot Metric.'],
-            ['nomor' => '02', 'tanggal' => '1 - 15 September', 'judul' => 'Validasi Akun', 'deskripsi' => 'Verifikasi data institusi dan PIC yang telah didaftarkan.'],
-            ['nomor' => '03', 'tanggal' => '16 Sep - 31 Okt', 'judul' => 'Mulai Pengisian Rubrik', 'deskripsi' => 'Periode pengisian rubrik penilaian dan unggah bukti pendukung.'],
-            ['nomor' => '04', 'tanggal' => '1 - 30 November', 'judul' => 'Validasi Penilaian Rubrik', 'deskripsi' => 'Tim penilai melakukan verifikasi data melalui Patriot Metric.'],
-            ['nomor' => '05', 'tanggal' => '1 - 15 Desember', 'judul' => 'Pengolahan', 'deskripsi' => 'Pengolahan data dan kalkulasi skor pemeringkatan nasional.'],
-            ['nomor' => '06', 'tanggal' => '17 Agustus', 'judul' => 'Penghargaan', 'deskripsi' => 'Pengumuman hasil dan upacara penghargaan nasional.'],
+            ['nomor' => '01', 'tanggal' => '1 - 31 Agustus', 'judul' => 'Registrasi & Validasi', 'deskripsi' => 'Periode pendaftaran institusi dan verifikasi data PIC melalui portal Patriot Metric.'],
+            ['nomor' => '02', 'tanggal' => '1 Sep - 31 Okt', 'judul' => 'Pengisian Rubrik', 'deskripsi' => 'Periode pengisian rubrik penilaian dan unggah bukti pendukung oleh institusi.'],
+            ['nomor' => '03', 'tanggal' => '1 - 30 November', 'judul' => 'Penilaian & Validasi', 'deskripsi' => 'Tim penilai melakukan verifikasi dan kalkulasi skor pemeringkatan.'],
+            ['nomor' => '04', 'tanggal' => '17 Agustus', 'judul' => 'Penghargaan', 'deskripsi' => 'Pengumuman hasil dan upacara penghargaan nasional.'],
         ], 3);
 
         // Instagram Section

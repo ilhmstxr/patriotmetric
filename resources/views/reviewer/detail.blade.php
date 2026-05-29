@@ -668,7 +668,7 @@
                        x-transition:leave-start="opacity-100"
                        x-transition:leave-end="opacity-0">
                   <template x-for="q in categoryData.pertanyaan" :key="q.id">
-                    <div :id="'q-' + q.id" class="relative bg-white border rounded-[12px] p-[20px] md:p-[28px] flex flex-col md:flex-row md:items-start gap-[20px] md:gap-[32px] overflow-hidden mb-[16px] transition-all duration-300" :class="isFlagged(q.id) ? 'border-red-500 ring-1 ring-red-100' : 'border-[#cbd5e1]'">
+                    <div :id="'q-' + q.id" class="relative border rounded-[12px] p-[20px] md:p-[28px] flex flex-col md:flex-row md:items-start gap-[20px] md:gap-[32px] overflow-hidden mb-[16px] transition-all duration-300" :class="isFlagged(q.id) ? 'border-red-500 ring-1 ring-red-100' : 'border-[#cbd5e1]'" :style="'background-color:' + ['#eff6ff','#f0f0ff','#ecfeff'][cIdx % 3]">
                       
                       {{-- ===== 🔖 Bookmark Flag ===== --}}
                       <button type="button"
