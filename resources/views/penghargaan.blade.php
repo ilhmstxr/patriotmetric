@@ -24,7 +24,7 @@
                     <img src="{{ asset('assets/penghargaan/hero-bg.webp') }}" alt="" class="w-full h-full object-cover" />
                 @endif
             </div>
-            <div class="relative max-w-[900px] mx-auto px-6 md:px-8 py-20 md:py-28 text-center">
+            <div class="relative max-w-[1200px] mx-auto px-6 md:px-8 py-20 md:py-28 text-center">
                 <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[34px] md:text-[50px] text-white leading-tight">{{ $heroJudul }}</h1>
                 @if($heroDeskripsi)
                     <p class="mt-4 font-['Plus_Jakarta_Sans',sans-serif] text-[16px] md:text-[19px] leading-[28px] text-white/85 max-w-[600px] mx-auto">

@@ -16,7 +16,7 @@
     <div class="bg-[oklch(0.985_0.005_145)] min-h-screen">
         {{-- Hero --}}
         <section class="bg-[#1B5E20]">
-            <div class="max-w-[900px] mx-auto px-6 md:px-8 py-16 md:py-22 text-center">
+            <div class="max-w-[1200px] mx-auto px-6 md:px-8 py-16 md:py-22 text-center">
                 <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[30px] md:text-[44px] text-white leading-tight">{{ $heroJudul }}</h1>
                 @if($heroDeskripsi)
                     <p class="mt-3 font-['Plus_Jakarta_Sans',sans-serif] text-[15px] md:text-[17px] leading-[26px] text-white/80 max-w-[540px] mx-auto">

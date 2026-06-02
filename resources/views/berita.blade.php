@@ -7,7 +7,7 @@
     <div class="bg-white min-h-screen">
         {{-- Hero --}}
         <section class="bg-[#1B5E20]">
-            <div class="max-w-[900px] mx-auto px-6 md:px-8 py-20 md:py-28 text-center">
+            <div class="max-w-[1200px] mx-auto px-6 md:px-8 py-20 md:py-28 text-center">
                 <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[34px] md:text-[50px] text-white leading-tight">{{ $heroJudul }}</h1>
                 <p class="mt-4 font-['Plus_Jakarta_Sans',sans-serif] text-[16px] md:text-[19px] leading-[28px] text-white/85 max-w-[600px] mx-auto">
                     {{ $heroDeskripsi }}

@@ -26,20 +26,20 @@
 <x-layouts.app>
     <div class="bg-white">
         {{-- Hero --}}
-        <section class="relative bg-[#0f172b] overflow-hidden">
+        <section class="relative bg-[#0a1f0d] overflow-hidden">
             <div class="absolute inset-0">
                 @if($heroBackground)
                     <img src="{{ url('cms-assets/' . $heroBackground) }}" alt="" class="w-full h-full object-cover opacity-20" />
                 @else
                     <img src="{{ asset('assets/profile/bg.webp') }}" alt="" class="w-full h-full object-cover opacity-20" />
                 @endif
-                <div class="absolute inset-0 bg-gradient-to-b from-[rgba(27,94,32,0.85)] to-[#0f172b]/90"></div>
+                <div class="absolute inset-0 bg-gradient-to-b from-[#1B5E20]/80 to-[#0a1f0d]/95"></div>
             </div>
-            <div class="absolute top-16 right-16 w-80 h-80 bg-[#d4af37]/5 rounded-full blur-3xl"></div>
+            <div class="absolute top-16 right-16 w-80 h-80 bg-[#d4af37]/15 rounded-full blur-[100px]"></div>
             <div class="relative max-w-[1200px] mx-auto px-6 md:px-8 py-20 md:py-32">
                 <div class="flex items-start justify-between gap-8">
                     <div class="flex-1">
-                        <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] sm:text-[48px] md:text-[56px] leading-[1.15] text-white max-w-[700px]">
+                        <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] sm:text-[48px] md:text-[56px] leading-[1.15] text-white max-w-[750px]">
                             {!! $heroJudul !!}
                         </h1>
                         <p class="mt-5 font-['Plus_Jakarta_Sans',sans-serif] font-normal text-[17px] md:text-[19px] leading-[30px] text-white/75 max-w-[580px]">
@@ -47,7 +47,7 @@
                         </p>
                     </div>
                     <div class="hidden lg:block shrink-0">
-                        <img src="{{ asset('assets/images/logo.webp') }}" alt="Patriot Metric Logo" class="w-32 h-32 object-contain opacity-90" />
+                        <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.webp') }}" alt="Patriot Metric Logo" class="w-130px h-auto object-contain opacity-90" />
                     </div>
                 </div>
             </div>

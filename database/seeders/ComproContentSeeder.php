@@ -106,14 +106,13 @@ class ComproContentSeeder extends Seeder
         $page = 'profile';
 
         // Hero Section
-       $this->createContent($page, 'hero', 'judul', 'text', 'UPN VETERAN JATIMPATRIOT METRIC <br> <span class="text-[20px] sm:text-[28px] md:text-[32px] font-semibold text-white/90">UNIVERSITY RANKING</span>', 1);
+        $this->createContent($page, 'hero', 'judul', 'text', 'UPN VETERAN JATIM PATRIOT METRIC <br> <span class="block mt-1 text-[20px] sm:text-[28px] md:text-[32px] font-semibold text-white/90">UNIVERSITY RANKING</span>', 1);
         $this->createContent($page, 'hero', 'deskripsi', 'text', 'Sebuah sistem pemeringkatan nasional yang didedikasikan untuk mengukur, membina, dan mengapresiasi nilai-nilai bela negara di lingkungan pendidikan tinggi.', 2);
         $this->createContent($page, 'hero', 'background_image', 'image', 'profile/bg.webp', 3);
 
         // Latar Belakang Section
         $this->createContent($page, 'latar-belakang', 'judul', 'text', 'Latar Belakang', 1);
-         $this->createContent($page, 'latar-belakang', 'deskripsi', 'richtext', '<p>Di tengah arus globalisasi, nilai patriotisme
-menghadapi tantangan serius, mulai dari
+        $this->createContent($page, 'latar-belakang', 'deskripsi', 'richtext', '<p>Di tengah arus globalisasi, nilai patriotisme menghadapi tantangan serius, mulai dari
 menurunnya pemahaman sejarah, derasnya arus
 disinformasi dan radikalisme digital yang memicu
 polarisasi, hingga meningkatnya individualisme
