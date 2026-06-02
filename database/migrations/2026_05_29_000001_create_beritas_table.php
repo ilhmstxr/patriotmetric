@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
         Schema::create('beritas', function (Blueprint $table) {
@@ -15,7 +14,7 @@ return new class extends Migration
             $table->text('excerpt');
             $table->longText('konten');
             $table->string('gambar')->nullable();
-            $table->date('tanggal');
+            $table->dateTime('tanggal');
             $table->boolean('is_published')->default(false);
             $table->timestamps();
         });

@@ -36,5 +36,11 @@ class Berita extends Model
                 $berita->slug = Str::slug($berita->judul) . '-' . Str::random(5);
             }
         });
+
+        static::saving(function (Berita $berita) {
+            if (empty($berita->excerpt) && !empty($berita->konten)) {
+                $berita->excerpt = Str::limit(strip_tags($berita->konten), 200);
+            }
+        });
     }
 }

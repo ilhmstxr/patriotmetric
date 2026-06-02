@@ -14,8 +14,8 @@ use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -47,8 +47,8 @@ class BeritaResource extends Resource
                 ->helperText('Otomatis dibuat dari judul jika dikosongkan'),
             Textarea::make('excerpt')
                 ->label('Ringkasan')
-                ->required()
-                ->maxLength(500),
+                ->maxLength(500)
+                ->helperText('Otomatis dibuat dari konten jika dikosongkan'),
             RichEditor::make('konten')
                 ->label('Konten Lengkap')
                 ->required()

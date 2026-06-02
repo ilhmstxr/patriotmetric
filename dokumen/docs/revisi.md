@@ -28,3 +28,14 @@ Mendorong Perubahan dan Aksi Sosial; Perguruan tinggi dapat melakukan perubahan 
 
 rubrik penilaian done
 waktu ngesave pertanyaan masih error done
+
+
+revisi 
+view detail berita
+testing halaman peserta
+
+
+buatkan implementation tasknya terlebih dahulu
+1. Fix namespace error in `app/Filament/Resources/BeritaResource.php` (import `EditAction` and `DeleteAction` from `Filament\Actions` instead of `Filament\Tables\Actions`).
+2. Fix image path loading in `resources/views/welcome.blade.php`, `resources/views/berita.blade.php`, and `resources/views/berita-detail.blade.php` to handle both seeded paths (`assets/...`) and Filament uploaded paths (`berita/...`) dynamically.
+3. Test and verify that `/admin/beritas`, `/berita`, and `/berita/{slug}` load without any errors.

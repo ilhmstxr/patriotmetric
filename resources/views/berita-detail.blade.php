@@ -1,4 +1,8 @@
-<x-layouts.app>
+<x-layouts.app 
+    :title="$berita->judul . ' - Patriot Metric'"
+    :metaDescription="$berita->excerpt"
+    :ogImage="$berita->gambar ? (str_starts_with($berita->gambar, 'assets/') ? asset($berita->gambar) : asset('assets/' . $berita->gambar)) : null"
+>
     <div class="bg-white min-h-screen">
         {{-- Hero --}}
         <section class="bg-[#1B5E20]">
@@ -16,9 +20,14 @@
 
         {{-- Featured Image --}}
         @if($berita->gambar)
+            @php
+                $gambarUrl = str_starts_with($berita->gambar, 'assets/') 
+                    ? asset($berita->gambar) 
+                    : asset('assets/' . $berita->gambar);
+            @endphp
             <div class="max-w-[900px] mx-auto px-6 md:px-8 -mt-8">
                 <div class="rounded-xl overflow-hidden shadow-lg">
-                    <img src="{{ asset($berita->gambar) }}" alt="{{ $berita->judul }}" class="w-full h-[300px] md:h-[450px] object-cover">
+                    <img src="{{ $gambarUrl }}" alt="{{ $berita->judul }}" class="w-full h-[300px] md:h-[450px] object-cover">
                 </div>
             </div>
         @endif

@@ -22,9 +22,7 @@ Route::get('/cms-assets/{path}', [CmsAssetController::class, 'show'])
     ->name('cms.asset');
 
 // public routes / compro
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [ComproPreviewController::class, 'welcome']);
 
 Route::get('/profile', function () {
     return view('profile');

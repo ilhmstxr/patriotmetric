@@ -272,38 +272,71 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                    {{-- Card Berita 1 --}}
-                    <a href="{{ url('/berita') }}" class="group relative block w-full overflow-hidden rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 aspect-[4/3]">
-                        <div class="absolute inset-0 bg-gradient-to-br from-[#1B5E20]/30 to-[#0f172b]/50 flex items-center justify-center">
-                            <i data-lucide="newspaper" class="w-12 h-12 text-white/40"></i>
-                        </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-5">
-                            <span class="font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[12px] text-white/70 mb-1">Coming Soon</span>
-                            <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] text-white leading-tight">Berita akan segera tersedia</h3>
-                        </div>
-                    </a>
-
-                    {{-- Card Berita 2 --}}
-                    <a href="{{ url('/berita') }}" class="group relative block w-full overflow-hidden rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 aspect-[4/3]">
-                        <div class="absolute inset-0 bg-gradient-to-br from-[#d4af37]/20 to-[#0f172b]/50 flex items-center justify-center">
-                            <i data-lucide="newspaper" class="w-12 h-12 text-white/40"></i>
-                        </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-5">
-                            <span class="font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[12px] text-white/70 mb-1">Coming Soon</span>
-                            <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] text-white leading-tight">Berita akan segera tersedia</h3>
-                        </div>
-                    </a>
-
-                    {{-- Card Berita 3 --}}
-                    <a href="{{ url('/berita') }}" class="group relative block w-full overflow-hidden rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 aspect-[4/3]">
-                        <div class="absolute inset-0 bg-gradient-to-br from-[#1B5E20]/20 to-[#0f172b]/40 flex items-center justify-center">
-                            <i data-lucide="newspaper" class="w-12 h-12 text-white/40"></i>
-                        </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-5">
-                            <span class="font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[12px] text-white/70 mb-1">Coming Soon</span>
-                            <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] text-white leading-tight">Berita akan segera tersedia</h3>
-                        </div>
-                    </a>
+                    @for($i = 0; $i < 3; $i++)
+                        @if(isset($latestNews[$i]))
+                            @php
+                                $item = $latestNews[$i];
+                                $gradients = [
+                                    'from-[#1B5E20]/30 to-[#0f172b]/50',
+                                    'from-[#d4af37]/20 to-[#0f172b]/50',
+                                    'from-[#1B5E20]/20 to-[#0f172b]/40'
+                                ];
+                                $fallbackGradient = $gradients[$i % count($gradients)];
+                            @endphp
+                            <a href="{{ route('berita.show', $item->slug) }}" class="group relative block w-full overflow-hidden rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 aspect-[4/3]">
+                                @if($item->gambar)
+                                    @php
+                                        $gambarUrl = str_starts_with($item->gambar, 'assets/') 
+                                            ? asset($item->gambar) 
+                                            : asset('assets/' . $item->gambar);
+                                    @endphp
+                                    <img src="{{ $gambarUrl }}" alt="{{ $item->judul }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent"></div>
+                                @else
+                                    <div class="absolute inset-0 bg-gradient-to-br {{ $fallbackGradient }} flex items-center justify-center">
+                                        <i data-lucide="newspaper" class="w-12 h-12 text-white/40"></i>
+                                    </div>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                @endif
+                                
+                                <div class="absolute inset-0 flex flex-col justify-end p-5 z-10">
+                                    <span class="font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[12px] text-white/70 mb-1">
+                                        {{ $item->tanggal->translatedFormat('j F Y') }}
+                                    </span>
+                                    <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] text-white leading-tight group-hover:text-[#d4af37] transition-colors line-clamp-2">
+                                        {{ $item->judul }}
+                                    </h3>
+                                </div>
+                            </a>
+                        @else
+                            @php
+                                $placeholders = [
+                                    [
+                                        'gradient' => 'from-[#1B5E20]/30 to-[#0f172b]/50',
+                                        'title' => 'Berita akan segera tersedia',
+                                    ],
+                                    [
+                                        'gradient' => 'from-[#d4af37]/20 to-[#0f172b]/50',
+                                        'title' => 'Berita akan segera tersedia',
+                                    ],
+                                    [
+                                        'gradient' => 'from-[#1B5E20]/20 to-[#0f172b]/40',
+                                        'title' => 'Berita akan segera tersedia',
+                                    ]
+                                ];
+                                $p = $placeholders[$i];
+                            @endphp
+                            <a href="{{ url('/berita') }}" class="group relative block w-full overflow-hidden rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 aspect-[4/3]">
+                                <div class="absolute inset-0 bg-gradient-to-br {{ $p['gradient'] }} flex items-center justify-center">
+                                    <i data-lucide="newspaper" class="w-12 h-12 text-white/40"></i>
+                                </div>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-5">
+                                    <span class="font-['Plus_Jakarta_Sans',sans-serif] font-medium text-[12px] text-white/70 mb-1">Coming Soon</span>
+                                    <h3 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[16px] text-white leading-tight">{{ $p['title'] }}</h3>
+                                </div>
+                            </a>
+                        @endif
+                    @endfor
                 </div>
             </div>
         </section>

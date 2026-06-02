@@ -24,7 +24,12 @@
                             {{-- Thumbnail --}}
                             <div class="w-full md:w-[240px] h-[160px] md:h-[140px] shrink-0 rounded-lg overflow-hidden bg-[#f1f5f9]">
                                 @if($item->gambar)
-                                    <img src="{{ asset($item->gambar) }}" alt="{{ $item->judul }}" class="w-full h-full object-cover">
+                                    @php
+                                        $gambarUrl = str_starts_with($item->gambar, 'assets/') 
+                                            ? asset($item->gambar) 
+                                            : asset('assets/' . $item->gambar);
+                                    @endphp
+                                    <img src="{{ $gambarUrl }}" alt="{{ $item->judul }}" class="w-full h-full object-cover">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center bg-[#f1f5f9]">
                                         <span class="text-[#94a3b8] text-[13px]">Gambar</span>
