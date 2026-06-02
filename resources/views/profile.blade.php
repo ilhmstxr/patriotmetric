@@ -37,7 +37,7 @@
             </div>
             <div class="absolute top-16 right-16 w-80 h-80 bg-[#d4af37]/15 rounded-full blur-[100px]"></div>
             <div class="relative max-w-[1200px] mx-auto px-6 md:px-8 py-20 md:py-32">
-                <div class="flex items-start justify-between gap-8">
+                <div class="flex items-start justify-between gap-10">
                     <div class="flex-1">
                         <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[36px] sm:text-[48px] md:text-[56px] leading-[1.15] text-white max-w-[750px]">
                             {!! $heroJudul !!}
@@ -47,7 +47,7 @@
                         </p>
                     </div>
                     <div class="hidden lg:block shrink-0">
-                        <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.webp') }}" alt="Patriot Metric Logo" class="w-130px h-auto object-contain opacity-90" />
+                        <img src="{{ asset('assets/images/b89aca8b9cc2d0494234bedd13382da054b48ab6.webp') }}" alt="Patriot Metric Logo" class="lg:h-[300px] w-auto object-contain opacity-90" />
                     </div>
                 </div>
             </div>
