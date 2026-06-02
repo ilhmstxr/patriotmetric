@@ -24,16 +24,17 @@
 <x-layouts.app>
     <div class="bg-white">
         {{-- Hero Section --}}
-        <section class="relative bg-[#0f172b] min-h-[600px] md:min-h-[700px]">
-            <div class="absolute inset-0">
+        <section class="relative bg-[#0f172b] flex items-center min-h-[600px] md:min-h-0 md:aspect-video xl:max-h-[1080px] w-full">
+            <div class="absolute inset-0 w-full h-full">
                 @if($getValue($hero, 'background_image'))
-                    <img src="{{ url('cms-assets/' . $getValue($hero, 'background_image')) }}" alt="" class="w-full h-full object-cover" />
+                    <img src="{{ url('cms-assets/' . $getValue($hero, 'background_image')) }}" alt="" class="w-full h-full object-cover object-top" />
                 @endif
-                <div class="absolute inset-0 bg-gradient-to-r from-[#0f172b]/30 via-[#0f172b]/50 to-[#0f172b]/90"></div>
-                <div class="absolute inset-0 bg-gradient-to-t from-[#0f172b]/80 via-transparent to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-[#0f172b]/30 via-[#0f172b]/50 to-[#0f172b]/95"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0f172b]/90 via-transparent to-transparent"></div>
             </div>
-            <div class="relative max-w-[1536px] mx-auto px-6 md:px-8 pt-40 md:pt-56 pb-16 md:pb-20 flex flex-col items-end">
-                <div class="flex flex-col items-start max-w-[700px]">
+            
+            <div class="relative w-full max-w-[1536px] mx-auto px-6 md:px-8 py-20 flex flex-col items-end">
+                <div class="flex flex-col items-start max-w-[700px] xl:mr-10">
                     <div class="w-16 h-1 bg-[#d4af37] rounded-full mb-6"></div>
                     <h1 class="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[32px] sm:text-[44px] md:text-[56px] leading-[1.15] text-white [text-shadow:_0_2px_12px_rgba(0,0,0,0.4)]">
                         {{ $getValue($hero, 'judul') ?? 'Membangun Karakter Bangsa dari Perguruan Tinggi' }}
